@@ -28,6 +28,7 @@ class Wheel : public DriveMass
   private:
     // data
     static int instancesCount;
+    bool userDriver;
     std::string index;
     double powered;
     dBodyID bodyID;
@@ -50,6 +51,7 @@ class Wheel : public DriveMass
     std::string getIndex();
     void setRefBody(dBodyID inputID) { bodyID = inputID; };
     void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
+    void setUserDriver ();
     
     // physics
     void stepPhysics ();

@@ -74,3 +74,8 @@ void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
     startGraphics (n);
 }
+
+void Wheel::setUserDriver ()
+{
+    userDriver = true;
+}
