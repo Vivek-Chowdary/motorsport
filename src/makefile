@@ -1,4 +1,4 @@
-#Opciones OS-specific
+#OS-specific options
 ifeq ("$(OS)", "Windows_NT")
 
 PLATFORM := WIN32
@@ -21,7 +21,7 @@ LIBRARIES_LINUX :=
 endif
 
 
-#Opciones del compilador
+#Compiler options
 DEFINES := $(PLATFORM) $(TYPE)
 TARGET := motorsport$(EXE_EXT)
 LD := g++
@@ -30,7 +30,7 @@ CXX := g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH
 CXXFLAGS := $(CFLAGS)
 
-#Definicion de rutas a cabeceras y librerias
+#Paths to libs and header files
 LD_LIBRARY_PATH := $(BASE_LIB_DIR)
 INCDIRS := $(BASE_LIBRARY_DIR)
 
@@ -77,7 +77,7 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 
 
-#Ordenes de compilacion
+#Compiling instructions
 %.o : %.cpp
 	$(CXX) $(CXXFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
@@ -85,7 +85,7 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 	$(CC) $(CFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
 
-#Opciones de make
+#Phony targets definitions
 .PHONY: all
 all: 	$(TARGET)
 
