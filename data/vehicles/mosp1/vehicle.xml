@@ -7,7 +7,7 @@
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <body
-        mesh = "../data/vehicles/mosp1/body.mesh"
+        mesh = "vehicles/mosp1/body.mesh"
         ogreName = "mosp1Body"
         renderMode="solid"
         _renderMode="wireframe"
@@ -152,7 +152,7 @@
             radius = "0.34"
             width = "0.125"
             powered = "0"
-            mesh = "../data/vehicles/mosp1/wheel_front.mesh"
+            mesh = "vehicles/mosp1/wheel_front.mesh"
             renderMode="solid"
             >
         </wheel>
@@ -162,7 +162,7 @@
             radius = "0.34"
             width = "0.125"
             powered = "0"
-            mesh = "../data/vehicles/mosp1/wheel_front.mesh"
+            mesh = "vehicles/mosp1/wheel_front.mesh"
             renderMode="solid"
             >
         </wheel>
@@ -172,7 +172,7 @@
             radius = "0.34"
             width = "0.125"
             powered = "-1"
-            mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
+            mesh = "vehicles/mosp1/wheel_rear.mesh"
             renderMode="solid"
             >
         </wheel>
@@ -182,7 +182,7 @@
             radius = "0.34"
             width = "0.125"
             powered = "1"
-            mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
+            mesh = "vehicles/mosp1/wheel_rear.mesh"
             renderMode="solid"
             >
         </wheel>

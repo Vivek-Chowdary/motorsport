@@ -83,8 +83,11 @@ void Cube::startGraphics (DOMNode * n)
     }
     char name[256];
     sprintf (name, ogreName.c_str(), instancesCount);
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/parts/cube/");
+    file.append(mesh);
     cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
-   cubeEntity->setMaterialName (material.c_str());
+    cubeEntity->setMaterialName (material.c_str());
     cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     cubeNode->attachObject (cubeEntity);
  

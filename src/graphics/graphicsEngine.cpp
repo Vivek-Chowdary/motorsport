@@ -71,13 +71,7 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
 void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 {
     //load some default constant resources
-    Ogre::ResourceManager::addCommonArchiveEx ("../data","FileSystem");
-    Ogre::ResourceManager::addCommonArchiveEx ("../data/gui","FileSystem");
-    Ogre::ResourceManager::addCommonArchiveEx ("../data/vehicles","FileSystem");
-    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks","FileSystem");
-    Ogre::ResourceManager::addCommonArchiveEx ("../data/parts/cube","FileSystem");
-//    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround","FileSystem");
-//    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround/skybox.zip","Zip");
+    std::string dataDir = SystemData::getSystemDataPointer()->dataDir;
 //    Ogre::MaterialManager::getSingleton().parseAllSources();
 
     // Load some the user resources
@@ -90,7 +84,10 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
     {
         typeName = i.peekNextKey ();
         archName = i.getNext ();
-        Ogre::ResourceManager::addCommonArchiveEx (archName, typeName);
+        std::string file = dataDir;
+        file.append("/");
+        file.append(archName);
+        Ogre::ResourceManager::addCommonArchiveEx (file, typeName);
     }
 }
 
@@ -185,7 +182,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     std::string localLogName = "GFX";
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
-    std::string ogreConfigFile = "../data/resources.cfg";
+    std::string ogreConfigFile = "resources.cfg";
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -421,7 +418,10 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     log->put (LOG_INFO, "Creating Ogre root element");
     ogreRoot = new Ogre::Root ("plugins.cfg", "removeme.cfg", "motorsport-ogre.log");
 
-    setupResources (ogreConfigFile);
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/");
+    file.append(ogreConfigFile);
+    setupResources (file);
     // select renderer and set resolution and bpp
     manualInitialize (renderer);
 

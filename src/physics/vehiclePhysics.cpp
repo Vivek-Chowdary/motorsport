@@ -24,7 +24,7 @@
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     velocity = 0.0;
-    log->telemetry (LOG_TRACE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear");
+    log->telemetry (LOG_TRACE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -169,6 +169,8 @@ void Vehicle::stepPhysics ()
 
     const dReal * bodyVel;
     bodyVel = dBodyGetLinearVel(body->bodyID);
-    velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
-    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str());
+    velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);
+    bodyVel= dBodyGetPosition(body->bodyID);
+    double distance = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);
+    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
 }

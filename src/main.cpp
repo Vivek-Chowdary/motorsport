@@ -64,7 +64,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->put (LOG_INFO, "( 2 ): Loading world data...");
     log->put (LOG_INFO, "Loading initial world data");
-    new World("../data/worlds/default.xml");
+    new World("default.xml");
 
     // We start the main loop.
     log->put (LOG_INFO, "( 3 ): Starting simulation...");
@@ -227,6 +227,14 @@ LogEngine * processXmlRootNode (DOMNode * node)
                             name = XMLString::transcode (pAttributeNode->getValue ());
                             log->format (LOG_INFO, "Found video recording timestep value: %s", name.c_str());
                             SystemData::getSystemDataPointer()->videoRecordTimestep = stoi (name);
+                        }
+                        if (name == "dataDir")
+                        {
+                            name.erase();
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the data directory: %s", name.c_str());
+                            SystemData::getSystemDataPointer()->dataDir.erase();
+                            SystemData::getSystemDataPointer()->dataDir = name;
                         }
                         name.erase();
                     }

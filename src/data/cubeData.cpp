@@ -12,14 +12,16 @@
 #include "OgreNoMemoryMacros.h"
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
+#include "system.hpp"
 
 int Cube::instancesCount = 0;
 
-Cube::Cube (char * xmlFilename)
+Cube::Cube ()
 {
     log = new LogEngine (LOG_TRACE, "CUB");
-
-    XmlFile * xmlFile = new XmlFile (xmlFilename);
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/parts/cube/part.xml");
+    XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 

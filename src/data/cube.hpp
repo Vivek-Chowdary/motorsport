@@ -40,7 +40,7 @@ class Cube : public WorldObject
     void stopInput ();
   public:
     // data
-    Cube (char * xmlFilename);
+    Cube ();
     ~Cube ();
 
     // physics

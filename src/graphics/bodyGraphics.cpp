@@ -58,6 +58,11 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     char name[256];
     sprintf (name, ogreName.c_str(), instancesCount);
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/vehicles/");
+    file.append(SystemData::getSystemDataPointer()->tmpPath);
+    file.append("/");
+    file.append(mesh);
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     bodyEntity->setRenderDetail(renderMode);
 

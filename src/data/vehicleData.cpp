@@ -20,6 +20,7 @@
 #include "suspension.hpp"
 #include "camera.hpp"
 #include "cameraPosition.hpp"
+#include "system.hpp"
 
 
 int Vehicle::instancesCount = 0;
@@ -28,7 +29,12 @@ Vehicle::Vehicle (const std::string & xmlFilename)
 {
     log = new LogEngine (LOG_TRACE, "VEH");
     log->put (LOG_INFO, "Starting to parse the vehicle xml file");
-    XmlFile * xmlFile = new XmlFile (xmlFilename.c_str());
+    SystemData::getSystemDataPointer()->tmpPath = xmlFilename;
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/vehicles/");
+    file.append(xmlFilename);
+    file.append("/vehicle.xml");
+    XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 

@@ -12,7 +12,7 @@
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
         material = "cubeMaterial"
-        mesh = "../data/parts/cube/cube.mesh"
+        mesh = "parts/cube/cube.mesh"
         ogreName = "cube%i"
         >
     </graphics>

@@ -27,7 +27,7 @@ World *World::getWorldPointer ()
     if (worldPointer == 0)
     {
         std::cout << "WARNING: Auto-creating a default world!" << std::endl;
-        worldPointer = new World("../data/worlds/default.xml");
+        worldPointer = new World("default.xml");
     }
     return (worldPointer);
 }
@@ -40,9 +40,11 @@ World::World (char * xmlFilename)
     } else {
         log = new LogEngine(LOG_TRACE, "WRL");
         worldPointer = this;
-
-        log->format(LOG_INFO,"Reading %s world file", xmlFilename);
-        XmlFile* xmlFile = new XmlFile (xmlFilename);
+        std::string file = SystemData::getSystemDataPointer()->dataDir;
+        file.append("/worlds/");
+        file.append(xmlFilename);
+        log->format(LOG_INFO,"Reading %s world file", file.c_str());
+        XmlFile* xmlFile = new XmlFile (file.c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
     }
@@ -253,20 +255,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
     // load track (and its cameras)
-    std::string tmpPath = ("../data/tracks/");
-    tmpPath.append (trackDirectory);
-    tmpPath.append ("/track.xml");
-    Track * track = new Track (tmpPath);
+    Track * track = new Track (trackDirectory);
     //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     trackList.push_back (track);
 
     // load vehicle (and its cameras)
-    tmpPath = ("../data/vehicles/");
-    tmpPath.append (vehicleDirectory);
-    tmpPath.append ("/vehicle.xml");
-
     log->put (LOG_INFO, "Creating a vehicle");
-    Vehicle * vehicle = new Vehicle (tmpPath);
+    Vehicle * vehicle = new Vehicle (vehicleDirectory);
     vehicleList.push_back (vehicle);
     
     log->put (LOG_INFO, "Attaching vehicle wheels to its body (via suspensions)");

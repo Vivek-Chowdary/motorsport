@@ -51,6 +51,11 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     char name[256];
     sprintf (name, "%i", instancesCount);
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/vehicles/");
+    file.append(SystemData::getSystemDataPointer()->tmpPath);
+    file.append("/");
+    file.append(mesh);
     wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     wheelEntity->setRenderDetail(renderMode);
 

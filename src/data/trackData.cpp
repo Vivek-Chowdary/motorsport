@@ -24,7 +24,11 @@ Track::Track (const std::string & xmlFilename)
 {
     log = new LogEngine (LOG_TRACE, "TRK");
     log->put (LOG_INFO, "Starting to parse the track xml file");
-    XmlFile * xmlFile = new XmlFile (xmlFilename.c_str());
+    std::string file = SystemData::getSystemDataPointer()->dataDir;
+    file.append("/tracks/");
+    file.append(xmlFilename);
+    file.append("/track.xml");
+    XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 }
@@ -276,7 +280,7 @@ void Track::processXmlRootNode (DOMNode * n)
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
         const int separation = 4;
         Cube *cubePointer;
-        cubePointer = new Cube ("../data/parts/cube/cube.xml");
+        cubePointer = new Cube ();
         cubePointer->setPosition (Vector3d (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation));
         cubeList.push_back (cubePointer);
         if ( i%4 && false) //snake mode. will slow down things. i%4 sets the number of cubes per snake.
