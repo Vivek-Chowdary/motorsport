@@ -58,6 +58,8 @@ class SystemData
     Uint32 physicsFrequency;
     int graphicsSteps;
     Uint32 graphicsFrequency;
+    int height;
+    int width;
 
     bool isMainLoopEnabled (void); // does the program have to keep running?
     void enableMainLoop (void); // allows the program to start running

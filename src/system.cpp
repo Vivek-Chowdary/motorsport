@@ -48,6 +48,8 @@ SystemData::SystemData ()
         physicsFrequency = 0;
         graphicsSteps = 0;
         graphicsFrequency = 0;
+        height = 1;
+        width = 1;
     }
 }
 

@@ -246,6 +246,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 /////////////////////////////////// */
 
     log->put (LOG_INFO, "Creating ODE world");
+    dRandSetSeed(0);
     worldID = dWorldCreate ();
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);

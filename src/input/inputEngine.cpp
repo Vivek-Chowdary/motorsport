@@ -44,11 +44,18 @@ InputEngine::InputEngine ()
     log->put (LOG_INFO, "Initializing keyboard data array");
     keyState = SDL_GetKeyState (NULL);
     log->put (LOG_INFO, "Initializing mouse data variables");
-    SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (0)] = new Axis; //axis X, mouse #1
-    SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (1)] = new Axis; //axis Y, mouse #1
+
+    systemData->axisMap[getIDMouseAxis (0)] = new Axis; //axis X, mouse #1
+    systemData->axisMap[getIDMouseAxis (1)] = new Axis; //axis Y, mouse #1
+    systemData->axisMap[getIDMouseAxis (0)]->setNewRawValue (systemData->width);
+    systemData->axisMap[getIDMouseAxis (0)]->setNewRawValue (0);
+    systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (-systemData->height);
+    systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (0);
     for (int i=SDLK_FIRST; i<SDLK_LAST; i++)
     {
-        SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (i)] = new Axis;
+        systemData->axisMap[getIDKeyboardKey (i)] = new Axis;
+        systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (1);
+        systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (0);
     }
 }
 
@@ -71,11 +78,50 @@ int InputEngine::computeStep (void)
         case SDL_KEYDOWN:
             log->format (LOG_VERBOSE, "New SDL_KEYDOWN event; axis ID = %i", getIDKeyboardKey (event.key.keysym.sym));
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
+            
+            if (event.key.keysym.sym == SDLK_KP_MINUS)
+            {
+                log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
+                // modify the physics engine rate
+                // if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
+                if (systemData->physicsDesiredFrequency < 37)
+                {
+                    // don't let the rate fall below 1 frame per second (or don't allow more than 1000msecs. step)
+                    if (!--systemData->physicsDesiredFrequency)
+                    {
+                        systemData->physicsDesiredFrequency++;
+                    }
+                    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                } else
+                {                       // ...otherwise, it's better to increase the timestep (msecs.)
+                    systemData->physicsTimeStep++;
+                    systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+                }
+            }
+            if (event.key.keysym.sym == SDLK_KP_PLUS)
+            {
+                log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
+                // if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
+                if (systemData->physicsDesiredFrequency < 37)
+                {
+                    systemData->physicsDesiredFrequency++;
+                    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                } else
+                {                       // ...otherwise, it's better to decrease the timestep (msecs.)
+                    // don't let the step time fall below 1 msec. (or don't allow more than 1000fps)
+                    if (!--systemData->physicsTimeStep)
+                    {
+                        systemData->physicsTimeStep++;
+                    }
+                    systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+                }
+            }
             break;
         case SDL_MOUSEMOTION:
             log->put (LOG_VERBOSE, "New SDL_MOUSEMOTION event: updating mouse axis.");
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (0)]->setNewRawValue (event.motion.x);
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (1)]->setNewRawValue (-event.motion.y);
+            log->format (LOG_TRACE, "Mouse movement: (%i, %i)", event.motion.x, -event.motion.y);
             break;
         default:
             break;
@@ -112,45 +158,6 @@ void InputEngine::processKeyboard ()
         log->put (LOG_VERBOSE, "Processing a SDLK_END keypress...");
         systemData->physicsDesiredFrequency = 250;
         systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-    }
-
-    if (keyState[SDLK_KP_MINUS])
-    {
-        log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
-        // modify the physics engine rate
-        // if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
-        if (systemData->physicsDesiredFrequency < 37)
-        {
-            // don't let the rate fall below 1 frame per second (or don't allow more than 1000msecs. step)
-            if (!--systemData->physicsDesiredFrequency)
-            {
-                systemData->physicsDesiredFrequency++;
-            }
-            systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-        } else
-        {                       // ...otherwise, it's better to increase the timestep (msecs.)
-            systemData->physicsTimeStep++;
-            systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
-        }
-    }
-
-    if (keyState[SDLK_KP_PLUS])
-    {
-        log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
-        // if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
-        if (systemData->physicsDesiredFrequency < 37)
-        {
-            systemData->physicsDesiredFrequency++;
-            systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-        } else
-        {                       // ...otherwise, it's better to decrease the timestep (msecs.)
-            // don't let the step time fall below 1 msec. (or don't allow more than 1000fps)
-            if (!--systemData->physicsTimeStep)
-            {
-                systemData->physicsTimeStep++;
-            }
-            systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
-        }
     }
 
     if (keyState[SDLK_q])

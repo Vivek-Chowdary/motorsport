@@ -370,6 +370,8 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     log->put (LOG_INFO, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
 
+    systemData->height = height;
+    systemData->width = width;
     log->format (LOG_INFO, "Graphics data initialized to %ix%i@%ibpp", width, height, bpp);
 
     log->put (LOG_INFO, "Creating temporary ogre plugins config file (plugins.cfg)");

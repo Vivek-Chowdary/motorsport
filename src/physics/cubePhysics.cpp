@@ -114,6 +114,8 @@ void Cube::stepPhysics ()
         moveX /= 10000;
         moveY /= 10000;
         dBodyAddForce (cubeID, moveX, moveY, 0.0f);
+        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() / 5000;
+        dBodyAddForce (cubeID, 0, 0, moveZ);
     }
 }
 
