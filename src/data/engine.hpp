@@ -19,43 +19,31 @@
 *
 ******************************************************************************/
 
-#ifndef VEHICLE_HPP
-#   define VEHICLE_HPP
-#   include <string>
+#ifndef ENGINE_HPP
+#   define ENGINE_HPP
 #   include "worldObject.hpp"
+#   include "data/xercesc_fwd.hpp"
 
-//forward declarations
-class Body;
-class Engine;
 
-class Vehicle : public WorldObject
+class Engine : public WorldObject
 {
   private:
     static int instancesCount;
-    std::string name;
-    std::string description;
-    std::string author;
-    std::string contact;
-    std::string license;
+    double torqueLinearMultiplier;
+    double crankshaftRotationalSpeed;
 
   public:
+
     // data
-    Vehicle (const std::string & xmlFilename);
-    ~Vehicle ();
+    Engine (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~Engine ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    Body * body;
-    Engine * engine;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
+    double getCrankshaftRotationalSpeed ();
 
-    // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
 };
 #endif

@@ -22,6 +22,7 @@
 #include "vehicle.hpp"
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
+#include "engine.hpp"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -45,4 +46,5 @@ void Vehicle::stopPhysics ()
 void Vehicle::stepPhysics ()
 {
     body->stepPhysics();
+    engine->stepPhysics();
 }

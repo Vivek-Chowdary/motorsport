@@ -64,7 +64,7 @@ World::World (char * xmlFilename)
 World::~World ()
 {
     // unload the bodies from memory
-    log->put (LOG_INFO, "Unloading bodies from memory...");
+    log->put (LOG_INFO, "Unloading vehicles from memory...");
     int size = vehicleList.size ();
     for (int i = 0; i < size; i++)
     {
@@ -72,6 +72,7 @@ World::~World ()
     }
     vehicleList.clear ();
     
+    log->put (LOG_INFO, "Unloading tracks from memory...");
     size = trackList.size ();
     for (int i = 0; i < size; i++)
     {
@@ -85,9 +86,6 @@ World::~World ()
     dWorldDestroy (worldID);
     log->put (LOG_INFO, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
-
-    
-
     
     worldPointer = NULL;
     delete log;

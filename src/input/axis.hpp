@@ -22,7 +22,7 @@
 #ifndef AXIS_HPP
 #   define AXIS_HPP
 #   include <limits>
-
+//#   include <string> FIXME (read aidtostr below)
 class Axis
 {
   private:
@@ -46,6 +46,8 @@ class Axis
     //void insertFilter (AxisFilter * filter);
     // etc...
 };
+
+//void aidtostr (int axisID, std::string destString); //FIXME!!
 
 int getIDJoyAxis (int joystickNumber, int axisNumber);
 int getIDJoyButton (int joystickNumber, int buttonNumber);

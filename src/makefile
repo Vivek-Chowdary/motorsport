@@ -215,6 +215,8 @@ SOURCES := \
 	graphics/vehicleGraphics.cpp \
         input/axis.cpp \
 	input/cubeInput.cpp \
+        data/engineData.cpp \
+        physics/enginePhysics.cpp \
 	input/cameraInput.cpp
 ###########################################
 

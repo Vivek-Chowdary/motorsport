@@ -23,6 +23,7 @@
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "body.hpp"
+#include "engine.hpp"
 
 int Vehicle::instancesCount = 0;
 
@@ -45,6 +46,8 @@ Vehicle::~Vehicle ()
     stopGraphics ();
     stopInput ();
 
+//    delete body;  //huh? :S
+//    delete engine; //why does this crash?
     delete log;
 }
 
@@ -57,6 +60,7 @@ void Vehicle::processXmlRootNode (DOMNode * n)
     contact = "None";
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     DOMNode * bodyNode = 0;
+    DOMNode * engineNode = 0;
 
     if (n)
     {
@@ -125,11 +129,11 @@ void Vehicle::processXmlRootNode (DOMNode * n)
                                 log->put (LOG_TRACE, "Found the vehicle body element.");
                                 bodyNode = n;
                             }
-/*                            if (nodeName == "physics")
+                            if (nodeName == "engine")
                             {
-                                log->put (LOG_TRACE, "Found the vehicle physics data element.");
-                                physicsNode = n;
-                            }*/
+                                log->put (LOG_TRACE, "Found the vehicle engine element.");
+                                engineNode = n;
+                            }
                         }
                     }
                 }
@@ -138,4 +142,5 @@ void Vehicle::processXmlRootNode (DOMNode * n)
         }
     }
     body = new Body (bodyNode);
+    engine = new Engine (engineNode);
 }

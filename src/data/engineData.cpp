@@ -19,43 +19,29 @@
 *
 ******************************************************************************/
 
-#ifndef VEHICLE_HPP
-#   define VEHICLE_HPP
-#   include <string>
-#   include "worldObject.hpp"
+#include "engine.hpp"
+#include "xmlParser.hpp"
+#include "log/logEngine.hpp"
 
-//forward declarations
-class Body;
-class Engine;
+int Engine::instancesCount = 0;
 
-class Vehicle : public WorldObject
+Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-  private:
-    static int instancesCount;
-    std::string name;
-    std::string description;
-    std::string author;
-    std::string contact;
-    std::string license;
+    log = new LogEngine (LOG_TRACE, "ENG");
+    log->put (LOG_INFO, "Starting to parse the engine node");
+    processXmlRootNode (n);
+    instancesCount++;
+}
 
-  public:
-    // data
-    Vehicle (const std::string & xmlFilename);
-    ~Vehicle ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    Body * body;
-    Engine * engine;
+Engine::~Engine ()
+{
+    instancesCount--;
+    stopPhysics ();
+    delete log;
+}
 
-    // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepPhysics ();
-    void stopPhysics ();
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
 
-    // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
-};
-#endif
+void Engine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+{
+    startPhysics (n);
+}

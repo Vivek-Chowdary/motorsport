@@ -65,11 +65,11 @@ int InputEngine::computeStep (void)
             systemData->disableMainLoop ();
             break;
         case SDL_KEYUP:
-            log->put (LOG_VERBOSE, "New SDL_KEYUP event: finding out what key's been depressed.");
+            log->format (LOG_VERBOSE, "New SDL_KEYUP event; axis ID = %i", getIDKeyboardKey (event.key.keysym.sym));
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(0);
             break;
         case SDL_KEYDOWN:
-            log->put (LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed.");
+            log->format (LOG_VERBOSE, "New SDL_KEYDOWN event; axis ID = %i", getIDKeyboardKey (event.key.keysym.sym));
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
             break;
         case SDL_MOUSEMOTION:
@@ -82,7 +82,6 @@ int InputEngine::computeStep (void)
         }
     }
     processKeyboard ();
-    // processMouseButtons ();
 
     int numTrackCams = World::getWorldPointer()->trackList[0]->cameraList.size();
     for (int i=0; i < numTrackCams; i++)
