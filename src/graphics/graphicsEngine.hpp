@@ -24,7 +24,8 @@
 #include "SDL.h"
 
 #include "Ogre.h"
-#include "ExampleApplication.h"
+#include "simulation.hpp"
+//#include "ExampleApplication.h"
 
 class GraphicsEngine
 {
@@ -32,7 +33,7 @@ class GraphicsEngine
     GraphicsData *graphicsData;
     WorldData *worldData;
     SystemData *systemData;
-    ExampleApplication *app;
+    Simulation *sim;
   public:
     int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
     int step ( void );          //makes the graphics engine draw one frame

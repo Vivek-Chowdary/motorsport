@@ -37,10 +37,13 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     systemData = sysData;
     log.append ( LOG_INFO, "Ok" );
 
-    app = new ExampleApplication;
+    printf("\nhaciendo new simulation");
+    sim = new Simulation;
+    
+    printf("\ntrying the simulation");
     try
     {
-        app->go ( graphicsData->width, graphicsData->height );
+        sim->go ( graphicsData->width, graphicsData->height );
     } catch ( Exception & e )
     {
         fprintf ( stderr, "An exception has occured: %s\n",
@@ -52,17 +55,17 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 int GraphicsEngine::step ( void )
 //makes the graphics engine draw one frame
 {
-    app->mRoot->_fireFrameStarted (  );
-    app->mWindow->update (  );
-    app->mRoot->_fireFrameEnded (  );
+    sim->mRoot->_fireFrameStarted (  );
+    sim->mWindow->update (  );
+    sim->mRoot->_fireFrameEnded (  );
 
     return ( 0 );
 }
 
 int GraphicsEngine::stop ( void )
 {
-//    delete app;
-    //  app = NULL;
+    delete sim;
+    //sim = NULL;
 
     //finally stop the log engine
     log.stop (  );
