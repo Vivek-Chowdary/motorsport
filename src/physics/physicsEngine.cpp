@@ -91,6 +91,18 @@ int PhysicsEngine::computeStep (void)
         World::getWorldPointer ()->vehicleList[i]->stepPhysics ();
     }
 
+    int numberOfCameras = World::getWorldPointer ()->trackList[0]->cameraList.size ();
+    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    {
+        World::getWorldPointer ()->trackList[0]->cameraList[currentCamera]->stepPhysics ();
+    }
+    numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
+    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    {
+        World::getWorldPointer ()->vehicleList[0]->cameraList[currentCamera]->stepPhysics ();
+    }
+                        
+
     dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);
     switch (stepType)
     {
