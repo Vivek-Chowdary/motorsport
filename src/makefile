@@ -204,6 +204,7 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+	tools/quaternion.cpp \
 	system.cpp \
 	log/logEngine.cpp \
 	physics/physicsEngine.cpp \

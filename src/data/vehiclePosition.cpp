@@ -8,24 +8,63 @@
 \*****************************************************************************/
 
 #include "vehiclePosition.hpp"
+#include "xmlParser.hpp"
+#include "logEngine.hpp"
 
-VehiclePosition::VehiclePosition (const Vector3d & position, const Vector3d & rotation)
+VehiclePosition::VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    this->position = position;
-    this->rotation = rotation;
+    LogEngine * log = new LogEngine (LOG_DEVELOPER, "VEP");
+    if (n->hasAttributes ())
+    {
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        index = "0";
+        position.x = position.y = position.z = 0;
+        rotation.x = rotation.y = rotation.z = 0;
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName ());
+            if (attribute == "index")
+            {
+                assignXmlString (index, attNode->getValue ());
+                log->format (LOG_CCREATOR, "Found the position index: %s", index.c_str ());
+            }
+            if (attribute == "position")
+            {
+                assignXmlString (attribute, attNode->getValue ());
+                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str ());
+                position = stov3d (attribute);
+            }
+            if (attribute == "rotation")
+            {
+                assignXmlString (attribute, attNode->getValue ());
+                log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str ());
+                rotation = stov3d (attribute);
+            }
+        }
+        rotation.degreesToRadians ();
+    }
+    delete log;
 }
 
 VehiclePosition::~VehiclePosition ()
 {
-    //empty
+    // empty
 }
 
-Vector3d VehiclePosition::getPosition()
+Vector3d VehiclePosition::getPosition ()
 {
     return position;
 }
 
-Vector3d VehiclePosition::getRotation()
+Vector3d VehiclePosition::getRotation ()
 {
     return rotation;
+}
+
+std::string VehiclePosition::getIndex ()
+{
+    return index;
 }

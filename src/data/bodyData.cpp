@@ -38,12 +38,12 @@ Body::~Body ()
 void Body::updateOgrePosition ()
 {
     const dReal *temp = dBodyGetPosition (bodyID);  // need to allocate memory first??
-    bodyNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
+    bodyNode->setPosition (temp[0], temp[1], temp[2]);
 }
 void Body::updateOgreOrientation ()
 {
     const dReal *temp = dBodyGetQuaternion (bodyID);    // need to allocate memory first??
-    bodyNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
+    bodyNode->setOrientation (temp[0], temp[1], temp[2], temp[3]);
 }
 
 void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)

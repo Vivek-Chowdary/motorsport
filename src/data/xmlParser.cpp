@@ -170,6 +170,20 @@ Vector3d stov3d (const std::string &srcString)
 {
     std::stringstream tmpString (srcString);
     double tmpX, tmpY, tmpZ;
-    tmpString >> tmpX >> tmpY >> tmpZ;;
+    tmpString >> tmpX >> tmpY >> tmpZ;
     return Vector3d(tmpX, tmpY, tmpZ);
+}
+
+Quaternion stoq (const std::string &srcString)
+{
+    std::stringstream tmpString (srcString);
+    const double magicValue = 0.123456789101112131415;
+    double tmpW, tmpX, tmpY, tmpZ = magicValue;
+    tmpString >> tmpW >> tmpX >> tmpY >> tmpZ;
+    if ( tmpZ == magicValue )
+    {
+        return Quaternion (tmpW, tmpX, tmpY);   
+    } else {
+        return Quaternion (tmpW, tmpX, tmpY, tmpZ);
+    }
 }

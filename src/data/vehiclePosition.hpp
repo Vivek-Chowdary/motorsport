@@ -9,18 +9,22 @@
 
 #ifndef VEHICLEPOSITION_HPP
 #   define VEHICLEPOSITION_HPP
+#   include "data/xercesc_fwd.hpp"
 #   include "vector3d.hpp"
+#   include <string>
 
 class VehiclePosition
 {
   private:
     Vector3d position;
     Vector3d rotation;
+    std::string index;
   public:
-    VehiclePosition (const Vector3d & position, const Vector3d & rotation);
+    VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~VehiclePosition ();
     Vector3d getPosition();
     Vector3d getRotation();
+    std::string getIndex();
 };
 
 #endif

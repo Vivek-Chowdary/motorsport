@@ -216,7 +216,8 @@ void Track::processXmlRootNode (DOMNode * n)
                                         if (node2Name == "vehicle")
                                         {
                                             log->put (LOG_CCREATOR, "Found a vehicle position.");
-                                            processXmlVehiclePositionNode (n2);
+                                            VehiclePosition * tmpVehicle = new VehiclePosition (n2);
+                                            vehiclePositionMap[tmpVehicle->getIndex()] = tmpVehicle;
                                         }
                                     }
                                 }
@@ -294,43 +295,4 @@ void Track::processXmlRootNode (DOMNode * n)
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
-}
-
-
-void Track::processXmlVehiclePositionNode (DOMNode * n)
-{
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        std::string index = "0";
-        Vector3d position (0, 0, 0);
-        Vector3d rotation (0, 0, 0);
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "index")
-            {
-                assignXmlString (index, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the position index: %s", index.c_str());
-            }
-            if (attribute == "position")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
-                position = stov3d(attribute);
-            }
-            if (attribute == "rotation")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str());
-                rotation = stov3d(attribute);
-            }
-        }
-        rotation.degreesToRadians();
-        VehiclePosition * tmpVehicle = new VehiclePosition (position, rotation);
-        vehiclePositionMap[index] = tmpVehicle;
-    }
 }
