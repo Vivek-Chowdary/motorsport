@@ -39,6 +39,10 @@ InputEngine::InputEngine ( )
     keyState = SDL_GetKeyState ( NULL );  
     log->put ( LOG_INFO, "Initializing mouse data variables");
     mouseMovementX = mouseMovementY = 0;
+
+    //Disable cursor on screen
+    SDL_ShowCursor(SDL_DISABLE);
+    SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
 int InputEngine::step ( void )

@@ -47,6 +47,7 @@ class GraphicsEngine
     int width;
     int height;
     int bpp;
+    bool fullScreen;
 
     Ogre::Root * ogreRoot;
     

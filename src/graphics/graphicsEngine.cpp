@@ -39,6 +39,7 @@ GraphicsEngine::GraphicsEngine ( )
     width = 1024;
     height = 768;
     bpp = 0;
+    fullScreen = true;
     log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp );
 
     ogreRoot = new Ogre::Root (  );
@@ -50,6 +51,7 @@ GraphicsEngine::GraphicsEngine ( )
     }
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
+   ogreRoot->getRenderSystem()->setConfigOption("Full Screen", fullScreen?"Yes":"No");
     systemData->ogreWindow = ogreRoot->initialise ( true );
     systemData->ogreSceneManager = ogreRoot->getSceneManager ( Ogre::ST_GENERIC );
     

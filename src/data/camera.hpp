@@ -23,6 +23,7 @@
 #   define CAMERA_HPP
 #   include "Ogre.h"
 #   include <vector>
+#   include "system.hpp"
 
 class Camera
 {
@@ -33,6 +34,8 @@ class Camera
         int rotateDown;
 
     public:
+        Camera ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
+        ~Camera ( );
         static std::vector <Camera*> cameraList;
         //should be private
         Ogre::Camera * ogreCamera;

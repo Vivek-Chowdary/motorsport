@@ -42,20 +42,10 @@ int DataEngine::loadWorldData ( void )
     log->format ( LOG_INFO, "Creating %i cameras", numberOfCameras );
     for (int i=0; i<numberOfCameras; i++)
     {
-        Camera * cameraPointer = new Camera;
-        Camera::cameraList.push_back (cameraPointer);
-        cameraPointer->setRotateLeft (0);
-        cameraPointer->setRotateRight (0);
-        cameraPointer->setRotateUp (0);
-        cameraPointer->setRotateDown (0);
-        cameraPointer->goBack = cameraPointer->goForward = cameraPointer->goLeft = cameraPointer->goRight = false;
         char name[20];
         sprintf ( name, "Camera%i", i );
-        Camera::cameraList[i]->ogreCamera = systemData->ogreSceneManager->createCamera ( name );
-        Camera::cameraList[i]->ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
-        Camera::cameraList[i]->ogreCamera->setPosition ( Ogre::Vector3 ( -2000, -2000, 500 ) );
-        Camera::cameraList[i]->ogreCamera->lookAt ( Ogre::Vector3 ( 0, 0, 0 ) );
-        Camera::cameraList[i]->ogreCamera->setNearClipDistance ( 5 );
+        Camera * cameraPointer = new Camera( name, -2000, -2000, 500, 0, 0, 0 );
+        Camera::cameraList.push_back (cameraPointer);
     }
     log->put ( LOG_INFO, "Setting camera viewport" );
     Ogre::Viewport *vp = systemData->ogreWindow->addViewport ( Camera::cameraList[0]->ogreCamera );
