@@ -2,6 +2,15 @@
 Motorsport - Changelog
 ----------------------
 
+2004-28-05 Bruno González  <stenyak@users.sourceforge.net>
+    * main program: removed the gui loop; now it'll be handled within the simulation loop
+    * gui: removed ParaGUI. We'll use menues inside Ogre
+    * graphics: Ogre completely integrated into Motorsport
+    * input: use cursors to rotate de camera. [q] or [esc] to quit. [printScreen] to take a snapshot into the "sshot.png" file
+    * data: minor changes everywhere
+    * system data: minor changes for the new graphics engine
+    * world data: minor changes for the new graphics engine
+
 2004-03-01 Bruno González  <stenyak@users.sourceforge.net>
     * main program: added support for menues. All the code is divided into several functions, making it easier to understand the whole process
     * gui: added gui system, with 2 basic menues: main menu and options menu
