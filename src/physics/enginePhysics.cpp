@@ -72,9 +72,28 @@ void Engine::stepPhysics ()
     
     prevAngularVel = angularVel;
   
+    double gas = 0;
+    gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue() * 3 / 3;
+    if (gas == 0) {
+        gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP6)]->getValue() * 2 / 3;
+        if (gas == 0) {
+            gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP3)]->getValue() * 1 / 3;
+            if (gas == 0) {
+                gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
+    }   }   }
+    double brake = 0;
+    brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP8)]->getValue() * 3 / 3;
+    if (brake == 0) {
+        brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP5)]->getValue() * 2 / 3;
+        if (brake == 0) {
+            brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP2)]->getValue() * 1 / 3;
+            if (brake == 0) {
+                brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
+    }   }   }
+
     engineTorque = 0;
-    engineTorque += torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_y)]->getValue();
-    engineTorque -= torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_h)]->getValue();
+    engineTorque += torqueLinearMultiplier * gas;
+    engineTorque -= torqueLinearMultiplier * brake;
     
 //    angularVel = (engineTorque - pOutTorque->getRevTorque() - engineInertia*rotationalAcceleration)/friction;        
     dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;

@@ -10,7 +10,8 @@
     <body
         mesh = "../data/vehicles/mosp1/body.mesh"
         ogreName = "mosp1Body"
-        renderMode="solid"
+        _renderMode="solid"
+        renderMode="wireframe"
         length = "4.66"
         width = "2.08"
         height = "1.2" 
@@ -31,7 +32,7 @@
     </brakePedal>
     <engine
         _torqueLinearMultiplier = "246"
-        torqueLinearMultiplier = "846"
+        torqueLinearMultiplier = "446"
         engineInertia = "0.2"
         engineFriction = "0.1"
         >
@@ -40,7 +41,7 @@
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
         _maxTorqueTransfer = "260"
-        maxTorqueTransfer = "560"
+        maxTorqueTransfer = "460"
         >
     </clutch>
     <shiftUpPaddle
@@ -79,7 +80,7 @@
             index = "FrontRight"
             springConstant =  "60500"
             dampingConstant = "2000"
-            position = "+1.44 +0.857 -0.6"
+            position = "+1.44 +0.857 -0.45"
             rotation = "-90 0 0"
             >
         </unidimensional>
@@ -87,7 +88,7 @@
             index = "FrontLeft"
             springConstant =  "60500"
             dampingConstant = "2000"
-            position = "+1.44 -0.857 -0.6"
+            position = "+1.44 -0.857 -0.45"
             rotation = "+90 0 0"
             >
         </unidimensional>
@@ -95,7 +96,7 @@
             index = "RearRight"
             springConstant =  "60900"
             dampingConstant = "2000"
-            position = "-1.35 +0.88 -0.6"
+            position = "-1.35 +0.88 -0.45"
             rotation = "-90 0 0"
             >
         </unidimensional>
@@ -103,7 +104,7 @@
             index = "RearLeft"
             springConstant =  "60900"
             dampingConstant = "2000"
-            position = "-1.35 -0.88 -0.6"
+            position = "-1.35 -0.88 -0.45"
             rotation = "+90 0 0"
             >
         </unidimensional>
