@@ -23,6 +23,8 @@
 #include "logEngine.hpp"
 #include "Ogre.h"
 #include "ode.h"
+#include "cube.hpp"
+#include "camera.hpp"
 
 /// Manages everything related to the simulated world data.
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.

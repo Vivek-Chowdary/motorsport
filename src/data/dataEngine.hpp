@@ -25,6 +25,8 @@
 #include "system.hpp"
 #include <string.h>
 #include "Ogre.h"
+#include "cube.hpp"
+#include "camera.hpp"
 
 class DataEngine
 {

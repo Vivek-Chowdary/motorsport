@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -20,31 +19,43 @@
 *
 ******************************************************************************/
 
-#include "world.hpp"
+#include "camera.hpp"
 
-WorldData * WorldData::worldDataPointer = NULL;
+std::vector <Camera*>Camera::cameraList;
 
-WorldData * WorldData::getWorldDataPointer ( )
+
+void Camera::setRotateLeft ( int multiplier )
 {
-    if (!worldDataPointer)
-    {
-        new WorldData ();
-    }
-    return ( worldDataPointer );
+    rotateLeft = multiplier;
+}
+void Camera::setRotateRight ( int multiplier )
+{
+    rotateRight = multiplier;
+}
+void Camera::setRotateUp ( int multiplier )
+{
+    rotateUp = multiplier;
+}
+void Camera::setRotateDown ( int multiplier )
+{
+    rotateDown = multiplier;
 }
 
-WorldData::WorldData ( )
+
+int Camera::getRotateUp (  )
 {
-    if (worldDataPointer)
-    {
-        delete this;
-    }else{
-        worldDataPointer = this;
-    }
+    return rotateUp;
+}
+int Camera::getRotateDown (  )
+{
+    return rotateDown;
+}
+int Camera::getRotateLeft (  )
+{
+    return rotateLeft;
+}
+int Camera::getRotateRight (  )
+{
+    return rotateRight;
 }
 
-WorldData::~WorldData ( )
-{
-    delete worldDataPointer;
-    worldDataPointer = NULL;
-}

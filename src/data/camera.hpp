@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -20,31 +19,38 @@
 *
 ******************************************************************************/
 
-#include "world.hpp"
+#ifndef CAMERA_HPP
+#   define CAMERA_HPP
+#   include "Ogre.h"
+#   include <vector>
 
-WorldData * WorldData::worldDataPointer = NULL;
-
-WorldData * WorldData::getWorldDataPointer ( )
+class Camera
 {
-    if (!worldDataPointer)
-    {
-        new WorldData ();
-    }
-    return ( worldDataPointer );
-}
+    private:
+        int rotateLeft;
+        int rotateRight;
+        int rotateUp;
+        int rotateDown;
 
-WorldData::WorldData ( )
-{
-    if (worldDataPointer)
-    {
-        delete this;
-    }else{
-        worldDataPointer = this;
-    }
-}
+    public:
+        static std::vector <Camera*> cameraList;
+        //should be private
+        Ogre::Camera * ogreCamera;
 
-WorldData::~WorldData ( )
-{
-    delete worldDataPointer;
-    worldDataPointer = NULL;
-}
+        //should be public
+        void setRotateUp ( int multiplier );
+        void setRotateDown ( int multiplier );
+        void setRotateLeft ( int multiplier );
+        void setRotateRight ( int multiplier );
+        int getRotateUp ( );
+        int getRotateDown ( );
+        int getRotateLeft ( );
+        int getRotateRight ( );
+
+        bool goBack;
+        bool goForward;
+        bool goLeft;
+        bool goRight;
+};
+
+#endif

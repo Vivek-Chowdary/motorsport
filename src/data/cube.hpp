@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -20,24 +19,40 @@
 *
 ******************************************************************************/
 
-#ifndef WORLD_HPP
-#   define WORLD_HPP
-
-#   include "SDL.h"
+#ifndef CUBE_HPP
+#   define CUBE_HPP
 #   include "ode.h"
+#   include "Ogre.h"
+#   include <vector>
 
-class WorldData
-{                               //this will contain everything related to the simulated/virtual world
+class Cube
+{
     private:
-        static WorldData * worldDataPointer;
-    public:
-        static WorldData * getWorldDataPointer ( );
-        WorldData  ( );
-        ~WorldData ( );
+        float moveToXPositive;
+        float moveToXNegative;
+        float moveToYPositive;
+        float moveToYNegative;
 
-        dWorldID worldID;
-        dSpaceID spaceID;
-        dJointGroupID jointGroupID;
+    public:
+        static std::vector <Cube*> cubeList;             //for our example,the worlddata has a set of cubes.
+        //should be private
+        Ogre::Entity * cubeEntity;
+        Ogre::SceneNode * cubeNode;
+
+        dBodyID cubeID;
+        dGeomID cubeGeomID;
+
+        //should be public or similar
+        void updateOgrePosition();
+        void updateOgreOrientation();
+        void setMoveToXPositive ( float multiplier );
+        void setMoveToXNegative ( float multiplier );
+        void setMoveToYPositive ( float multiplier );
+        void setMoveToYNegative ( float multiplier );
+        float getMoveToXPositive ( );
+        float getMoveToXNegative ( );
+        float getMoveToYPositive ( );
+        float getMoveToYNegative ( );
 };
 
 #endif

@@ -25,7 +25,8 @@
 #include "Ogre.h"
 #include "OgreConfigFile.h"
 #include "stdio.h"
-using namespace Ogre;
+#include "cube.hpp"
+#include "camera.hpp"
 
 /// Manages everything related to the rendering process.
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, track, etc...).

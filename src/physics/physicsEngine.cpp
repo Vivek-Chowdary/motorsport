@@ -76,26 +76,25 @@ PhysicsEngine::PhysicsEngine ( )
     log->put ( LOG_INFO, "Creating cubes in ODE world");
     
     const int separation = 150;
-    for ( int currentCube = 0;
-          currentCube < worldData->numberOfCubes; currentCube++ )
+    int size = Cube::cubeList.size();
+    for ( int currentCube = 0; currentCube < size; currentCube++ )
     {
-        worldData->cubeList[currentCube].cubeID = dBodyCreate (worldData->worldID);
+        Cube::cubeList[currentCube]->cubeID = dBodyCreate (worldData->worldID);
 
-        if (currentCube+1 == worldData->numberOfCubes)
+        if (currentCube+1 == size)
         {
             const float width = 1000000.0;
             dMassSetBox (&mass, 1, width, width, width);
-            dBodySetMass(worldData->cubeList[currentCube].cubeID,&mass);
-            dBodySetPosition (worldData->cubeList[currentCube].cubeID, 0, 0, (-width/2)-1000); 
-//            dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, 0, 0, float(random()%10)/10000.0);
-            worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, width,width,width);
+            dBodySetMass(Cube::cubeList[currentCube]->cubeID,&mass);
+            dBodySetPosition (Cube::cubeList[currentCube]->cubeID, 0, 0, (-width/2)-1000); 
+            Cube::cubeList[currentCube]->cubeGeomID = dCreateBox (worldData->spaceID, width,width,width);
         }else{
-        dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
-            dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
-            dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
-            worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
+        dBodySetMass (Cube::cubeList[currentCube]->cubeID, &mass);
+            dBodySetPosition (Cube::cubeList[currentCube]->cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
+            dBodySetAngularVel (Cube::cubeList[currentCube]->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
+            Cube::cubeList[currentCube]->cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
         }
-        dGeomSetBody (worldData->cubeList[currentCube].cubeGeomID,worldData->cubeList[currentCube].cubeID);
+        dGeomSetBody (Cube::cubeList[currentCube]->cubeGeomID, Cube::cubeList[currentCube]->cubeID);
     }
 }
 
@@ -133,13 +132,14 @@ int PhysicsEngine::step ( void )
 {
     //mega-verbosity
     log->put ( LOG_TRACE, "Doing an step: calculating a physics step" );
-
-    for ( int i = 0; i < worldData->numberOfCubes; i++ )
+    
+    int size = Cube::cubeList.size();
+    for ( int i = 0; i < size; i++ )
     {
-        Cube * currentCube = worldData->cubeList+i;
+        Cube * currentCube = Cube::cubeList[i];
         dBodyID cubeID = currentCube->cubeID;
         ////////////////simplified air friction (test) 
-        dBodySetAngularVel (worldData->cubeList[i].cubeID,
+        dBodySetAngularVel (Cube::cubeList[i]->cubeID,
             *(dReal*)(dBodyGetAngularVel(cubeID)+0),
             *(dReal*)(dBodyGetAngularVel(cubeID)+1),
             *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*systemData->physicsTimeStep
@@ -167,22 +167,22 @@ int PhysicsEngine::step ( void )
     {
     float x = 0, z = 0;
     //translation of the camera, advancing or strafing
-    x += ( worldData->camera->goRight ) ? systemData->physicsTimeStep : 0;
-    x -= ( worldData->camera->goLeft ) ? systemData->physicsTimeStep : 0;
-    z -= ( worldData->camera->goForward ) ? systemData->physicsTimeStep : 0;
-    z += ( worldData->camera->goBack ) ? systemData->physicsTimeStep : 0;
-    worldData->camera->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
+    x += ( Camera::cameraList[0]->goRight ) ? systemData->physicsTimeStep : 0;
+    x -= ( Camera::cameraList[0]->goLeft ) ? systemData->physicsTimeStep : 0;
+    z -= ( Camera::cameraList[0]->goForward ) ? systemData->physicsTimeStep : 0;
+    z += ( Camera::cameraList[0]->goBack ) ? systemData->physicsTimeStep : 0;
+    Camera::cameraList[0]->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
     }
     {
     float x = 0, z = 0;
-    x -= worldData->camera->getRotateRight ();
-    x += worldData->camera->getRotateLeft ();
-    z += worldData->camera->getRotateUp ();
-    z -= worldData->camera->getRotateDown ();
+    x -= Camera::cameraList[0]->getRotateRight ();
+    x += Camera::cameraList[0]->getRotateLeft ();
+    z += Camera::cameraList[0]->getRotateUp ();
+    z -= Camera::cameraList[0]->getRotateDown ();
     x /= 100;
     z /= 100;
-    worldData->camera->ogreCamera->yaw (x * (systemData->physicsTimeStep));
-    worldData->camera->ogreCamera->pitch (z * (systemData->physicsTimeStep));
+    Camera::cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
+    Camera::cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
     }
 
     return ( 0 );

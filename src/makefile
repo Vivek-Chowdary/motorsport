@@ -62,6 +62,8 @@ LIBRARIES := \
 
 SOURCES := \
 	log/logEngine.cpp \
+        data/cube.cpp \
+        data/camera.cpp \
 	data/dataEngine.cpp \
 	graphics/graphicsEngine.cpp \
 	gui/guiEngine.cpp \

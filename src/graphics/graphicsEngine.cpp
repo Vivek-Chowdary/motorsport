@@ -41,7 +41,7 @@ GraphicsEngine::GraphicsEngine ( )
     bpp = 0;
     log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp );
 
-    ogreRoot = new Root (  );
+    ogreRoot = new Ogre::Root (  );
     setupResources (  );
     // Initialise the system
     if ( !manualInitialize (  ) )
@@ -51,51 +51,58 @@ GraphicsEngine::GraphicsEngine ( )
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
     systemData->ogreWindow = ogreRoot->initialise ( true );
-    ogreSceneManager = ogreRoot->getSceneManager ( ST_GENERIC );
+    ogreSceneManager = ogreRoot->getSceneManager ( Ogre::ST_GENERIC );
     // Create the camera
-    worldData->camera->ogreCamera = ogreSceneManager->createCamera ( "Camera1" );
-    worldData->camera->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    worldData->camera->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
-    worldData->camera->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
-    worldData->camera->ogreCamera->setNearClipDistance ( 5 );
+    int numberOfCameras = Camera::cameraList.size();
+    for (int i=0; i<numberOfCameras; i++)
+    {
+        char name[20];
+        sprintf ( name, "Camera%i", i );
+        Camera::cameraList[i]->ogreCamera = ogreSceneManager->createCamera ( name );
+        Camera::cameraList[i]->ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
+        Camera::cameraList[i]->ogreCamera->setPosition ( Ogre::Vector3 ( -2000, -2000, 500 ) );
+        Camera::cameraList[i]->ogreCamera->lookAt ( Ogre::Vector3 ( 0, 0, 0 ) );
+        Camera::cameraList[i]->ogreCamera->setNearClipDistance ( 5 );
+    }
     
     // Create one viewport, entire window
-    Viewport *vp = systemData->ogreWindow->addViewport ( worldData->camera->ogreCamera );
-    vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
+    Ogre::Viewport *vp = systemData->ogreWindow->addViewport ( Camera::cameraList[0]->ogreCamera );
+    vp->setBackgroundColour ( Ogre::ColourValue ( 0, 0, 0 ) );
     
     // Set default mipmap level (NB some APIs ignore this)
-    TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
+    Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
 
     // Create the skybox
-    Quaternion rotationToZAxis;
-    rotationToZAxis.FromRotationMatrix(Matrix3(1,0,0,0,0,-1,0,1,0));
+    Ogre::Quaternion rotationToZAxis;
+    rotationToZAxis.FromRotationMatrix(Ogre::Matrix3(1,0,0,0,0,-1,0,1,0));
     ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
                                                            
     //Create cubes
-    for ( int i = 0; i < worldData->numberOfCubes; i++ )
+    int numberOfCubes = Cube::cubeList.size();
+    for ( int i = 0; i < numberOfCubes; i++ )
     {
-        char nombre[20];
-        sprintf ( nombre, "Cubo%i", i );
-        worldData->cubeList[i].cubeEntity = ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
-        worldData->cubeList[i].cubeEntity->setMaterialName("cube");
-        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
-        worldData->cubeList[i].cubeNode->attachObject (worldData->cubeList[i].cubeEntity);
+        char name[20];
+        sprintf ( name, "Cube%i", i );
+        Cube::cubeList[i]->cubeEntity = ogreSceneManager->createEntity ( name, "../data/cube.mesh" );
+        Cube::cubeList[i]->cubeEntity->setMaterialName("cube");
+        Cube::cubeList[i]->cubeNode = static_cast < Ogre::SceneNode * >( ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
+        Cube::cubeList[i]->cubeNode->attachObject (Cube::cubeList[i]->cubeEntity);
     }
 
     //Set some graphics settings
-    MaterialManager::getSingleton (  ).setDefaultAnisotropy (1 );
-    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( Ogre::TFO_BILINEAR );
+    Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy (1 );
+    Ogre::MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( Ogre::TFO_BILINEAR );
 }
 
 bool GraphicsEngine::manualInitialize (  )
 {
-    RenderSystem *renderSystem;
+    Ogre::RenderSystem *renderSystem;
     bool ok = false;
-    RenderSystemList *renderers = Root::getSingleton (  ).getAvailableRenderers (  );
+    Ogre::RenderSystemList *renderers = Ogre::Root::getSingleton (  ).getAvailableRenderers (  );
     // See if the list is empty (no renderers available)
     if ( renderers->empty (  ) )
         return false;
-    for ( RenderSystemList::iterator it = renderers->begin (  );
+    for ( Ogre::RenderSystemList::iterator it = renderers->begin (  );
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
@@ -111,7 +118,7 @@ bool GraphicsEngine::manualInitialize (  )
         renderSystem = ( *renderers->begin (  ) );
     }
 
-    Root::getSingleton (  ).setRenderSystem ( renderSystem );
+    Ogre::Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
     sprintf ( resolution, "%i x %i", width, height );
 
@@ -124,27 +131,28 @@ bool GraphicsEngine::manualInitialize (  )
 void GraphicsEngine::setupResources ( void )
 {
     // Load resource paths from config file
-    ConfigFile cf;
+    Ogre::ConfigFile cf;
     cf.load ( "resources.cfg" );
 
     // Go through all settings in the file
-    ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
-    String typeName, archName;
+    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
+    Ogre::String typeName, archName;
     while ( i.hasMoreElements (  ) )
     {
         typeName = i.peekNextKey (  );
         archName = i.getNext (  );
-        ResourceManager::addCommonArchiveEx ( archName, typeName );
+        Ogre::ResourceManager::addCommonArchiveEx ( archName, typeName );
     }
 }
 
 int GraphicsEngine::step ( void )
 {
     //Update Ogre's cubes positions with Ode's positions.
-    for ( int currentCube = 0; currentCube < worldData->numberOfCubes; currentCube++ )
+    int numberOfCubes = Cube::cubeList.size();
+    for ( int currentCube = 0; currentCube < numberOfCubes; currentCube++ )
     {
-        worldData->cubeList[currentCube].updateOgrePosition();
-        worldData->cubeList[currentCube].updateOgreOrientation();
+        Cube::cubeList[currentCube]->updateOgrePosition();
+        Cube::cubeList[currentCube]->updateOgreOrientation();
     }
     //Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted (  );

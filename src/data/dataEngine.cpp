@@ -38,24 +38,30 @@ DataEngine::DataEngine ( )
 int DataEngine::loadWorldData ( void )
 {
     //create the camera and initialize it
+    int numberOfCameras = 1;
     log->put ( LOG_INFO, "Creating camera..." );
-    worldData->camera = new Camera;
-    worldData->camera->setRotateLeft (0);
-    worldData->camera->setRotateRight (0);
-    worldData->camera->setRotateUp (0);
-    worldData->camera->setRotateDown (0);
-    worldData->camera->goBack = worldData->camera->goForward = worldData->camera->goLeft = worldData->camera->goRight = false;
+    for (int i=0; i<numberOfCameras; i++)
+    {
+        Camera * cameraPointer = new Camera;
+        Camera::cameraList.push_back (cameraPointer);
+        cameraPointer->setRotateLeft (0);
+        cameraPointer->setRotateRight (0);
+        cameraPointer->setRotateUp (0);
+        cameraPointer->setRotateDown (0);
+        cameraPointer->goBack = cameraPointer->goForward = cameraPointer->goLeft = cameraPointer->goRight = false;
+    }
 
     //create 2 cubes in the world data
-    worldData->numberOfCubes = 200;
-    log->format ( LOG_INFO, "Creating an array of %i cubes...", worldData->numberOfCubes );
-    worldData->cubeList = new Cube[worldData->numberOfCubes];
-    for (int i=0;i<worldData->numberOfCubes;i++)
+    int numberOfCubes = 200;
+    log->format ( LOG_INFO, "Creating an array of %i cubes...", numberOfCubes );
+    for (int i=0; i<numberOfCubes; i++)
     {
-        worldData->cubeList[i].setMoveToXPositive(0);
-        worldData->cubeList[i].setMoveToXNegative(0);
-        worldData->cubeList[i].setMoveToYPositive(0);
-        worldData->cubeList[i].setMoveToYNegative(0);
+        Cube * cubePointer = new Cube;
+        Cube::cubeList.push_back (cubePointer);
+        cubePointer->setMoveToXPositive(0);
+        cubePointer->setMoveToXNegative(0);
+        cubePointer->setMoveToYPositive(0);
+        cubePointer->setMoveToYNegative(0);
     }
 
     return ( 0 );
@@ -65,10 +71,9 @@ int DataEngine::unloadWorldData ( void )
 {
     //unload the cubes from memory
     log->put ( LOG_INFO, "Unloading cubes from memory..." );
-    delete[]( worldData->cubeList );
-    log->put ( LOG_INFO, "Unloading camera1 from memory..." );
-    delete ( worldData->camera->ogreCamera );
-    delete ( worldData->camera );
+    Cube::cubeList.clear();
+    log->put ( LOG_INFO, "Unloading cameras from memory..." );
+    Camera::cameraList.clear();
 
     return ( 0 );
 }
