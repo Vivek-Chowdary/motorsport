@@ -34,25 +34,30 @@ void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 void Vehicle::setPosition (Vector3d position)
 {
-/*    log->put(LOG_INFO, "Setting body position");
-    body->setPosition (position);
+    Vector3d posDiff = getPosition();
+    log->format (LOG_INFO, "Setting vehicle position (%f, %f, %f) to (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z, position.x, position.y, position.z);
+    posDiff = position - posDiff;
+    log->format (LOG_INFO, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
+    
+    body->setPosition (body->getPosition() + posDiff);
 
-    log->put(LOG_INFO, "Setting suspensions position");
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
     {
-        Vector3d absPos = suspIter->second->getPosition();
-        absPos -= position;
-        suspIter->second->setPosition(absPos);
+        Vector3d newPos = suspIter->second->getPosition();
+        newPos += posDiff;
+        //log->format (LOG_INFO, "Setting suspension \"%s\" position to (%f, %f, %f)", suspIter->first.c_str(), newPos.x, newPos.y, newPos.z);
+        //suspIter->second->setPosition (newPos);
     }
-    log->put(LOG_INFO, "Setting wheels position");
+
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        Vector3d absPos = wheelIter->second->getPosition();
-        absPos -= position;
-        wheelIter->second->setPosition(absPos);
-    }*/
+        Vector3d newPos = wheelIter->second->getPosition();
+        newPos += posDiff;
+        log->format (LOG_INFO, "Setting wheel \"%s\" position to (%f, %f, %f)", wheelIter->first.c_str(), newPos.x, newPos.y, newPos.z);
+        wheelIter->second->setPosition (newPos);
+    }
 }
 
 Vector3d Vehicle::getPosition ()
@@ -62,30 +67,39 @@ Vector3d Vehicle::getPosition ()
 
 void Vehicle::setRotation (Vector3d rotation)
 {
-    // Move to center
-    Vector3d position = getPosition();
-    setPosition(Vector3d(0, 0, 0));
+    Vector3d initialPos = getPosition();
+    setPosition (Vector3d(0, 0, 0));
 
-    //Rotate around center
-    body->setRotation (rotation);
+    Vector3d rotDiff = getRotation();
+    log->format (LOG_INFO, "Setting vehicle rotation (%f, %f, %f) to (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z, rotation.x, rotation.y, rotation.z);
+    rotDiff = rotation - rotDiff;
+    log->format (LOG_INFO, "Difference in vehicle rotation: (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z);
+    
+    body->setRotation (body->getRotation() + rotDiff);
+
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
     {
-        Vector3d absRot = suspIter->second->getRotation();
-        absRot -= rotation;
-        suspIter->second->setRotation(absRot);
+        Vector3d newRot = suspIter->second->getRotation();
+        newRot += rotDiff;
+        //log->format (LOG_INFO, "Setting suspension \"%s\" rotation to (%f, %f, %f)", suspIter->first.c_str(), newRot.x, newRot.y, newRot.z);
+        //suspIter->second->setRotation (newRot);
     }
+
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        Vector3d absRot = wheelIter->second->getRotation();
-        absRot -= rotation;
-        wheelIter->second->setRotation(absRot);
+        Vector3d newRot = wheelIter->second->getRotation();
+        newRot += rotDiff;
+        log->format (LOG_INFO, "Setting wheel \"%s\" rotation to (%f, %f, %f)", wheelIter->first.c_str(), newRot.x, newRot.y, newRot.z);
+        wheelIter->second->setRotation (newRot);
+        Vector3d rot = wheelIter->second->getRotation();
+        log->format (LOG_INFO, "Wheel \"%s\" rotation set to (%f, %f, %f)", wheelIter->first.c_str(), rot.x, rot.y, rot.z);
     }
 
-    //Move back to original position
-    setPosition(position);
+    setPosition(initialPos);
 }
+
 Vector3d Vehicle::getRotation ()
 {
     return body->getRotation();
@@ -107,6 +121,22 @@ void Vehicle::stopPhysics ()
     }
 }
 
+void Vehicle::attachWheelsToBody()
+{
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
+    {
+        std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
+        if (wheelIter == wheelMap.end())
+        {
+            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
+        }else{
+            log->format (LOG_INFO, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            suspIter->second->attach(*(wheelIter->second), *this);
+        }
+    }
+}
+
 void Vehicle::stepPhysics ()
 {
     body->stepPhysics();
@@ -119,8 +149,7 @@ void Vehicle::stepPhysics ()
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
+        wheelIter->second->addTorque (engine->getTorque());
         wheelIter->second->stepPhysics();
     }
-/*    wheelMap[2]->addTorque (engine->getTorque());
-    wheelMap[3]->addTorque (-engine->getTorque());*/
 }

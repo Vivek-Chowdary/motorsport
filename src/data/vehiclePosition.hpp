@@ -31,7 +31,6 @@ class VehiclePosition
     Vector3d rotation;
   public:
     VehiclePosition (const Vector3d & position, const Vector3d & rotation);
-    VehiclePosition (double posX, double posY, double posZ, double rotX, double rotY, double rotZ);
     ~VehiclePosition ();
     Vector3d getPosition();
     Vector3d getRotation();

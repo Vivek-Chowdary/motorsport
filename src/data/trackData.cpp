@@ -364,7 +364,8 @@ void Track::processXmlVehiclePositionNode (DOMNode * n)
             }
             attribute.clear();
         }
-        VehiclePosition * tmpVehicle = new VehiclePosition (position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
+        rotation.degreesToRadians();
+        VehiclePosition * tmpVehicle = new VehiclePosition (position, rotation);
         vehiclePositionMap[index] = tmpVehicle;
     }
 }

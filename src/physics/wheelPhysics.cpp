@@ -31,6 +31,7 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double mass = 0.0;
     double radius = 0.0;
     double width = 0.0;
+    powered = 0.0;
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -63,6 +64,13 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 log->format (LOG_TRACE, "Found the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
+            if (attribute == "powered")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the wheel power transmission: %s", attribute.c_str() );
+                powered = stod (attribute);
+            }
             attribute.clear();
         }
     }
@@ -71,6 +79,9 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
     wheelGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, width);
     dGeomSetBody (wheelGeomID, wheelID);
+    setPosition (Vector3d (0, 0, 0) );
+    setRotation (Vector3d (0, 0, 0) );
+    torque = 0;
 }
 
 void Wheel::setPosition (Vector3d position)
@@ -80,8 +91,8 @@ void Wheel::setPosition (Vector3d position)
 
 Vector3d Wheel::getPosition ()
 {
-    const dReal *temp = dBodyGetPosition (wheelID);  // need to allocate memory first??
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+    const dReal *temp = dBodyGetPosition (wheelID);
+    return Vector3d (temp[0], temp[1], temp[2]);
 }
 
 void Wheel::setRotation (Vector3d rotation)
@@ -93,8 +104,8 @@ void Wheel::setRotation (Vector3d rotation)
 
 Vector3d Wheel::getRotation ()
 {
-    const dReal *temp = dBodyGetRotation (wheelID);  // need to allocate memory first??
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+    const dReal *temp = dBodyGetQuaternion (wheelID);
+    return Vector3d (temp[0], temp[1], temp[2], temp[3]);
 }
 
 void Wheel::stopPhysics ()
@@ -105,9 +116,11 @@ void Wheel::stopPhysics ()
 
 void Wheel::stepPhysics ()
 {
+    dBodyAddRelTorque (wheelID, 0, 0, torque * powered);
+    torque = 0;
 }
 
 void Wheel::addTorque(double torque)
 {
-    dBodyAddRelTorque (wheelID, 0, 0, torque);
+    this->torque += torque;
 }

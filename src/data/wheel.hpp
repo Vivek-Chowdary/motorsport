@@ -38,7 +38,8 @@ class Wheel : public WorldObject
   private:
     static int instancesCount;
     std::string index;
-
+    double powered;
+    double torque;
   public:
 
     // data

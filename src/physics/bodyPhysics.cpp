@@ -77,6 +77,8 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
     dGeomSetBody (bodyGeomID, bodyID);
+    setPosition(Vector3d(0, 0, 0));
+    setRotation(Vector3d(0, 0, 0));
 }
 
 void Body::setPosition (Vector3d position)
@@ -86,7 +88,7 @@ void Body::setPosition (Vector3d position)
 Vector3d Body::getPosition ()
 {
     const dReal *temp = dBodyGetPosition (bodyID);
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+    return Vector3d (temp[0], temp[1], temp[2]);
 }
 
 void Body::setRotation (Vector3d rotation)
@@ -97,8 +99,8 @@ void Body::setRotation (Vector3d rotation)
 }
 Vector3d Body::getRotation ()
 {
-    const dReal *temp = dBodyGetRotation (bodyID);
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+    const dReal *temp = dBodyGetQuaternion (bodyID);
+    return Vector3d (temp[0], temp[1], temp[2], temp[3]);
 }
 
 void Body::stopPhysics ()

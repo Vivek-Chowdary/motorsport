@@ -267,22 +267,28 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     std::string tmpPath = ("../data/tracks/");
     tmpPath.append (trackDirectory);
     tmpPath.append ("/track.xml");
-    Track * tmpTrack = new Track (tmpPath);
-    //tmpTrack->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
-    trackList.push_back (tmpTrack);
+    Track * track = new Track (tmpPath);
+    //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
+    trackList.push_back (track);
 
     // load vehicle (and its cameras)
     tmpPath = ("../data/vehicles/");
     tmpPath.append (vehicleDirectory);
     tmpPath.append ("/vehicle.xml");
+
     log->put (LOG_INFO, "Creating a vehicle");
-    Vehicle * tmpVehicle = new Vehicle (tmpPath);
-    log->put (LOG_INFO, "Setting vehicle position");
-    tmpVehicle->setPosition (tmpTrack->vehiclePositionMap[vehicleStartPosition]->getPosition());
-    log->put (LOG_INFO, "Setting vehicle rotation");
-    tmpVehicle->setRotation (tmpTrack->vehiclePositionMap[vehicleStartPosition]->getRotation());
-    log->put (LOG_INFO, "Adding vehicle to vehicles list");
-    vehicleList.push_back (tmpVehicle);
+    Vehicle * vehicle = new Vehicle (tmpPath);
+    vehicleList.push_back (vehicle);
+    
+    log->put (LOG_INFO, "Attaching vehicle wheels to its body (via suspensions)");
+    vehicle->attachWheelsToBody();
+    
+    log->put (LOG_INFO, "Setting vehicle starting position");
+    vehicle->setPosition (track->vehiclePositionMap[vehicleStartPosition]->getPosition());
+    
+    log->put (LOG_INFO, "Setting vehicle starting rotation");
+    Vector3d rotation = track->vehiclePositionMap[vehicleStartPosition]->getRotation();
+    vehicle->setRotation (rotation);
     
     // set active camera
     log->put (LOG_INFO, "Setting camera viewport");

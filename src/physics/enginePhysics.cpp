@@ -30,7 +30,6 @@
 void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     torqueLinearMultiplier = 0.0;
-    torque = 0.0;
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -52,6 +51,7 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             attribute.clear();
         }
     }
+    torque = 0.0;
 }
 
 void Engine::stopPhysics ()
@@ -60,7 +60,9 @@ void Engine::stopPhysics ()
 
 void Engine::stepPhysics ()
 {
-    torque = torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue();
+    torque = 0;
+    torque += torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue();
+    torque -= torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP8)]->getValue();
     log->format(LOG_TRACE, "torqueMultiplier=%f inputAxis=%f outputTorque=%f", torqueLinearMultiplier, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue(), torque);
 }
 double Engine::getTorque ()

@@ -94,7 +94,9 @@ int main (int argc, char **argv)
         {
             systemData->simulationTime += systemData->physicsTimeStep;
             systemData->physicsSteps++;
+            //static int steps = 0;if (!steps){
             physicsEngine->computeStep ();
+            //steps++;}
             inputEngine->computeStep ();
         }
         // Run the gui engine.

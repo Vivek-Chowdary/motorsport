@@ -52,14 +52,14 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
-                position = new Vector3d (stov3d (attribute));
+                *position = stov3d (attribute);
             }
             if (attribute == "rotation")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the rotation: %s", attribute.c_str());
-                rotation = new Vector3d (stov3d (attribute));
+                *rotation = stov3d (attribute);
             }
             if (attribute == "springConstant")
             {
@@ -78,44 +78,43 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             attribute.clear();
         }
     }
+    
     jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    dJointAttach (jointID, 0, 0);
+    rotation->degreesToRadians();
 }
 
 void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
 {
+    Vector3d position = *(this->position); //getPosition();
+    Vector3d rotation = *(this->rotation); //getRotation();
+    log->format (LOG_TRACE, "Attaching a wheel to this suspension (p=%f,%f,%f;r=%f,%f,%f)", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
+    wheel.setPosition (Vector3d (0, 0, 0));
+    wheel.setRotation (rotation);
+    wheel.setPosition (position);
     dJointAttach (jointID, wheel.wheelID, vehicle.body->bodyID);
-    Vector3d absPos = vehicle.getPosition();
-    absPos -= (*position);
-    setPosition (absPos);
-    Vector3d absRot = vehicle.getRotation();
-    absRot -= (*rotation);
-//    setRotation (absRot);
-//    dJointSetHingeAxis (jointID, 0,1,0);
+    setPosition(position);
+    setRotation(rotation);
 }
 
 void Suspension::setPosition (Vector3d position)
 {
     dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
 }
+void Suspension::setRotation (Vector3d rotation)
+{
+    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    dJointSetHingeAxis (jointID, 0,1,0);
+}
 Vector3d Suspension::getPosition ()
 {
-    dVector3 temp;
-    dJointGetHingeAnchor (jointID, temp);
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+    const dReal *temp = dBodyGetRotation (dJointGetBody (jointID, 0));
+    return Vector3d (temp[0], temp[1], temp[2]);
 }
 Vector3d Suspension::getRotation ()
 {
-    dVector3 temp;
-    dJointGetHingeAxis (jointID, temp);
-    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
-}
-void Suspension::setRotation (Vector3d rotation)
-{
-    //dMatrix3 rot;
-    rotation.degreesToRadians();
-    //dRFromEulerAngles (rot, rotation.x, rotation.y, rotation.z);
-    //dJointSetHingeAxis (jointID, rot.x, rot.y, rot.z);
-    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    const dReal *temp = dBodyGetQuaternion (dJointGetBody (jointID, 0));
+    return Vector3d (temp[0], temp[1], temp[2], temp[3]);
 }
 
 void Suspension::stopPhysics ()

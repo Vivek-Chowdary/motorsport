@@ -22,101 +22,120 @@
 #ifndef VECTOR3D_CPP
 #   define VECTOR3D_CPP
 
-inline Vector3d::Vector3d () 
+inline Vector3d::Vector3d ()
 {
     x = y = z = 0;
 }
-inline Vector3d::Vector3d (double x, double y, double z) 
+inline Vector3d::Vector3d (const Vector3d & cpy)
+{
+    *this = cpy;
+}
+inline Vector3d::Vector3d (double x, double y, double z)
 {
     this->x = x;
     this->y = y;
     this->z = z;
 }
-inline Vector3d::Vector3d (const Vector3d & cpy) 
+inline Vector3d::Vector3d(double qw, double qx, double qy, double qz)
 {
-    *this = cpy;
+    //from quaternion to euler radians
+    double sqw = qw*qw;
+    double sqx = qx*qx;
+    double sqy = qy*qy;
+    double sqz = qz*qz;
+
+    y = atan2(2.0 * (qx * qy + qz * qw), (sqx - sqy - sqz + sqw));
+    x = -atan2(2.0 * (qy * qz + qx * qw), (-sqx - sqy + sqz + sqw));
+    z = -asin(-2.0 * (qx * qz - qy * qw));
 }
-inline const Vector3d & Vector3d::operator= (const Vector3d & cpy) 
+
+inline const Vector3d & Vector3d::operator= (const Vector3d & cpy)
 {
     x = cpy.x;
     y = cpy.y;
     z = cpy.z;
     return *this;
 }
-inline bool Vector3d::operator== (const Vector3d & cmp) const 
+inline bool Vector3d::operator== (const Vector3d & cmp) const
 {
     return (x == cmp.x && y == cmp.y && z == cmp.z);
 }
-inline bool Vector3d::operator!= (const Vector3d & cmp) const 
+inline bool Vector3d::operator!= (const Vector3d & cmp) const
 {
     return (!operator== (cmp));
 }
-inline Vector3d & Vector3d::operator+ (const Vector3d & k) const 
+inline Vector3d Vector3d::operator- (const Vector3d & k) const
 {
-    return Vector3d (*this) + k;
+    Vector3d tmp (*this);
+    tmp -= k;
+    return tmp;
 }
-inline Vector3d & Vector3d::operator- (const Vector3d & k) const 
+inline Vector3d Vector3d::operator+ (const Vector3d & k) const
 {
-    return Vector3d (*this) - k;
+    Vector3d tmp (*this);
+    tmp += k;
+    return tmp;
 }
-inline const Vector3d & Vector3d::operator+= (const Vector3d & k) 
+inline const Vector3d & Vector3d::operator+= (const Vector3d & k)
 {
     x += k.x;
     y += k.y;
-    z += k.y;
+    z += k.z;
     return *this;
 }
-inline const Vector3d & Vector3d::operator-= (const Vector3d & k) 
+inline const Vector3d & Vector3d::operator-= (const Vector3d & k)
 {
     x -= k.x;
     y -= k.y;
-    z -= k.y;
+    z -= k.z;
     return *this;
 }
-inline double Vector3d::distance () const 
+inline double Vector3d::distance () const
 {
     return sqrt (x * x + y * y + z * z);
 }
-inline double Vector3d::distance (const Vector3d & k) const 
+inline double Vector3d::distance (const Vector3d & k) const
 {
     return (*this - k).distance ();
 }
 
 // cross product (normalized to 1 unit, is needed for OpenGL normal-vectors)
-inline const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec) 
+inline const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec)
 {
-    
-        /*  Normalx = (vtx1y - vtx2y) * (vtx2z - vtx3z) - (vtx1z - vtx2z) * (vtx2y - vtx3y) Normaly = (vtx1z - vtx2z) * (vtx2x - vtx3x) - (vtx1x - vtx2x) * (vtx2z - vtx3z) Normalz = (vtx1x - vtx2x) * (vtx2y - vtx3y) - (vtx1y - vtx2y) * (vtx2x - vtx3x)  */ 
-        Vector3d cross, ret;
-    
-        /*  * calc cross product */ 
-        cross.x = (vec[0].y - vec[1].y) * (vec[1].z - vec[2].z) - (vec[0].z - vec[1].z) * (vec[1].y - vec[2].y);
+
+    /* Normalx = (vtx1y - vtx2y) * (vtx2z - vtx3z) - (vtx1z - vtx2z) * (vtx2y - vtx3y) Normaly = (vtx1z - vtx2z) * (vtx2x - vtx3x) - (vtx1x - vtx2x) * (vtx2z - vtx3z) Normalz = (vtx1x - vtx2x) * (vtx2y - vtx3y) - (vtx1y - vtx2y) * (vtx2x - vtx3x) */
+    Vector3d cross, ret;
+
+    /* * calc cross product */
+    cross.x = (vec[0].y - vec[1].y) * (vec[1].z - vec[2].z) - (vec[0].z - vec[1].z) * (vec[1].y - vec[2].y);
     cross.y = (vec[0].z - vec[1].z) * (vec[1].x - vec[2].x) - (vec[0].x - vec[1].x) * (vec[1].z - vec[2].z);
     cross.z = (vec[0].x - vec[1].x) * (vec[1].y - vec[2].y) - (vec[0].y - vec[1].y) * (vec[1].x - vec[2].x);
-    
-        /*  * normalize vector */ 
+
+    /* * normalize vector */
     double x, y, z, sum, sqr;
     x = y = z = sum = 0;
-    
-        // square coordinates
-        x = cross.x * cross.x;
+
+    // square coordinates
+    x = cross.x * cross.x;
     y = cross.y * cross.y;
     z = cross.z * cross.z;
-    
-        // add
-        sum = x + y + z;
-    
-        // square root
-        sqr = pow (sum, (double) 0.5);
+
+    // add
+    sum = x + y + z;
+
+    // square root
+    sqr = pow (sum, (double) 0.5);
     if (!sqr)
-        sqr = 1;               // wg. Division durch 0
+    {
+        sqr = 1;                // wg. Division durch 0
+    }
     // vector ist normalized
     ret.x = cross.x / sqr;
     ret.y = cross.y / sqr;
     ret.z = cross.z / sqr;
     return ret;
 }
-inline const Vector3d GetAvgVector (const std::vector < Vector3d > &vec) 
+inline const Vector3d GetAvgVector (const std::vector < Vector3d > &vec)
 {
     Vector3d ret;
     size_t i, size;
@@ -124,7 +143,6 @@ inline const Vector3d GetAvgVector (const std::vector < Vector3d > &vec)
     double x, y, z;
     x = y = z = 0;
     for (i = 0; i < size; i++)
-        
     {
         x += vec[i].x;
         y += vec[i].y;
@@ -135,7 +153,7 @@ inline const Vector3d GetAvgVector (const std::vector < Vector3d > &vec)
     ret.z = z / size;
     return ret;
 }
-inline void Vector3d::degreesToRadians()
+inline void Vector3d::degreesToRadians ()
 {
     const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
     x *= piK;
@@ -143,5 +161,4 @@ inline void Vector3d::degreesToRadians()
     z *= piK;
 }
 
-#endif  /*  */
-    
+#endif

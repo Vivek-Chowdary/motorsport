@@ -173,19 +173,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     engine = new Engine (engineNode);
     processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
-
-    std::map < std::string, Suspension * >::const_iterator suspIter;
-    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
-    {
-        std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
-        if (wheelIter == wheelMap.end())
-        {
-            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
-        }else{
-            log->format (LOG_INFO, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
-            suspIter->second->attach(*(wheelIter->second), *this);
-        }
-    }
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)

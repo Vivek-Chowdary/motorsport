@@ -40,9 +40,9 @@ class Suspension : public WorldObject
   private:
     static int instancesCount;
     std::string index;
-    Vector3d * position;
-    Vector3d * rotation;
     dJointID jointID;
+    Vector3d * rotation;
+    Vector3d * position;
   public:
 
     // data

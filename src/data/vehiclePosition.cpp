@@ -28,16 +28,6 @@ VehiclePosition::VehiclePosition (const Vector3d & position, const Vector3d & ro
     this->rotation = rotation;
 }
 
-VehiclePosition::VehiclePosition (double posX, double posY, double posZ, double rotX, double rotY, double rotZ)
-{
-    position.x = posX;
-    position.y = posY;
-    position.z = posZ;
-    rotation.x = rotX;
-    rotation.y = rotY;
-    rotation.z = rotZ;
-}
-
 VehiclePosition::~VehiclePosition ()
 {
     //empty

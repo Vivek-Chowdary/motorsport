@@ -63,6 +63,7 @@ class Vehicle : public WorldObject
     void setRotation (Vector3d rotation);
     Vector3d getPosition ();
     Vector3d getRotation ();
+    void attachWheelsToBody();
     double getTorque ();
 
     // graphics
