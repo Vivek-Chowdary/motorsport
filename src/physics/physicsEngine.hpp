@@ -38,6 +38,10 @@ class PhysicsEngine
     SystemData *systemData;
     /// Pointer to the world data, used by different engines in order to store the simulated world data.
     WorldData *worldData;
+    /// Callback function for collisions detection.
+    /** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
+    */
+    static void nearCallback (void *data, dGeomID o1, dGeomID o2);
   public:
     /// Creates a new physics engine.
     /** Creates a new physics engine, with its associated own log engine. It initializes all necessary related data, including the simulated world's physic entities.
@@ -52,8 +56,3 @@ class PhysicsEngine
     */
     int step ( void );
 };
-
-/// Callback function for collisions detection.
-/** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
-*/
-static void nearCallback (void *data, dGeomID o1, dGeomID o2);

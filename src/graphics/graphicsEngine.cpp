@@ -94,8 +94,7 @@ bool GraphicsEngine::manualInitialize (  )
 {
     RenderSystem *renderSystem;
     bool ok = false;
-    RenderSystemList *renderers =
-        Root::getSingleton (  ).getAvailableRenderers (  );
+    RenderSystemList *renderers = Root::getSingleton (  ).getAvailableRenderers (  );
     // See if the list is empty (no renderers available)
     if ( renderers->empty (  ) )
         return false;
@@ -117,9 +116,7 @@ bool GraphicsEngine::manualInitialize (  )
 
     Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
-
-    sprintf ( resolution, "%i x %i", graphicsData->width,
-              graphicsData->height );
+    sprintf ( resolution, "%i x %i", graphicsData->width, graphicsData->height );
 
     // Manually set configuration options. These are optional.
     renderSystem->setConfigOption ( "Video Mode", resolution );
@@ -135,8 +132,7 @@ void GraphicsEngine::setupResources ( void )
 
     // Go through all settings in the file
     ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
-    String typeName,
-        archName;
+    String typeName, archName;
     while ( i.hasMoreElements (  ) )
     {
         typeName = i.peekNextKey (  );
@@ -148,8 +144,7 @@ void GraphicsEngine::setupResources ( void )
 int GraphicsEngine::step ( void )
 {
     //Update Ogre's cubes positions with Ode's positions.
-    for ( int currentCube = 0;
-          currentCube < worldData->numberOfCubes; currentCube++ )
+    for ( int currentCube = 0; currentCube < worldData->numberOfCubes; currentCube++ )
     {
         worldData->cubeList[currentCube].updateOgrePosition();
         worldData->cubeList[currentCube].updateOgreOrientation();

@@ -96,7 +96,7 @@ PhysicsEngine::PhysicsEngine ( )
 }
 
 
-static void nearCallback (void *data, dGeomID o1, dGeomID o2)
+void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
 {
     int i,n;
     dBodyID b1 = dGeomGetBody(o1);

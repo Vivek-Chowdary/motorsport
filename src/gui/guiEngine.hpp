@@ -29,15 +29,31 @@
 
 using namespace Ogre;
 
+/// Manages everything related to the gui rendering process.
+/** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
+*/
 class GuiEngine
 {
   private:
-    LogEngine *log;              //a log object for logging independently from other engines and main
+    /// Log engine used by the gui engine.
+    /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
+    */
+    LogEngine *log;
+    /// Pointer to the world data, used by different engines in order to store the simulated world data.
     WorldData *worldData;
+    /// Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
   public:
-    GuiEngine ( );    //starts the graphics engine
-    ~GuiEngine ( );          //stops the graphics engine
-    int step ( void );          //makes the graphics engine draw one frame
-    void updateStatistics( void );
+    /// Creates a new gui engine.
+    /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
+    */
+    GuiEngine ( );
+    /// Deletes the gui engine.
+    /** Deletes de gui engine, as well as its associated log engine. It also removes all the related data from memory.
+    */
+    ~GuiEngine ( );
+    /// Renders all the gui on screen.
+    /** Renders on screen all the system data (gui) for this frame.
+    */
+    int step ( void );
 };
