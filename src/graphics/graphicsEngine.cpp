@@ -97,7 +97,7 @@ int GraphicsEngine::step (void)
 
     log.put(4, "Doing an step: drawing world objects");
 
-    //blank the screen
+/*    //blank the screen
     log.put(4, "Doing an step: blanking the screen...");
     if (SDL_FillRect (graphicsData->screen,
                       NULL,
@@ -107,7 +107,7 @@ int GraphicsEngine::step (void)
         log.put(0, "Error while executing SDL_FillRect");
     }
     log.append (4, "Ok");
-
+*/
 	//draw all the rectangles in worldData
     log.put(4, "Drawing rectangles on screen...");
     for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)

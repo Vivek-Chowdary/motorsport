@@ -40,10 +40,30 @@ void Rectangle::setPosition (Sint16 newPosX, Sint16 newPosY)
 
 }
 
+Sint16 Rectangle::getPositionX (void)
+{
+    return rectangle.x;
+}
+
+Sint16 Rectangle::getPositionY (void)
+{
+    return rectangle.y;
+}
+
 void Rectangle::setSize (Uint16 newWidth, Uint16 newHeight)
 {
     rectangle.w = newWidth;
     rectangle.h = newHeight;
+}
+
+Sint16 Rectangle::getSizeX (void)
+{
+    return rectangle.w;
+}
+
+Sint16 Rectangle::getSizeY (void)
+{
+    return rectangle.h;
 }
 
 void Rectangle::setVisible (int visibility)

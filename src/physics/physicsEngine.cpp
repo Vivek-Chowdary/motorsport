@@ -45,9 +45,10 @@ int PhysicsEngine::start (WorldData *wrlData, SystemData *sysData)
     log.put(2, "Setting up data pointers...");
     physicsData = &(sysData->physicsData);
     worldData = wrlData;
+    systemData = sysData;
     log.append (2, "Ok");
     
-	return (0);
+    return (0);
 }
 
 
@@ -57,22 +58,30 @@ int PhysicsEngine::step (void)
     //mega-verbosity
     log.put(4, "Doing an step: calculating a physics step");
 
-    //current physics engine just changes the color of the triangles
-    //i could have implemented moving rectangles around the screen, with gravity
-    // or whatever, but well, this is just a sample physics engine :)
     for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)
     {
+        //change rectangle colors
         //do we have to increase or to decrease current color values?
-        if (worldData->rectangleList[currentRectangle].colorSpeed == 0)
+        if (worldData->rectangleList[currentRectangle].colorSpeed)
         {
-            worldData->rectangleList[currentRectangle].red += 1 + Uint8 (physicsData->timeStep * 0.7);
-            worldData->rectangleList[currentRectangle].green += 1 + Uint8 (physicsData->timeStep * 0.8);
-            worldData->rectangleList[currentRectangle].blue += 1 + Uint8 (physicsData->timeStep * 0.9);
+            worldData->rectangleList[currentRectangle].red -= 1+ physicsData->timeStep;
+            worldData->rectangleList[currentRectangle].green -= 2+ physicsData->timeStep;
+            worldData->rectangleList[currentRectangle].blue -= 0+ physicsData->timeStep;
         }else{
-            worldData->rectangleList[currentRectangle].red -= 1 + Uint8 (physicsData->timeStep * 0.7);
-            worldData->rectangleList[currentRectangle].green -= 1 + Uint8 (physicsData->timeStep * 0.8);
-            worldData->rectangleList[currentRectangle].blue -= 1 + Uint8 (physicsData->timeStep * 0.9);
+            worldData->rectangleList[currentRectangle].red += 2+ (physicsData->timeStep % 256);
+            worldData->rectangleList[currentRectangle].green += 0+ (physicsData->timeStep % 256);
+            worldData->rectangleList[currentRectangle].blue += 1+ (physicsData->timeStep % 256);
         }
+        //move rectangles on screen
+        Sint16 currentX = worldData->rectangleList[currentRectangle].getPositionX ();
+        Sint16 currentY = worldData->rectangleList[currentRectangle].getPositionY ();
+        currentX += physicsData->timeStep;
+        if (currentX + worldData->rectangleList[currentRectangle].getSizeX () > systemData->graphicsData.width)
+        {
+            currentX = 0;
+        }
+        worldData->rectangleList[currentRectangle].setPosition(currentX, currentY);
+        
     }
     
     return (0);
@@ -82,6 +91,6 @@ int PhysicsEngine::stop (void)
 {
     //finally stop the log engine
     log.stop ();
-	
-	return (0);
+    
+    return (0);
 }

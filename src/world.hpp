@@ -22,9 +22,9 @@
 #ifndef WORLD_HPP
 #define WORLD_HPP
 #ifdef WIN32
-	#include "sdl.h"
-#else										
-	#include <SDL/SDL.h>
+    #include "sdl.h"
+#else
+    #include <SDL/SDL.h>
 #endif
 
 /******************************************************************************
@@ -40,7 +40,11 @@ class Rectangle
     int visible;
     public:
         void setPosition (Sint16 newPosX, Sint16 newPosY);
+        Sint16 getPositionX (void);
+        Sint16 getPositionY (void);
         void setSize (Uint16 newWidth, Uint16 newHeight);
+        Sint16 getSizeX (void);
+        Sint16 getSizeY (void);
         void setVisible (int visibility);
         int isVisible ();
         Uint8 red, green, blue;
