@@ -21,81 +21,6 @@
 
 #include "cube.hpp"
 
-void Cube::startGraphics (DOMNode * n)
-{
-    CubeGraphicsData * graphics = new CubeGraphicsData;
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *pAttributes = n->getAttributes ();
-        int nSize = pAttributes->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-            char *name = XMLString::transcode (pAttributeNode->getName ());
-            if (!strncmp (name, "author", 7))
-            {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the author: %s", name);
-            }
-            if (!strncmp (name, "contact", 5))
-            {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
-            }
-            if (!strncmp (name, "license", 8))
-            {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the license: %s", name);
-            }
-            if (!strncmp (name, "material", 9))
-            {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the cube graphics material: %s", name);
-
-                graphics->material = new char[strlen (name) + 1];
-                strncpy (graphics->material, name, strlen (name) + 1);
-            }
-
-            if (!strncmp (name, "mesh", 5))
-            {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the cube graphics mesh filename: %s", name);
-
-                graphics->mesh = new char[strlen (name) + 1];
-                strncpy (graphics->mesh, name, strlen (name) + 1);
-            }
-            if (!strncmp (name, "ogreName", 9))
-            {
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the cube graphics ogre-identifier format: %s", name);
-
-                graphics->ogreName = new char[strlen (name) + 1];
-                strncpy (graphics->ogreName, name, strlen (name) + 1);
-            }
-            XMLString::release (&name);
-        }
-    }
-    log->put (LOG_TRACE, "Finished cube graphics.");
-    
-    char name[20];
-    sprintf (name, graphics->ogreName, instancesCount);
-    cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, graphics->mesh);
-    cubeEntity->setMaterialName (graphics->material);
-    cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    cubeNode->attachObject (cubeEntity);
-    
-    delete[](graphics->material);
-    delete[](graphics->mesh);
-    delete[](graphics->ogreName);
-    delete graphics;
-}
-
 void Cube::stepGraphics ()
 {
     updateOgrePosition ();
@@ -105,4 +30,79 @@ void Cube::stepGraphics ()
 void Cube::stopGraphics ()
 {
     // empty
+}
+
+void Cube::startGraphics (DOMNode * n)
+{
+    std::string author = "Anonymous";
+    std::string contact = "None";
+    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
+    std::string material = "None";
+    std::string mesh = "None";
+    std::string ogreName = "None";
+
+    log->put (LOG_TRACE, "Parsing cube graphics");
+    if (n->hasAttributes ())
+    {
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "author")
+            {
+                author.clear();
+                assignXmlString (author, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
+            }
+            if (attribute == "contact")
+            {
+                contact.clear();
+                assignXmlString (contact, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
+            }
+            if (attribute == "license")
+            {
+                license.clear();
+                assignXmlString (license, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
+            }
+            if (attribute == "material")
+            {
+                material.clear();
+                assignXmlString (material, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the cube graphics material: %s", material.c_str());
+            }
+            if (attribute == "mesh")
+            {
+                mesh.clear();
+                assignXmlString (mesh, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the cube graphics mesh filename: %s", mesh.c_str());
+            }
+            if (attribute == "ogreName")
+            {
+                ogreName.clear();
+                assignXmlString (ogreName, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the cube graphics ogre-identifier format: %s", ogreName.c_str());
+            }
+            attribute.clear();
+        }
+    }
+    log->put (LOG_TRACE, "Finished cube graphics.");
+
+    char name[256];
+    sprintf (name, ogreName.c_str(), instancesCount);
+    cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
+   cubeEntity->setMaterialName (material.c_str());
+    cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
+    cubeNode->attachObject (cubeEntity);
+ 
+    author.clear();
+    contact.clear();
+    license.clear();
+    material.clear();
+    mesh.clear();
+    ogreName.clear();
 }

@@ -23,89 +23,83 @@
 
 void Body::startPhysics (DOMNode * n)
 {
-    BodyPhysicsData * physics = new BodyPhysicsData;
-    physics->mass = 100;
-    physics->length = 1;
-    physics->width = 1;
-    physics->height = 1;
-
-    log->put (LOG_TRACE, "Parsing body physic.");
-    if (n == 0)
-    {
-        log->put (LOG_ERROR, "Null body physics XML node");
-    }
+    double length = 1;
+    double width = 1;
+    double height = 1;
+    double mass = 1;
+    std::string author = "Anonymous";
+    std::string contact = "None";
+    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
+    log->put (LOG_TRACE, "Parsing body physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
-        DOMNamedNodeMap *pAttributes = n->getAttributes ();
-        int nSize = pAttributes->getLength ();
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
 
         for (int i = 0; i < nSize; ++i)
         {
-            DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-            char *name = XMLString::transcode (pAttributeNode->getName ());
-            if (!strncmp (name, "author", 7))
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "author")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the author: %s", name);
+                author.clear();
+                assignXmlString (author, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
             }
-            if (!strncmp (name, "contact", 5))
+            if (attribute == "contact")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                contact.clear();
+                assignXmlString (contact, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
             }
-            if (!strncmp (name, "license", 8))
+            if (attribute == "license")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the license: %s", name);
+                license.clear();
+                assignXmlString (license, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
             }
-            if (!strncmp (name, "mass", 5))
+            if (attribute == "length")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body total mass: %s", name);
-
-                physics->mass = atof (name);
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body physics length: %s", attribute.c_str() );
+                length = stod (attribute);
             }
-            if (!strncmp (name, "length", 7))
+            if (attribute == "width")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body length: %s", name);
-
-                physics->length = atof (name);
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body physics width: %s", attribute.c_str() );
+                width = stod (attribute);
             }
-            if (!strncmp (name, "width", 6))
+            if (attribute == "height")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body width: %s", name);
-
-                physics->width = atof (name);
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body physics height: %s", attribute.c_str() );
+                height = stod (attribute);
             }
-            if (!strncmp (name, "height", 7))
+            if (attribute == "mass")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body height: %s", name);
-
-                physics->height = atof (name);
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body physics mass: %s", attribute.c_str() );
+                mass = stod (attribute);
             }
-            XMLString::release (&name);
+            attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished body physic.");
-
-    dMass mass;
-    dMassSetBoxTotal (&mass, physics->mass, physics->length, physics->width, physics->height);
+    log->put (LOG_TRACE, "Finished body physics.");
+    dMass tmpMass;
+    dMassSetBoxTotal (&tmpMass, mass, length, width, height);
     bodyID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
-    bodyGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->length, physics->width, physics->height);
+    bodyGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, length, width, height);
     dGeomSetBody (bodyGeomID, bodyID);
 
-    delete physics;
+    author.clear();
+    license.clear();
 }
 
 void Body::setPosition (float posX, float posY, float posZ)

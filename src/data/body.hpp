@@ -29,9 +29,6 @@
 class Body;
 #   include "world.hpp"
 
-struct BodyPhysicsData;
-struct BodyGraphicsData;
-
 class Body : public WorldObject
 {
   private:
@@ -60,24 +57,4 @@ class Body : public WorldObject
     Ogre::Entity * bodyEntity;
     Ogre::SceneNode * bodyNode;
 };
-
-struct BodyPhysicsData
-{
-    char *author;
-    char *license;
-    float length;
-    float width;
-    float height;
-    float mass;
-};
-
-struct BodyGraphicsData
-{
-    char *author;
-    char *license;
-    char *material;
-    char *mesh;
-    char *ogreName;
-};
-
 #endif

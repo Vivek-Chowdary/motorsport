@@ -23,79 +23,77 @@
 
 void Body::startGraphics (DOMNode * n)
 {
-    BodyGraphicsData * graphics = new BodyGraphicsData;
-    
+    std::string author = "Anonymous";
+    std::string contact = "None";
+    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
+    std::string material = "None";
+    std::string mesh = "None";
+    std::string ogreName = "None";
+
     log->put (LOG_TRACE, "Parsing body graphics");
     if (n->hasAttributes ())
     {
-        // get all the attributes of the node
-        DOMNamedNodeMap *pAttributes = n->getAttributes ();
-        int nSize = pAttributes->getLength ();
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
         for (int i = 0; i < nSize; ++i)
         {
-            DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-            char *name = XMLString::transcode (pAttributeNode->getName ());
-            if (!strncmp (name, "author", 7))
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "author")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the author: %s", name);
+                author.clear();
+                assignXmlString (author, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
             }
-            if (!strncmp (name, "contact", 5))
+            if (attribute == "contact")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                contact.clear();
+                assignXmlString (contact, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
             }
-            if (!strncmp (name, "license", 8))
+            if (attribute == "license")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the license: %s", name);
+                license.clear();
+                assignXmlString (license, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
             }
-            if (!strncmp (name, "material", 9))
+            if (attribute == "material")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body graphics material: %s", name);
-
-                graphics->material = new char[strlen (name) + 1];
-                strncpy (graphics->material, name, strlen (name) + 1);
+                material.clear();
+                assignXmlString (material, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body graphics material: %s", material.c_str());
             }
-
-            if (!strncmp (name, "mesh", 5))
+            if (attribute == "mesh")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body graphics mesh filename: %s", name);
-
-                graphics->mesh = new char[strlen (name) + 1];
-                strncpy (graphics->mesh, name, strlen (name) + 1);
+                mesh.clear();
+                assignXmlString (mesh, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body graphics mesh filename: %s", mesh.c_str());
             }
-            if (!strncmp (name, "ogreName", 9))
+            if (attribute == "ogreName")
             {
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the body graphics ogre-identifier format: %s", name);
-
-                graphics->ogreName = new char[strlen (name) + 1];
-                strncpy (graphics->ogreName, name, strlen (name) + 1);
+                ogreName.clear();
+                assignXmlString (ogreName, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the body graphics ogre-identifier format: %s", ogreName.c_str());
             }
-            XMLString::release (&name);
+            attribute.clear();
         }
     }
     log->put (LOG_TRACE, "Finished body graphics.");
 
-    char name[20];
-    sprintf (name, graphics->ogreName, instancesCount);
-    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, graphics->mesh);
-    bodyEntity->setMaterialName (graphics->material);
+    char name[256];
+    sprintf (name, ogreName.c_str(), instancesCount);
+    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
+   bodyEntity->setMaterialName (material.c_str());
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
  
-    delete[](graphics->material);
-    delete[](graphics->mesh);
-    delete[](graphics->ogreName);
-    delete graphics;
+    author.clear();
+    contact.clear();
+    license.clear();
+    material.clear();
+    mesh.clear();
+    ogreName.clear();
 }
 void Body::stepGraphics ()
 {

@@ -23,55 +23,59 @@
 
 void Cube::startPhysics (DOMNode * n)
 {
-    CubePhysicsData * physics = new CubePhysicsData;
-    physics->size = 100;
-    log->put (LOG_TRACE, "Parsing cube physic.");
+    int size = 100;
+    std::string author = "Anonymous";
+    std::string contact = "None";
+    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
+    log->put (LOG_TRACE, "Parsing cube physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
-        DOMNamedNodeMap *pAttributes = n->getAttributes ();
-        int nSize = pAttributes->getLength ();
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
 
         for (int i = 0; i < nSize; ++i)
         {
-            DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-            char *name = XMLString::transcode (pAttributeNode->getName ());
-            if (!strncmp (name, "author", 7))
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "author")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the author: %s", name);
+                author.clear();
+                assignXmlString (author, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
             }
-            if (!strncmp (name, "contact", 5))
+            if (attribute == "contact")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                contact.clear();
+                assignXmlString (contact, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
             }
-            if (!strncmp (name, "license", 8))
+            if (attribute == "license")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the license: %s", name);
+                license.clear();
+                assignXmlString (license, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
             }
-            if (!strncmp (name, "size", 5))
+            if (attribute == "size")
             {
-                XMLString::release (&name);
-                name = XMLString::transcode (pAttributeNode->getValue ());
-                log->format (LOG_TRACE, "\tFound the cube physics size: %s", name);
-
-                physics->size = atoi (name);
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "\tFound the cube physics size: %s", attribute.c_str() );
+                size = stoi (attribute);
             }
-            XMLString::release (&name);
+            attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished cube physic.");
+    log->put (LOG_TRACE, "Finished cube physics.");
     dMass mass;
-    dMassSetBox (&mass, 1000, physics->size, physics->size, physics->size);
+    dMassSetBox (&mass, 1000, size, size, size);
     cubeID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
-    cubeGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->size, physics->size, physics->size);
+    cubeGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, size, size, size);
     dGeomSetBody (cubeGeomID, cubeID);
-    delete physics;
+
+    author.clear();
+    license.clear();
 }
 
 void Cube::setPosition (float posX, float posY, float posZ)

@@ -29,9 +29,6 @@
 class Cube;
 #   include "world.hpp"
 
-struct CubePhysicsData;
-struct CubeGraphicsData;
-
 class Cube : public WorldObject
 {
   private:
@@ -83,15 +80,6 @@ struct CubePhysicsData
     char *author;
     char *license;
     int size;
-};
-
-struct CubeGraphicsData
-{
-    char *author;
-    char *license;
-    char *material;
-    char *mesh;
-    char *ogreName;
 };
 
 #endif
