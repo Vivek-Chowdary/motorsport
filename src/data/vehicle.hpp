@@ -36,6 +36,7 @@ class Vehicle : public WorldObject
     // data
     static int instancesCount;
     std::string name;
+    bool userDriver;
     int revision;
     std::string description;
     std::string author;
@@ -67,6 +68,7 @@ class Vehicle : public WorldObject
     std::map < std::string, Wheel *> wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
     std::vector < Camera * > cameraList;
+    void setUserDriver ();
 
     // physics
     void stepPhysics ();

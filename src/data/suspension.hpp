@@ -35,6 +35,7 @@ class Suspension : public WorldObject
     double springConstant;
     double dampingConstant;
     double steeringAngle;
+    bool userDriver;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
@@ -46,6 +47,7 @@ class Suspension : public WorldObject
     ~Suspension ();
     std::string getIndex();
     void attach (Wheel & wheel, Vehicle & vehicle);
+    void setUserDriver ();
 
     // physics
     void stepPhysics ();

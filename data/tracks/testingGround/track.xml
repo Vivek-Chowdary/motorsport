@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <track
     name = "Testing Ground"
-    revision = "1"
     description = "A simple track, featuring an infinite cement ground, and a clear sky. Located in the middle of a dry area surrounded by some small mountains."
     author = "STenyaK"
     contact = "stenyak AT gmx DOT net"
@@ -26,13 +25,25 @@
         >
         <vehicle
             index = "grid01"
-            position = "10 10 2"
+            position = "12 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
             index = "grid02"
-            position = "12 14 2"
+            position = "10 10 2"
+            rotation = "0 0 0"
+            >
+        </vehicle>
+        <vehicle
+            index = "grid03"
+            position = "6 15 2"
+            rotation = "0 0 0"
+            >
+        </vehicle>
+        <vehicle
+            index = "grid03"
+            position = "4 10 2"
             rotation = "0 0 0"
             >
         </vehicle>

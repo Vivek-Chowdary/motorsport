@@ -31,6 +31,7 @@ class World : public WorldObject
     int activeTrackCameraIndex;
     int activeVehicleCameraIndex;
     void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
+    void World::processXmlVehicleListNode (XERCES_CPP_NAMESPACE::DOMNode * vehicleListNode);
   public:
     // data
     static World *getWorldPointer ();

@@ -139,43 +139,49 @@ void Suspension::stepPhysics ()
 {
     double angle = 0;
     double leftSteering = 0;
-    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
-    if (leftSteering < 0.5)
+    if ( userDriver )
     {
-        leftSteering = 0.5 - leftSteering;
-        leftSteering *= 2.0;
-    } else {
-        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_1)]->getValue() * 5 / 5;
-        if (leftSteering == 0) {
-            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_2)]->getValue() * 4 / 5;
+        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
+        if (leftSteering < 0.5)
+        {
+            leftSteering = 0.5 - leftSteering;
+            leftSteering *= 2.0;
+        } else {
+            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_1)]->getValue() * 5 / 5;
             if (leftSteering == 0) {
-                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_3)]->getValue() * 3 / 5;
+                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_2)]->getValue() * 4 / 5;
                 if (leftSteering == 0) {
-                    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_4)]->getValue() * 2 / 5;
+                    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_3)]->getValue() * 3 / 5;
                     if (leftSteering == 0) {
-                        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_5)]->getValue() * 1 / 5;
+                        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_4)]->getValue() * 2 / 5;
                         if (leftSteering == 0) {
-                            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() * 5 / 5;
-    }   }   }   }   }   }
+                            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_5)]->getValue() * 1 / 5;
+                            if (leftSteering == 0) {
+                                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() * 5 / 5;
+        }   }   }   }   }   }
+    }
     double rightSteering = 0;
-    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
-    if (rightSteering > 0.5)
+    if ( userDriver )
     {
-        rightSteering = rightSteering - 0.5;
-        rightSteering *= 2.0;
-    } else {
-        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_0)]->getValue() * 5 / 5;
-        if (rightSteering == 0) {
-            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_9)]->getValue() * 4 / 5;
+        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
+        if (rightSteering > 0.5)
+        {
+            rightSteering = rightSteering - 0.5;
+            rightSteering *= 2.0;
+        } else {
+            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_0)]->getValue() * 5 / 5;
             if (rightSteering == 0) {
-                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_8)]->getValue() * 3 / 5;
+                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_9)]->getValue() * 4 / 5;
                 if (rightSteering == 0) {
-                    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_7)]->getValue() * 2 / 5;
+                    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_8)]->getValue() * 3 / 5;
                     if (rightSteering == 0) {
-                        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_6)]->getValue() * 1 / 5;
+                        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_7)]->getValue() * 2 / 5;
                         if (rightSteering == 0) {
-                            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
-    }   }   }   }   }   }
+                            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_6)]->getValue() * 1 / 5;
+                            if (rightSteering == 0) {
+                                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
+        }   }   }   }   }   }
+    }
 
     // Override keyboard data with joystick axis if the keyboard is not used.
     const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;

@@ -96,13 +96,13 @@ void InputEngine::clearLogicEventAxis ()
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_q)]->setNewRawValue(0);
-    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_t)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_b)]->setNewRawValue(0);
 }
 
 void InputEngine::clearGraphicsEventAxis ()
 {
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_v)]->setNewRawValue(0);
 }

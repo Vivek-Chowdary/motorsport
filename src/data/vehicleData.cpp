@@ -37,6 +37,7 @@ Vehicle::Vehicle (const std::string & xmlFilename)
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 
+    userDriver = false;
     instancesCount++;
 }
 
@@ -68,6 +69,16 @@ Vehicle::~Vehicle ()
     delete log;
 }
 
+void Vehicle::setUserDriver ()
+{
+    userDriver = true;
+    engine->setUserDriver();
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
+    {
+        suspIter->second->setUserDriver();
+    }
+}
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -85,7 +96,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     DOMNode * wheelListNode = 0;
     DOMNode * suspListNode = 0; //suspension
     DOMNode * cameraListNode = 0;
-
 
     if (n)
     {

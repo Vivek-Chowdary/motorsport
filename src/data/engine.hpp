@@ -18,6 +18,7 @@ class Engine : public DriveMass
   private:
     // data
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    bool userDriver;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -28,6 +29,7 @@ class Engine : public DriveMass
     // data
     Engine (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Engine ();
+    void setUserDriver ();
 
     // physics
     void stepPhysics ();

@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <world
     name = "Test World"
-    description = "Drive the test car in the testing grounds! Or something :)"
-    useTrackCamera = "false"            a="vehicle, track. #0 by default"
+    description = "Drive the Mosp1 car in the testing grounds!"
+    useTrackCamera = "false"
     gravityX = "0.0"
     gravityY = "0.0"
     gravityZ = "-9.8"
     >
-    <vehicle
-        directory = "mosp1"
-        driver = "user"         c="ai, net, user, replay, ghostReplay, none... still not used"
-        startPosition = "grid01"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
-        >
-    </vehicle>
+    <vehicleList>
+        <vehicle
+            directory = "mosp1"
+            ___driver="ai, net, user, replay, ghostReplay, none... only 'none' and 'user' are usable atm"
+            driver = "user"
+            ___startPosition="Reference to track position (starting grid positions, pits, important places...), indexed by string!"
+            startPosition = "grid01"
+            >
+        </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
+            startPosition = "grid02"
+            >
+        </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
+            startPosition = "grid03"
+            >
+        </vehicle>
+    </vehicleList>
     <track
         directory = "testingGround"
         >

@@ -21,6 +21,7 @@ Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n)
     log->put (LOG_CCREATOR, "Starting to parse the suspension node");
     processXmlRootNode (n);
 
+    userDriver = false;
     instancesCount++;
 }
 
@@ -38,6 +39,11 @@ Suspension::~Suspension ()
 std::string Suspension::getIndex()
 {
     return index;
+}
+
+void Suspension::setUserDriver ()
+{
+    userDriver = true;
 }
 
 void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)

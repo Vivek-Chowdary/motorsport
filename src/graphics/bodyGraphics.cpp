@@ -59,6 +59,8 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     file.append(SystemData::getSystemDataPointer()->tmpPath);
     file.append("/");
     file.append(mesh);
+    static int no = 0;
+    name[0] = no++ + '0';
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     bodyEntity->setRenderDetail(renderMode);
 

@@ -89,10 +89,8 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     double gravityX = 0.0;
     double gravityY = 0.0;
     double gravityZ = 0.0;
+    DOMNode * vehicleListNode = NULL;
     bool useTrackCamera = true;    //if false, use vehicle camera
-    std::string vehicleDirectory = "testCar";
-    std::string vehicleStartPosition = "0";   //first 'grid' position
-    std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
     std::string trackDirectory = "testingGround";
     if (n)
     {
@@ -155,35 +153,10 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
                             assignXmlString (name, n->getNodeName());
-                            if (name == "vehicle")
+                            if (name == "vehicleList")
                             {
-                                log->put (LOG_CCREATOR, "Found a vehicle");
-                                if (n->hasAttributes ())
-                                {
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "directory")
-                                        {
-                                            assignXmlString (vehicleDirectory, attNode->getValue());
-                                            log->format (LOG_CCREATOR, "Found the vehicle directory: %s", vehicleDirectory.c_str());
-                                        }
-                                        if (attribute == "driver")
-                                        {
-                                            assignXmlString (driver, attNode->getValue());
-                                            log->format (LOG_CCREATOR, "Found the vehicle driver: %s", driver.c_str());
-                                        }
-                                        if (attribute == "startPosition")
-                                        {
-                                            assignXmlString (vehicleStartPosition, attNode->getValue());
-                                            log->format (LOG_CCREATOR, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
-                                        }
-                                    }
-                                }
+                                log->put (LOG_CCREATOR, "Found the vehicle list");
+                                vehicleListNode = n;
                             }
                             if (name == "track")
                             {
@@ -212,11 +185,6 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     log->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
-
-/* /////////////////////////////////// STILL THIS VAR TO BE USED TODO
-    std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
-/////////////////////////////////// */
-
     log->loadscreen (LOG_DEVELOPER, "Creating ODE world");
     dRandSetSeed(0);
     worldID = dWorldCreate ();
@@ -245,21 +213,11 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     trackList.push_back (track);
 
-    // load vehicle (and its cameras)
-    log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-    Vehicle * vehicle = new Vehicle (vehicleDirectory);
-    vehicleList.push_back (vehicle);
-    
-    log->put (LOG_CCREATOR, "Attaching vehicle wheels to its body (via suspensions)");
-    vehicle->attachWheelsToBody();
-    
-    log->put (LOG_CCREATOR, "Setting vehicle starting position");
-    vehicle->setPosition (track->vehiclePositionMap[vehicleStartPosition]->getPosition());
-    
-    log->put (LOG_CCREATOR, "Setting vehicle starting rotation");
-    Vector3d rotation = track->vehiclePositionMap[vehicleStartPosition]->getRotation();
-    vehicle->setRotation (rotation);
+    // load all vehicles
+    log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
+    processXmlVehicleListNode (vehicleListNode);
 
+    // initialize cameras (pointing to car 0 by default)
     for (unsigned int i=0; i< trackList[0]->cameraList.size(); i++)
     {
         trackList[0]->cameraList[i]->setPositionID( trackList[0]->trackBodyID );
@@ -316,4 +274,70 @@ int World::getActiveVehicleCameraIndex()
         camNumber++;
     }
     return camNumber;
+}
+
+void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
+{
+    if (vehicleListNode != 0)
+    {
+        log->put (LOG_CCREATOR, "Processing vehicle list");
+        DOMNode * vNode;
+        for (vNode = vehicleListNode->getFirstChild (); vNode != 0; vNode = vNode->getNextSibling ())
+        {
+            std::string name;
+            assignXmlString (name, vNode->getNodeName());
+            int nVehicles = 0;
+            if (name == "vehicle")
+            {
+                nVehicles++;
+                log->format (LOG_CCREATOR, "Found vehicle #%i", nVehicles);
+                std::string vehicleDirectory = "mosp1";
+                std::string vehicleStartPosition = "grid01";   //first 'grid' position
+                std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
+                if (vNode->hasAttributes ())
+                {
+                    DOMNamedNodeMap *attList = vNode->getAttributes ();
+                    int nSize = attList->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "directory")
+                        {
+                            assignXmlString (vehicleDirectory, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the vehicle directory: %s", vehicleDirectory.c_str());
+                        }
+                        if (attribute == "driver")
+                        {
+                            assignXmlString (driver, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the vehicle driver: %s", driver.c_str());
+                        }
+                        if (attribute == "startPosition")
+                        {
+                            assignXmlString (vehicleStartPosition, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
+                        }
+                    }
+                }
+                log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
+                Vehicle * tmpVehicle = new Vehicle (vehicleDirectory);
+                if (driver == "user" )
+                {
+                    tmpVehicle->setUserDriver();
+                }
+                vehicleList.push_back (tmpVehicle);
+
+                log->put (LOG_CCREATOR, "Attaching vehicle wheels to its body (via suspensions)");
+                tmpVehicle->attachWheelsToBody();
+                
+                log->put (LOG_CCREATOR, "Setting vehicle starting position");
+                tmpVehicle->setPosition (trackList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
+
+                log->put (LOG_CCREATOR, "Setting vehicle starting rotation");
+                Vector3d rotation = trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation();
+                tmpVehicle->setRotation (rotation);
+            }
+        }
+    }
 }
