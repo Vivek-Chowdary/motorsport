@@ -39,7 +39,7 @@ int DataEngine::loadWorldData ( void )
 {
     //create the camera and initialize it
     int numberOfCameras = 1;
-    log->put ( LOG_INFO, "Creating %i cameras", numberOfCameras );
+    log->format ( LOG_INFO, "Creating %i cameras", numberOfCameras );
     for (int i=0; i<numberOfCameras; i++)
     {
         Camera * cameraPointer = new Camera;
