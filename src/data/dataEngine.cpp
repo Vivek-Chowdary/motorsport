@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -37,19 +38,19 @@
 *
 ******************************************************************************/
 
-int DataEngine::start (WorldData *wrlData, SystemData *sysData)
+int DataEngine::start (WorldData * wrlData, SystemData * sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start (false, 2, "logData.txt");
 
     log.put (false, 2, "Setting up data pointers...");
     //we tell the dataEngine where to find/store all the data in memory.
-    worldData = wrlData;    //world data is for the simulated world data (cars,
-                            // track, weather, etc...)
-    systemData = sysData;   //system data is for the rest of things (screen
-                            // resolution, 
+    worldData = wrlData;        //world data is for the simulated world data (cars,
+    // track, weather, etc...)
+    systemData = sysData;       //system data is for the rest of things (screen
+    // resolution, 
     log.put (true, 2, "Ok");
-    
+
     return (0);
 }
 
@@ -81,7 +82,7 @@ int DataEngine::loadWorldData (void)
     worldData->rectangleList[1].blue = 255;
     log.put (true, 2, "Ok");
 
-	return (0);
+    return (0);
 }
 
 int DataEngine::loadSystemData (void)
@@ -95,10 +96,12 @@ int DataEngine::loadSystemData (void)
     log.put (true, 2, "Ok");
 
     //set window properties
-    const int maxLength = 10;
+    const int maxLength = 15;
+
     log.put (false, 2, "Allocating memory for window properties...");
     systemData->graphicsData.title = new char[maxLength];
     systemData->graphicsData.icon = new char[maxLength];
+
     log.put (true, 2, "Ok");
     log.put (false, 2, "Setting window properties...");
     strncpy (systemData->graphicsData.title, "Motorsport", maxLength);
@@ -112,7 +115,7 @@ int DataEngine::unloadWorldData (void)
 {
     //unload the rectangles from memory
     log.put (false, 2, "Unloading rectangles from memory...");
-    delete [](worldData->rectangleList);
+    delete[](worldData->rectangleList);
     log.put (true, 2, "Ok");
 
     return (0);
@@ -122,8 +125,8 @@ int DataEngine::unloadSystemData (void)
 {
     //unload the rectangles from memory
     log.put (false, 2, "Unloading window data from memory...");
-    delete [](systemData->graphicsData.title);
-    delete [](systemData->graphicsData.icon);
+    delete[](systemData->graphicsData.title);
+    delete[](systemData->graphicsData.icon);
     log.put (true, 2, "Ok");
 
     return (0);
@@ -134,5 +137,5 @@ int DataEngine::stop (void)
     //finally stop the log engine
     log.stop ();
 
-	return (0);
+    return (0);
 }
