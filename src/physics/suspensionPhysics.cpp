@@ -175,7 +175,7 @@ void Suspension::stepPhysics ()
     // Override keyboard data with joystick axis if the keyboard is not used.
     if (rightSteering == 0 and leftSteering == 0)
     {
-        angle = (SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue() - 0.5) * steeringAngle * piK / 2;
+        angle = (SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue() - 0.5) * steeringAngle * piK;
     } else {
         rightSteering *= steeringAngle * piK / 2;
         leftSteering *= steeringAngle * piK / 2;
