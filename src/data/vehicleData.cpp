@@ -138,8 +138,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
-                            Vector3d position;
-                            position = stov3d (attribute);
+                            Vector3d position(attribute);
                         }
                         if (attribute == "name")
                         {

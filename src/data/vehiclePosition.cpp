@@ -35,13 +35,13 @@ VehiclePosition::VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue ());
                 log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str ());
-                position = stov3d (attribute);
+                position = Vector3d(attribute);
             }
             if (attribute == "rotation")
             {
                 assignXmlString (attribute, attNode->getValue ());
                 log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str ());
-                rotation = stoq (attribute);
+                rotation = Quaternion(attribute);
             }
         }
 //        rotation.degreesToRadians ();

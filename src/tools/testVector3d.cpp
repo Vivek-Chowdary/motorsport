@@ -135,7 +135,7 @@ void TestCrossproduct()
 //  MAssert( wantedResult == GetCrossProduct(cross1) );
  
   std::vector<Vector3d> cross2(0);
-//  MAssert( Vector3d(0,0,0) == GetCrossProduct(cross2) );
+  MAssert( Vector3d(0,0,0) == GetCrossProduct(cross2) );
 
   Vector3d u(2,  2,  0);
   Vector3d w(-1, 0, 2);

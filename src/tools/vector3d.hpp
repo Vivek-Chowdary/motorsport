@@ -24,6 +24,8 @@ class Vector3d
     Vector3d(double qw, double qx, double qy, double qz);   // from quaternion to euler radians
     Vector3d (const dReal * odeArray);                      // from ode array
 //    Vector3d (const Vector3d & cpy); default copy constructor used.
+    Vector3d (const std::string &srcString);
+
     const Vector3d & operator= (const Vector3d & cpy);
     const Vector3d & operator= (const dReal * & odeArray);  // from ode array
     bool operator== (const Vector3d & cpy) const;

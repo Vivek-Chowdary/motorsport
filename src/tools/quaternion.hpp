@@ -10,6 +10,7 @@
 #ifndef QUATERNION_HPP
 #   define QUATERNION_HPP
 #   include "ode.h"
+#   include <string>
 
 class Vector3d;
 
@@ -25,6 +26,7 @@ class Quaternion
     Quaternion (double phi, double theta, double psi);  // from Euler angles
     Quaternion (dQuaternion odeQuaternion);             // from ode quaternion
     Quaternion (const dReal * odeQuaternion);           // from ode array
+    Quaternion (const std::string &srcString);          // from std::string
     dReal * getOdeQuaternion ();                        // to ode array
     void getOdeMatrix (dMatrix3 & dstRotation);           // to ode matrix
 
@@ -39,6 +41,9 @@ class Quaternion
     const Quaternion & operator+= (const Quaternion & k);
 
     Vector3d Quaternion::rotateObject (Vector3d objectPosition);
+
+  private:
+  void SetFromEuler(double phi, double theta, double psi); // bad name
 };
 
 #endif

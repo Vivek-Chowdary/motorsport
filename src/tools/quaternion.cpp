@@ -9,6 +9,7 @@
 
 #include "quaternion.hpp"
 #include "vector3d.hpp"
+#include <sstream>
 
 Quaternion::Quaternion ()
   : w(1), x(0), y(0),z(0)
@@ -22,7 +23,7 @@ Quaternion::Quaternion (double _w, double _x, double _y, double _z)
     // empty
 }
 
-Quaternion::Quaternion (double phi, double theta, double psi)
+void Quaternion::SetFromEuler(double phi, double theta, double psi)
 {
     // euler degrees to euler radians
     const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
@@ -42,6 +43,11 @@ Quaternion::Quaternion (double phi, double theta, double psi)
     z = tmpQuaternion[3];
 }
 
+Quaternion::Quaternion (double phi, double theta, double psi)
+{
+  SetFromEuler(phi, theta, psi);
+}
+
 Quaternion::Quaternion (dQuaternion odeQuaternion)
 {
     w = odeQuaternion[0];
@@ -56,6 +62,23 @@ Quaternion::Quaternion (const dReal * odeQuaternion)
     y = odeQuaternion[2];
     z = odeQuaternion[3];
 }
+
+Quaternion::Quaternion(const std::string &srcString)
+{
+    std::stringstream tmpString (srcString);
+    const double magicValue = 0.123456789101112131415;
+    double tmpW, tmpX, tmpY, tmpZ = magicValue;
+    tmpString >> tmpW >> tmpX >> tmpY >> tmpZ;
+    if ( tmpZ == magicValue ) {
+      SetFromEuler (tmpW, tmpX, tmpY);   
+    } else {
+      w = tmpW;
+      x = tmpX; 
+      y = tmpY;
+      z = tmpZ;
+    }
+}
+
 dReal * Quaternion::getOdeQuaternion ()
 {
     // removing 'static' shows a warning: address of local variable `quat' returned

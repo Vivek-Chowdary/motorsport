@@ -46,15 +46,15 @@ InputEngine::InputEngine ()
     
     log->put (LOG_DEVELOPER, "Initializing dummy joystick devices");
     systemData->axisMap[getIDJoyAxis (0, 0)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (2);
+    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (32767);
+    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (-32767);
     systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (0);
-    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (1);
     systemData->axisMap[getIDJoyAxis (0, 1)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (0);
-    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (1);
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (-32767);
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (32767);
     systemData->axisMap[getIDJoyAxis (0, 2)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (0);
-    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (1);
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (-32767);
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (32767);
     
     log->put (LOG_DEVELOPER, "Initializing real joystick devices");
     int nJoysticks = SDL_NumJoysticks();

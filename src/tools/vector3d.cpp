@@ -8,6 +8,7 @@
 \*****************************************************************************/
 
 #include "vector3d.hpp"
+#include <sstream>
 
 Vector3d::Vector3d ()
   : x(0), y(0),z(0)
@@ -39,6 +40,13 @@ Vector3d::Vector3d (const dReal * odeArray)
     y = odeArray[1];
     z = odeArray[2];
 }
+
+Vector3d::Vector3d (const std::string &srcString)
+{
+    std::stringstream tmpString (srcString);
+    tmpString >> x >> y >> z;
+}
+
 const Vector3d & Vector3d::operator= (const dReal * & odeArray)
 {
     //TODO: Check for this=this if the class becomes complicated.
