@@ -64,6 +64,7 @@ class Track : public WorldObject
     void stepPhysics ();
     void stopPhysics ();*/
     dGeomID bodyGeomID;
+    dBodyID trackBodyID;
 
     // graphics
 /*    void startGraphics (DOMNode * n);

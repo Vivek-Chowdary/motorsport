@@ -48,6 +48,7 @@ class World : public WorldObject
     ~World ();
 
     dWorldID worldID;
+    dWorldID ghostWorldID;
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 

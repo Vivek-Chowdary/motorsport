@@ -84,6 +84,7 @@ World::~World ()
     dSpaceDestroy (spaceID);
     log->put (LOG_INFO, "Destroying ODE main collision space");
     dWorldDestroy (worldID);
+    dWorldDestroy (ghostWorldID);
     log->put (LOG_INFO, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
     
@@ -246,6 +247,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     log->put (LOG_INFO, "Creating ODE world");
     dRandSetSeed(0);
     worldID = dWorldCreate ();
+    ghostWorldID = dWorldCreate ();
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);
 
@@ -262,6 +264,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
+    dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
     // load track (and its cameras)
     std::string tmpPath = ("../data/tracks/");
@@ -293,6 +296,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     for (unsigned int i=0; i< trackList[0]->cameraList.size(); i++)
     {
         trackList[0]->cameraList[i]->setPositionID( vehicleList[0]->getVehicleID() );
+        trackList[0]->cameraList[i]->setPositionID( trackList[0]->trackBodyID );
         trackList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
     }
 

@@ -320,6 +320,7 @@ void Track::processXmlRootNode (DOMNode * n)
     pPlaneEnt->setMaterialName(groundMaterialName.c_str());
     pPlaneEnt->setCastShadows(true);
     pOgreSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(pPlaneEnt);
+    trackBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
 
     //load sky
     Ogre::Quaternion rotationToZAxis;
