@@ -45,7 +45,7 @@ class GraphicsEngine
     GraphicsData *graphicsData;
     WorldData *worldData;
 	public:
-        int start (GraphicsData *gfxData,WorldData *wrlData);		//starts the graphics engine
+        int start (WorldData *wrlData, SystemData *sysData);		//starts the graphics engine
 		int step (void);        //makes the graphics engine draw one frame
 		int stop (void);		//stops the graphics engine
 };

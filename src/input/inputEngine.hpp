@@ -45,7 +45,7 @@ class InputEngine
     SystemData *systemData;
     WorldData *worldData;
 	public:
-		int start (InputData *inpData, SystemData *sysData, WorldData *wrlData);		//starts the input engine
+		int start (WorldData *wrlData, SystemData *sysData);		//starts the input engine
         int step (void);   //processes user input queue
         void processInput (SDLKey keySymbol);
 		int stop (void);		//stops the input engine

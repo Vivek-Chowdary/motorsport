@@ -33,7 +33,7 @@
 *
 ******************************************************************************/
 
-int LogEngine::start (char level, char *filePath, bool appendMode)
+int LogEngine::start (bool appendMode, signed char level, char *filePath)
 {
 	//check if we append (or rewrite the whole file)
 	logFile = fopen (filePath, (appendMode ? "a" : "w"));
@@ -42,39 +42,34 @@ int LogEngine::start (char level, char *filePath, bool appendMode)
     logLevel = level;
     
 	//we put some text at the start of the current log
-	put (0,"Start of LogFile");
+	put (false, 2, "Start of LogFile");
 	
 	return (0);
 }
 
 
-int LogEngine::put (char level, char *textToLog)
+int LogEngine::put (bool appendMode, signed char level, char *textToLog)
 { 
     //check if we have been told to write this kind of log
-    if (level >= logLevel)
+    if (level <= logLevel)
     {
-    	//begin new line
-        // (level 0,1,2 > new line; -1=continue last line)
-        switch (level)
+        //check if we should append or create a new line
+        if (appendMode)
         {
-            case -1: /*nothing to do*/     break;
-            case 0:
-            case 1:
-            case 2: fputc ('\n', logFile); break;
+            // separate previous log with a blank space
+            fputc (' ', logFile);
+        } else {
+            //write log level information
+            // (level 0=error; 1=warning; >1=info)
+            switch (level)
+            {
+                case 0: fputs ("\n(EE): ", logFile); break;
+                case 1: fputs ("\n(WW): ", logFile); break;
+                default:fputs ("\n(II): ", logFile); break;
+            }
         }
-
-        //write log level information
-        // (level 0=info; 1=warning; 2=error; -1=continue last log)
-        switch (level)
-        {
-            case -1:fputc (' '     , logFile); break;
-            case 0: fputs ("(II): ", logFile); break;
-            case 1: fputs ("(WW): ", logFile); break;
-            case 2: fputs ("(EE): ", logFile); break;
-        }
-
         //write log text
-    	fputs (textToLog, logFile);
+        fputs (textToLog, logFile);
     }
 	
 	return (0);
@@ -83,7 +78,7 @@ int LogEngine::put (char level, char *textToLog)
 
 int LogEngine::stop (void)
 {
-	put (0,"End of LogFile");
+	put (false, 2, "End of LogFile");
 	fclose (logFile);
 	
 	return (0);

@@ -65,9 +65,10 @@ endif
 #
 ###############################################################################
 
-CC_PLUS_PLUS := g++
 CC := gcc
-CC_FLAGS := -c -Wall
+CXX := g++
+CFLAGS := -c -Wall -g -O0
+CXXFLAGS := $(CFLAGS)
 
 INCLUDE_DIRS_WIN32 := $(MOTORSPORT_INCLUDE_DIRS)
 INCLUDE_DIRS_LINUX := /usr/include
@@ -137,10 +138,10 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 ###############################################################################
 
 %.o : %.cpp
-	$(CC_PLUS_PLUS) $(CC_FLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
+	$(CXX) $(CXXFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
 %.o : %.c
-	$(CC) $(CC_FLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
+	$(CC) $(CFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
 
 ###############################################################################

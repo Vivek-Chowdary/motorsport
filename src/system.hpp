@@ -43,6 +43,13 @@ struct GraphicsData
     Uint32 flags;
     char *title;
     char *icon;
+    
+    //note that the camera data (origin, dest., angle, focus, etc...) should not
+    // be here. that's part of the worldData. there should exist real TV
+    // cameras in the track, and the virtual-driver's eyes are the in-car
+    // camera.
+    // Of course, we can add more cameras than TV+driver+spectators. We can make
+    // use of some of the advantages of being a simulation in a computer :)
 };
 
 struct InputData
@@ -52,19 +59,33 @@ struct InputData
     // axis available, axis-calibration data...
 };
 
+/*
+struct PhysicsData
+{
+    //there will be a struct for every engine.
+    // this struct is used by the physics engine. it will store things like
+    // timestep to use... .... mmm well, i can't think of other example of
+    // system data for the physicsEngine, but i suppose you get the idea.
+};
+*/
+
 class SystemData
 { //this contains all the data not related with the simulated/virtual world
 
     int mainLoopDone;    //allows to stop the mainloop (exit)
     public:
-        //main program
+        //I'm not sure at all about using private properties, instead of making
+        // it all public, because that means we're not using layout#2 for the
+        // system data.
+        //
+        //We should start working with paraGui in order to see how all this works.
+
         void startMainLoop (void); //sets mainLoopDone to 1
         void stopMainLoop (void); //set mainLoopDone to 0
         int isLoopDone (void);
 
         struct GraphicsData graphicsData;
         struct InputData inputData;
-
 };
 
 

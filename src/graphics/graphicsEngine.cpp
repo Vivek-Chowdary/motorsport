@@ -37,49 +37,49 @@
 *
 ******************************************************************************/
 
-int GraphicsEngine::start (GraphicsData *gfxData,WorldData *wrlData)
+int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start (-1,"logGraphics.txt", false);
+    log.start (false, 2, "logGraphics.txt");
     
     //get the direction of the graphics data
-    log.put (0, "Setting up data pointers...");
-    graphicsData = gfxData;
+    log.put (false, 2, "Setting up data pointers...");
+    graphicsData = &(sysData->graphicsData);
     worldData = wrlData;
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
     
 	//initialization of SDL_VIDEO
-	log.put (0,"Initializing SDL Video...");	
+	log.put (false, 2, "Initializing SDL Video...");	
 	if (SDL_Init (SDL_INIT_VIDEO) == -1)
     {
-        log.put (2,"SDL Video initialization falied:");
-        log.put (2,SDL_GetError ());
+        log.put (false, 0, "SDL Video initialization falied:");
+        log.put (true, 0, SDL_GetError ());
         return (-1);
     }
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
 
     //setting video mode
-	log.put (0,"Setting SDL Video Mode...");
+	log.put (false, 2, "Setting SDL Video Mode...");
 	(graphicsData->screen) = SDL_SetVideoMode (graphicsData->width,
                                                graphicsData->height,
                                                graphicsData->bpp,
                                                graphicsData->flags);
     if (graphicsData->screen == NULL)
     {
-        log.put (2,"Couldn't set desired SDL Video Mode:");
-        log.put (2,SDL_GetError ());
+        log.put (false, 0, "Couldn't set desired SDL Video Mode:");
+        log.put (true, 0, SDL_GetError ());
         return (-1);
     }
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
 	
 	//setting window caption
-    log.put (0,"Setting SDL window caption...");
+    log.put (false, 2, "Setting SDL window caption...");
 	SDL_WM_SetCaption (graphicsData->title,graphicsData->icon);
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
 
-    log.put (0,"Setting SDL window caption...");
+    log.put (false, 2, "Setting SDL window caption...");
     graphicsData->fmt = graphicsData->screen->format;
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
 	
 	return (0);
 }
@@ -90,18 +90,21 @@ int GraphicsEngine::step (void)
 {
     
     //mega-verbosity
-    //log.put (0, "Doing an step: drawing world objects");
+    log.put (false, 4, "Doing an step: drawing world objects");
 
     //blank the screen
+    log.put (false, 4, "Doing an step: blanking the screen...");
     if (SDL_FillRect (graphicsData->screen,
                       NULL,
                       SDL_MapRGB (graphicsData->fmt, (Uint8) 0, (Uint8) 0, (Uint8) 0)
                      ) == -1)
     {
-        log.put (1,"Error while executing SDL_FillRect");
+        log.put (false, 0, "Error while executing SDL_FillRect");
     }
+    log.put (true, 4, "Ok");
 
 	//draw all the rectangles in worldData
+    log.put (false, 4, "Drawing rectangles on screen...");
     for (int currentRectangle = 0;
          currentRectangle < worldData->numberOfRectangles;
          currentRectangle++)
@@ -117,10 +120,12 @@ int GraphicsEngine::step (void)
                                           worldData->rectangleList[currentRectangle].blue)
                               ) == -1)
             {
-                log.put (1,"Error while executing SDL_FillRect");
+                //this is just an example of warning. this should prolly be an error(level 0)
+                log.put (false, 1, "Error while executing SDL_FillRect");
             }
         }
     }
+    log.put (true, 4, "Ok");
     
     //update the screen
     SDL_UpdateRect (graphicsData->screen, 0, 0, 640, 480);

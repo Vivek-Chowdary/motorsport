@@ -41,20 +41,20 @@
 *
 ******************************************************************************/
 
-int InputEngine::start (InputData *inpData,SystemData *sysData,WorldData *wrlData)
+int InputEngine::start (WorldData *wrlData, SystemData *sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start (-1,"logInput.txt", false);
+    log.start (false, 3, "logInput.txt");
 
     //we store the pointers to the 'global' data, so that we access it easily.
     //we might have to change this and only allow changing data through
     // some dataEngine functions, which will act as an interface to the data
     // stored in memory with the IDF.
-    log.put (0, "Setting up data pointers...");
-    inputData = inpData;
+    log.put (false, 2, "Setting up data pointers...");
+    inputData = &(sysData->inputData);
     systemData = sysData;
     worldData = wrlData;
-    log.put (-1,"Ok");
+    log.put (true, 2, "Ok");
 
 	return (0);
 }
@@ -63,7 +63,7 @@ int InputEngine::start (InputData *inpData,SystemData *sysData,WorldData *wrlDat
 int InputEngine::step (void)   //processes user input queue
 {
     //mega-verbosity
-    //log.put (0, "Doing an step: checking for input events");
+    //log.put (true, 3, "Doing an step: checking for input events...");
     
     SDL_Event event; //used to store the current event in the queue
     
@@ -78,14 +78,14 @@ int InputEngine::step (void)   //processes user input queue
         {
             case SDL_KEYDOWN:
                 //this is the user pressing a key in the keyboard
-                log.put (0, "New SDL_KEYDOWN event: finding out what key's been pressed");
+                log.put (false, 3, "New SDL_KEYDOWN event: finding out what key's been pressed.");
                 processInput (event.key.keysym.sym);
                 break;
             case SDL_QUIT:
                 //this can be the user cliking to close the window
-                log.put (0, "New SDL_QUIT event: notifying to stop mainLoop...");
+                log.put (false, 3, "New SDL_QUIT event: notifying to stop mainLoop...");
                 systemData->stopMainLoop ();
-                log.put (-1,"Ok");
+                log.put (true, 3, "Ok");
                 break;
             default:
                 //this can be mouse movement, joystick input,...
@@ -129,9 +129,9 @@ void InputEngine::processInput (SDLKey keySymbol)
         //we indicate that the user wants to exit the simulation
         case SDLK_RETURN:
         case SDLK_ESCAPE:
-            log.put (0, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+            log.put (false, 3, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
             systemData->stopMainLoop ();
-            log.put (-1,"Ok");
+            log.put (true, 3, "Ok");
             break;
         
         //the user wants to modify world data using the inputEngine. in this
@@ -145,46 +145,46 @@ void InputEngine::processInput (SDLKey keySymbol)
         // air+fuel in the cylinders, which would therefore accelerate the rpms,
         // therefore modifying.... etc...
         case SDLK_RIGHT:
-            log.put (0, "Processing a SDLK_RIGHT keypress...");
+            log.put (false, 3, "Processing a SDLK_RIGHT keypress...");
             worldData->rectangleList[0].setVisible(0);
-            log.put (-1,"rectangle0 is now invisible.");
+            log.put (true, 3, "rectangle0 is now invisible.");
             break;
 
         case SDLK_LEFT:
-            log.put (0, "Processing a SDLK_LEFT keypress...");
+            log.put (false, 3, "Processing a SDLK_LEFT keypress...");
             worldData->rectangleList[0].setVisible(1);
-            log.put (-1,"rectangle0 is now visible.");
+            log.put (true, 3, "rectangle0 is now visible.");
             break;
 
         case SDLK_UP:
-            log.put (0, "Processing a SDLK_UP keypress...");
+            log.put (false, 3, "Processing a SDLK_UP keypress...");
             worldData->rectangleList[1].setVisible(0);
-            log.put (-1,"rectangle1 is now invisible.");
+            log.put (true, 3, "rectangle1 is now invisible.");
             break;
 
         case SDLK_DOWN:
-            log.put (0, "Processing a SDLK_DOWN keypress...");
+            log.put (false, 3, "Processing a SDLK_DOWN keypress...");
             worldData->rectangleList[1].setVisible(1);
-            log.put (-1,"rectangle1 is now visible.");
+            log.put (true, 3, "rectangle1 is now visible.");
             break;
 
         //this is left for non-assigned input events.
         case 'G':
-            log.put (0, "Processing a 'G' keypress: doing nothing...");
+            log.put (false, 3, "Processing a 'G' keypress: doing nothing...");
             // something
-            log.put (-1,"Ok");
+            log.put (true, 3, "Ok");
             break;
 
         case 'S':
-            log.put (0, "Processing a 'S' keypress: doing nothing...");
+            log.put (false, 3, "Processing a 'S' keypress: doing nothing...");
             // something
-            log.put (-1,"Ok");
+            log.put (true, 3, "Ok");
             break;
 
         default:
-            log.put (0, "Processing an unknown keypress: doing nothing...");
+            log.put (false, 3, "Processing an unknown keypress: doing nothing...");
             // something
-            log.put (-1,"Ok");
+            log.put (true, 3, "Ok");
             break;
     }
 }
