@@ -77,9 +77,9 @@ int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
             // (level 0=error; 1=warning; >1=info)
             switch (level)
             {
-                case 0: fputs (" (EE): ", logFile); break;
-                case 1: fputs (" (WW): ", logFile); break;
-                default:fputs (" (II): ", logFile); break;
+                case 0: fputs ("\n(EE): ", logFile); break;
+                case 1: fputs ("\n(WW): ", logFile); break;
+                default:fputs ("\n(II): ", logFile); break;
             }
         }
         //write log text

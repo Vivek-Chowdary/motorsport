@@ -168,6 +168,51 @@ void InputEngine::processInput (SDLKey keySymbol)
             log.append (3, "rectangle1 is now visible.");
             break;
 
+        case SDLK_SPACE:
+            log.put(3, "Processing a SDLK_SPACE keypress...");
+            worldData->rectangleList[0].colorSpeed = !(worldData->rectangleList[0].colorSpeed);
+            worldData->rectangleList[1].colorSpeed = !(worldData->rectangleList[1].colorSpeed);
+            log.append (3, "rectangles colorSpeed are now reversed.");
+            break;
+
+        case SDLK_KP_MINUS:
+            log.put(3, "Processing a SDLK_KP_MINUS keypress...");
+            //modify the physics engine rate
+            //if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
+            if (systemData->physicsData.desiredStepsPerSecond < 37)
+            {                
+                //don't let the rate fall below 1 frame per second (or don't allow more than 1000msecs. step)
+                if (!--systemData->physicsData.desiredStepsPerSecond)
+                {
+                    systemData->physicsData.desiredStepsPerSecond++;
+                }
+                systemData->physicsData.timeStep = 1000 / systemData->physicsData.desiredStepsPerSecond;
+            }else{  //...otherwise, it's better to increase the timestep (msecs.)
+                systemData->physicsData.timeStep++;
+                systemData->physicsData.desiredStepsPerSecond = 1000 / systemData->physicsData.timeStep;
+            }
+            log.append (3, "physics rate decreased.");
+            break;
+
+        case SDLK_KP_PLUS:
+            log.put(3, "Processing a SDLK_KP_PLUS keypress...");
+            //if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
+    
+            if (systemData->physicsData.desiredStepsPerSecond < 37)
+            {                
+                systemData->physicsData.desiredStepsPerSecond++;
+                systemData->physicsData.timeStep = 1000 / systemData->physicsData.desiredStepsPerSecond;
+            }else{  //...otherwise, it's better to decrease the timestep (msecs.)
+                //don't let the step time fall below 1 msec. (or don't allow more than 1000fps)
+                if (!--systemData->physicsData.timeStep)
+                {
+                    systemData->physicsData.timeStep++;
+                }
+                systemData->physicsData.desiredStepsPerSecond = 1000 / systemData->physicsData.timeStep;
+            }
+            log.append (3, "physics rate increased.");
+            break;
+
         //this is left for non-assigned input events.
         case 'G':
             log.put(3, "Processing a 'G' keypress: doing nothing...");
