@@ -37,6 +37,8 @@ class Cube
     dGeomID cubeGeomID;
     void updateOgrePosition();
     void updateOgreOrientation();
+    void moveToX ( bool positive );
+    void moveToY (bool positive );
 };
 
 class MospCamera

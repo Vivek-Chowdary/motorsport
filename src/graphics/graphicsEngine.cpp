@@ -46,7 +46,7 @@ GraphicsEngine::GraphicsEngine ( )
     worldData->camera1->ogreCamera =
         graphicsData->ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 3000, 3000, 1000 ) );
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
     worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
     

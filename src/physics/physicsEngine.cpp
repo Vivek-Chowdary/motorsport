@@ -68,8 +68,7 @@ PhysicsEngine::PhysicsEngine ( )
     dMassSetBoxTotal (&mass, 1, 1, 1, 1);
     log->put ( LOG_INFO, "Creating cubes in ODE world");
     
-    const int separation = 150;
-    const int minForce = 100;
+    const int separation = 500;
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
@@ -77,13 +76,7 @@ PhysicsEngine::PhysicsEngine ( )
         dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
 
         dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
-        dBodyAddForce (worldData->cubeList[currentCube].cubeID,
-            random()%2? 1/float(minForce+random()%200):
-                        -1/float(minForce+random()%200),
-            random()%2? 1/float(minForce+random()%200):
-                        -1/float(minForce+random()%200),
-            random()%2? 1/float(minForce+random()%200):
-                        -1/float(minForce+random()%200));
+        dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, 0, 0, float(random()%10)/10000.0);
         worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
         dGeomSetBody (worldData->cubeList[currentCube].cubeGeomID,worldData->cubeList[currentCube].cubeID);
     }
@@ -123,9 +116,23 @@ int PhysicsEngine::step ( void )
 {
     //mega-verbosity
     log->put ( LOG_TRACE, "Doing an step: calculating a physics step" );
-    log->put ( LOG_INFO, "Doing an step.....");
 
+    ////////////////simplified air friction (test) (time independent!!!->FIXME)
+    for ( int currentCube = 0;
+          currentCube < worldData->numberOfCubes; currentCube++ )
+    {
+        dBodySetAngularVel (worldData->cubeList[currentCube].cubeID,
+            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+0),
+            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+1),
+            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+2)*(dReal)(0.95)
+        );
+    }
+    //////////////////////////////////////simplified air friction
+    
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
+    //alternative (x*y), fastest and less accurate physics calculations:
+//    dWorldStepFast1(worldData->worldID, systemData->physicsData.timeStep, 100/*int maxiterations*/);
+    //traditional (x^y), theorycally slowest, and most accurate physics calculations:
     dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
     dJointGroupEmpty (worldData->jointGroupID);
                                                      

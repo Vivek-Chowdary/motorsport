@@ -168,6 +168,19 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
         log->put ( LOG_VERBOSE, "Camera moved." );
         break;
 
+    case 'o':
+        worldData->cubeList[0].moveToX(false);
+        break;
+    case 'p':
+        worldData->cubeList[0].moveToX(true);
+        break;
+    case 'i':
+        worldData->cubeList[0].moveToY(true);
+        break;
+    case 'k':
+        worldData->cubeList[0].moveToY(false);
+        break;
+        
     case SDLK_KP_MINUS:
         log->put ( LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress..." );
         //modify the physics engine rate
