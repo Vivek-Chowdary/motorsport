@@ -14,6 +14,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include <xmlParser.hpp>
 #include "system.hpp"
 
@@ -24,11 +25,8 @@ LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
 int LogEngine::numberOfLogEngines = 0;
 int LogEngine::textBuffer = 128;
 
-LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
+LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logLevel (localLevel), logName (name)
 {
-    // we set the local level of verbosity
-    logLevel = localLevel;
-
     // we set the log name (3 chars, extended with space if needed)
     logName.resize (3, ' ');
 
@@ -36,8 +34,8 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
     {
         std::cout << "Creating first LogEngine instance (" << name << "). Reading LogEngine config file..." << std::endl;
-        XmlFile * xmlFile = new XmlFile ("logConfig.xml");
-        processXmlRootNode (xmlFile->getRootNode());
+        XmlFile *xmlFile = new XmlFile ("logConfig.xml");
+        processXmlRootNode (xmlFile->getRootNode ());
         delete xmlFile;
     }
     // increase logEngines counter
@@ -47,79 +45,51 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     return;
 }
 
-int LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
+void LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
-    // check if we have been told to write this kind of log
-    if (level > globalLevel || level > logLevel)
-        return (-1);
-
-    // TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
-
-    // TODO check returning values
-    // convert parameters to a string
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
     vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
 #else
-//#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
     vsprintf (buffer, textToLogFormat, arglist);
 #endif
     va_end (arglist);
-
-    GuiEngine::getGuiEnginePointer()->addLoadscreenLine (buffer);
-    // put the string with a new line
-    return (put (level, buffer));
+    log (level, LOG_FILE | LOG_LOADSCREEN, buffer);
 }
-int LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
-{
-    // check if we have been told to write this kind of log
-    if (level > globalLevel || level > logLevel)
-        return (-1);
 
-    // TODO use strings instead of simple char*
+void LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
+{
     char buffer[1024];
     va_list arglist;
-
-    // TODO check returning values
-    // convert parameters to a string
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
     vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
 #else
-//#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
     vsprintf (buffer, textToLogFormat, arglist);
 #endif
     va_end (arglist);
-
-    GuiEngine::getGuiEnginePointer()->addTelemetryLine (buffer);
-    // put the string with a new line
-    return (put (level, buffer));
+    log (level, LOG_CONSOLE | LOG_TELEMETRY, buffer);
 }
-int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
-{
-    // check if we have been told to write this kind of log
-    if (level > globalLevel || level > logLevel)
-        return (-1);
 
-    // TODO use strings instead of simple char*
+void LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
+{
     char buffer[1024];
     va_list arglist;
-
-    // TODO check returning values
-    // convert parameters to a string
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
     vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
 #else
-//#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
     vsprintf (buffer, textToLogFormat, arglist);
 #endif
     va_end (arglist);
+    log (level, LOG_FILE, buffer);
+}
 
-    // put the string with a new line
-    return (put (level, buffer));
+void LogEngine::put (LOG_LEVEL level, const char *textToLog)
+{
+    log(level, LOG_FILE, textToLog);
 }
 
 const char *LogEngine::GetLogLevelCode (LOG_LEVEL level)
@@ -141,24 +111,55 @@ const char *LogEngine::GetLogLevelCode (LOG_LEVEL level)
     }
 }
 
-int LogEngine::put (LOG_LEVEL level, const char *textToLog)
+
+void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLogFormat, ...)
 {
-    // check if we have been told to write this kind of log
+    // LOG_LEVEL level = config.level;
+    // LOG_MASK mask = config.mask;
+
+    // apply filter
     if (level > globalLevel || level > logLevel)
-        return (-1);
+        return;
 
-    // write line header
-    logFile << '(' << logName << ")(" << GetLogLevelCode (level) << "): ";
+    // create line, add header
+    std::stringstream logLine;
+    logLine << '(' << logName << ")(" << GetLogLevelCode (level) << "): ";
 
-    // write log text
-    logFile << textToLog << "\n";
-    logFile.flush ();
+    // format string
+    char buffer[2048];
+    va_list arglist;
+    va_start (arglist, textToLogFormat);
+#if defined( _STLPORT_VERSION ) || !defined(WIN32)
+    vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
+#else
+    vsprintf (buffer, textToLogFormat, arglist);
+#endif
+    va_end (arglist);
+    logLine << buffer;
 
+    // send to recievers
+    if (mask & LOG_TELEMETRY)
+    {
+        GuiEngine::getGuiEnginePointer ()->addTelemetryLine (buffer);
+    }
+    if (mask & LOG_CONSOLE)
+    {
+        std::cerr << logLine.str () << std::endl;;
+    }
+    if (mask & LOG_LOADSCREEN)
+    {
+        GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (buffer);
+    }
+    if ((mask & LOG_FILE))
+    {
+        logFile << logLine.str () << "\n";
+        logFile.flush ();
+    }
+    // exit after logging an error
     if (level == LOG_ERROR)
     {
         exit (1);
     }
-    return (0);
 }
 
 LogEngine::~LogEngine ()
@@ -185,7 +186,7 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
             std::string name;
-            assignXmlString (name, n->getNodeName());
+            assignXmlString (name, n->getNodeName ());
             if (name == "logConfig")
             {
                 if (n->hasAttributes ())
@@ -197,45 +198,45 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     {
                         DOMAttr *attNode = (DOMAttr *) attList->item (i);
                         std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
+                        assignXmlString (attribute, attNode->getName ());
                         if (attribute == "globalLevel")
                         {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
+                            attribute.clear ();
+                            assignXmlString (attribute, attNode->getValue ());
                             globalLevel = stologlevel (attribute);
                         }
                         if (attribute == "fileName")
                         {
-                            fileName.clear();
-                            assignXmlString (fileName, attNode->getValue());
+                            fileName.clear ();
+                            assignXmlString (fileName, attNode->getValue ());
                         }
                         if (attribute == "textBuffer")
                         {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
+                            attribute.clear ();
+                            assignXmlString (attribute, attNode->getValue ());
                             textBuffer = stoi (attribute);
                         }
-                        attribute.clear();
+                        attribute.clear ();
                     }
                 }
             }
-            name.clear();
+            name.clear ();
         }
     } else {
         std::cerr << "ERROR: could not read LogEngine configuration values! Using default values." << std::endl;
     }
     std::cout << "Log messages will all be recorded in: " << fileName << std::endl;
-    logFile.open (fileName.c_str(), std::fstream::out);
+    logFile.open (fileName.c_str (), std::fstream::out);
     if (!logFile.good ())
     {
         std::cerr << "ERROR: Logfile (" << fileName << ") could not be opened!\n";
         return;
     }
     put (LOG_INFO, "LogFile created");
-    fileName.clear();
+    fileName.clear ();
 }
 
-LOG_LEVEL stologlevel (const std::string &srcString)
+LOG_LEVEL stologlevel (const std::string & srcString)
 {
     if (srcString == "LOG_ERROR")
         return LOG_ERROR;

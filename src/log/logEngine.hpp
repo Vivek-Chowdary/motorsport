@@ -28,8 +28,22 @@ enum LOG_LEVEL
     LOG_TRACE = 4               // !< Message with lots of information, aimed at debugging.
 };
 
-/// Max. number that can be used as LOG_LEVEL.
-#define MAX_LOG_LEVEL 4
+enum LOG_MASK
+{
+    LOG_FILE = 1,              // !< To standard log file
+    LOG_TELEMETRY = 2,         // !< To telemetry window
+    LOG_LOADSCREEN = 4,        // !< To initial load screen
+    LOG_CONSOLE = 8,           // !< Send to console
+    LOG_FILE_MUTE = 16         // !< Mute default log file output
+    //    LOG_REPLAY = 32,     // !< Merged into replay file
+};
+
+struct LogConfig
+{
+  LOG_LEVEL level;    // !< How important is this log
+  LOG_MASK mask;      // !< Where should we send the log
+};
+
 /// Number of characters for the log instance name.
 /** Number of characters for the log instance name. Those 3 characters (real characters, not counting '\0') can be read in the log file as a way to identify the originator engine.
 */
@@ -89,27 +103,21 @@ class LogEngine
     /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). It's possible to avoid writing a newline before the message.
         @param level level of the log message.
         @param textToLog message that is to be logged if its level is low enough.
-        @return 1 on success.
-        @return -1 if the message level is too high to be logged.
-        @return -2 if there was problem writing to the file. 
     */
-    int put (LOG_LEVEL level, const char *textToLog);
+    void put (LOG_LEVEL level, const char *textToLog);
+    void format (LOG_LEVEL level, const char *textToLogFormat, ...);
+    void telemetry (LOG_LEVEL level, const char *textToLogFormat, ...);
+    void loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...);
 
     // / Writes a printf-like formated log message to the log file.
     /** Writes a printf-like formated log message to the log file, provided its level is low enough (compared to the level of the log engine). A newline is always writen before the message.
         @param level level of the log message.
         @param textToLogFormat first part of a printf-like formated log message.
         @param ... optional additional parameters that complete the log message format.
-        @return 1 on success.
-        @return -1 if the message level is too high to be logged.
-        @return -2 if the message level is incorrect.
-        @return -3 if there was a problem writing to the file.
     */
-    int format (LOG_LEVEL level, const char *textToLogFormat, ...);
+    void log(const LOG_LEVEL level, const int mask, const char *textToLogFormat, ...);
 
-    int telemetry (LOG_LEVEL level, const char *textToLogFormat, ...);
-    int loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...);
-    
+
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();
 };

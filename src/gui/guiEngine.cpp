@@ -158,7 +158,7 @@ void GuiEngine::updateStatistics (void)
     }
 }
 
-void GuiEngine::addTelemetryLine (char * line)
+void GuiEngine::addTelemetryLine (const char * line)
 {
     if (telemetryText.size() == 0)
     {
@@ -169,7 +169,7 @@ void GuiEngine::addTelemetryLine (char * line)
     tempLine.assign (line);
 }
 
-void GuiEngine::addLoadscreenLine (char * line)
+void GuiEngine::addLoadscreenLine (const char * line)
 {
     static unsigned lines = 0;
     const unsigned int nchars = 85;

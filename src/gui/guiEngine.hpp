@@ -55,10 +55,10 @@ class GuiEngine
     */
     int computeStep (void);
 
-    void addTelemetryLine (char * line);
+    void addTelemetryLine (const char * line);
     void hideLoadscreen ();
     void showLoadscreen ();
-    void addLoadscreenLine (char * line);
+    void addLoadscreenLine (const char * line);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
