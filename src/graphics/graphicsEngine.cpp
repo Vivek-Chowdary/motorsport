@@ -158,6 +158,7 @@ int GraphicsEngine::step ( void )
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
         worldData->cubeList[currentCube].updateOgrePosition();
+        worldData->cubeList[currentCube].updateOgreOrientation();
     }
     //Let the listener frames be started and ended: they are needed for particle systems.
     graphicsData->ogreRoot->_fireFrameStarted (  );

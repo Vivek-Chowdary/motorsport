@@ -35,6 +35,7 @@ class Cube
     
     dBodyID cubeID;
     void updateOgrePosition();
+    void updateOgreOrientation();
 };
 
 class MospCamera

@@ -51,7 +51,12 @@ WorldData::~WorldData ( )
 
 void Cube::updateOgrePosition()
 {
-    const dReal * temp = dBodyGetPosition(cubeID);
+    const dReal * temp = dBodyGetPosition(cubeID);//need to allocate memory first??
     cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
 }
 
+void Cube::updateOgreOrientation()
+{
+    const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
+    cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
+}
