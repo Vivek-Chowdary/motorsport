@@ -82,17 +82,15 @@ class SystemData
 {                               //this contains all the data not related with the simulated/virtual world
 
     bool mainLoopEnabled;
-    bool simLoopEnabled;
-    bool guiLoopEnabled;
   public:
     //independent data
-         GraphicsData graphicsData;
+    GraphicsData graphicsData;
     InputData inputData;
     PhysicsData physicsData;
     GuiData guiData;
 
     //main loop time control data
-    Uint32 currentSimLoopTime;
+    Uint32 currentMainLoopTime;
     Uint32 currentPhysicsTime;
     Uint32 lastStatTime;
     int physicsSteps;
@@ -101,16 +99,8 @@ class SystemData
     Uint32 graphicsStepsPerSecond;
 
     bool canMainLoopRun ( void );   //does the program have to keep running?
-    bool canSimLoopRun ( void );    //does the simulation have to keep running?
-    bool canGuiLoopRun ( void );    //does the gui have to keep running?
-
     void enableMainLoop ( void );   //allows the program to start running
-    void enableSimLoop ( void );    //allows the simulation to start running
-    void enableGuiLoop ( void );    //allows the gui to start running
-
     void disableMainLoop ( void );  //allows the program to stop running
-    void disableSimLoop ( void );   //allows the simulation to stop running
-    void disableGuiLoop ( void );   //allows the gui to stop running
 
 };
 

@@ -40,10 +40,6 @@ int GuiEngine::step ( void )
 //makes the graphics engine draw one frame
 {
     log.put ( LOG_VERBOSE, "Doing an step..." );
-    log.put ( LOG_INFO, "Starting simulation." );
-    systemData->enableSimLoop (  );
-    log.put ( LOG_INFO, "Shutting down menu system" );
-    systemData->disableGuiLoop (  );
     log.append ( LOG_VERBOSE, "Ok" );
 
     return ( 0 );

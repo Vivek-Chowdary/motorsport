@@ -74,7 +74,7 @@ int InputEngine::step ( void )  //processes user input queue
             //this can be the user cliking to close the window
             log.put ( LOG_VERBOSE,
                       "New SDL_QUIT event: notifying to stop mainLoop..." );
-            systemData->disableSimLoop (  );
+            systemData->disableMainLoop (  );
             log.append ( LOG_VERBOSE, "Ok" );
             break;
         default:
@@ -120,7 +120,7 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
     case SDLK_ESCAPE:
         log.put ( LOG_VERBOSE,
                   "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop..." );
-        systemData->disableSimLoop (  );
+        systemData->disableMainLoop (  );
         log.append ( LOG_VERBOSE, "Ok" );
         break;
 
@@ -230,8 +230,6 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
 
     case 'q':
         log.put ( LOG_VERBOSE, "Processing a 'Q' keypress: exiting program" );
-        systemData->disableGuiLoop (  );
-        systemData->disableSimLoop (  );
         systemData->disableMainLoop (  );
         log.append ( LOG_VERBOSE, "Ok" );
         break;
