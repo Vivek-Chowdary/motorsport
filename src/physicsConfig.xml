@@ -2,15 +2,17 @@
 <physicsConfig
     localLogLevel = "LOG_INFO"
     localLogName = "FSX"
-    frequency = "150"
+    frequency = "300"
     timeScale = "1"
     pauseStep = "0"
     >
     <ode
-        cfmValue = "default"
-        _cfmValue = "0"
-        erpValue = "default"
-        _erpValue = "1"
+        _cfmValue = "default"
+        __cfmValue = "0.00000001"
+        cfmValue = "0.001"
+        _erpValue = "default"
+        __erpValue = "0.8"
+        erpValue = "0.5"
         stepType = "dWorldStep"
         dWorldStepFast1MaxIterations = "100"
         >

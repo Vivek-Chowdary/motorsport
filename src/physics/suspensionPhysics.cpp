@@ -68,14 +68,9 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     
-/*    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
-*/
-    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
+    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+//    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
     dJointAttach (jointID, 0, 0);
-    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000 ;
-    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
-    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
-
     rotation->degreesToRadians();
 }
 
@@ -87,31 +82,35 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     wheel.setPosition (Vector3d (0, 0, 0));
     wheel.setRotation (rotation);
     wheel.setPosition (position);
-    dJointAttach (jointID, wheel.wheelID, vehicle.body->bodyID);
     wheel.setSuspJoint (jointID);
+//    dJointSetHinge2Param (jointID, dParamHiStop + dParamGroup * (1-1), 0.001);
+//    dJointSetHinge2Param (jointID, dParamLoStop, 0);
+    dJointAttach (jointID, wheel.wheelID, vehicle.body->bodyID);
  
-    dVector3 wheelAxisVector;
-    dJointGetHingeAxis (jointID, wheelAxisVector);
-    dBodySetFiniteRotationAxis (wheel.wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+//    dVector3 wheelAxisVector;
+//    dJointGetHinge2Axis2 (jointID, wheelAxisVector);
+//    dBodySetFiniteRotationAxis (wheel.wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
 
+//    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000 ;
+//    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
+//    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
     setPosition(position);
     setRotation(rotation);
 }
 
 void Suspension::setPosition (Vector3d position)
 {
-    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
-/*    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
-*/
+//    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
+    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
+
 }
 void Suspension::setRotation (Vector3d rotation)
 {
-    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
-//    dJointSetHinge2Axis2 (jointID, rotation.x, rotation.y, rotation.z);
-    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
-/*    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+//    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
+    //dJointSetHinge2Axis2 (jointID, rotation.x, rotation.y, rotation.z);
+//    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
+    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
     dJointSetHingeAxis (jointID, 0,1,0);
-*/
 }
 Vector3d Suspension::getPosition ()
 {

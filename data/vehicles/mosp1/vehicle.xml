@@ -30,7 +30,8 @@
         >
     </brakePedal>
     <engine
-        torqueLinearMultiplier = "140"
+        _torqueLinearMultiplier = "140"
+        torqueLinearMultiplier = "3440"
         engineInertia = "0.2"
         engineFriction = "0.1"
         >
@@ -38,7 +39,8 @@
     <clutch
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
-        maxTorqueTransfer = "160"
+        _maxTorqueTransfer = "160"
+        maxTorqueTransfer = "3460"
         >
     </clutch>
     <shiftUpPaddle

@@ -88,6 +88,7 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 //    if(powered) {
 //        dBodySetFiniteRotationMode (wheelID, 1);
 //    }
+    dBodySetFiniteRotationMode (wheelID, 1);
 }
 
 void Wheel::setPosition (Vector3d position)
@@ -131,13 +132,14 @@ void Wheel::stepPhysics ()
         torque = inputJoint->getTorque();
     }
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
+//    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
+    angularVel = dJointGetHingeAngleRate (suspJointID);
 
     // calculate angular acceleration      
     angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
     // tire rolling resistance
-    torque -= 0.1*angularVel;   
+    torque -= 0.1*angularVel;
 
     // accumulate torques on wheel
     dBodyAddRelTorque (wheelID, 0, 0, powered*torque);
