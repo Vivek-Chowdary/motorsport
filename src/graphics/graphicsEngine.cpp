@@ -46,18 +46,19 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     // Create the camera
     worldData->camera1->ogreCamera =
         systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
+    worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
     // Position it at 500 in Z direction
     worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 0 ) );
     // Look back along -Z
     worldData->camera1->ogreCamera->lookAt ( Vector3 ( 10, 10, 0 ) );
-/*    Quaternion quato;
+    Quaternion quato;
     quato.FromRotationMatrix(Matrix3(   1,0,0,
-                                        0,0,1,
-                                        0,-1,0));
-    worldData->camera1->ogreCamera->setOrientation (quato);
+                                        0,0,-1,
+                                        0,1,0));
+/*    worldData->camera1->ogreCamera->setOrientation (quato);
     */
     //worldData->camera1->ogreCamera->setOrientation (Ogre::Quaternion (x,y,z));
-    worldData->camera1->ogreCamera->setOrientation(Quaternion (-1.0,0.0,0.0,0.0));
+//    worldData->camera1->ogreCamera->setOrientation(Quaternion (-1.0,0.0,0.0,0.0));
 
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
     // Create one viewport, entire window
@@ -70,7 +71,7 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
     // Create the scene
     systemData->graphicsData.ogreSceneManager->setSkyBox ( true,
-                                                           "MotorsportSkyBox" );
+                                                           "MotorsportSkyBox", 5000, true, quato );
 
     for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
