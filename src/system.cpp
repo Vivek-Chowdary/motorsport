@@ -66,3 +66,18 @@ void SystemData::disableGuiLoop ( void )    //allows the gui to stop running{
 {
     guiLoopEnabled = false;
 }
+
+bool GraphicsData::getStatisticsEnabled (  )
+{
+    return statisticsEnabled;
+}
+
+void GraphicsData::invertStatisticsEnabled (  )
+{
+    statisticsEnabled = !statisticsEnabled;
+}
+
+void GraphicsData::enableStatistics (  )
+{
+    statisticsEnabled = true;
+}

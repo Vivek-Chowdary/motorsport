@@ -107,11 +107,11 @@ void SimLoop::Initialize (  )
 void SimLoop::Shutdown (  )
 {
     graphics->stop (  );
-    data->unloadWorldData (  );
 
     physics->stop (  );
     input->stop (  );
 
+    data->unloadWorldData (  );
     systemData->enableGuiLoop (  );
 }
 
@@ -185,7 +185,7 @@ int main ( int argc, char **argv )
             simLoop.Run (  );
             simLoop.Shutdown (  );
         }
-        //systemData.disableMainLoop (  );
+        systemData.disableMainLoop (  );
     }
     mainLoop.Shutdown (  );
 

@@ -130,24 +130,32 @@ void InputEngine::processInput ( SDLKey keySymbol )
         log.put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keypress..." );
         worldData->rectangleList[0].setVisible ( 0 );
         log.append ( LOG_VERBOSE, "rectangle0 is now invisible." );
+        worldData->camera1->ogreCamera->yaw( -10.0f );
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the right.");
         break;
 
     case SDLK_LEFT:
         log.put ( LOG_VERBOSE, "Processing a SDLK_LEFT keypress..." );
         worldData->rectangleList[0].setVisible ( 1 );
         log.append ( LOG_VERBOSE, "rectangle0 is now visible." );
+        worldData->camera1->ogreCamera->yaw( +10.0f );
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the left.");
         break;
 
     case SDLK_UP:
         log.put ( LOG_VERBOSE, "Processing a SDLK_UP keypress..." );
         worldData->rectangleList[1].setVisible ( 0 );
         log.append ( LOG_VERBOSE, "rectangle1 is now invisible." );
+        worldData->camera1->ogreCamera->pitch( +10.0f );
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the top.");
         break;
 
     case SDLK_DOWN:
         log.put ( LOG_VERBOSE, "Processing a SDLK_DOWN keypress..." );
         worldData->rectangleList[1].setVisible ( 1 );
         log.append ( LOG_VERBOSE, "rectangle1 is now visible." );
+        worldData->camera1->ogreCamera->pitch( -10.0f );
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the bottom.");
         break;
 
     case SDLK_SPACE:
@@ -213,13 +221,20 @@ void InputEngine::processInput ( SDLKey keySymbol )
         log.append ( LOG_VERBOSE, "Ok" );
         break;
 
-        //this is left for non-assigned input events.
-    case 'S':
-        log.put ( LOG_VERBOSE, "Processing a 'S' keypress: doing nothing..." );
+    case SDLK_PRINT:
+        log.put ( LOG_INFO, "Taking a screenshot to sshot.png" );
+        systemData->graphicsData.ogreWindow->writeContentsToFile("sshot.png");
+        log.append ( LOG_INFO, "Ok" );
+        break;
+
+    case 'f':
+        log.put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );
         // something
+        systemData->graphicsData.invertStatisticsEnabled();
         log.append ( LOG_VERBOSE, "Ok" );
         break;
 
+        //this is left for non-assigned input events.
     default:
         log.put ( LOG_VERBOSE,
                   "Processing an unknown keypress: doing nothing..." );

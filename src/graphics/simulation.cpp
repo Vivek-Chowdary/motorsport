@@ -35,18 +35,20 @@ Description: Base class for all the OGRE examples
 
 Simulation::Simulation (  )
 {
-    mFrameListener = 0;
     mRoot = 0;
 }
 
     /// Start the example
-void Simulation::go ( int resX, int resY )
+void Simulation::go ( int resX, int resY, WorldData * wrlData,
+                      SystemData * sysData )
 {
+    this->worldData = wrlData;
+    this->systemData = sysData;
     mRoot = new Root (  );
     setupResources (  );
     if ( !configure ( resX, resY ) )
         return /*false */ ;
-        
+
     mSceneMgr = mRoot->getSceneManager ( ST_GENERIC );
     createCamera (  );
     createViewports (  );
@@ -54,25 +56,23 @@ void Simulation::go ( int resX, int resY )
     TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
     // Create the scene
     createScene (  );
-    createFrameListener (  );
+    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
+                                                              graphicsData.
+                                                              anisotropic );
+    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( systemData->
+                                                                    graphicsData.
+                                                                    filtering );
+
     return /*true */ ;
 }
 
     /// Standard destructor
 Simulation::~Simulation (  )
 {
-    if ( mFrameListener )
-        delete mFrameListener;
-
-    if ( mRoot )
-        delete mRoot;
-
-/*    if (mCamera)
-        delete mCamera;
-    if (mWindow)
-        delete mWindow;
-    if (mSceneMgr)
-        delete mSceneMgr;*/
+  //  if ( mRoot )
+    //    delete mRoot;
+ //   if (mSceneMgr)
+//       delete mSceneMgr;
 }
 
     // These internal methods package up the stages in the startup process
@@ -90,7 +90,7 @@ bool Simulation::configure ( int resX, int resY )
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise ( true );
+        systemData->graphicsData.ogreWindow = mRoot->initialise ( true );
         return true;
     }
     return false;
@@ -99,13 +99,13 @@ bool Simulation::configure ( int resX, int resY )
 void Simulation::createCamera ( void )
 {
     // Create the camera
-    mCamera = mSceneMgr->createCamera ( "PlayerCam" );
+    worldData->camera1->ogreCamera = mSceneMgr->createCamera ( "Camera1" );
 
     // Position it at 500 in Z direction
-    mCamera->setPosition ( Vector3 ( 0, 0, 500 ) );
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 500 ) );
     // Look back along -Z
-    mCamera->lookAt ( Vector3 ( 0, 0, -300 ) );
-    mCamera->setNearClipDistance ( 5 );
+    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, -300 ) );
+    worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
 
 }
 bool Simulation::manualInitialize ( const String & desiredRenderer, int resX,
@@ -121,13 +121,13 @@ bool Simulation::manualInitialize ( const String & desiredRenderer, int resX,
     if ( renderers->empty (  ) )
         return false;
 
-    printf("\n\nDesired renderer:[%s]",&(*desiredRenderer));
-    printf("\n\nAvailable renderers(until we find the desired one:");
+    printf ( "\n\nDesired renderer:[%s]", &( *desiredRenderer ) );
+    printf ( "\n\nAvailable renderers(until we find the desired one:" );
     for ( RenderSystemList::iterator it = renderers->begin (  );
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
-        printf("\n\t[%s]",&(*renderSystem->getName()));
+        printf ( "\n\t[%s]", &( *renderSystem->getName (  ) ) );
         if ( strstr
              ( &( *renderSystem->getName (  ) ), &( *desiredRenderer ) ) )
         {
@@ -153,13 +153,6 @@ bool Simulation::manualInitialize ( const String & desiredRenderer, int resX,
     return true;
 }
 
-void Simulation::createFrameListener ( void )
-{
-    mFrameListener = new SimFrameListener ( mWindow, mCamera, false, false );
-    mFrameListener->showDebugOverlay ( true );
-    mRoot->addFrameListener ( mFrameListener );
-}
-
 void Simulation::createScene ( void )   // pure virtual - this has to be overridden
 {
     mSceneMgr->setSkyBox ( true, "MotorsportSkyBox" );
@@ -168,7 +161,9 @@ void Simulation::createScene ( void )   // pure virtual - this has to be overrid
 void Simulation::createViewports ( void )
 {
     // Create one viewport, entire window
-    Viewport *vp = mWindow->addViewport ( mCamera );
+    Viewport *vp =
+        systemData->graphicsData.ogreWindow->addViewport ( worldData->camera1->
+                                                           ogreCamera );
 
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
 }

@@ -36,8 +36,9 @@ Description: Base class for all the OGRE examples
 
 #    include "Ogre.h"
 #    include "OgreConfigFile.h"
-#    include "simframelistener.hpp"
-#include "stdio.h"
+#    include "stdio.h"
+#    include "world.hpp"
+#    include "system.hpp"
 
 using namespace Ogre;
 
@@ -50,17 +51,16 @@ class Simulation
     /// Standard constructor
     Simulation (  );
     /// Start the example
-    void go ( int resX, int resY );
+    void go ( int resX, int resY, WorldData * wrlData, SystemData * sysData );
 
 //  protected:
     Root *mRoot;
-    Camera *mCamera;
     SceneManager *mSceneMgr;
-    SimFrameListener *mFrameListener;
-    RenderWindow *mWindow;
+    WorldData *worldData;
+    SystemData *systemData;
 
     /// Standard destructor
-                ~Simulation (  );
+              ~Simulation (  );
     // These internal methods package up the stages in the startup process
 
     /** Configures the application - returns false if the user chooses to abandon configuration. */
@@ -68,7 +68,6 @@ class Simulation
     void createCamera ( void );
     bool manualInitialize ( const String & desiredRenderer, int resX,
                             int resY );
-    void createFrameListener ( void );
     void createScene ( void );  // pure virtual - this has to be overridden
     virtual void createViewports ( void );
     /// Method which will define the source of resources (other than current folder)

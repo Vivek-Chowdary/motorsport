@@ -40,6 +40,11 @@ int DataEngine::start ( WorldData * wrlData, SystemData * sysData )
 
 int DataEngine::loadWorldData ( void )
 {
+    //create the camera1 and initialize it
+    log.put ( LOG_INFO, "Creating camera1");
+    worldData->camera1 = new MospCamera;
+    log.append ( LOG_INFO, "Ok" );
+
     //create 2 rectangles in the world data
     log.put ( LOG_INFO, "Creating an array of 2 rectangles..." );
     worldData->numberOfRectangles = 2;
@@ -80,6 +85,9 @@ int DataEngine::loadSystemData ( void )
 
     //set screen properties
     log.put ( LOG_INFO, "Setting screen properties..." );
+    systemData->graphicsData.enableStatistics();
+    systemData->graphicsData.anisotropic = 1;
+    systemData->graphicsData.filtering = Ogre::TFO_BILINEAR;
     systemData->graphicsData.width = 640;
     log.format ( LOG_INFO, "w%i", systemData->graphicsData.width );
     systemData->graphicsData.height = 480;
@@ -123,6 +131,10 @@ int DataEngine::unloadWorldData ( void )
     log.put ( LOG_INFO, "Unloading rectangles from memory..." );
     delete[]( worldData->rectangleList );
     log.append ( LOG_INFO, "Ok" );
+    log.put ( LOG_INFO, "Unloading camera1 from memory..." );
+    delete(worldData->camera1->ogreCamera);
+    delete(worldData->camera1);
+    log.append ( LOG_INFO, "Ok" );
 
     return ( 0 );
 }
@@ -133,6 +145,7 @@ int DataEngine::unloadSystemData ( void )
     log.put ( LOG_INFO, "Unloading window data from memory..." );
     delete[]( systemData->graphicsData.title );
     delete[]( systemData->graphicsData.icon );
+    delete(systemData->graphicsData.ogreWindow);
     log.append ( LOG_INFO, "Ok" );
 
     return ( 0 );

@@ -25,6 +25,7 @@
 #include "world.hpp"
 #include "system.hpp"
 #include <string.h>
+#include "Ogre.h"
 
 class DataEngine
 {

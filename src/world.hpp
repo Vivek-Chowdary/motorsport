@@ -24,6 +24,7 @@
 #    define WORLD_HPP
 
 #    include "SDL.h"
+#    include "Ogre.h"
 
 class Rectangle
 {
@@ -45,11 +46,19 @@ class Rectangle
     bool colorSpeed;            //0 -> increasing; 1 -> decreasing
 };
 
+class MospCamera
+{
+  public:
+    Ogre::Camera * ogreCamera;
+
+};
+
 class WorldData
 {                               //this will contain everything related to the simulated/virtual world
   public:
     int numberOfRectangles;
     Rectangle *rectangleList;   //for our example,the worlddata has only 2 rect.
+    MospCamera *camera1;
 };
 
 #endif

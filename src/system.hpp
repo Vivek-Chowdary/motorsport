@@ -24,10 +24,14 @@
 #    define SYSTEM_HPP
 
 #    include "SDL.h"
+#    include "Ogre.h"
 
-struct GraphicsData
+class GraphicsData
 {
-    SDL_Surface *screen;
+  private:
+    bool statisticsEnabled;
+  public:
+    SDL_Surface * screen;
     SDL_PixelFormat *fmt;
 
     int width;
@@ -40,6 +44,14 @@ struct GraphicsData
     int titleLength;
     int iconLength;
 
+    bool getStatisticsEnabled (  );
+    void invertStatisticsEnabled (  );
+    void enableStatistics (  );
+
+    int anisotropic;
+    Ogre::TextureFilterOptions filtering;
+    Ogre::RenderWindow * ogreWindow;
+
     //note that the camera data (origin, dest., angle, focus, etc...) should not
     // be here. that's part of the worldData. there should exist real TV
     // cameras in the track, and the virtual-driver's eyes are the in-car
@@ -48,15 +60,17 @@ struct GraphicsData
     // use of some of the advantages of being a simulation in a computer :)
 };
 
-struct InputData
+class InputData
 {
+    public:
     //here will go the definition of controllers, be it keyboard, mouse, wheel...
     // and probably some other things, such as number of controllers, number of
     // axis available, axis-calibration data...
 };
 
-struct PhysicsData
+class PhysicsData
 {
+    public:
     Uint32 timeStep;
     Uint32 desiredStepsPerSecond;
     // this struct is used by the physics engine. it will store things like
@@ -64,8 +78,9 @@ struct PhysicsData
     // system data for the physicsEngine, but i suppose you get the idea.
 };
 
-struct GuiData
+class GuiData
 {
+    public:
     int nextMenuIndex;          //main menu = 1;  options menu = 2;
     int lastMenuIndex;
 };
@@ -78,10 +93,10 @@ class SystemData
     bool guiLoopEnabled;
   public:
     //independent data
-    struct GraphicsData graphicsData;
-    struct InputData inputData;
-    struct PhysicsData physicsData;
-    struct GuiData guiData;
+    GraphicsData graphicsData;
+    InputData inputData;
+    PhysicsData physicsData;
+    GuiData guiData;
 
     //main loop time control data
     Uint32 currentSimLoopTime;

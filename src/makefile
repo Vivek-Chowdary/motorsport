@@ -66,7 +66,6 @@ SOURCES := \
 	log/logEngine.cpp \
 	data/dataEngine.cpp \
         graphics/simulation.cpp \
-        graphics/simframelistener.cpp \
 	graphics/graphicsEngine.cpp \
 	gui/guiEngine.cpp \
 	physics/physicsEngine.cpp \
@@ -109,7 +108,7 @@ clobber : clean
 	@echo    "---Clobber...---------------------------------"
 	rm -f log*.txt
 	rm -f *.log
-	rm -f *~ */*~
+	rm -f *~ */*~ .*swp */.*swp
 	@echo    "----------------------------------------------"
 
 .PHONY: run
@@ -135,7 +134,7 @@ $(TARGET) :$(OBJECTS)
 	@echo    "Sources:          $(SOURCES)"
 	@echo    "---Exec...------------------------------------"
 	@echo -n "Motorsport successfully compiled!:     "
-	@ls -Falh $(TARGET) |cut -c 39-42
+	@du --si $(TARGET) |cut -c -4
 	@echo    "If you have problems running motorsport,"
 	@echo    "read the doc/developer/README file."
 	@echo    "----------------------------------------------"
