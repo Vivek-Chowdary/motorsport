@@ -53,19 +53,108 @@ double Axis::getValue()
     //return the preprocessed value
     return value;
 }
-Axis::Axis (AXIS_TYPE axisType) : type(axisType), minRawValue(std::numeric_limits<int>::min()), maxRawValue(std::numeric_limits<int>::max())
+Axis::Axis () : minRawValue(std::numeric_limits<int>::min()), maxRawValue(std::numeric_limits<int>::max())
 {
     //empty
 }
-/*Axis::Axis (AXIS_TYPE axisType)
-{
-    minRawValue = 10000000; //this is supposed to be the max possible int value
-    maxRawValue = -1000000; //min possible int value
-    type = axisType;
-}*/
 Axis::~Axis ()
 {
     // delete filters
     // delete filters list
 }
 
+int getIDJoyAxis (int joystickNumber, int axisNumber)
+{
+/*
+    int result = 0;
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
+    result +=  100000000 * 0;
+    result +=    1000000 * 4;
+    result +=       1000 * joystickNumber;
+    result +=          1 * axisNumber;
+    return result;
+*/
+    return 4000000 + (joystickNumber * 1000) + axisNumber;
+}
+int getIDJoyButton (int joystickNumber, int buttonNumber)
+{
+/*
+    int result = 0;
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
+    result +=  100000000 * 0;
+    result +=    1000000 * 3;
+    result +=       1000 * joystickNumber;
+    result +=          1 * buttonNumber;
+    return result;
+*/
+    return 3000000 + (joystickNumber * 1000) + buttonNumber;
+}
+int getIDMouseAxis (int axisNumber)
+{
+/*
+    int result = 0;
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
+    result +=  100000000 * 0;
+    result +=    1000000 * 2;
+    result +=       1000 * 0;
+    result +=          1 * axisNumber;
+    return result;
+*/
+    return 2000000 + axisNumber;
+}
+int getIDMouseButton (int buttonNumber)
+{
+/*
+    int result = 0;
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
+    result +=  100000000 * 0;
+    result +=    1000000 * 1;
+    result +=       1000 * 0;
+    result +=          1 * buttonNumber;
+    return result;
+*/
+    return 1000000 + buttonNumber;
+}
+int getIDKeyboardKey (int keyCode)
+{
+/*
+    int result = 0;
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
+    result +=  100000000 * 0;
+    result +=    1000000 * 0;
+    result +=       1000 * 0;
+    result +=          1 * keyCode;
+    return result;
+*/
+    return keyCode;
+}

@@ -23,31 +23,16 @@
 #   define AXIS_HPP
 #   include <limits>
 
-enum AXIS_TYPE
-{
-    KEYBOARD_KEY = 0,
-    MOUSE_BUTTON = 1,
-    MOUSE_AXIS = 2,
-    MOUSE_WHEEL = 3,
-    JOYSTICK_BUTTON = 4, //st.wheels are joysticks
-    JOYSTICK_AXIS = 5,
-    JOYSTICK_HATAXIS = 6,
-    JOYSTICK_BALLAXIS = 7,
-    TRACKIR_AXIS = 8 //may need to be different, i don't know how trackIr works
-    // any other devices?
-};
-
 class Axis
 {
   private:
-    AXIS_TYPE type; // useful only for the end-user; the program doesn't really care about it, all axis are treated equally.
     int minRawValue; //calibration data (automatically updated)
     int maxRawValue; //calibration data (automatically updated)
     double value; //stores the normalized value
     //std::list < AxisFilter * > axisFilterList; //deadzones, linearity, etc... the AxisFilter class hasn't been coded yet
     
   public:
-    Axis(AXIS_TYPE type);
+    Axis();
     ~Axis();
 
     //management of axis values
@@ -61,5 +46,11 @@ class Axis
     //void insertFilter (AxisFilter * filter);
     // etc...
 };
+
+int getIDJoyAxis (int joystickNumber, int axisNumber);
+int getIDJoyButton (int joystickNumber, int buttonNumber);
+int getIDMouseAxis (int axisNumber);
+int getIDMouseButton (int buttonNumber);
+int getIDKeyboardKey (int keyCode);
 
 #endif
