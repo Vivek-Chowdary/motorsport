@@ -54,7 +54,7 @@ int DataEngine::loadWorldData (void)
     log->format (LOG_INFO, "Creating %i cameras", numberOfCameras);
     for (int i = 0; i < numberOfCameras; i++)
     {
-        Camera *cameraPointer = new Camera (i, -2000, -2000, 500, 0, 0, 0);
+        Camera *cameraPointer = new Camera (i, -20, -20, 5, 0, 0, 0);
         Camera::cameraList.push_back (cameraPointer);
     }
     log->put (LOG_INFO, "Setting camera viewport");
@@ -65,17 +65,17 @@ int DataEngine::loadWorldData (void)
     // Create the skybox
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
-    systemData->ogreSceneManager->setSkyBox (true, "skybox", 5000, true, rotationToZAxis);
+    systemData->ogreSceneManager->setSkyBox (true, "skyboxMaterial", 5000, true, rotationToZAxis);
 
     // Create the cubes
-    int numberOfCubes = 200;
+    int numberOfCubes = 20;
     log->format (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
     for (int i = 0; i < numberOfCubes; i++)
     {
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
-        const int separation = 250;
+        const int separation = 4;
         Cube *cubePointer;
-        cubePointer = new Cube (i, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
+        cubePointer = new Cube (i, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
         Cube::cubeList.push_back (cubePointer);
     }
 
@@ -97,6 +97,4 @@ DataEngine::~DataEngine (void)
 {
     // finally stop the log engine
     delete log;
-
-//    processConfigFile ( "mainConfig.xml" );
 }

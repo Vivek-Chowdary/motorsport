@@ -10,7 +10,7 @@
         author = "Bruno Gonzalez Campo (STenyaK)"
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        material = "cube"
+        material = "cubeMaterial"
         mesh = "../data/cube.mesh"
         ogreName = "cube%i"
         >
@@ -19,7 +19,7 @@
         author = "Bruno Gonzalez Campo (STenyaK)"
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        size = "100"
+        size = "2"
         >
     </physics>
 </cube>

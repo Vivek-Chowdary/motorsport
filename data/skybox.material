@@ -1,4 +1,4 @@
-material skybox
+material skyboxMaterial
 {
     technique
     {
@@ -10,21 +10,6 @@ material skybox
             {
             cubic_texture mospSky.jpg separateUV
             tex_address_mode clamp
-            }
-        }
-    }
-}
-material cube
-{
-    technique
-    {
-        pass
-        {
-            lighting off
-            ambient 5.2 5.2 5.2
-            texture_unit
-            {
-                texture cubetexture.jpg
             }
         }
     }

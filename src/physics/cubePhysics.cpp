@@ -23,21 +23,9 @@
 
 void Cube::startPhysics (float posX, float posY, float posZ, CubePhysicsData * physics)
 {
-/*    dMass mass;
-
-    dMassSetBox ( &mass, 1, physicsData->size, physicsData->size,
-                  physicsData->size );
-    cubeID = dBodyCreate ( WorldData::getWorldDataPointer (  )->worldID );
-    dBodySetPosition ( cubeID, posX, posY, posZ );
-    cubeGeomID =
-        dCreateBox ( WorldData::getWorldDataPointer (  )->spaceID,
-                     physicsData->size, physicsData->size,
-                     physicsData->size );
-    dGeomSetBody ( cubeGeomID, cubeID );*/
-
     dMass mass;
 
-    dMassSetBox (&mass, 1, physics->size, physics->size, physics->size);
+    dMassSetBox (&mass, 1000, physics->size, physics->size, physics->size);
     cubeID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
     dBodySetPosition (cubeID, posX, posY, posZ);
     cubeGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->size, physics->size, physics->size);
@@ -62,7 +50,7 @@ void Cube::stepPhysics ()
     moveToX -= getMoveToXNegative ();
     moveToY += getMoveToYPositive ();
     moveToY -= getMoveToYNegative ();
-    moveToX /= 200;
-    moveToY /= 200;
+    moveToX /= 10000;
+    moveToY /= 10000;
     dBodyAddForce (cubeID, moveToX, moveToY, 0.0f);
 }

@@ -51,8 +51,8 @@ PhysicsEngine::PhysicsEngine ()
     worldData->spaceID = dHashSpaceCreate (0);
     worldData->jointGroupID = dJointGroupCreate (0);
 
-//    log->put ( LOG_INFO, "Setting ODE world gravity");
-//    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
+    log->put ( LOG_INFO, "Setting ODE world gravity");
+    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
 
     if (data->cfmValue != -1)
     {
@@ -141,6 +141,8 @@ int PhysicsEngine::computeStep (void)
         x -= (Camera::cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
         z -= (Camera::cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
         z += (Camera::cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
+        x /= 100;
+        z /= 100;
         Camera::cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
     }
     {

@@ -2,7 +2,7 @@
 <physicsConfig
     localLogLevel = "LOG_INFO"
     localLogName = "FSX"
-    frequency = "30"
+    frequency = "150"
     >
     <ode
         cfmValue = "default"
