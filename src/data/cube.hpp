@@ -23,15 +23,10 @@
 #   define CUBE_HPP
 #   include "ode.h"
 #   include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#   include <vector>
+#   include "OgreNoMemoryMacros.h"
 #   include "system.hpp"
-#   include "world.hpp"
-#   include "xmlParser.hpp"
-#   include "logEngine.hpp"
 #   include "worldObject.hpp"
 
-struct CubeData;
 struct CubePhysicsData;
 struct CubeGraphicsData;
 
@@ -58,21 +53,19 @@ class Cube : public WorldObject
     void processXmlRootNode (DOMNode * n);
 
     // physics
-    void startPhysics (CubePhysicsData * physics);
+    void startPhysics (DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
     dBodyID cubeID;
     dGeomID cubeGeomID;
     void setPosition (float posX, float posY, float posZ);
-    void processPhysicsDataNode (DOMNode * n);
 
     // graphics
-    void startGraphics (CubeGraphicsData * graphics);
+    void startGraphics (DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
     Ogre::Entity * cubeEntity;
     Ogre::SceneNode * cubeNode;
-    void processGraphicsDataNode (DOMNode * n);
 
     // input
     void startInput ();

@@ -195,7 +195,6 @@ SOURCES := \
 	data/logParser.cpp \
 	data/dataParser.cpp \
 	data/graphicsParser.cpp \
-	data/cubeDataParser.cpp \
 	data/bodyDataParser.cpp \
 	data/physicsParser.cpp \
 	data/inputParser.cpp \

@@ -72,3 +72,85 @@ void Cube::updateOgreOrientation ()
     const dReal *temp = dBodyGetQuaternion (cubeID);    // need to allocate memory first??
     cubeNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
+
+void Cube::processXmlRootNode (DOMNode * n)
+{
+    if (n)
+    {
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (n->getNodeName ());
+            log->format (LOG_TRACE, "Name: %s", name);;
+
+            if (!strncmp (name, "cube", 5))
+            {
+                log->put (LOG_TRACE, "Found the cube main data config element.");
+                if (n->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "name", 5))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the name: %s", name);
+                        }
+                        if (!strncmp (name, "description", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the description: %s", name);
+                        }
+                        if (!strncmp (name, "author", 7))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the author: %s", name);
+                        }
+                        if (!strncmp (name, "contact", 8))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                        }
+                        if (!strncmp (name, "license", 8))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the license: %s", name);
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
+                {
+                    if (n)
+                    {
+                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+                        {
+                            char *name = XMLString::transcode (n->getNodeName ());
+                            log->format (LOG_TRACE, "Name: %s", name);;
+                            if (!strncmp (name, "graphics", 9))
+                            {
+                                log->put (LOG_TRACE, "Found the cube graphics data element.");
+                                startGraphics (n);
+                            }
+                            if (!strncmp (name, "physics", 8))
+                            {
+                                log->put (LOG_TRACE, "Found the cube physics data element.");
+                                startPhysics (n);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    startInput ();
+}
+

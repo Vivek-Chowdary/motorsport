@@ -22,7 +22,6 @@
 #ifndef WORLDOBJECT_HPP
 #   define WORLDOBJECT_HPP
 #   include "system.hpp"
-#   include "world.hpp"
 #   include "xmlParser.hpp"
 #   include "logEngine.hpp"
 
@@ -37,18 +36,18 @@ class WorldObject
     virtual void processXmlRootNode (DOMNode * n) = 0;
     
     // physics
-    virtual void processPhysicsDataNode (DOMNode * n) = 0;
-    virtual void stepPhysics () = 0;
-    virtual void stopPhysics () = 0;
+    virtual void startPhysics (DOMNode * n){};
+    virtual void stepPhysics (){};
+    virtual void stopPhysics (){};
 
     // graphics
-    
-    virtual void processGraphicsDataNode (DOMNode * n) = 0;
-    virtual void stepGraphics () = 0;
-    virtual void stopGraphics () = 0;
+    virtual void startGraphics (DOMNode * n){};
+    virtual void stepGraphics (){};
+    virtual void stopGraphics (){};
 
     // input
-    virtual void stepInput () = 0;
-    virtual void stopInput () = 0;
+    virtual void startInput (DOMNode * n){};
+    virtual void stepInput (){};
+    virtual void stopInput (){};
 };
 #endif
