@@ -70,12 +70,21 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
 
 void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 {
-    // Load resource paths from config file
-    Ogre::ConfigFile cf;
-    log->put (LOG_INFO, "Loading ogre config filename into memory...");
-    cf.load (ogreConfigFile.c_str());
+    //load some default constant resources
+    Ogre::ResourceManager::addCommonArchiveEx ("../data","FileSystem");
+    Ogre::ResourceManager::addCommonArchiveEx ("../data/gui","FileSystem");
+    Ogre::ResourceManager::addCommonArchiveEx ("../data/vehicles","FileSystem");
+    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks","FileSystem");
+    Ogre::ResourceManager::addCommonArchiveEx ("../data/parts/cube","FileSystem");
+//    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround","FileSystem");
+//    Ogre::ResourceManager::addCommonArchiveEx ("../data/vehicles/testCar","FileSystem");
+//    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround/skybox.zip","Zip");
+//    Ogre::MaterialManager::getSingleton().parseAllSources();
 
-    // Go through all settings in the file
+    // Load some the user resources
+    Ogre::ConfigFile cf;
+    log->put (LOG_INFO, "Loading user resources into memory...");
+    cf.load (ogreConfigFile.c_str());
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator ();
     Ogre::String typeName, archName;
     while (i.hasMoreElements ())
