@@ -75,13 +75,18 @@ Vehicle::~Vehicle ()
 void Vehicle::setUserDriver ()
 {
     userDriver = true;
+    log->log (LOG_ENDUSER, LOG_TELEMETRY, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
+
+    // engage neutral gear
+    gearbox->setGear(1);
+
+    // spread the news to the necessary (input-able) vehicle parts
     engine->setUserDriver();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
         suspIter->second->setUserDriver();
     }
-    log->log (LOG_ENDUSER, LOG_TELEMETRY, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 }
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -245,8 +250,9 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     transfer->enable();
     rearDiff->enable();
     
-    //start in neutral (hardcoded to 1)
-    gearbox->setGear(1);
+    //start in 1st gear (hardcoded to 2)
+    // this helps brake the vehicle (since it's not user-controlled by default and would roll around freely otherwise)
+    gearbox->setGear(2);
 
     startPhysics(NULL);
     stepGraphics();
