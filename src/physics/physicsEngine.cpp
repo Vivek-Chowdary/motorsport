@@ -60,24 +60,36 @@ PhysicsEngine::PhysicsEngine ( )
     worldData->jointGroupID = dJointGroupCreate (0);
     log->put ( LOG_INFO, "Setting ODE world gravity");
 //    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
-    dWorldSetCFM (worldData->worldID, 1e-5);
-    dWorldSetERP (worldData->worldID, 0.8);
+    //dWorldSetCFM (worldData->worldID, 1e-5);
+    //dWorldSetERP (worldData->worldID, 0.8);
+    //dWorldSetCFM (worldData->worldID, 1e-5);
+    //dWorldSetERP (worldData->worldID, 0.8);
     log->put ( LOG_INFO, "Creating sample mass");
     dMass mass;
     log->put ( LOG_INFO, "Assigning box mass values");
-    dMassSetBoxTotal (&mass, 1, 1, 1, 1);
+    dMassSetBoxTotal (&mass, 10, 1, 1, 1);
     log->put ( LOG_INFO, "Creating cubes in ODE world");
     
-    const int separation = 500;
+    const int separation = 150;
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
         worldData->cubeList[currentCube].cubeID = dBodyCreate (worldData->worldID);
-        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
 
+        if (currentCube+1 == worldData->numberOfCubes)
+        {
+            const float width = 1000000.0;
+            dMassSetBox (&mass, 1, width, width, width);
+            dBodySetMass(worldData->cubeList[currentCube].cubeID,&mass);
+            dBodySetPosition (worldData->cubeList[currentCube].cubeID, 0, 0, (-width/2)-1000); 
+//            dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, 0, 0, float(random()%10)/10000.0);
+            worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, width,width,width);
+        }else{
         dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
-        dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, 0, 0, float(random()%10)/10000.0);
-        worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
+            dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
+            dBodySetAngularVel (worldData->cubeList[currentCube].cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
+            worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
+        }
         dGeomSetBody (worldData->cubeList[currentCube].cubeGeomID,worldData->cubeList[currentCube].cubeID);
     }
 }
@@ -128,6 +140,7 @@ int PhysicsEngine::step ( void )
         );
     }
     //////////////////////////////////////simplified air friction
+    dBodySetLinearVel  (worldData->cubeList[worldData->numberOfCubes-1].cubeID, 0,0,0);
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
     //alternative (x*y), fastest and less accurate physics calculations:
@@ -175,8 +188,15 @@ int PhysicsEngine::step ( void )
 
 PhysicsEngine::~PhysicsEngine ( void )
 {
-    log->put ( LOG_INFO, "Removing ODE world data from memory");
-    dCloseODE();
+    log->put ( LOG_INFO, "Destroying ODE world");
+    dSpaceDestroy(worldData->spaceID); 
+    log->put ( LOG_INFO, "Destroying ODE main collision space");
+    dWorldDestroy(worldData->worldID); 
+    log->put ( LOG_INFO, "Destroying ODE joints group");
+    dJointGroupDestroy(worldData->jointGroupID); 
+    log->put ( LOG_INFO, "Shutting down ODE");
+    dCloseODE(); 
+    
     //finally stop the log engine
     delete log;
 }
