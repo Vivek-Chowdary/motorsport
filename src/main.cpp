@@ -48,30 +48,34 @@ int main (int argc, char **argv)
     new SystemData ();
     log->put (LOG_INFO, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
-    log->put (LOG_INFO, "Creating physics engine");
-    PhysicsEngine *physicsEngine = new PhysicsEngine ();
     log->put (LOG_INFO, "Creating gui engine");
     GuiEngine *guiEngine = new GuiEngine ();
+    log->loadscreen(LOG_INFO, "Showing load screen...");
+    guiEngine->showLoadscreen ();
+    log->loadscreen (LOG_INFO, "Creating physics engine...");
+    PhysicsEngine *physicsEngine = new PhysicsEngine ();
 
-    log->put (LOG_INFO, "Starting SDL subsystems");
+    log->loadscreen (LOG_INFO, "Starting SDL subsystems...");
     startSdl (log);
-    log->put (LOG_INFO, "Creating input engine");
+    log->loadscreen (LOG_INFO, "Creating input engine...");
     InputEngine *inputEngine = new InputEngine ();
 
-    log->put (LOG_INFO, "Getting system data pointer");
+    log->loadscreen (LOG_INFO, "Getting system data pointer...");
     SystemData *systemData = SystemData::getSystemDataPointer ();
 
     // We load the world data from hdd into memory.
     log->put (LOG_INFO, "( 2 ): Loading world data...");
-    log->put (LOG_INFO, "Loading initial world data");
+    log->loadscreen (LOG_INFO, "Loading initial world data...");
     new World ("default.xml");
 
     // We start the main loop.
     log->put (LOG_INFO, "( 3 ): Starting simulation...");
-    log->put (LOG_INFO, "Initializating main loop");
+    log->loadscreen (LOG_INFO, "Initializating main loop");
     systemData->statisticsTime = systemData->simulationTime = SDL_GetTicks ();
-    log->put (LOG_INFO, "Enabling main loop");
+    log->loadscreen (LOG_INFO, "Enabling main loop");
     systemData->enableMainLoop ();
+    log->loadscreen (LOG_INFO, "Hiding load screen");
+    guiEngine->hideLoadscreen();
     log->put (LOG_INFO, "Starting main loop");
     while (systemData->isMainLoopEnabled ())
     {

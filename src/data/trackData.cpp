@@ -94,7 +94,7 @@ void Track::processXmlRootNode (DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the name: %s", name.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the name: %s", name.c_str());
                         }
                         if (attribute == "revision")
                         {
@@ -107,13 +107,13 @@ void Track::processXmlRootNode (DOMNode * n)
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the description: %s", description.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
                             author.clear();
                             assignXmlString (author, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the author: %s", author.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
@@ -274,7 +274,7 @@ void Track::processXmlRootNode (DOMNode * n)
     }
 
     //load cubes
-    log->format (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
+    log->loadscreen (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
     for (int i = 0; i < numberOfCubes; i++)
     {
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
@@ -300,7 +300,7 @@ void Track::processXmlRootNode (DOMNode * n)
         }
     }
 
-    //load ground
+    log->loadscreen (LOG_INFO, "Creating the track ground");
     log->put (LOG_INFO, "Creating the ode plane");
     dCreatePlane (World::getWorldPointer()->spaceID, 0, 0, 1, groundHeight);
     Ogre::Plane plane;
@@ -314,7 +314,8 @@ void Track::processXmlRootNode (DOMNode * n)
     pOgreSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(pPlaneEnt);
     trackBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
 
-    //load sky
+    // FIXME should be part of the world, not the track
+    log->loadscreen (LOG_INFO, "Creating the track sky");
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);

@@ -13,6 +13,9 @@
 //forward declaration
 class SystemData;
 class LogEngine;
+namespace Ogre {
+    class Camera;
+};
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
@@ -30,7 +33,9 @@ class GuiEngine
     // / Allows or disallows to show statistics on screen
     bool showStatistics;
     std::string telemetryText;
+    std::string loadscreenText;
     std::string tempLine;
+    Ogre::Camera * tmpOgreCamera;
     int telemetryLines;
   public:
     // / Creates a new gui engine.
@@ -51,6 +56,9 @@ class GuiEngine
     int computeStep (void);
 
     void addTelemetryLine (char * line);
+    void hideLoadscreen ();
+    void showLoadscreen ();
+    void addLoadscreenLine (char * line);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 

@@ -39,6 +39,8 @@ GuiEngine::GuiEngine ()
 
         // updating singleton pointer
         guiEnginePointer = this;
+        tmpOgreCamera = 0;
+        loadscreenText = "";
     }
 }
 
@@ -82,10 +84,38 @@ int GuiEngine::computeStep (void)
         overlay->hide ();
         telemetryOverlay->hide ();
     }
-
     return (0);
 }
 
+void GuiEngine::showLoadscreen ()
+{
+    tmpOgreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera ("Loadscreen camera");
+    tmpOgreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
+    tmpOgreCamera->setPosition (Ogre::Vector3 (30, 30, 10));
+    tmpOgreCamera->lookAt (Ogre::Vector3 (0, 0, 0));
+    tmpOgreCamera->setNearClipDistance (0.100);
+    SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
+    SystemData::getSystemDataPointer()->ogreWindow->addViewport (tmpOgreCamera, -1);
+
+    Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
+    if (!loadscreenOverlay)
+    {
+        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
+    }
+    loadscreenOverlay->show();
+}
+void GuiEngine::hideLoadscreen ()
+{
+    Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
+    if (!loadscreenOverlay)
+    {
+        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
+    }
+    loadscreenOverlay->hide();
+    delete tmpOgreCamera;
+    tmpOgreCamera = NULL;
+    SystemData::getSystemDataPointer()->ogreWindow->removeViewport (-1);
+}
 
 void GuiEngine::updateStatistics (void)
 {
@@ -134,6 +164,16 @@ void GuiEngine::addTelemetryLine (char * line)
         telemetryText.append (line);
     }
     tempLine.assign (line);
+}
+
+void GuiEngine::addLoadscreenLine (char * line)
+{
+    std::string tmp = loadscreenText;
+    loadscreenText.assign (line);
+    loadscreenText.append ("\n");
+    loadscreenText.append (tmp);
+    GuiElement *loadText = GuiManager::getSingleton ().getGuiElement ("loadscreen/text");
+    loadText->setCaption (loadscreenText);
 }
 
 GuiEngine::~GuiEngine (void)

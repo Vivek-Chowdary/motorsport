@@ -108,6 +108,7 @@ class LogEngine
     int format (LOG_LEVEL level, const char *textToLogFormat, ...);
 
     int telemetry (LOG_LEVEL level, const char *textToLogFormat, ...);
+    int loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...);
     
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();

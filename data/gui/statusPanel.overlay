@@ -92,7 +92,7 @@ gui
 
 telemetry
 {
-	zorder 500
+	zorder 600
 	// Stats block
 	container BorderPanel(telemetry/StatPanel)
 	{
@@ -145,6 +145,56 @@ telemetry
 			top 25
 			width 620
 			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			colour_top 0.67 0.7 0.7
+			colour_bottom 0.67 0.7 0.7
+		}
+	}
+}
+
+loadscreen
+{
+	zorder 400
+	// Stats block
+	container BorderPanel(loadscreen/StatPanel)
+	{
+		metrics_mode pixels
+		vert_align middle
+                horz_align middle
+		left -320
+		top -240
+		width 640
+		height 480
+		material gui/StatsBlockCenter
+        	border_size 2 2 2 2
+        	border_material gui/StatsBlockBorder
+        	border_topleft_uv     0.0000 1.0000 0.0039 0.9961
+	    	border_top_uv         0.0039 1.0000 0.9961 0.9961
+	    	border_topright_uv    0.9961 1.0000 1.0000 0.9961
+	    	border_left_uv        0.0000 0.9961 0.0039 0.0039
+	    	border_right_uv       0.9961 0.9961 1.0000 0.0039
+	    	border_bottomleft_uv  0.0000 0.0039 0.0039 0.0000
+        	border_bottom_uv      0.0039 0.0039 0.9961 0.0000
+	    	border_bottomright_uv 0.9961 0.0039 1.0000 0.0000
+
+		container Panel(loadscreen/BreakPanel)
+		{
+			metrics_mode pixels
+			left 10 
+			top 19
+			width 620
+			height 1
+			material gui/StatsBreak
+		}
+		    
+		element TextArea(loadscreen/text)
+		{
+			metrics_mode pixels
+			left 10
+			top 5
+			width 630
+			height 470
 			font_name TrebuchetMSBold
 			char_height 16
 			colour_top 0.67 0.7 0.7

@@ -109,7 +109,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the name: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
                             Vector3d position;
                             position = stov3d (attribute);
                         }
@@ -117,7 +117,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the name: %s", name.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the name: %s", name.c_str());
                         }
                         if (attribute == "revision")
                         {
@@ -130,19 +130,19 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the description: %s", description.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
                             author.clear();
                             assignXmlString (author, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the author: %s", author.c_str());
+                            log->loadscreen (LOG_TRACE, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
                             contact.clear();
                             assignXmlString (contact, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
+                            log->format (LOG_TRACE, "Found the author contact information: %s", contact.c_str());
                         }
                         if (attribute == "license")
                         {
@@ -208,6 +208,11 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             nodeName.clear();
         }
     }
+
+    log->loadscreen (LOG_TRACE, "Creating the vehicle cameras");
+    processXmlCameraListNode(cameraListNode);
+
+    log->loadscreen (LOG_TRACE, "Creating the vehicle components");
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
     clutch = new Clutch (clutchNode);
@@ -216,6 +221,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     transfer = new Gear ();
     rearDiff = new LSD ();
     
+    log->loadscreen (LOG_TRACE, "Attaching the vehicle components together");
     clutch->setOutputPointer(gearbox);
     transfer->setOutputPointer(finalDrive);
     
@@ -225,7 +231,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         
     processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
-    processXmlCameraListNode(cameraListNode);
 
     rearDiff->setOutputPointer(wheelMap["RearRight"]);
     rearDiff->setOutputPointer2(wheelMap["RearLeft"]);

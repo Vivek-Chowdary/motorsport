@@ -43,7 +43,7 @@ World::World (char * xmlFilename)
         std::string file = SystemData::getSystemDataPointer()->dataDir;
         file.append("/worlds/");
         file.append(xmlFilename);
-        log->format(LOG_INFO,"Reading %s world file", file.c_str());
+        log->loadscreen(LOG_INFO,"Reading %s world file", file.c_str());
         XmlFile* xmlFile = new XmlFile (file.c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
@@ -116,13 +116,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->format (LOG_INFO, "Found the world name: %s", name.c_str());
+                            log->loadscreen (LOG_INFO, "Found the world name: %s", name.c_str());
                         }
                         if (attribute == "description")
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->format (LOG_INFO, "Found the world description: %s", description.c_str());
+                            log->loadscreen (LOG_INFO, "Found the world description: %s", description.c_str());
                         }
                         if (attribute == "useTrackCamera")
                         {
@@ -232,7 +232,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
 /////////////////////////////////// */
 
-    log->put (LOG_INFO, "Creating ODE world");
+    log->loadscreen (LOG_INFO, "Creating ODE world");
     dRandSetSeed(0);
     worldID = dWorldCreate ();
     ghostWorldID = dWorldCreate ();
@@ -255,12 +255,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
     // load track (and its cameras)
+    log->loadscreen (LOG_INFO, "Creating a track");
     Track * track = new Track (trackDirectory);
     //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     trackList.push_back (track);
 
     // load vehicle (and its cameras)
-    log->put (LOG_INFO, "Creating a vehicle");
+    log->loadscreen (LOG_INFO, "Creating a vehicle");
     Vehicle * vehicle = new Vehicle (vehicleDirectory);
     vehicleList.push_back (vehicle);
     
@@ -286,7 +287,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 
     // set active camera
-    log->put (LOG_INFO, "Setting camera viewport");
+    log->loadscreen (LOG_INFO, "Setting camera viewport");
     if (useTrackCamera)
     {
         //err... use... track camera, i guess.
