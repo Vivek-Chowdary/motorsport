@@ -68,8 +68,8 @@ LIBRARIES := \
 
 SOURCES := \
 	log/logEngine.cpp \
-        data/cube.cpp \
-        data/camera.cpp \
+        data/cubeData.cpp \
+        data/cameraData.cpp \
 	data/dataEngine.cpp \
         graphics/cubeGraphics.cpp \
         graphics/cameraGraphics.cpp \
