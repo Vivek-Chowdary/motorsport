@@ -16,7 +16,6 @@
 
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    std::string material = "None";
     std::string mesh = "None";
     std::string ogreName = "None";
     if (n->hasAttributes ())
@@ -28,12 +27,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "material")
-            {
-                material.clear();
-                assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "Found the body graphics material: %s", material.c_str());
-            }
             if (attribute == "mesh")
             {
                 mesh.clear();
@@ -52,11 +45,16 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     char name[256];
     sprintf (name, ogreName.c_str(), instancesCount);
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
-   bodyEntity->setMaterialName (material.c_str());
+
+    log->format (LOG_TRACE, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
+    for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
+    {
+        log->format (LOG_TRACE, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
+    }
+
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
  
-    material.clear();
     mesh.clear();
     ogreName.clear();
 }
@@ -70,4 +68,3 @@ void Body::stopGraphics ()
 {
     // empty
 }
-

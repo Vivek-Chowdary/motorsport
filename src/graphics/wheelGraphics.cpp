@@ -16,7 +16,6 @@
 
 void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    std::string material = "None";
     std::string mesh = "None";
     if (n->hasAttributes ())
     {
@@ -27,12 +26,6 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "material")
-            {
-                material.clear();
-                assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel graphics material: %s", material.c_str());
-            }
             if (attribute == "mesh")
             {
                 mesh.clear();
@@ -47,11 +40,16 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     ogreName.append ("%i");
     sprintf (name, ogreName.c_str(), instancesCount);
     wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
-   wheelEntity->setMaterialName (material.c_str());
+
+    log->format (LOG_TRACE, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
+    for(unsigned int i = 0; i < wheelEntity->getNumSubEntities(); i++)
+    {
+        log->format (LOG_TRACE, "Wheel submesh %i material: %s", i, wheelEntity->getSubEntity(i)->getMaterialName().c_str() );
+    }
+
     wheelNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     wheelNode->attachObject (wheelEntity);
  
-    material.clear();
     mesh.clear();
     ogreName.clear();
 }
@@ -65,4 +63,3 @@ void Wheel::stopGraphics ()
 {
     // empty
 }
-

@@ -1,109 +1,47 @@
 material rim/SOLID/mosp1wheel.tga
 {
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      ambient 3.2 3.2 3.2
-      diffuse 0.800000 0.800000 0.800000
-      specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
-    }
-  }
-}
-
-
-material rim/SOLID/
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-        // ambient 2.200000 2.200000 2.200000
-        ambient 5.2 5.2 5.2
-        //diffuse 0.800000 0.800000 0.800000
-        //specular 0.500000 0.500000 0.500000 50.000000
-        //emissive 0.000000 0.000000 0.000000
-        texture_unit
-        {
-                texture mosp1wheel1.tga
-        }
-        texture_unit
-        {
-                colour_op modulate
-                cubic_texture mospSky.jpg combinedUVW
-                env_map cubic_normal
-        }
-        texture_unit
-        {
-                texture mosp1wheel2.tga
-                colour_op alpha_blend
-                alpha_rejection less 255
-        }
-    }
-  }
-}
-
-material suspension/SOLID/
-{
-  receive_shadows on
+  receive_shadows off
   technique
   {
     pass
     {
       ambient 5.2 5.2 5.2
-      diffuse 0.700000 0.700000 0.700000
-      specular 0.200000 0.200000 0.200000 180.000000
-      emissive 0.000000 0.000000 0.000000
+      //diffuse 0.800000 0.800000 0.800000
+      //specular 0.500000 0.500000 0.500000 50.000000
+      //emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+	texture mosp1wheel1.tga
+      }
+      texture_unit
+      {
+              colour_op modulate
+              cubic_texture mospSky.jpg combinedUVW
+              env_map cubic_normal
+      }
+
+
     }
   }
 }
+
 
 material wheel/SOLID/mosp1wheel.tga
 {
-  receive_shadows on
+  receive_shadows off
   technique
   {
     pass
     {
       ambient 5.2 5.2 5.2
-      diffuse 0.400000 0.400000 0.400000
-      specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
+      //diffuse 0.400000 0.400000 0.400000
+      //specular 0.500000 0.500000 0.500000 50.000000
+      //emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+              texture mosp1wheel2.tga
+      }
+
     }
   }
 }
-
-material brakedisc/SOLID/
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      ambient 5.2 5.2 5.2
-      diffuse 0.800000 0.800000 0.800000
-      specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
-    }
-  }
-}
-
-material suspension/ALPHA/
-{
-  receive_shadows on
-  technique
-  {
-    pass
-    {
-      ambient 5.2 5.2 5.2
-      diffuse 0.700000 0.700000 0.700000
-      specular 0.200000 0.200000 0.200000 180.000000
-      emissive 0.000000 0.000000 0.000000
-      scene_blend alpha_blend 
-    }
-  }
-}
-

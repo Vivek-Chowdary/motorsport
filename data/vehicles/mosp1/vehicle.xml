@@ -8,7 +8,6 @@
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <body
-        material = "mosp1bodyMaterial"
         mesh = "../data/vehicles/mosp1/body.mesh"
         ogreName = "mosp1Body"
         length = "4.66"
@@ -100,7 +99,6 @@
             radius = "0.34"
             width = "0.125"
             powered = "0"
-            material = "rim/SOLID/"
             mesh = "../data/vehicles/mosp1/wheel_front.mesh"
             >
         </wheel>
@@ -110,7 +108,6 @@
             radius = "0.34"
             width = "0.125"
             powered = "0"
-            material = "rim/SOLID/"
             mesh = "../data/vehicles/mosp1/wheel_front.mesh"
             >
         </wheel>
@@ -120,7 +117,6 @@
             radius = "0.34"
             width = "0.125"
             powered = "-0.5"
-            material = "rim/SOLID/"
             mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
             >
         </wheel>
@@ -130,7 +126,6 @@
             radius = "0.34"
             width = "0.125"
             powered = "0.5"
-            material = "rim/SOLID/"
             mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
             >
         </wheel>
