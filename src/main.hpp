@@ -36,15 +36,8 @@
 #endif
 #   include <string>
 
-struct ParsingMainData;
 void stopSdl (void);
 void startSdl (LogEngine * log);
 LogEngine * processXmlRootNode (DOMNode * node);
-
-struct ParsingMainData
-{
-    LOG_LEVEL localLogLevel;
-    char *localLogName;
-};
 
 #endif

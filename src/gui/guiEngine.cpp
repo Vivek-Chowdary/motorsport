@@ -94,7 +94,6 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "GUI";
     showStatistics = true;
-
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
@@ -120,7 +119,6 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            name = XMLString::transcode (attNode->getValue ());
                             localLogLevel = stologlevel (attribute);
                             tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                         }
@@ -147,8 +145,8 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
         }
     }
     delete tmpLog;
-    localLogName.clear();
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
+    localLogName.clear();
     log->put (LOG_INFO, "All config has been parsed");
 }

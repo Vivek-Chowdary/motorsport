@@ -33,48 +33,47 @@ GraphicsEngine::GraphicsEngine ()
     delete xmlFile;
 }
 
-bool GraphicsEngine::manualInitialize (GraphicsData * data)
+void GraphicsEngine::manualInitialize (const std::string & renderer)
 {
     Ogre::RenderSystem * renderSystem;
     bool ok = false;
 
+    log->put (LOG_INFO, "Loading Ogre renderers list into memory.");
     Ogre::RenderSystemList * renderers = Ogre::Root::getSingleton ().getAvailableRenderers ();
-    // See if the list is empty (no renderers available)
     if (renderers->empty ())
-        return false;
+    {
+        log->put (LOG_ERROR, "No Ogre renderers available!");
+    }
     for (Ogre::RenderSystemList::iterator it = renderers->begin (); it != renderers->end (); it++)
     {
         renderSystem = (*it);
-        log->put (LOG_INFO, "Loading ogre renderer name into memory...");
-        if (strstr (&(*renderSystem->getName ()), data->renderer))
+        log->format (LOG_INFO, "Locating desired renderer (%s).", renderer.c_str());
+        if (strstr (&(*renderSystem->getName ()), renderer.c_str()))
         {
+            log->put (LOG_INFO, "Ok, desired renderer found.");
             ok = true;
             break;
         }
     }
     if (!ok)
     {
-        // We still don't have a renderer; pick up the first one from the list
+        log->put (LOG_WARNING, "Desired renderer not found. Using first available one.");
         renderSystem = (*renderers->begin ());
     }
-
     Ogre::Root::getSingleton ().setRenderSystem (renderSystem);
+
     char resolution[32];
-
     sprintf (resolution, "%i x %i", width, height);
-
-    // Manually set configuration options. These are optional.
+    log->format (LOG_INFO, "Setting screen resolution and bpp: %s", resolution);
     renderSystem->setConfigOption ("Video Mode", resolution);
-
-    return true;
 }
 
-void GraphicsEngine::setupResources (GraphicsData * data)
+void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 {
     // Load resource paths from config file
     Ogre::ConfigFile cf;
     log->put (LOG_INFO, "Loading ogre config filename into memory...");
-    cf.load (data->ogreConfigFile);
+    cf.load (ogreConfigFile.c_str());
 
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator ();
@@ -92,8 +91,8 @@ int GraphicsEngine::computeStep (void)
     // take a screenshot if needed
     if (systemData->getTakeScreenshot ())
     {
-        log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename);
-        systemData->ogreWindow->writeContentsToFile (screenshotFilename);
+        log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename.c_str());
+        systemData->ogreWindow->writeContentsToFile (screenshotFilename.c_str());
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfBodies = worldData->bodyList.size ();
@@ -123,72 +122,74 @@ GraphicsEngine::~GraphicsEngine (void)
     delete (systemData->ogreWindow);
 
     log->put (LOG_INFO, "Unloading screenshot filename from memory...");
-    delete screenshotFilename;
+    screenshotFilename.clear();
 
     // finally stop the log engine
     delete log;
 }
 
-
 void GraphicsEngine::processXmlRootNode (DOMNode * n)
 {
-    GraphicsData *data = new GraphicsData;
+    LOG_LEVEL localLogLevel = LOG_TRACE;
+    std::string localLogName = "GFX";
+    screenshotFilename.assign ("screenshot.png");
+    std::string ogreConfigFile = "../data/resources.cfg";
+    #ifdef WIN32
+    std::string ogrePluginsDir = "plugins"
+    #else
+    std::string ogrePluginsDir = "/usr/lib/OGRE";
+    #endif
+    Ogre::SceneType sceneManager = Ogre::ST_GENERIC;
+    int anisotropy = 1;
+    Ogre::TextureFilterOptions filtering = Ogre::TFO_NONE;
+    width = 800;
+    height = 600;
+    bpp = 0;
+    std::string renderer = "OpenGL";
+    int defaultNumMipMaps = 5;
+    fullScreen = false;
 
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            tmpLog->format (LOG_INFO, "Name: %s", name);
-
-            if (!strncmp (name, "graphicsConfig", 15))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+            if (name == "graphicsConfig")
             {
                 tmpLog->put (LOG_INFO, "Found the graphics engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "localLogLevel", 14))
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "localLogLevel")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found the local log level: %s", name);
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(GraphicsData *) data).localLogLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(GraphicsData *) data).localLogLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(GraphicsData *) data).localLogLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(GraphicsData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
-                                (*(GraphicsData *) data).localLogLevel = LOG_TRACE;
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            localLogLevel = stologlevel (attribute);
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                         }
-
-                        if (!strncmp (name, "localLogName", 13))
+                        if (attribute == "localLogName")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found the log name: %s", name);
-
-                            (*(GraphicsData *) data).localLogName = new char[strlen (name) + 1];
-                            strncpy ((*(GraphicsData *) data).localLogName, name, strlen (name) + 1);
+                            localLogName.clear();
+                            assignXmlString (localLogName, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
                         }
-                        if (!strncmp (name, "screenshotFile", 15))
+                        if (attribute == "screenshotFile")
                         {
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found the screenshot filename: %s", name);
-
-                            (*(GraphicsData *) data).screenshotFile = new char[strlen (name) + 1];
-                            strncpy ((*(GraphicsData *) data).screenshotFile, name, strlen (name) + 1);
+                            screenshotFilename.clear();
+                            assignXmlString (screenshotFilename, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the screenshot filename: %s", screenshotFilename.c_str());
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -197,135 +198,117 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            char *name = XMLString::transcode (n->getNodeName ());
-                            tmpLog->format (LOG_INFO, "Name: %s", name);
-                            if (!strncmp (name, "ogre", 5))
+                            name.clear();
+                            assignXmlString (name, n->getNodeName());
+                            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+                            if (name == "ogre")
                             {
                                 tmpLog->put (LOG_INFO, "Found the ogre config element.");
                                 if (n->hasAttributes ())
                                 {
-                                    // get all the attributes of the node
-                                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                                    int nSize = pAttributes->getLength ();
-
+                                    DOMNamedNodeMap *attList = n->getAttributes ();
+                                    int nSize = attList->getLength ();
                                     for (int i = 0; i < nSize; ++i)
                                     {
-                                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                                        if (!strncmp (name, "configFile", 11))
+                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                                        std::string attribute;
+                                        assignXmlString (attribute, attNode->getName());
+                                        if (attribute == "configFile")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the ogre config filename: %s", name);
-
-                                            (*(GraphicsData *) data).ogreConfigFile = new char[strlen (name) + 1];
-                                            strncpy ((*(GraphicsData *) data).ogreConfigFile, name, strlen (name) + 1);
+                                            ogreConfigFile.clear();
+                                            assignXmlString (ogreConfigFile, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the ogre config filename: %s", ogreConfigFile.c_str());
                                         }
                                         #ifdef WIN32
-                                        if (!strncmp (name, "windowsPluginsDir", 18))
+                                        if (attribute == "windowsPluginsDir")
                                         #else
-                                        if (!strncmp (name, "linuxPluginsDir", 16))
+                                        if (attribute == "linuxPluginsDir")
                                         #endif
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the ogre plugins directory: %s", name);
-
-                                            (*(GraphicsData *) data).ogrePluginsDir = new char[strlen (name) + 1];
-                                            strncpy ((*(GraphicsData *) data).ogrePluginsDir, name, strlen (name) + 1);
+                                            ogrePluginsDir.clear();
+                                            assignXmlString (ogrePluginsDir, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the ogre plugins directory: %s", ogrePluginsDir.c_str());
                                         }
-                                        if (!strncmp (name, "sceneManager", 13))
+                                        if (attribute == "sceneManager")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the scene manager type: %s", name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the scene manager type: %s", attribute.c_str());
 
-                                            if (!strncmp (name, "ST_GENERIC", 11))
-                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_GENERIC;
-                                            if (!strncmp (name, "ST_EXTERIOR_CLOSE", 18))
-                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_CLOSE;
-                                            if (!strncmp (name, "ST_EXTERIOR_FAR", 16))
-                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_FAR;
-                                            if (!strncmp (name, "ST_EXTERIOR_REAL_FAR", 21))
-                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
-                                            if (!strncmp (name, "ST_INTERIOR", 12))
-                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_INTERIOR;
+                                            if (attribute == "ST_GENERIC")
+                                                sceneManager = Ogre::ST_GENERIC;
+                                            if (attribute == "ST_EXTERIOR_CLOSE")
+                                                sceneManager = Ogre::ST_EXTERIOR_CLOSE;
+                                            if (attribute == "ST_EXTERIOR_FAR")
+                                                sceneManager = Ogre::ST_EXTERIOR_FAR;
+                                            if (attribute == "ST_EXTERIOR_REAL_FAR")
+                                                sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
+                                            if (attribute == "ST_INTERIOR")
+                                                sceneManager = Ogre::ST_INTERIOR;
                                         }
-                                        if (!strncmp (name, "anisotropy", 11))
+                                        if (attribute == "anisotropy")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the anisotropy level: %s", name);
-
-                                            (*(GraphicsData *) data).anisotropy = atoi (name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the anisotropy level: %s", attribute.c_str());
+                                            anisotropy = stoi (attribute);
                                         }
-                                        if (!strncmp (name, "filtering", 10))
+                                        if (attribute == "filtering")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the texture filtering level: %s", name);
-
-                                            if (!strncmp (name, "TFO_NONE", 9))
-                                                (*(GraphicsData *) data).filtering = Ogre::TFO_NONE;
-                                            if (!strncmp (name, "TFO_BILINEAR", 13))
-                                                (*(GraphicsData *) data).filtering = Ogre::TFO_BILINEAR;
-                                            if (!strncmp (name, "TFO_TRILINEAR", 14))
-                                                (*(GraphicsData *) data).filtering = Ogre::TFO_TRILINEAR;
-                                            if (!strncmp (name, "TFO_ANISOTROPIC", 16))
-                                                (*(GraphicsData *) data).filtering = Ogre::TFO_ANISOTROPIC;
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the texture filtering level: %s", attribute.c_str());
+                                            if (attribute == "TFO_NONE")
+                                                filtering = Ogre::TFO_NONE;
+                                            if (attribute == "TFO_BILINEAR")
+                                                filtering = Ogre::TFO_BILINEAR;
+                                            if (attribute == "TFO_TRILINEAR")
+                                                filtering = Ogre::TFO_TRILINEAR;
+                                            if (attribute == "TFO_ANISOTROPIC")
+                                                filtering = Ogre::TFO_ANISOTROPIC;
                                         }
-                                        if (!strncmp (name, "width", 6))
+                                        if (attribute == "width")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the resolution width value: %s", name);
-
-                                            (*(GraphicsData *) data).width = atoi (name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the resolution width value: %s", attribute.c_str());
+                                            width = stoi (attribute);
                                         }
-                                        if (!strncmp (name, "height", 7))
+                                        if (attribute == "height")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the resolution height value: %s", name);
-
-                                            (*(GraphicsData *) data).height = atoi (name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the resolution height value: %s", attribute.c_str());
+                                            height = stoi (attribute);
                                         }
-                                        if (!strncmp (name, "bpp", 4))
+                                        if (attribute == "bpp")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the resolution bpp value: %s", name);
-
-                                            (*(GraphicsData *) data).bpp = atoi (name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the resolution bpp value: %s", attribute.c_str());
+                                            bpp = stoi (attribute);
                                         }
-                                        if (!strncmp (name, "renderer", 9))
+                                        if (attribute == "renderer")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the renderer type: %s", name);
-
-                                            (*(GraphicsData *) data).renderer = new char[strlen (name) + 1];
-                                            strncpy ((*(GraphicsData *) data).renderer, name, strlen (name) + 1);
+                                            renderer.clear();
+                                            assignXmlString (renderer, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the renderer type: %s", renderer.c_str());
                                         }
-                                        if (!strncmp (name, "defaultNumMipmaps", 18))
+                                        if (attribute == "defaultNumMipmaps")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the default number of mipmaps: %s", name);
-
-                                            (*(GraphicsData *) data).defaultNumMipMaps = atoi (name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the default number of mipmaps: %s", attribute.c_str());
+                                            defaultNumMipMaps = stoi (attribute);
                                         }
-                                        if (!strncmp (name, "fullScreen", 11))
+                                        if (attribute == "fullScreen")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "Found the fullscreen option: %s", name);
-
-                                            int tmpBool;
-                                            tmpBool = atoi (name);
-                                            (*(GraphicsData *) data).fullScreen = tmpBool ? true : false;
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "Found the fullscreen option: %s", attribute.c_str());
+                                            fullScreen = stob (attribute);
                                         }
-                                        XMLString::release (&name);
+                                        attribute.clear();
                                     }
                                 }
                             }
@@ -333,11 +316,12 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                     }
                 }
             }
+            name.clear();
         }
     }
     delete tmpLog;
 
-    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log = new LogEngine (localLogLevel, localLogName.c_str());
     log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
 
     // get the direction of the graphics data
@@ -345,16 +329,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     worldData = WorldData::getWorldDataPointer ();
     systemData = SystemData::getSystemDataPointer ();
 
-    log->put (LOG_INFO, "Loading screenshot filename into memory...");
-    screenshotFilename = new char[strlen (data->screenshotFile) + 1];
-    strncpy (screenshotFilename, data->screenshotFile, strlen (data->screenshotFile) + 1);
-
-    log->put (LOG_INFO, "Setting screen properties...");
-    width = data->width;
-    height = data->height;
-    bpp = data->bpp;
-    fullScreen = data->fullScreen;
-    log->format (LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp);
+    log->format (LOG_INFO, "Graphics data initialized to %ix%i@%ibpp", width, height, bpp);
 
     log->put (LOG_INFO, "Creating temporary ogre plugins config file (plugins.cfg)");
     FILE *ogrePluginsConfig = fopen("plugins.cfg", "w");
@@ -364,7 +339,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     }
     log->put (LOG_INFO, "Writing configuration to plugins.cfg");
     fprintf(ogrePluginsConfig, "# IMPORTANT NOTE #"
-        "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. You can therefore safely delete this file.\n\n"
+        "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. oou can therefore safely delete this file.\n\n"
         "\n# Define plugins folder"
         "\nPluginFolder=%s"
         "\n# Define plugins"
@@ -379,60 +354,60 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
         "\nPlugin=Plugin_GuiElements"
         "\nPlugin=Plugin_NatureSceneManager"
         "\nPlugin=Plugin_CgProgramManager",
-        data->ogrePluginsDir);
+        ogrePluginsDir.c_str());
     log->put (LOG_INFO, "Closing temporary ogre plugins config file (plugins.cfg)");
     fclose(ogrePluginsConfig);
 
     log->put (LOG_INFO, "Creating Ogre root element");
-    ogreRoot = new Ogre::Root ("plugins.cfg", "nothingToSeeHere.cfg", "motorsport-ogre.log");
+    ogreRoot = new Ogre::Root ("plugins.cfg", "removeme.cfg", "motorsport-ogre.log");
 
-    setupResources (data);
-    // Initialise the system
-    if (!manualInitialize (data))
-    {
-//        return false;
-    }
-    // Here we choose to let the system create a default rendering window
-    // by passing 'true'
+    setupResources (ogreConfigFile);
+    // select renderer and set resolution and bpp
+    manualInitialize (renderer);
+
+    log->put (LOG_INFO, "Setting up fullscreen/windowed mode");
     ogreRoot->getRenderSystem ()->setConfigOption ("Full Screen", fullScreen ? "Yes" : "No");
 #ifdef WIN32
-    // Let the user changes some parameters.
-	ogreRoot->showConfigDialog();
+    // Here we choose to let the user choose the rendering window settings
+    log->put (LOG_WARNING, "Windows version: running Ogre setup window. FIXME");
+    ogreRoot->showConfigDialog();
 #endif
+    // Here we choose to let the system create a default rendering window
+    log->put (LOG_INFO, "Initializing ogre root element");
     systemData->ogreWindow = ogreRoot->initialise (true);
-
 #ifdef WIN32
-    //
     // This is a bit of a hack way to get the HWND from Ogre.
     // Currently only works for the OpenGL renderer.
-    //
-	char tmp[64];
+    log->put (LOG_WARNING, "Windows version: temporary hackish workaround in order to get SDL input working");
+    char tmp[64];
     Ogre::Win32Window* ow32_win = static_cast<Ogre::Win32Window*>(systemData->ogreWindow);
-    if (ow32_win != NULL){
-	    sprintf(tmp, "SDL_WINDOWID=%d", ow32_win->getWindowHandle());
-	    _putenv(tmp);
+    if (ow32_win != NULL)
+    {
+        sprintf(tmp, "SDL_WINDOWID=%d", ow32_win->getWindowHandle());
+        _putenv(tmp);
     }
 #endif
-
-    systemData->ogreSceneManager = ogreRoot->getSceneManager (data->sceneManager);
+    log->put (LOG_INFO, "Getting ogre scene manager");
+    systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
 
     // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton ().setDefaultNumMipMaps (data->defaultNumMipMaps);
+    log->put (LOG_INFO, "Setting up default number of mipmap levels");
+    Ogre::TextureManager::getSingleton ().setDefaultNumMipMaps (defaultNumMipMaps);
 
     // Set some graphics settings
-    Ogre::MaterialManager::getSingleton ().setDefaultAnisotropy (data->anisotropy);
-    Ogre::MaterialManager::getSingleton ().setDefaultTextureFiltering (data->filtering);
+    log->put (LOG_INFO, "Setting up anisotropy and filtering parameters");
+    Ogre::MaterialManager::getSingleton ().setDefaultAnisotropy (anisotropy);
+    Ogre::MaterialManager::getSingleton ().setDefaultTextureFiltering (filtering);
 
     log->put (LOG_INFO, "Removing temporary ogre plugins config file (plugins.cfg)");
     remove("plugins.cfg");
     log->put (LOG_INFO, "Removing temporary ogre file");
-    remove("nothingToSeeHere.cfg");
+    remove("removeme.cfg");
     
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete[](data->screenshotFile);
-    delete[](data->ogreConfigFile);
-    delete[](data->ogrePluginsDir);
-    delete[](data->renderer);
-    delete data;
+    localLogName.clear();
+    ogreConfigFile.clear();
+    ogrePluginsDir.clear();
+    renderer.clear();
 }
+

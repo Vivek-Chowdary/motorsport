@@ -116,6 +116,14 @@ void assignXmlString (std::string & destString, const XMLCh * srcXmlString)
     XMLString::release (&tmpString);
 }
 
+double stod (const std::string &srcString)
+{
+    std::stringstream tmpString(srcString);
+    double tmpInt;
+    tmpString >> tmpInt;
+    return tmpInt;
+}
+
 int stoi (const std::string &srcString)
 {
     std::stringstream tmpString(srcString);

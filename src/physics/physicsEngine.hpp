@@ -32,8 +32,6 @@
 #include "camera.hpp"
 #include "xmlParser.hpp"
 
-struct PhysicsData;
-
 /// Manages everything related to the simulated world data.
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.
 */
@@ -72,16 +70,4 @@ class PhysicsEngine
 
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (DOMNode * n);
-};
-
-struct PhysicsData
-{
-    PhysicsEngine *physics;
-    LOG_LEVEL localLogLevel;
-    char *localLogName;
-    int frequency;
-    double cfmValue;            // a double number, or "default"
-    double erpValue;            // a double number, or "default"
-    int stepType;               // "dWorldStep"=1 || "dWorldStepFast1"=2 || "default"=...
-    int dWorldStepFast1MaxIterations;
 };

@@ -32,8 +32,6 @@
 #include "body.hpp"
 #include "camera.hpp"
 
-struct DataData;
-
 class DataEngine
 {
   private:
@@ -41,22 +39,11 @@ class DataEngine
     WorldData *worldData;
     SystemData *systemData;
   public:
-      DataEngine ();            // starts the data engine
-     ~DataEngine (void);        // stops the data engine
+    DataEngine ();            // starts the data engine
+    ~DataEngine (void);        // stops the data engine
     int loadWorldData (void);
     int unloadWorldData (void);
-
-    /* here will probably go some new functions such as: int loadCarModel(carList*,FILE*carXmlFile); int loadTrackModel(track*,FILE*trackXmlFile); or maybe... int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*); etc... */
-
     void processXmlRootNode (DOMNode * n);
-
     static LogEngine * getLogPointer (void);
-};
-
-struct DataData
-{
-    DataEngine *data;
-    LOG_LEVEL localLogLevel;
-    char *localLogName;
 };
 #endif

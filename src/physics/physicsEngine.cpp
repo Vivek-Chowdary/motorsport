@@ -136,69 +136,57 @@ PhysicsEngine::~PhysicsEngine (void)
 
 void PhysicsEngine::processXmlRootNode (DOMNode * n)
 {
-    PhysicsData *data = new PhysicsData;
-    data->physics = this;
-    data->cfmValue = -1;
-    data->erpValue = -1;
-    data->stepType = 1;
-    data->dWorldStepFast1MaxIterations = 100;
+    LOG_LEVEL localLogLevel = LOG_TRACE;
+    std::string localLogName = "FSX" ;
+    int frequency = 250;
+    double cfmValue = -1;
+    double erpValue = -1;
+    int stepType = 1;
+    int dWorldStepFast1MaxIterations = 100;
 
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            tmpLog->format (LOG_INFO, "Name: %s", name);
-
-            if (!strncmp (name, "physicsConfig", 14))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+            if (name == "physicsConfig")
             {
                 tmpLog->put (LOG_INFO, "Found the physics engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "localLogLevel", 14))
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "localLogLevel")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", name);
-
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(PhysicsData *) data).localLogLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(PhysicsData *) data).localLogLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(PhysicsData *) data).localLogLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(PhysicsData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
-                                (*(PhysicsData *) data).localLogLevel = LOG_TRACE;
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            localLogLevel = stologlevel (attribute);
+                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", attribute.c_str());
                         }
 
-                        if (!strncmp (name, "localLogName", 13))
+                        if (attribute == "localLogName")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "\tFound the log name: %s", name);
-
-                            (*(PhysicsData *) data).localLogName = new char[strlen (name) + 1];
-                            strncpy ((*(PhysicsData *) data).localLogName, name, strlen (name) + 1);
+                            localLogName.clear();
+                            assignXmlString (localLogName, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
                         }
-                        if (!strncmp (name, "frequency", 10))
+                        if (attribute == "frequency")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "\tFound the frecuency: %s", name);
-
-                            (*(PhysicsData *) data).frequency = atoi (name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            frequency = stoi (attribute);
+                            tmpLog->format (LOG_INFO, "\tFound the frecuency: %s", attribute.c_str());
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -207,63 +195,61 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            char *name = XMLString::transcode (n->getNodeName ());
-                            tmpLog->format (LOG_INFO, "Name: %s", name);
-                            if (!strncmp (name, "ode", 4))
+                            name.clear();
+                            assignXmlString (name, n->getNodeName());
+                            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+                            if (name == "ode")
                             {
                                 tmpLog->put (LOG_INFO, "Found the ode config element.");
                                 if (n->hasAttributes ())
                                 {
                                     // get all the attributes of the node
-                                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                                    int nSize = pAttributes->getLength ();
-
+                                    DOMNamedNodeMap *attList = n->getAttributes ();
+                                    int nSize = attList->getLength ();
                                     for (int i = 0; i < nSize; ++i)
                                     {
-                                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                                        if (!strncmp (name, "cfmValue", 9))
+                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                                        std::string attribute;
+                                        assignXmlString (attribute, attNode->getName());
+                                        if (attribute == "cfmValue")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "\tFound the constraint force mixing factor (CFM): %s", name);
-
-                                            if (strncmp (name, "default", 8))
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "\tFound the constraint force mixing factor (CFM): %s", attribute.c_str());
+                                            if (attribute != "default")
                                             {
-                                                (*(PhysicsData *) data).cfmValue = atof (name);
+                                                cfmValue = stod (attribute);
                                             }
                                         }
-                                        if (!strncmp (name, "erpValue", 9))
+                                        if (attribute == "erpValue")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "\tFound the error reduction parameter (ERP): %s", name);
-
-                                            if (strncmp (name, "default", 8))
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "\tFound the error reduction parameter (ERP): %s", attribute.c_str());
+                                            if (attribute != "default")
                                             {
-                                                (*(PhysicsData *) data).erpValue = atof (name);
+                                                erpValue = stod (attribute);
                                             }
                                         }
-                                        if (!strncmp (name, "stepType", 8))
+                                        if (attribute == "stepType")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "\tFound the type of stepping to be used in ODE: %s", name);
-
-                                            if (!strncmp (name, "dWorldStep", 11))
-                                                (*(PhysicsData *) data).stepType = 1;
-                                            if (!strncmp (name, "dWorldStepFast1", 16))
-                                                (*(PhysicsData *) data).stepType = 2;
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "\tFound the type of stepping to be used in ODE: %s", attribute.c_str());
+                                            if (attribute == "dWorldStep")
+                                                stepType = 1;
+                                            if (attribute == "dWorldStepFast1")
+                                                stepType = 2;
                                         }
-                                        if (!strncmp (name, "dWorldStepFast1MaxIterations", 29))
+                                        if (attribute == "dWorldStepFast1MaxIterations")
                                         {
-                                            XMLString::release (&name);
-                                            name = XMLString::transcode (pAttributeNode->getValue ());
-                                            tmpLog->format (LOG_INFO, "\tFound the max. number of iterations to be calculated with dWorldStepFast1: %s", name);
+                                            attribute.clear();
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_INFO, "\tFound the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
 
-                                            (*(PhysicsData *) data).dWorldStepFast1MaxIterations = atoi (name);
+                                            dWorldStepFast1MaxIterations = stoi (attribute);
                                         }
-                                        XMLString::release (&name);
+                                        attribute.clear();
                                     }
                                 }
                             }
@@ -271,12 +257,13 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
                     }
                 }
             }
+            name.clear();
         }
     }
     delete tmpLog;
 
     // first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log = new LogEngine (localLogLevel, localLogName.c_str());
     log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
 
     // get the direction of the graphics data
@@ -285,7 +272,7 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
     systemData = SystemData::getSystemDataPointer ();
 
     log->put (LOG_INFO, "Setting physics data");
-    systemData->physicsDesiredFrequency = data->frequency;
+    systemData->physicsDesiredFrequency = frequency;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
     log->format (LOG_INFO, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
 
@@ -297,25 +284,17 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
 
-    if (data->cfmValue != -1)
+    if (cfmValue != -1)
     {
         log->put (LOG_INFO, "Setting ODE cfm value");
-        dWorldSetCFM (worldData->worldID, data->cfmValue);
+        dWorldSetCFM (worldData->worldID, cfmValue);
     }
-    if (data->erpValue != -1)
+    if (erpValue != -1)
     {
         log->put (LOG_INFO, "Setting ODE erp value");
-        dWorldSetERP (worldData->worldID, data->erpValue);
+        dWorldSetERP (worldData->worldID, erpValue);
     }
 
-    log->put (LOG_INFO, "Setting ODE step type");
-    stepType = data->stepType;
-
-    log->put (LOG_INFO, "Setting the max. number of iterations to be calculated with dWorldStepFast1");
-    dWorldStepFast1MaxIterations = data->dWorldStepFast1MaxIterations;
-
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-
-    delete[](data->localLogName);
-    delete data;
+    localLogName.clear();
 }

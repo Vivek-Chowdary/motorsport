@@ -28,8 +28,6 @@
 #include "OgreNoMemoryMacros.h"
 #include "xmlParser.hpp"
 
-struct GuiData;
-
 using namespace Ogre;
 
 /// Manages everything related to the gui rendering process.

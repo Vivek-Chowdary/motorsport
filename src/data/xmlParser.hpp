@@ -90,5 +90,5 @@ class XmlFile
 void assignXmlString (std::string & destString, const XMLCh * srcXmlString);
 int stoi (const std::string &srcString);
 bool stob (const std::string &srcString);
-
+double stod (const std::string &srcString);
 #endif

@@ -322,65 +322,51 @@ InputEngine::~InputEngine (void)
 
 void InputEngine::processXmlRootNode (DOMNode * n)
 {
-    InputData *data = new InputData;
+    LOG_LEVEL localLogLevel = LOG_TRACE;
+    std::string localLogName = "INP";
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            tmpLog->format (LOG_INFO, "Name: %s", name);
-
-            if (!strncmp (name, "inputConfig", 12))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+            if (name == "inputConfig")
             {
                 tmpLog->put (LOG_INFO, "Found the input engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "localLogLevel", 14))
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "localLogLevel")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", name);
-
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(InputData *) data).localLogLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(InputData *) data).localLogLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(InputData *) data).localLogLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(InputData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 10))
-                                (*(InputData *) data).localLogLevel = LOG_TRACE;
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            localLogLevel = stologlevel (attribute);
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                         }
-
-                        if (!strncmp (name, "localLogName", 13))
+                        if (attribute == "localLogName")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "\tFound the log name: %s", name);
-
-                            (*(InputData *) data).localLogName = new char[strlen (name) + 1];
-                            strncpy ((*(InputData *) data).localLogName, name, strlen (name) + 1);
+                            localLogName.clear();
+                            assignXmlString (localLogName, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
             }
+            name.clear();
         }
     }
     delete tmpLog;
-    
-    log = new LogEngine (data->localLogLevel, data->localLogName);
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete data;
+    log = new LogEngine (localLogLevel, localLogName.c_str());
+    localLogName.clear();
+    log->put (LOG_INFO, "All config has been parsed");
 }
