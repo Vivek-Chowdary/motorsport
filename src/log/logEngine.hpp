@@ -21,14 +21,14 @@
 ******************************************************************************/
 
 #ifndef LOG_ENGINE_HPP
-#    define LOG_ENGINE_HPP
-#    include <cstdio>
-#    include <cstdarg>
-#    include <cstdlib>
-#    include <string>
-#include <fstream>
-#include <iostream>
-#include <xmlParser.hpp>
+#   define LOG_ENGINE_HPP
+#   include <cstdio>
+#   include <cstdarg>
+#   include <cstdlib>
+#   include <string>
+#   include <fstream>
+#   include <iostream>
+#   include <xmlParser.hpp>
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
@@ -89,7 +89,7 @@ class LogEngine
     */
     const char *GetLogLevelCode (LOG_LEVEL level);
     // / Called by the generic XML parser; it loads configuration data from a file.
-    static void processLogConfigFile (DOMNode * n, void *data);
+    void processXmlRootNode (DOMNode * n);
   public:
     // / Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.

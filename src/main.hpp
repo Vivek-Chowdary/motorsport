@@ -38,7 +38,7 @@
 struct ParsingMainData;
 void stopSdl (void);
 void startSdl (LogEngine * log);
-void processMainConfigFile (DOMNode * node, void *data);
+LogEngine * processXmlRootNode (DOMNode * node);
 
 struct ParsingMainData
 {

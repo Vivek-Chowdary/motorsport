@@ -48,7 +48,7 @@ class DataEngine
 
     /* here will probably go some new functions such as: int loadCarModel(carList*,FILE*carXmlFile); int loadTrackModel(track*,FILE*trackXmlFile); or maybe... int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*); etc... */
 
-    static void processDataConfigFile (DOMNode * n, void *data);
+    void processXmlRootNode (DOMNode * n);
 
     static LogEngine * getLogPointer (void);
 };

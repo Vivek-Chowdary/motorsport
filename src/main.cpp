@@ -23,13 +23,9 @@
 int main (int argc, char **argv)
 {
     // We start the main log engine.
-    ParsingMainData *parsingMainData = new ParsingMainData;
-    processXmlFile ("mainConfig.xml", &processMainConfigFile, (void *) parsingMainData);
-    LogEngine *log = new LogEngine (parsingMainData->localLogLevel, parsingMainData->localLogName);
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](parsingMainData->localLogName);
-    delete parsingMainData;
+    XmlFile * xmlFile = new XmlFile ("mainConfig.xml");
+    LogEngine * log = processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
 
     // We declare the 'global' data and engines.
     log->put (LOG_INFO, "( 1 ): Loading engines and libraries...");
@@ -131,4 +127,70 @@ void startSdl (LogEngine * log)
 void stopSdl (void)
 {
     SDL_Quit ();
+}
+
+LogEngine * processXmlRootNode (DOMNode * node)
+{
+    ParsingMainData * data = new ParsingMainData;
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    if (node)
+    {
+        if (node->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (node->getNodeName ());
+            log->format (LOG_INFO, "Name: %s", name);
+
+            if (!strncmp (name, "mainConfig", 11))
+            {
+                log->put (LOG_INFO, "Found the main config element.");
+                if (node->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = node->getAttributes ();
+                    int nodeSize = pAttributes->getLength ();
+
+                    for (int i = 0; i < nodeSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
+                        {
+                            XMLString::release (&name);
+                            log->format (LOG_INFO, "\tFound the local log level:", name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_TRACE;
+                        }
+                        if (!strncmp (name, "localLogName", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "\tFound the log name:", name);
+
+                            (*(ParsingMainData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(ParsingMainData *) data).localLogName, name, strlen (name) + 1);
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+            }
+            XMLString::release (&name);
+        }
+    }
+    delete log;
+
+    LogEngine *returnLog = new LogEngine (data->localLogLevel, data->localLogName);
+    returnLog->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+    returnLog->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete[](data->localLogName);
+    delete data;
+    return returnLog;
 }

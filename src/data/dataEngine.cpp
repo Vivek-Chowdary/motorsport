@@ -24,29 +24,22 @@
 
 DataEngine::DataEngine ()
 {
-    // first of all start the logger (automatically logs the start of itself)
-    DataData *data = new DataData;
-    data->data = this;
-    processXmlFile ("dataConfig.xml", &DataEngine::processDataConfigFile, (void *) data);
-
-    log = new LogEngine (data->localLogLevel, data->localLogName);
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-
+    XmlFile * xmlFile = new XmlFile ("dataConfig.xml");
+    processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
+    
     log->put (LOG_INFO, "Setting up data pointers...");
     // we tell the dataEngine where to find/store all the data in memory.
     worldData = WorldData::getWorldDataPointer ();  // world data is for the simulated world data (cars,
     // track, weather, etc...)
     systemData = SystemData::getSystemDataPointer ();   // system data is for the rest of things (screen
     // resolution, 
-
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory");
-    delete[](data->localLogName);
-    delete data;
 }
 
 int DataEngine::loadWorldData (void)
 {
     // Create the infinite plane
+    log->put (LOG_INFO, "Creating the ode plane");
     dCreatePlane (WorldData::getWorldDataPointer ()->spaceID, 0, 0, 1, 0);
 
     // create the camera and initialize it
@@ -115,4 +108,70 @@ DataEngine::~DataEngine (void)
 {
     // finally stop the log engine
     delete log;
+}
+
+void DataEngine::processXmlRootNode (DOMNode * n)
+{
+    DataData * data = new DataData;
+    LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
+    if (n)
+    {
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (n->getNodeName ());
+            tmpLog->format (LOG_INFO, "Name: %s", name);
+
+            if (!strncmp (name, "dataConfig", 11))
+            {
+                tmpLog->put (LOG_INFO, "Found the data engine config element.");
+                if (n->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", name);
+
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(DataData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(DataData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(DataData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(DataData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(DataData *) data).localLogLevel = LOG_TRACE;
+                        }
+
+                        if (!strncmp (name, "localLogName", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "\tFound the log name: %s", name);
+
+                            (*(DataData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(DataData *) data).localLogName, name, strlen (name) + 1);
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+            }
+        }
+    }
+    delete tmpLog;
+    
+    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+
+    log->put (LOG_INFO, "Unloading temporary parsing data from memory");
+    delete[](data->localLogName);
+    delete data;
 }
