@@ -10,7 +10,7 @@ material gui/StatsBlockBorder
 
 			texture_unit
 			{
-				statusPanelBorder.png
+				texture statusPanelBorder.png
 			}
 		}
 	}

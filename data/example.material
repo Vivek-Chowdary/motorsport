@@ -30,3 +30,18 @@ material cube
 		}
 	}
 }
+material 1 - Default
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			ambient 0.2 0.2 0.2
+			texture_unit
+			{
+				texture cubetexture.jpg
+			}
+		}
+	}
+}
