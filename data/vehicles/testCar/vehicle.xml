@@ -56,7 +56,7 @@
         gear3Ratio = "1.4"
         gear4Ratio = "1.0"
         gear5Ratio = "0.8"
-        finaliDrive = "0.12"
+        finalDrive = "0.12"
         >
     </gearbox>
     <steeringWheel

@@ -36,7 +36,7 @@ void Camera::startGraphics (float posX, float posY, float posZ, float lookAtX, f
     ogreCamera->lookAt (Ogre::Vector3 (lookAtX, lookAtY, lookAtZ));
     
     // Set near clip plane at 1 mm. of distance.
-    ogreCamera->setNearClipDistance (0.001);
+    ogreCamera->setNearClipDistance (0.100);
 }
 
 void Camera::stepGraphics ()
