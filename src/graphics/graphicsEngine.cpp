@@ -125,8 +125,7 @@ int GraphicsEngine::step ( void )
     int numberOfCubes = Cube::cubeList.size();
     for ( int currentCube = 0; currentCube < numberOfCubes; currentCube++ )
     {
-        Cube::cubeList[currentCube]->updateOgrePosition();
-        Cube::cubeList[currentCube]->updateOgreOrientation();
+        Cube::cubeList[currentCube]->stepGraphics();
     }
     //Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted (  );

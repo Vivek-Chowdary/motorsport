@@ -37,7 +37,11 @@ class Cube
 
     public:
         Cube ( char * cubeName, float size, float posX, float posY, float posZ );
+        void startPhysics ( float size, float posX, float posY, float posZ );
+        void startGraphics ( char * cubeName );
         ~Cube ( );
+        void stopPhysics ( );
+        void stopGraphics ( );
         static std::vector <Cube*> cubeList;
         //should be private
         Ogre::Entity * cubeEntity;
@@ -49,6 +53,9 @@ class Cube
         //should be public or similar
         void updateOgrePosition();
         void updateOgreOrientation();
+        void stepGraphics();
+        void stepPhysics();
+        
         void setMoveToXPositive ( float multiplier );
         void setMoveToXNegative ( float multiplier );
         void setMoveToYPositive ( float multiplier );

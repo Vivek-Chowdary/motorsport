@@ -25,29 +25,18 @@ std::vector <Cube *>Cube::cubeList;
 
 Cube::Cube ( char * cubeName, float size, float posX, float posY, float posZ )
 {
-    //ode part
-    dMass mass;
-    dMassSetBox ( &mass, 1, size, size, size );
-    cubeID = dBodyCreate ( WorldData::getWorldDataPointer()->worldID );
-    dBodySetPosition (cubeID, posX, posY, posZ );
-    cubeGeomID = dCreateBox(WorldData::getWorldDataPointer()->spaceID,size,size,size);
-    dGeomSetBody (cubeGeomID, cubeID);
-
+    startPhysics ( size, posX, posY, posZ );
     //input part
-    moveToXPositive = moveToXNegative = moveToYPositive = moveToYNegative = 0; 
-
-    //ogre part
-    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( cubeName, "../data/cube.mesh" );
-    cubeEntity->setMaterialName ("cube");
-    cubeNode = static_cast < Ogre::SceneNode* > (SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild() );
-    cubeNode->attachObject (cubeEntity);
+    moveToXPositive = moveToXNegative = moveToYPositive = moveToYNegative=0; 
+    startGraphics ( cubeName );
 }
 
 Cube::~Cube ()
 {
-    dGeomDestroy (cubeGeomID);
-    dBodyDestroy (cubeID);
+    stopPhysics();
+    stopGraphics ();
 }
+
 
 void Cube::updateOgrePosition()
 {

@@ -104,24 +104,7 @@ int PhysicsEngine::step ( void )
     int size = Cube::cubeList.size();
     for ( int i = 0; i < size; i++ )
     {
-        Cube * currentCube = Cube::cubeList[i];
-        dBodyID cubeID = currentCube->cubeID;
-        ////////////////simplified air friction (test) 
-        dBodySetAngularVel (Cube::cubeList[i]->cubeID,
-            *(dReal*)(dBodyGetAngularVel(cubeID)+0),
-            *(dReal*)(dBodyGetAngularVel(cubeID)+1),
-            *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*systemData->physicsTimeStep
-        );
-        //////////////////////////////////////simplified air friction
-        //applying user input [forces]
-        float moveToX = 0, moveToY = 0;
-        moveToX += currentCube->getMoveToXPositive();
-        moveToX -= currentCube->getMoveToXNegative();
-        moveToY += currentCube->getMoveToYPositive();
-        moveToY -= currentCube->getMoveToYNegative();
-        moveToX /= 500;
-        moveToY /= 500;
-        dBodyAddForce (cubeID, moveToX * (systemData->physicsTimeStep), moveToY * (systemData->physicsTimeStep),0.0f );
+        Cube::cubeList[i]->stepPhysics();
     }
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);

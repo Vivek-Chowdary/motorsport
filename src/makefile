@@ -65,8 +65,10 @@ SOURCES := \
         data/cube.cpp \
         data/camera.cpp \
 	data/dataEngine.cpp \
+        graphics/cubeGraphics.cpp \
 	graphics/graphicsEngine.cpp \
 	gui/guiEngine.cpp \
+        physics/cubePhysics.cpp \
 	physics/physicsEngine.cpp \
 	input/inputEngine.cpp \
 	system.cpp \
