@@ -24,16 +24,17 @@
 
 void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
 {
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
             char *name = XMLString::transcode (n->getNodeName ());
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+            log->format (LOG_INFO, "Name: %s", name);
 
             if (!strncmp (name, "physicsConfig", 14))
             {
-                XERCES_STD_QUALIFIER cout << "Found the physics engine config element." << XERCES_STD_QUALIFIER endl;
+                log->put (LOG_INFO, "Found the physics engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -46,9 +47,9 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                         if (!strncmp (name, "localLogLevel", 14))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the local log level:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "\tFound the local log level: %s", name);
+
                             if (!strncmp (name, "LOG_ERROR", 10))
                                 (*(PhysicsData *) data).localLogLevel = LOG_ERROR;
                             if (!strncmp (name, "LOG_WARNING", 13))
@@ -64,19 +65,17 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                         if (!strncmp (name, "localLogName", 13))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the log name:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "\tFound the log name: %s", name);
 
                             (*(PhysicsData *) data).localLogName = new char[strlen (name) + 1];
                             strncpy ((*(PhysicsData *) data).localLogName, name, strlen (name) + 1);
                         }
                         if (!strncmp (name, "frequency", 10))
                         {
-                            XERCES_STD_QUALIFIER cout << "\tFound the frecuency:";
                             XMLString::release (&name);
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "\tFound the frecuency: %s", name);
 
                             (*(PhysicsData *) data).frequency = atoi (name);
                         }
@@ -90,10 +89,10 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
                             char *name = XMLString::transcode (n->getNodeName ());
-                            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "Name: %s", name);
                             if (!strncmp (name, "ode", 4))
                             {
-                                XERCES_STD_QUALIFIER cout << "Found the ode config element." << XERCES_STD_QUALIFIER endl;
+                                log->put (LOG_INFO, "Found the ode config element.");
                                 if (n->hasAttributes ())
                                 {
                                     // get all the attributes of the node
@@ -106,10 +105,9 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                                         char *name = XMLString::transcode (pAttributeNode->getName ());
                                         if (!strncmp (name, "cfmValue", 9))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the constraint force mixing factor (CFM):";
                                             XMLString::release (&name);
                                             name = XMLString::transcode (pAttributeNode->getValue ());
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            log->format (LOG_INFO, "\tFound the constraint force mixing factor (CFM): %s", name);
 
                                             if (strncmp (name, "default", 8))
                                             {
@@ -118,10 +116,9 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                                         }
                                         if (!strncmp (name, "erpValue", 9))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the error reduction parameter (ERP):";
                                             XMLString::release (&name);
                                             name = XMLString::transcode (pAttributeNode->getValue ());
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            log->format (LOG_INFO, "\tFound the error reduction parameter (ERP): %s", name);
 
                                             if (strncmp (name, "default", 8))
                                             {
@@ -130,10 +127,9 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                                         }
                                         if (!strncmp (name, "stepType", 8))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the type of stepping to be used in ODE:";
                                             XMLString::release (&name);
                                             name = XMLString::transcode (pAttributeNode->getValue ());
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            log->format (LOG_INFO, "\tFound the type of stepping to be used in ODE: %s", name);
 
                                             if (!strncmp (name, "dWorldStep", 11))
                                                 (*(PhysicsData *) data).stepType = 1;
@@ -142,10 +138,9 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
                                         }
                                         if (!strncmp (name, "dWorldStepFast1MaxIterations", 29))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the max. number of iterations to be calculated with dWorldStepFast1:";
                                             XMLString::release (&name);
                                             name = XMLString::transcode (pAttributeNode->getValue ());
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            log->format (LOG_INFO, "\tFound the max. number of iterations to be calculated with dWorldStepFast1: %s", name);
 
                                             (*(PhysicsData *) data).dWorldStepFast1MaxIterations = atoi (name);
                                         }
@@ -159,4 +154,5 @@ void PhysicsEngine::processPhysicsConfigFile (DOMNode * n, void *data)
             }
         }
     }
+    delete log;
 }

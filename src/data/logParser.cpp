@@ -23,7 +23,6 @@
 #include "logEngine.hpp"
 void LogEngine::processLogConfigFile (DOMNode * n, void *data)
 {
-//    DOMNode *child;
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -82,7 +81,6 @@ void LogEngine::processLogConfigFile (DOMNode * n, void *data)
                         }
                         XMLString::release (&name);
                     }
-
                 }
             }
         }

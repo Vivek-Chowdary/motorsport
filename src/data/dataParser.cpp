@@ -24,16 +24,17 @@
 
 void DataEngine::processDataConfigFile (DOMNode * n, void *data)
 {
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
             char *name = XMLString::transcode (n->getNodeName ());
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+            log->format (LOG_INFO, "Name: %s", name);
 
             if (!strncmp (name, "dataConfig", 11))
             {
-                XERCES_STD_QUALIFIER cout << "Found the data engine config element." << XERCES_STD_QUALIFIER endl;
+                log->put (LOG_INFO, "Found the data engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -46,9 +47,9 @@ void DataEngine::processDataConfigFile (DOMNode * n, void *data)
                         if (!strncmp (name, "localLogLevel", 14))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the local log level:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "\tFound the local log level: %s", name);
+
                             if (!strncmp (name, "LOG_ERROR", 10))
                                 (*(DataData *) data).localLogLevel = LOG_ERROR;
                             if (!strncmp (name, "LOG_WARNING", 13))
@@ -64,9 +65,8 @@ void DataEngine::processDataConfigFile (DOMNode * n, void *data)
                         if (!strncmp (name, "localLogName", 13))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the log name:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_INFO, "\tFound the log name: %s", name);
 
                             (*(DataData *) data).localLogName = new char[strlen (name) + 1];
                             strncpy ((*(DataData *) data).localLogName, name, strlen (name) + 1);
@@ -77,4 +77,5 @@ void DataEngine::processDataConfigFile (DOMNode * n, void *data)
             }
         }
     }
+    delete log;
 }
