@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <dataConfig
-    localLogLevel = "LOG_INFO"
+    localLogLevel = "LOG_TRACE"
     localLogName = "DAT"
     >
 </dataConfig>

@@ -21,39 +21,110 @@
 
 #include "cube.hpp"
 
-void Cube::startPhysics( float size, float posX, float posY, float posZ )
+void Cube::startPhysics ( float posX, float posY, float posZ,
+                          CubePhysicsData * physics )
 {
+/*    dMass mass;
+
+    dMassSetBox ( &mass, 1, physicsData->size, physicsData->size,
+                  physicsData->size );
+    cubeID = dBodyCreate ( WorldData::getWorldDataPointer (  )->worldID );
+    dBodySetPosition ( cubeID, posX, posY, posZ );
+    cubeGeomID =
+        dCreateBox ( WorldData::getWorldDataPointer (  )->spaceID,
+                     physicsData->size, physicsData->size,
+                     physicsData->size );
+    dGeomSetBody ( cubeGeomID, cubeID );*/
+
     dMass mass;
-    dMassSetBox ( &mass, 1, size, size, size );
-    cubeID = dBodyCreate ( WorldData::getWorldDataPointer()->worldID );
-    dBodySetPosition (cubeID, posX, posY, posZ );
-    cubeGeomID = dCreateBox(WorldData::getWorldDataPointer()->spaceID,size,size,size);
-    dGeomSetBody (cubeGeomID, cubeID);
 
+    dMassSetBox ( &mass, 1, physics->size, physics->size,
+                  physics->size );
+    cubeID = dBodyCreate ( WorldData::getWorldDataPointer (  )->worldID );
+    dBodySetPosition ( cubeID, posX, posY, posZ );
+    cubeGeomID =
+        dCreateBox ( WorldData::getWorldDataPointer (  )->spaceID,
+                     physics->size, physics->size,
+                     physics->size );
+    dGeomSetBody ( cubeGeomID, cubeID );
 }
 
-void Cube::stopPhysics ( )
+void Cube::stopPhysics (  )
 {
-    dGeomDestroy (cubeGeomID);
-    dBodyDestroy (cubeID);
+    dGeomDestroy ( cubeGeomID );
+    dBodyDestroy ( cubeID );
 }
 
-
-void Cube::stepPhysics()
+void Cube::stepPhysics (  )
 {
     ////////////////simplified air friction (test)(should be forces!)
-    dBodySetAngularVel (cubeID,
-    (*(dReal*)(dBodyGetAngularVel(cubeID)+0))*(dReal)(0.999) ,
-    (*(dReal*)(dBodyGetAngularVel(cubeID)+1))*(dReal)(0.999) ,
-    (*(dReal*)(dBodyGetAngularVel(cubeID)+2))*(dReal)(0.999) );
+    dBodySetAngularVel ( cubeID,
+                         ( *( dReal * )
+                           ( dBodyGetAngularVel ( cubeID ) +
+                             0 ) ) * ( dReal ) ( 0.999 ),
+                         ( *( dReal * )
+                           ( dBodyGetAngularVel ( cubeID ) +
+                             1 ) ) * ( dReal ) ( 0.999 ),
+                         ( *( dReal * )
+                           ( dBodyGetAngularVel ( cubeID ) +
+                             2 ) ) * ( dReal ) ( 0.999 ) );
     //////////////////////////////////////simplified air friction
     //applying user input [forces]
-    float moveToX = 0, moveToY = 0;
-    moveToX += getMoveToXPositive();
-    moveToX -= getMoveToXNegative();
-    moveToY += getMoveToYPositive();
-    moveToY -= getMoveToYNegative();
+    float moveToX = 0,
+        moveToY = 0;
+
+    moveToX += getMoveToXPositive (  );
+    moveToX -= getMoveToXNegative (  );
+    moveToY += getMoveToYPositive (  );
+    moveToY -= getMoveToYNegative (  );
     moveToX /= 200;
     moveToY /= 200;
-    dBodyAddForce (cubeID, moveToX, moveToY,0.0f );
+    dBodyAddForce ( cubeID, moveToX, moveToY, 0.0f );
+}
+
+int Cube::processCubePhysicsDataNode ( DOMNode * n,
+                                        CubePhysicsData * physics )
+{
+    if ( n->hasAttributes (  ) )
+    {
+        // get all the attributes of the node
+        DOMNamedNodeMap *pAttributes = n->getAttributes (  );
+        int nSize = pAttributes->getLength (  );
+
+        for ( int i = 0; i < nSize; ++i )
+        {
+            DOMAttr *pAttributeNode =
+                ( DOMAttr * ) pAttributes->item ( i );
+            char *name =
+                XMLString::transcode ( pAttributeNode->getName (  ) );
+            if ( !strncmp ( name, "size", 5 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube physics size:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                physics->size = atoi ( name );
+            }
+/*            if ( !strncmp ( name, "screenshotFile", 15 ) )
+            {
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the screenshot filename:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                //physics.screenshotFile = new char[strlen(name)+1];
+                //strncpy (physics->screenshotFile, name, strlen(name)+1);
+            }*/
+            XMLString::release ( &name );
+        }
+    }
+    return 1;
 }

@@ -179,4 +179,3 @@ GraphicsEngine::~GraphicsEngine ( void )
     //finally stop the log engine
     delete log;
 }
-

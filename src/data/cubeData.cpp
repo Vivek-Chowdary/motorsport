@@ -23,11 +23,31 @@
 
 std::vector <Cube *>Cube::cubeList;
 
-Cube::Cube ( int cubeNumber, float size, float posX, float posY, float posZ )
+Cube::Cube ( int cubeNumber, float posX, float posY, float posZ )
 {
-    startPhysics ( size, posX, posY, posZ );
+    CubeData * cubeData = new CubeData;
+    cubeData->cube = this;
+    cubeData->physics = new CubePhysicsData;
+    cubeData->physics->size = 100;
+    cubeData->graphics = new CubeGraphicsData;
+    processXmlFile ( "cube.xml", &Cube::processCubeDataFile, (void*) cubeData);
+
+    startPhysics ( posX, posY, posZ, cubeData->physics );
     startInput ( );
-    startGraphics ( cubeNumber );
+    startGraphics ( cubeNumber, cubeData->graphics );
+
+    //delete [](cubeData->name);
+    //delete [](cubeData->description);
+    //delete [](cubeData->physics->author);
+    //delete [](cubeData->physics->license);
+    delete cubeData->physics;
+    //delete [](cubeData->graphics->author);
+    //delete [](cubeData->graphics->license);
+    delete [](cubeData->graphics->material);
+    delete [](cubeData->graphics->mesh);
+    delete [](cubeData->graphics->ogreName);
+    delete cubeData->graphics;
+    delete cubeData;
 }
 
 Cube::~Cube ()

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<cube
+    name = "Cube"
+    description = "A strange black and white textured cube"
+    >
+    <graphics
+        author = "sinbad (sinbadATogre3dDOTorg), STenyaK (stenyakATgmxDOTnet)"
+        license = "LGPL"
+        material = "cube"
+        mesh = "../data/cube.mesh"
+        ogreName = "cube%i"
+        >
+    </graphics>
+    <physics
+        author = "STenyaK (stenyakATgmxDOTnet)"
+        license = "Creative Commons"
+        size = "100"
+        >
+    </physics>
+</cube>

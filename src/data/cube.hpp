@@ -26,6 +26,11 @@
 #   include <vector>
 #   include "system.hpp"
 #   include "world.hpp"
+#   include "domParser.hpp"
+
+struct CubeData;
+struct CubePhysicsData;
+struct CubeGraphicsData;
 
 class Cube
 {
@@ -36,22 +41,24 @@ class Cube
         float moveToYNegative;
 
     public:
-        Cube ( int cubeNumber , float size, float posX, float posY, float posZ );
+        Cube ( int cubeNumber , float posX, float posY, float posZ );
         ~Cube ( );
 
         //physics
-        void startPhysics ( float size, float posX, float posY, float posZ );
+        void startPhysics ( float posX, float posY, float posZ, CubePhysicsData * physics );
         void stepPhysics();
         void stopPhysics ( );
         dBodyID cubeID;
         dGeomID cubeGeomID;
+        int processCubePhysicsDataNode ( DOMNode * n, CubePhysicsData * physics );
 
         //graphics
-        void startGraphics (int cubeNumber );
+        void startGraphics (int cubeNumber, CubeGraphicsData * graphics);
         void stepGraphics();
         void stopGraphics ( );
         Ogre::Entity * cubeEntity;
         Ogre::SceneNode * cubeNode;
+        int processCubeGraphicsDataNode ( DOMNode * n, CubeGraphicsData * graphics );
 
         //input
         void startInput ( );
@@ -62,7 +69,7 @@ class Cube
         void setMoveToYPositive ( float multiplier );
         void setMoveToYNegative ( float multiplier );
 
-        //others/common
+        //data
         static std::vector <Cube*> cubeList;
         void updateOgrePosition();
         void updateOgreOrientation();
@@ -70,6 +77,32 @@ class Cube
         float getMoveToXNegative ( );
         float getMoveToYPositive ( );
         float getMoveToYNegative ( );
+        static int processCubeDataFile ( DOMNode * n, void * data);
+};
+
+struct CubeData
+{
+    Cube * cube;
+    char * name;
+    char * description;
+    CubePhysicsData * physics;
+    CubeGraphicsData * graphics;
+};
+
+struct CubePhysicsData
+{
+    char * author;
+    char * license;
+    int size;
+};
+
+struct CubeGraphicsData
+{
+    char * author;
+    char * license;
+    char * material;
+    char * mesh;
+    char * ogreName;
 };
 
 #endif

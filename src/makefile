@@ -72,6 +72,7 @@ SOURCES := \
 	log/logEngine.cpp \
         log/logParser.cpp \
         data/cubeData.cpp \
+        data/cubeDataParser.cpp \
         data/cameraData.cpp \
         data/domParser.cpp \
 	data/dataEngine.cpp \
@@ -97,7 +98,7 @@ SOURCES := \
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c log/testLogEngine.o log/logEngine.o log/logParser.o data/domParser.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o log/logParser.o data/domParser.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 

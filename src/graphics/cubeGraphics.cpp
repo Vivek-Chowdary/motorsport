@@ -21,12 +21,12 @@
 
 #include "cube.hpp"
 
-void Cube::startGraphics ( int cubeNumber /*char * cubeName*/ )
+void Cube::startGraphics ( int cubeNumber, CubeGraphicsData * graphics )
 {
     char name[20];
-    sprintf (name, "Cube%i", cubeNumber);
-    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( name, "../data/cube.mesh" );
-    cubeEntity->setMaterialName ("cube");
+    sprintf ( name, graphics->ogreName, cubeNumber );
+    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( name, graphics->mesh );
+    cubeEntity->setMaterialName ( graphics->material );
     cubeNode = static_cast < Ogre::SceneNode* > (SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild() );
     cubeNode->attachObject (cubeEntity);
 }
@@ -42,3 +42,63 @@ void Cube::stopGraphics()
     //empty
 }
 
+int Cube::processCubeGraphicsDataNode ( DOMNode * n, CubeGraphicsData * graphics )
+{
+    XERCES_STD_QUALIFIER cout << "\t\t\tParsing cube graphics:";
+    if ( n->hasAttributes (  ) )
+    {
+        // get all the attributes of the node
+        DOMNamedNodeMap *pAttributes = n->getAttributes (  );
+        int nSize = pAttributes->getLength (  );
+        for ( int i = 0; i < nSize; ++i )
+        {
+            DOMAttr *pAttributeNode =
+                ( DOMAttr * ) pAttributes->item ( i );
+            char *name =
+                XMLString::transcode ( pAttributeNode->
+                                       getName (  ) );
+            if ( !strncmp ( name, "material", 9 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics material:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                graphics->material = new char[strlen(name)+1];
+                strncpy (graphics->material, name, strlen(name)+1);
+            }
+
+            if ( !strncmp ( name, "mesh", 5 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics mesh filename:";
+                name = XMLString::transcode ( pAttributeNode->getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                
+                graphics->mesh = new char[strlen(name)+1];
+                strncpy (graphics->mesh, name, strlen(name)+1);
+            }
+            if ( !strncmp ( name, "ogreName", 9 ) )
+            {
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics ogre-identifier format:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                graphics->ogreName = new char[strlen(name)+1];
+                strncpy (graphics->ogreName, name, strlen(name)+1);
+            }
+            XMLString::release ( &name );
+        }
+    }
+    XERCES_STD_QUALIFIER cout << "\t\t\tFinished cube graphics:";
+    return 1;
+}

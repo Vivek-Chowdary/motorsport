@@ -209,7 +209,7 @@ int GraphicsEngine::processGraphicsConfigFile ( DOMNode * n, void * data)
                                             (*(GraphicsData*)data).renderer = new char[strlen(name)+1];
                                             strncpy ((*(GraphicsData*)data).renderer, name, strlen(name)+1);
                                         }
-                                        if ( !strncmp ( name, "defaultNumMipMaps", 18 ) )
+                                        if ( !strncmp ( name, "defaultNumMipmaps", 18 ) )
                                         {
                                             XERCES_STD_QUALIFIER cout << "\tFound the default number of mip maps:";
                                             XMLString::release ( &name );

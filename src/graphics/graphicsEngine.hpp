@@ -84,7 +84,6 @@ class GraphicsEngine
 
     /// Called by the generic XML parser; it loads configuration data from a file.
     static int processGraphicsConfigFile ( DOMNode * n, void * data );
-        
 };
 
 struct GraphicsData

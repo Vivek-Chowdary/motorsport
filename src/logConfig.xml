@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <logConfig
-        globalLevel ="LOG_INFO"
+        globalLevel ="LOG_TRACE"
         fileName = "motorsport.log"
         textBuffer = "1024"
         >

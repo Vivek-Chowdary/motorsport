@@ -65,17 +65,11 @@ int DataEngine::loadWorldData ( void )
     log->format ( LOG_INFO, "Creating an array of %i cubes", numberOfCubes );
     for ( int i = 0; i < numberOfCubes; i++ )
     {
+        log->format ( LOG_VERBOSE, "Adding cube number %i", i);
         const int separation = 250;
         Cube * cubePointer;
-        if ( i != numberOfCubes-1 )
-        {
-            float size = 100;
-            cubePointer = new Cube ( i, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int(i/1000))+1) ));
-            dBodySetAngularVel (cubePointer->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
-        }else{
-            float size = 10000.0;
-            cubePointer = new Cube( i, size, 0, 0, (-size/2)-(separation*5));
-        }
+        cubePointer = new Cube ( i, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int(i/1000))+1) ));
+        dBodySetAngularVel (cubePointer->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
         Cube::cubeList.push_back (cubePointer);
     }
     
