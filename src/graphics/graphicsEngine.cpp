@@ -40,12 +40,13 @@
 int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start(2, "logGraphics.txt");
+    log.start(3, "logGraphics.txt");
     
     //get the direction of the graphics data
     log.put(2, "Setting up data pointers...");
     graphicsData = &(sysData->graphicsData);
     worldData = wrlData;
+    systemData = sysData;
     log.append (2, "Ok");
     
 	//initialization of SDL_VIDEO
@@ -71,13 +72,8 @@ int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
         return (-1);
     }
     log.append (2, "Ok");
-	
-	//setting window caption
-    log.put(2, "Setting SDL window caption...");
-	SDL_WM_SetCaption (graphicsData->title,graphicsData->icon);
-    log.append (2, "Ok");
 
-    log.put(2, "Setting SDL window caption...");
+    log.put(2, "Setting SDL window color depth...");
     graphicsData->fmt = graphicsData->screen->format;
     log.append (2, "Ok");
 	
@@ -89,7 +85,16 @@ int GraphicsEngine::step (void)
 //makes the graphics engine draw one frame
 {
     
-    //mega-verbosity
+    //write engines rate stats on window title (if they have just been updated)
+    if (!systemData->graphicsSteps)
+    {
+        log.put(3, "Doing an step: updating engine rates");
+        //be careful with the string size of char* title!!
+        sprintf(graphicsData->title, "Motorsport [ graphicsFps=%3i | physicsFps=%3i(%3ifps|%3ims) ]", systemData->graphicsStepsPerSecond, systemData->physicsStepsPerSecond,  systemData->physicsData.desiredStepsPerSecond, systemData->physicsData.timeStep);
+        SDL_WM_SetCaption (graphicsData->title,graphicsData->icon);
+        log.append (3, "Ok");
+    }
+
     log.put(4, "Doing an step: drawing world objects");
 
     //blank the screen
@@ -105,9 +110,7 @@ int GraphicsEngine::step (void)
 
 	//draw all the rectangles in worldData
     log.put(4, "Drawing rectangles on screen...");
-    for (int currentRectangle = 0;
-         currentRectangle < worldData->numberOfRectangles;
-         currentRectangle++)
+    for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)
     {
         //only draw the objects the user wants to see(visible rectangles)
         if (worldData->rectangleList[currentRectangle].isVisible ())

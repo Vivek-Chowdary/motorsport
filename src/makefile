@@ -76,6 +76,7 @@ INCLUDE_DIRS_LINUX := /usr/include
 INCLUDE_DIRS := \
     input \
     graphics \
+    physics \
     data \
     log \
     $(INCLUDE_DIRS_$(PLATFORM))
@@ -123,6 +124,7 @@ SOURCES := \
     log/logEngine.cpp \
     data/dataEngine.cpp \
     graphics/graphicsEngine.cpp \
+    physics/physicsEngine.cpp \
     input/inputEngine.cpp \
     system.cpp \
     world.cpp \

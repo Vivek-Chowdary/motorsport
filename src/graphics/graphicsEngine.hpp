@@ -27,9 +27,9 @@
 
 #include "logEngine.hpp"
 #ifdef WIN32
-	#include "sdl.h"
-#else										
-	#include <SDL/SDL.h>
+    #include "sdl.h"
+#else
+    #include <SDL/SDL.h>
 #endif
 
 
@@ -44,6 +44,7 @@ class GraphicsEngine
 	LogEngine log;	//a log object for logging independently from other engines and main
     GraphicsData *graphicsData;
     WorldData *worldData;
+    SystemData *systemData;
 	public:
         int start (WorldData *wrlData, SystemData *sysData);		//starts the graphics engine
 		int step (void);        //makes the graphics engine draw one frame

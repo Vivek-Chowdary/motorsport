@@ -45,6 +45,7 @@ class Rectangle
         int isVisible ();
         Uint8 red, green, blue;
         SDL_Rect *sdlRectangle ();
+        bool colorSpeed;    //0 -> increasing; 1 -> decreasing
 };
 
 class WorldData

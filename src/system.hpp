@@ -37,12 +37,16 @@ struct GraphicsData
 {
     SDL_Surface *screen;
     SDL_PixelFormat *fmt;
+
     int width;
     int height;
     int bpp;
     Uint32 flags;
+
     char *title;
     char *icon;
+    int titleLength;
+    int iconLength;
     
     //note that the camera data (origin, dest., angle, focus, etc...) should not
     // be here. that's part of the worldData. there should exist real TV
@@ -59,15 +63,14 @@ struct InputData
     // axis available, axis-calibration data...
 };
 
-/*
 struct PhysicsData
 {
-    //there will be a struct for every engine.
+    Uint32 timeStep;
+    Uint32 desiredStepsPerSecond;
     // this struct is used by the physics engine. it will store things like
     // timestep to use... .... mmm well, i can't think of other example of
     // system data for the physicsEngine, but i suppose you get the idea.
 };
-*/
 
 class SystemData
 { //this contains all the data not related with the simulated/virtual world
@@ -84,8 +87,21 @@ class SystemData
         void stopMainLoop (void); //set mainLoopDone to 0
         int isLoopDone (void);
 
+        //independent data
         struct GraphicsData graphicsData;
         struct InputData inputData;
+        struct PhysicsData physicsData;
+
+        //main loop time control data
+        Uint32 currentLoopTime;
+        Uint32 calculatedPhysicsTime;
+
+        Uint32 lastSecondTime;
+
+        int physicsSteps;
+        Uint32 physicsStepsPerSecond;
+        int graphicsSteps;
+        Uint32 graphicsStepsPerSecond;
 };
 
 

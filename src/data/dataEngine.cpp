@@ -65,21 +65,23 @@ int DataEngine::loadWorldData (void)
 
     //initializating rectangle values
     log.put (2, "Assigning initial rectangle 1 values...");
-    worldData->rectangleList[0].setVisible (0);
+    worldData->rectangleList[0].setVisible (1);
     worldData->rectangleList[0].setSize (80, 80);
     worldData->rectangleList[0].setPosition (40, 80);
     worldData->rectangleList[0].red = 255;
     worldData->rectangleList[0].green = 0;
     worldData->rectangleList[0].blue = 0;
+    worldData->rectangleList[0].colorSpeed = 0;
     log.append (2, "Ok");
 
     log.put (2, "Assigning initial rectangle 2 values...");
-    worldData->rectangleList[1].setVisible (0);
+    worldData->rectangleList[1].setVisible (1);
     worldData->rectangleList[1].setSize (160, 160);
     worldData->rectangleList[1].setPosition (350, 240);
     worldData->rectangleList[1].red = 0;
     worldData->rectangleList[1].green = 255;
     worldData->rectangleList[1].blue = 255;
+    worldData->rectangleList[0].colorSpeed = 1;
     log.append (2, "Ok");
 
     return (0);
@@ -87,6 +89,12 @@ int DataEngine::loadWorldData (void)
 
 int DataEngine::loadSystemData (void)
 {
+    //initialize main loop data
+    systemData->physicsSteps = 0;
+    systemData->physicsStepsPerSecond = 0;
+    systemData->graphicsSteps = 0;
+    systemData->graphicsStepsPerSecond = 0;
+
     //set screen properties
     log.put (2, "Setting screen properties...");
     systemData->graphicsData.width = 640;
@@ -96,17 +104,22 @@ int DataEngine::loadSystemData (void)
     log.append (2, "Ok");
 
     //set window properties
-    const int maxLength = 15;
+    systemData->graphicsData.titleLength = 150;
+    systemData->graphicsData.iconLength = 15;
 
     log.put (2, "Allocating memory for window properties...");
-    systemData->graphicsData.title = new char[maxLength];
-    systemData->graphicsData.icon = new char[maxLength];
+    systemData->graphicsData.title = new char[systemData->graphicsData.titleLength];
+    systemData->graphicsData.icon = new char[systemData->graphicsData.iconLength];
     log.append (2, "Ok");
 
-    log.put (2, "Setting window properties...");
-    strncpy (systemData->graphicsData.title, "Motorsport", maxLength);
-    strncpy (systemData->graphicsData.icon, "Icon File", maxLength);
+    log.put (2, "Setting initial window properties...");
+    strncpy (systemData->graphicsData.title, "Motorsport", systemData->graphicsData.titleLength);
+    strncpy (systemData->graphicsData.icon, "Motorsport", systemData->graphicsData.iconLength);
     log.append (2, "Ok");
+
+    //set physics parameters
+    systemData->physicsData.desiredStepsPerSecond = 500;
+    systemData->physicsData.timeStep = 1000 / systemData->physicsData.desiredStepsPerSecond;
 
     return (0);
 }
