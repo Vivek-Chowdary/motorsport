@@ -30,7 +30,7 @@ Cube::Cube ( int cubeNumber, float posX, float posY, float posZ )
     cubeData->physics = new CubePhysicsData;
     cubeData->physics->size = 100;
     cubeData->graphics = new CubeGraphicsData;
-    processXmlFile ( "cube.xml", &Cube::processCubeDataFile, (void*) cubeData);
+    processXmlFile ( "../data/cube.xml", &Cube::processCubeDataFile, (void*) cubeData);
 
     startPhysics ( posX, posY, posZ, cubeData->physics );
     startInput ( );
