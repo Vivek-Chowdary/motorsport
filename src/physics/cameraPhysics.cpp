@@ -17,12 +17,12 @@
 #include "SDL/SDL_keysym.h"
 #include "vector3d.hpp"
 
-void Camera::startPhysics (Vector3d position, Vector3d lookAt)
+void Camera::startPhysics (Vector3d position, Vector3d target)
 {
     positionID = 0;
     targetID = 0;
     positionOffset = new Vector3d (position);
-    targetOffset = new Vector3d (lookAt);
+    targetOffset = new Vector3d (target);
 }
 
 void Camera::stopPhysics ()
@@ -33,7 +33,6 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
-
     //TODO move camera movement routines to the physics engine, so that it's not framerate-dependent
     if (this == World::getWorldPointer()->getActiveCamera() )
     {

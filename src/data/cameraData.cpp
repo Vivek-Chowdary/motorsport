@@ -14,12 +14,12 @@
 
 int Camera::instancesCount = 0;
 
-Camera::Camera (Vector3d position, Vector3d lookAt)
+Camera::Camera (Vector3d position, Vector3d target)
 {
     instancesCount ++;
     
     startGraphics ();
-    startPhysics (position, lookAt);
+    startPhysics (position, target);
     startInput ();
 }
 
@@ -33,15 +33,33 @@ Camera::~Camera ()
 
 void Camera::updateOgrePosition ()
 {
-    const dReal *temp = dBodyGetPosition (positionID);
-    ogreCamera->setPosition (Ogre::Vector3 (temp[0] + positionOffset->x, temp[1] + positionOffset->y, temp[2] + positionOffset->z));
+    const dReal *temp = dBodyGetQuaternion (positionID);
+    Ogre::Quaternion tempRot(temp[0], temp[1], temp[2], temp[3]);
+    Ogre::Matrix3 rot;
+    tempRot.ToRotationMatrix (rot);
+
+    Ogre::Vector3 tempPos(positionOffset->x, positionOffset->y, positionOffset->z);
+    Ogre::Vector3 pos = rot * tempPos;
+
+    temp = dBodyGetPosition (positionID);
+    pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
+
+    ogreCamera->setPosition (pos);
 }
 void Camera::updateOgreTarget ()
 {
-    //const dReal *temp = dBodyGetQuaternion (bodyID);
-    //bodyNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
-    const dReal *temp = dBodyGetPosition (targetID);
-    ogreCamera->lookAt (Ogre::Vector3 (temp[0] + targetOffset->x, temp[1] + targetOffset->y, temp[2] + targetOffset->z));
+    const dReal *temp = dBodyGetQuaternion (targetID);
+    Ogre::Quaternion tempRot(temp[0], temp[1], temp[2], temp[3]);
+    Ogre::Matrix3 rot;
+    tempRot.ToRotationMatrix (rot);
+
+    Ogre::Vector3 tempPos(targetOffset->x, targetOffset->y, targetOffset->z);
+    Ogre::Vector3 pos = rot * tempPos;
+
+    temp = dBodyGetPosition (targetID);
+    pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
+
+    ogreCamera->lookAt (pos);
 }
 
 void Camera::setPositionID (dBodyID positionID)

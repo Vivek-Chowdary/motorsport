@@ -27,7 +27,7 @@ class Camera
     Vector3d * targetOffset;
 
   public:
-    Camera (Vector3d position, Vector3d lookAt);
+    Camera (Vector3d position, Vector3d target);
     ~Camera ();
     void updateOgrePosition ();
     void updateOgreTarget ();
@@ -35,7 +35,7 @@ class Camera
     void setTargetID (dBodyID targetID);
 
     // physics
-    void startPhysics (Vector3d position, Vector3d lookAt);
+    void startPhysics (Vector3d position, Vector3d target);
     void stepPhysics();
     void stopPhysics();
 

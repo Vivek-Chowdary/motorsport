@@ -34,45 +34,6 @@ void Camera::stepGraphics ()
 {
     updateOgrePosition();
     updateOgreTarget();
-
-    //TODO move camera movement routines to the physics engine, so that it's not framerate-dependent
-/*    if (this == World::getWorldPointer()->getActiveCamera() )
-    {
-        // Move the camera
-        float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
-        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        moveZ *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-
-        moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue();
-        moveZ = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        moveZ *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-
-        // Rotate the camera
-        float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
-        float rotY = SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(1)]->getValue() - 0.5;
-        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        ogreCamera->yaw (rotX);
-        ogreCamera->pitch (rotY);
-
-        rotX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue();
-        rotY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue();
-        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        ogreCamera->yaw (rotX);
-        ogreCamera->pitch (rotY);
-
-        rotX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue();
-        rotY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue();
-        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        ogreCamera->yaw (rotX);
-        ogreCamera->pitch (rotY);
-    }*/
 }
 
 void Camera::stopGraphics ()
