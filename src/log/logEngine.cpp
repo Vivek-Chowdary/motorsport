@@ -27,33 +27,64 @@
 
 #include "logEngine.hpp"
 
-
 /******************************************************************************
 *
 * Functions
 *
 ******************************************************************************/
 
-void logEngine::start (char *filePath, bool appendMode)
+int LogEngine::start (char level, char *filePath, bool appendMode)
 {
 	//check if we append (or rewrite the whole file)
 	logFile = fopen (filePath, (appendMode ? "a" : "w"));
-
+    
+    //we set the level of verbosity
+    logLevel = level;
+    
 	//we put some text at the start of the current log
-	put ("START OF LOG");
+	put (0,"Start of LogFile");
+	
+	return (0);
 }
 
 
-void logEngine::put (char *textToLog)
-{
-	//write the textToLog in the log file after a EOL
-	fputc ('\n', logFile);
-	fputs (textToLog, logFile);
+int LogEngine::put (char level, char *textToLog)
+{ 
+    //check if we have been told to write this kind of log
+    if (level >= logLevel)
+    {
+    	//begin new line
+        // (level 0,1,2 > new line; -1=continue last line)
+        switch (level)
+        {
+            case -1: /*nothing to do*/     break;
+            case 0:
+            case 1:
+            case 2: fputc ('\n', logFile); break;
+        }
+
+        //write log level information
+        // (level 0=info; 1=warning; 2=error; -1=continue last log)
+        switch (level)
+        {
+            case -1:fputc (' '     , logFile); break;
+            case 0: fputs ("(II): ", logFile); break;
+            case 1: fputs ("(WW): ", logFile); break;
+            case 2: fputs ("(EE): ", logFile); break;
+        }
+
+        //write log text
+    	fputs (textToLog, logFile);
+    }
+	
+	return (0);
 }
 
 
-void logEngine::stop (void)
+int LogEngine::stop (void)
 {
-	put ("END OF LOG");
+	put (0,"End of LogFile");
 	fclose (logFile);
+	
+	return (0);
 }

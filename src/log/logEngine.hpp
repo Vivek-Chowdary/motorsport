@@ -37,19 +37,20 @@
 *
 ******************************************************************************/
 
-class logEngine
+class LogEngine
 {
 	FILE *logFile;
+    char logLevel;
 	public:
 		//starts the log process
-		void start (char *filePath, bool appendMode);
-		//writes textToLog to the .logFile
-		void put (char *textToLog);
+		int start (char level, char *filePath, bool appendMode);
+		//writes textToLog to the .logFile (level 0=info; level 1=warning; level 2=error)
+		int put (char level, char *textToLog);
 		//stops the log process
-		void stop (void);
+		int stop (void);
 };
 
 
 #else
-#error multiple include of logEngine.hpp // this isn't normally done, but I like it :) MF
+//#error multiple include of logEngine.hpp // this isn't normally done, but I like it :) MF
 #endif
