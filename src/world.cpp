@@ -79,3 +79,31 @@ void Cube::updateOgreOrientation()
     const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
     cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
 }
+
+void Camera::setRotateLeft ( int multiplier )
+{
+    rotateLeft = multiplier;
+}
+void Camera::setRotateRight ( int multiplier )
+{
+    rotateRight = multiplier;
+}
+
+void Camera::setRotateUp ( int multiplier )
+{
+    rotateUp = multiplier;
+}
+void Camera::setRotateDown ( int multiplier )
+{
+    rotateDown = multiplier;
+}
+
+int Camera::getRotateVertical (  )
+{
+    return rotateUp - rotateDown;
+}
+
+int Camera::getRotateHorizontal (  )
+{
+    return rotateLeft - rotateRight;
+}

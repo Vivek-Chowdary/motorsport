@@ -37,16 +37,14 @@ DataEngine::DataEngine ( )
 
 int DataEngine::loadWorldData ( void )
 {
-    //create the camera1 and initialize it
-    log->put ( LOG_INFO, "Creating camera1..." );
-    worldData->camera1 = new MospCamera;
-    worldData->camera1->rotateDown =
-        worldData->camera1->rotateUp =
-        worldData->camera1->rotateLeft =
-        worldData->camera1->rotateRight =
-        worldData->camera1->goBack =
-        worldData->camera1->goForward =
-        worldData->camera1->goLeft = worldData->camera1->goRight = false;
+    //create the camera and initialize it
+    log->put ( LOG_INFO, "Creating camera..." );
+    worldData->camera = new Camera;
+    worldData->camera->setRotateLeft (0);
+    worldData->camera->setRotateRight (0);
+    worldData->camera->setRotateUp (0);
+    worldData->camera->setRotateDown (0);
+    worldData->camera->goBack = worldData->camera->goForward = worldData->camera->goLeft = worldData->camera->goRight = false;
 
     //create 2 cubes in the world data
     worldData->numberOfCubes = 200;
@@ -89,8 +87,8 @@ int DataEngine::unloadWorldData ( void )
     log->put ( LOG_INFO, "Unloading cubes from memory..." );
     delete[]( worldData->cubeList );
     log->put ( LOG_INFO, "Unloading camera1 from memory..." );
-    delete ( worldData->camera1->ogreCamera );
-    delete ( worldData->camera1 );
+    delete ( worldData->camera->ogreCamera );
+    delete ( worldData->camera );
 
     return ( 0 );
 }

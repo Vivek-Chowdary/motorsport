@@ -11,7 +11,7 @@ LIBRARIES_WIN32 := mingw32
 else
 #endif
 #ifeq ("$(OSTYPE)", "linux-gnu")
-PLATFOM := LINUX
+PLATFORM := LINUX
 TYPE :=
 EXE_EXT := 
 BASE_INCLUDE_DIR := /usr/include

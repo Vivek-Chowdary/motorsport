@@ -41,6 +41,7 @@ int InputEngine::step ( void )  //processes user input queue
 {
     //mega-verbosity
     //log->put (LOG_VERBOSE, "Doing an step: checking for input events...");
+    processMouseMovement ( );
 
     SDL_Event event;            //used to store the current event in the queue
 
@@ -67,6 +68,11 @@ int InputEngine::step ( void )  //processes user input queue
             processInputKeyUp ( event.key.keysym.sym );
             break;
 
+/*        case SDL_MOUSEMOTION:
+            log->put ( LOG_VERBOSE, "New SDL_MOUSEMOTION event: processing movement data..." );
+            processMouseMovement ( event.motion );
+            break;
+*/                                                                                                        
         case SDL_QUIT:
             //this can be the user cliking to close the window
             log->put ( LOG_VERBOSE,
@@ -82,6 +88,17 @@ int InputEngine::step ( void )  //processes user input queue
     //finished processing the events queue
 
     return ( 0 );
+}
+
+void InputEngine::processMouseMovement ( /*SDL_MouseMotionEvent mouseMotion*/)
+{
+    int x = 0, y = 0;
+    SDL_GetRelativeMouseState(&x, &y);
+    worldData->camera->setRotateRight (x);
+    worldData->camera->setRotateUp (y);
+/*    worldData->camera->setRotateUp (mouseMotion.xrel);
+    worldData->camera->setRotateRight (mouseMotion.yrel);
+*/
 }
 
 void InputEngine::processInputKeyDown ( SDLKey keySymbol )
@@ -122,49 +139,49 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
         // therefore modifying.... etc...
     case SDLK_RIGHT:
         log->put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keypress..." );
-        worldData->camera1->rotateRight = true;
+        worldData->camera->setRotateRight (2);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the right." );
         break;
 
     case SDLK_LEFT:
         log->put ( LOG_VERBOSE, "Processing a SDLK_LEFT keypress..." );
-        worldData->camera1->rotateLeft = true;
+        worldData->camera->setRotateLeft (2);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the left." );
         break;
 
     case SDLK_UP:
         log->put ( LOG_VERBOSE, "Processing a SDLK_UP keypress..." );
-        worldData->camera1->rotateUp = true;
+        worldData->camera->setRotateUp (2);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the top." );
         break;
 
     case SDLK_DOWN:
         log->put ( LOG_VERBOSE, "Processing a SDLK_DOWN keypress..." );
-        worldData->camera1->rotateDown = true;
+        worldData->camera->setRotateDown (2);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the bottom." );
         break;
 
     case 'w':
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
-        worldData->camera1->goForward = true;
+        worldData->camera->goForward = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
         break;
 
     case 's':
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
-        worldData->camera1->goBack = true;
+        worldData->camera->goBack = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
         break;
 
     case 'a':
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
-        worldData->camera1->goLeft = true;
+        worldData->camera->goLeft = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
         break;
 
     case 'd':
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
-        worldData->camera1->goRight = true;
+        worldData->camera->goRight = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
         break;
 
@@ -266,49 +283,49 @@ void InputEngine::processInputKeyUp ( SDLKey keySymbol )
     {
     case SDLK_RIGHT:
         log->put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease..." );
-        worldData->camera1->rotateRight = false;
+        worldData->camera->setRotateRight (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
         break;
 
     case SDLK_LEFT:
         log->put ( LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease..." );
-        worldData->camera1->rotateLeft = false;
+        worldData->camera->setRotateLeft (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
         break;
 
     case SDLK_UP:
         log->put ( LOG_VERBOSE, "Processing a SDLK_UP keyrelease..." );
-        worldData->camera1->rotateUp = false;
+        worldData->camera->setRotateUp (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
         break;
 
     case SDLK_DOWN:
         log->put ( LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease..." );
-        worldData->camera1->rotateDown = false;
+        worldData->camera->setRotateDown (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
         break;
 
     case 'w':
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
-        worldData->camera1->goForward = false;
+        worldData->camera->goForward = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 
     case 's':
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
-        worldData->camera1->goBack = false;
+        worldData->camera->goBack = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 
     case 'a':
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
-        worldData->camera1->goLeft = false;
+        worldData->camera->goLeft = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 
     case 'd':
         log->put ( LOG_VERBOSE, "Processing a w keyprelease..." );
-        worldData->camera1->goRight = false;
+        worldData->camera->goRight = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 

@@ -49,21 +49,30 @@ class Cube
         int getMoveToY ( );
 };
 
-class MospCamera
+class Camera
 {
+    private:
+        int rotateLeft;
+        int rotateRight;
+        int rotateUp;
+        int rotateDown;
+
     public:
         //should be private
         Ogre::Camera * ogreCamera;
 
         //should be public
+        void setRotateUp ( int multiplier );
+        void setRotateDown ( int multiplier );
+        void setRotateLeft ( int multiplier );
+        void setRotateRight ( int multiplier );
+        int getRotateVertical ( );
+        int getRotateHorizontal ( );
+
         bool goBack;
         bool goForward;
         bool goLeft;
         bool goRight;
-        bool rotateUp;
-        bool rotateDown;
-        bool rotateLeft;
-        bool rotateRight;
 };
 
 
@@ -77,7 +86,7 @@ class WorldData
         ~WorldData ( );
         int numberOfCubes;
         Cube *cubeList;             //for our example,the worlddata has a set of cubes.
-        MospCamera *camera1;
+        Camera *camera;
 
         dWorldID worldID;
         dSpaceID spaceID;

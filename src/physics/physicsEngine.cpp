@@ -153,29 +153,15 @@ int PhysicsEngine::step ( void )
     dJointGroupEmpty (worldData->jointGroupID);
 
     //camera should be a physics object?
-    float x = 0,
-        z = 0;
-
-    //translation of the camera1, advancing or strafing
-    x += ( worldData->camera1->goRight ) ? physicsData->timeStep : 0;
-    x -= ( worldData->camera1->goLeft ) ? physicsData->timeStep : 0;
-    z -= ( worldData->camera1->goForward ) ? physicsData->timeStep : 0;
-    z += ( worldData->camera1->goBack ) ? physicsData->timeStep : 0;
-    worldData->camera1->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
-    x = z = 0;
-    //rotation of the camera1, to the sides or up/down
-    //+x -- rotateRight, +z -- rotateUp
-    x -= ( worldData->camera1->rotateRight ) ? float ( physicsData->timeStep ) /
-        10.0f : 0;
-    x += ( worldData->camera1->rotateLeft ) ? float ( physicsData->timeStep ) /
-        10.0f : 0;
-    z += ( worldData->camera1->rotateUp ) ? float ( physicsData->timeStep ) /
-        10.0f : 0;
-    z -= ( worldData->camera1->rotateDown ) ? float ( physicsData->timeStep ) /
-        10.0f : 0;
-    //FIXME this for the new x,y,z coords. system!
-    worldData->camera1->ogreCamera->pitch ( z );
-    worldData->camera1->ogreCamera->yaw ( x );
+    float x = 0, z = 0;
+    //translation of the camera, advancing or strafing
+    x += ( worldData->camera->goRight ) ? physicsData->timeStep : 0;
+    x -= ( worldData->camera->goLeft ) ? physicsData->timeStep : 0;
+    z -= ( worldData->camera->goForward ) ? physicsData->timeStep : 0;
+    z += ( worldData->camera->goBack ) ? physicsData->timeStep : 0;
+    worldData->camera->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
+    worldData->camera->ogreCamera->pitch (-(worldData->camera->getRotateVertical() * float(float(physicsData->timeStep) / 50.0)));
+    worldData->camera->ogreCamera->yaw (worldData->camera->getRotateHorizontal() * float(float(physicsData->timeStep)/50.0));
 
     return ( 0 );
 }

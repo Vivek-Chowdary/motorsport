@@ -38,4 +38,5 @@ class InputEngine
     int step ( void );          //processes user input queue
     void processInputKeyDown ( SDLKey keySymbol );
     void processInputKeyUp ( SDLKey keySymbol );
+    void processMouseMovement ( /*SDL_MouseMotionEvent mouseMotion*/ );
 };

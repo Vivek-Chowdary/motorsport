@@ -40,20 +40,16 @@ GraphicsEngine::GraphicsEngine ( )
     setupResources (  );
     if ( !configure (  ) );
 //        return false;
-    graphicsData->ogreSceneManager =
-        graphicsData->ogreRoot->getSceneManager ( ST_GENERIC );
+    graphicsData->ogreSceneManager = graphicsData->ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
-    worldData->camera1->ogreCamera =
-        graphicsData->ogreSceneManager->createCamera ( "Camera1" );
-    worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    worldData->camera1->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
-    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
-    worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
+    worldData->camera->ogreCamera = graphicsData->ogreSceneManager->createCamera ( "Camera1" );
+    worldData->camera->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
+    worldData->camera->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
+    worldData->camera->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
+    worldData->camera->ogreCamera->setNearClipDistance ( 5 );
     
     // Create one viewport, entire window
-    Viewport *vp =
-        graphicsData->ogreWindow->addViewport ( worldData->camera1->
-                                                           ogreCamera );
+    Viewport *vp = graphicsData->ogreWindow->addViewport ( worldData->camera->ogreCamera );
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     
     // Set default mipmap level (NB some APIs ignore this)
