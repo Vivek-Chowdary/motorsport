@@ -9,6 +9,7 @@
 
 #include "suspension.hpp"
 #include "world.hpp"
+#include "system.hpp"
 #include "xmlParser.hpp"
 #include "ode.h"
 #include "log/logEngine.hpp"
@@ -20,8 +21,8 @@
 
 void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    double springConstant = 0;
-    double dampingConstant = 0;
+    springConstant = 0;
+    dampingConstant = 0;
     position = new Vector3d (0, 0, 0);
     rotation = new Vector3d (0, 0, 0);
     if (n->hasAttributes ())
@@ -67,8 +68,14 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     
-    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+/*    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+*/
+    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
     dJointAttach (jointID, 0, 0);
+    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000 ;
+    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
+    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
+
     rotation->degreesToRadians();
 }
 
@@ -87,12 +94,18 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
 
 void Suspension::setPosition (Vector3d position)
 {
-    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
+    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
+/*    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
+*/
 }
 void Suspension::setRotation (Vector3d rotation)
 {
-    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
+//    dJointSetHinge2Axis2 (jointID, rotation.x, rotation.y, rotation.z);
+    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
+/*    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
     dJointSetHingeAxis (jointID, 0,1,0);
+*/
 }
 Vector3d Suspension::getPosition ()
 {

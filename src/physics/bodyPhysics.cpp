@@ -65,6 +65,7 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
     dGeomSetBody (bodyGeomID, bodyID);
+    dBodySetMass (bodyID, &tmpMass);
     setPosition(Vector3d(0, 0, 0));
     setRotation(Vector3d(0, 0, 0));
 }

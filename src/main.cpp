@@ -33,7 +33,7 @@ int main (int argc, char **argv)
     std::cout << "Motorsport comes with ABSOLUTELY NO WARRANTY; for details, read (*)." << std::endl;
     std::cout << "This is free software, and you are welcome to redistribute it under certain conditions; ";
     std::cout << "read (*) for details." << std::endl << std::endl;
-    std::cout << "(*)Complete information provided at http://motorsport/svn/trunk/doc/LICENSE" << std::endl;
+    std::cout << "(*)Complete information provided at http://motorsport-sim.org/svn/trunk/doc/LICENSE" << std::endl;
     std::cout << "===============================================================================" << std::endl;
 
     // We start the main log engine.

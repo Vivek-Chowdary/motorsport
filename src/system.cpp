@@ -24,6 +24,8 @@ SystemData::SystemData ()
     graphicsFrequency(0),
     timeScale(1),
     pauseStep(0),
+    cfmValue(-1),
+    erpValue(-1),
     height(1),
     width(1)
 {

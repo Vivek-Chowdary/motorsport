@@ -42,8 +42,20 @@ Vehicle::~Vehicle ()
     stopGraphics ();
     stopInput ();
 
-//    delete body;  //huh? :S
-//    delete engine; //why does this crash?
+    delete body; 
+    delete engine;
+    delete clutch;
+    delete gearbox;
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
+    {
+        delete suspIter->second;
+    }
+    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
+    {
+        delete wheelIter->second;
+    }
     delete log;
 }
 

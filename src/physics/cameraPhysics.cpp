@@ -43,21 +43,21 @@ void Camera::stepPhysics ()
         moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
         moveY *= SystemData::getSystemDataPointer()->physicsTimeStep;
         //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-        *positionOffset += Vector3d(moveX, moveY, 0);
+        *positionOffset += Vector3d(moveX/1000, moveY/1000, 0);
 
         moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue();
         moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
         moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
         moveY *= SystemData::getSystemDataPointer()->physicsTimeStep;
         //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-        *positionOffset += Vector3d(moveX, moveY, 0);
+        *positionOffset += Vector3d(moveX/1000, moveY/1000, 0);
 
         // Rotate the camera
         float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
         float rotY = SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(1)]->getValue() - 0.5;
         rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
         rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        *targetOffset += Vector3d (rotX, rotY, 0);
+        *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         //ogreCamera->yaw (rotX);
         //ogreCamera->pitch (rotY);
 
@@ -65,7 +65,7 @@ void Camera::stepPhysics ()
         rotY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue();
         rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
         rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        *targetOffset += Vector3d (rotX, rotY, 0);
+        *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         //ogreCamera->yaw (rotX);
         //ogreCamera->pitch (rotY);
 
@@ -75,7 +75,7 @@ void Camera::stepPhysics ()
 
         rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
         rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        *targetOffset += Vector3d (rotX, rotY, 0);
+        *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         //ogreCamera->yaw (rotX);
         //ogreCamera->pitch (rotY);
     }

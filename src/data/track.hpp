@@ -28,22 +28,22 @@ class Camera;
 class Track : public WorldObject
 {
   private:
+    // data
     std::string name;
     int revision;
     std::string description;
     std::string author;
     std::string contact;
     std::string license;
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlVehiclePositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
     // data
     Track (const std::string & xmlFilename);
     ~Track ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void processXmlVehiclePositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     std::map <std::string, CameraPosition * > cameraPositionMap;
     std::map <std::string, VehiclePosition * > vehiclePositionMap;
-
     std::vector < Cube * > cubeList;
     std::vector < Camera * > cameraList;
 

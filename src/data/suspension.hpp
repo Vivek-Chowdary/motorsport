@@ -26,24 +26,28 @@ class Vector3d;
 class Suspension : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
     std::string index;
     dJointID jointID;
     Vector3d * rotation;
     Vector3d * position;
-  public:
+    double springConstant;
+    double dampingConstant;
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
+    // physics
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
+  public:
     // data
     Suspension (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Suspension ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     std::string getIndex();
     void attach (Wheel & wheel, Vehicle & vehicle);
 
     // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
     void setPosition (Vector3d position);
     Vector3d getPosition ();
     void setRotation (Vector3d rotation);

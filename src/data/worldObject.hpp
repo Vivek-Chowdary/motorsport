@@ -17,7 +17,20 @@ class LogEngine;
 class WorldObject
 {
   protected:
+    // data
     LogEngine * log;
+
+    // physics
+    virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n){};
+    virtual void stopPhysics (){};
+    
+    // graphics
+    virtual void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n){};
+    virtual void stopGraphics (){};
+    
+    // input
+    virtual void startInput (XERCES_CPP_NAMESPACE::DOMNode * n){};
+    virtual void stopInput (){};
 
   public:
     // data
@@ -25,18 +38,12 @@ class WorldObject
     virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
     
     // physics
-    virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepPhysics (){};
-    virtual void stopPhysics (){};
 
     // graphics
-    virtual void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepGraphics (){};
-    virtual void stopGraphics (){};
 
     // input
-    virtual void startInput (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepInput (){};
-    virtual void stopInput (){};
 };
 #endif

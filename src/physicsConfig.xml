@@ -7,8 +7,10 @@
     pauseStep = "0"
     >
     <ode
-        cfmValue = "default"
-        erpValue = "default"
+        _cfmValue = "default"
+        cfmValue = "0"
+        _erpValue = "default"
+        erpValue = "1"
         stepType = "dWorldStep"
         dWorldStepFast1MaxIterations = "100"
         >

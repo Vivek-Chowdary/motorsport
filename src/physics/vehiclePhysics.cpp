@@ -101,20 +101,6 @@ Vector3d Vehicle::getRotation ()
 
 void Vehicle::stopPhysics ()
 {
-    body->stopPhysics();
-    engine->stopPhysics();
-    clutch->stopPhysics();
-    gearbox->stopPhysics();
-    std::map < std::string, Suspension * >::const_iterator suspIter;
-    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
-    {
-        suspIter->second->stopPhysics();
-    }
-    std::map < std::string, Wheel * >::const_iterator wheelIter;
-    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
-    {
-        wheelIter->second->stopPhysics();
-    }
 }
 
 void Vehicle::attachWheelsToBody()

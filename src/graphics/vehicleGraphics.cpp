@@ -34,15 +34,4 @@ void Vehicle::stepGraphics ()
 
 void Vehicle::stopGraphics ()
 {
-    body->stopGraphics();
-    std::map < std::string, Suspension * >::const_iterator suspIter;
-    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
-    {
-        suspIter->second->stopGraphics();
-    }
-    std::map < std::string, Wheel * >::const_iterator wheelIter;
-    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
-    {
-        wheelIter->second->stopGraphics();
-    }
 }

@@ -23,15 +23,17 @@ class Vehicle;
 class World : public WorldObject
 {
   private:
+    // data
     static World *worldPointer;
     std::string name;
     std::string description;
     Camera * activeCamera;
     int activeTrackCameraIndex;
     int activeVehicleCameraIndex;
-  public:
-    static World *getWorldPointer ();
     void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
+  public:
+    // data
+    static World *getWorldPointer ();
     World (char * xmlFilename);
     ~World ();
 

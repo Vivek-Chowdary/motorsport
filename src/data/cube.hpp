@@ -20,35 +20,40 @@ namespace Ogre {
 class Cube : public WorldObject
 {
   private:
-    static int instancesCount;
-
-  public:
     // data
-    Cube (char * xmlFilename);
-    ~Cube ();
+    static int instancesCount;
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepPhysics ();
     void stopPhysics ();
+
+    // graphics
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopGraphics ();
+
+    // input
+    void startInput ();
+    void stopInput ();
+  public:
+    // data
+    Cube (char * xmlFilename);
+    ~Cube ();
+
+    // physics
+    void stepPhysics ();
     dBodyID cubeID;
     dGeomID cubeGeomID;
     void setPosition (float posX, float posY, float posZ);
 
     // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
-    void stopGraphics ();
-
     Ogre::Entity * cubeEntity;
     Ogre::SceneNode * cubeNode;
 
     // input
-    void startInput ();
     void stepInput ();
-    void stopInput ();
 };
 #endif

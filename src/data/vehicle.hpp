@@ -29,6 +29,7 @@ class CameraPosition;
 class Vehicle : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
     std::string name;
     int revision;
@@ -36,16 +37,23 @@ class Vehicle : public WorldObject
     std::string author;
     std::string contact;
     std::string license;
-
-  public:
-    // data
-    Vehicle (const std::string & xmlFilename);
-    ~Vehicle ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
     void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    // physics
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
+
+    // graphics
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopGraphics ();
+  public:
+    // data
+    Vehicle (const std::string & xmlFilename);
+    ~Vehicle ();
     Body * body;
     Engine * engine;
     Clutch * clutch;
@@ -56,9 +64,7 @@ class Vehicle : public WorldObject
     std::vector < Camera * > cameraList;
 
     // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
     void setPosition (Vector3d position);
     void setRotation (Vector3d rotation);
     Vector3d getPosition ();
@@ -68,8 +74,6 @@ class Vehicle : public WorldObject
     dBodyID getVehicleID();
 
     // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
-    void stopGraphics ();
 };
 #endif

@@ -66,6 +66,7 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
     wheelGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, width);
     dGeomSetBody (wheelGeomID, wheelID);
+    dBodySetMass (wheelID, &tmpMass);
     setPosition (Vector3d (0, 0, 0) );
     setRotation (Vector3d (0, 0, 0) );
     torque = 0;

@@ -20,7 +20,10 @@ class Gearbox;
 class Clutch : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
+
+    // physics
     double coeffStaticFriction;
     double coeffDynamicFriction;
     double rotationalVelocity;
@@ -31,18 +34,16 @@ class Clutch : public WorldObject
     bool locked;
     Engine *inputClass;
     Gearbox *pOutTorque;
-    
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
   public:
-
     // data
     Clutch (XERCES_CPP_NAMESPACE::DOMNode * n, Engine *input);
     ~Clutch ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
     double getTorque ();
     double getRevTorque ();
     double getAngularVel ();

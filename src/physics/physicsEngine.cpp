@@ -33,6 +33,8 @@ PhysicsEngine::PhysicsEngine ()
 void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
 {
     int i, n;
+
+    // TODO: allow jointed bodies to collide by default (truck and trailer), and use attached data to identify bodies that should not collide (wheels and vehicle body). At least until creation of geoms via boolean operations is possible.
     dBodyID b1 = dGeomGetBody (o1);
     dBodyID b2 = dGeomGetBody (o2);
     if (b1 && b2 && dAreConnected (b1, b2))
@@ -52,8 +54,11 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
                 contact[i].surface.mu = 0.5;
             contact[i].surface.slip1 = 0.0;
             contact[i].surface.slip2 = 0.0;
+/*            contact[i].surface.soft_erp = 0.8;
+            contact[i].surface.soft_cfm = 0.01;*/
+            // FIXME!!! check what kind of surfaces are colliding, setting the appropriate cfm and erp values!
             contact[i].surface.soft_erp = 0.8;
-            contact[i].surface.soft_cfm = 0.01;
+            contact[i].surface.soft_cfm = 0.00001;
             dJointID c = dJointCreateContact (World::getWorldPointer ()->worldID, World::getWorldPointer ()->jointGroupID, contact + i);
             dJointAttach (c, dGeomGetBody (o1), dGeomGetBody (o2));
         }
@@ -96,11 +101,11 @@ int PhysicsEngine::computeStep (void)
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (World::getWorldPointer ()->worldID, systemData->physicsTimeStep);
+        dWorldStep (World::getWorldPointer ()->worldID, (double)systemData->physicsTimeStep/1000);
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::getWorldPointer ()->worldID, (double)systemData->physicsTimeStep/1000, dWorldStepFast1MaxIterations);
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
 
@@ -216,6 +221,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setCfmValue (stod (attribute));
+                                                tmpLog->format (LOG_INFO, "CFM set to %f", stod(attribute));
                                             }
                                         }
                                         if (attribute == "erpValue")
@@ -226,6 +232,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setErpValue (stod (attribute));
+                                                tmpLog->format (LOG_INFO, "ERP set to %f", stod(attribute));
                                             }
                                         }
                                         if (attribute == "stepType")

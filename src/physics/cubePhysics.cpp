@@ -66,6 +66,7 @@ void Cube::startPhysics (DOMNode * n)
     cubeID = dBodyCreate (World::getWorldPointer ()->worldID);
     cubeGeomID = dCreateBox (World::getWorldPointer ()->spaceID, size, size, size);
     dGeomSetBody (cubeGeomID, cubeID);
+    dBodySetMass (cubeID, &mass);
 
     author.clear();
     license.clear();
@@ -92,15 +93,15 @@ void Cube::stepPhysics ()
     {
         float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
         float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
-        moveX /= 10000;
-        moveY /= 10000;
+        moveX *= 100;
+        moveY *= 100;
         dBodyAddForce (cubeID, moveX, moveY, 0.0f);
         moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_j)]->getValue();
         moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_k)]->getValue();
-        moveX /= 10000;
-        moveY /= 10000;
+        moveX *= 100;
+        moveY *= 100;
         dBodyAddForce (cubeID, moveX, moveY, 0.0f);
-        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() / 5000;
+        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() * 500;
         dBodyAddForce (cubeID, 0, 0, moveZ);
     }
 }

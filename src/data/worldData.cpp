@@ -226,8 +226,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
 
-/* /////////////////////////////////// STILL THOSE 2 VARS TO USE TODO
-    bool useTrackCamera = true;    //if false, use vehicle camera
+/* /////////////////////////////////// STILL THIS VAR TO BE USED TODO
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
 /////////////////////////////////// */
 
@@ -237,18 +236,18 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     ghostWorldID = dWorldCreate ();
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);
-
-    if (double cfmValue = SystemData::getSystemDataPointer()->getCfmValue() != -1)
+    
+    if (SystemData::getSystemDataPointer()->getCfmValue() != -1)
     {
-        log->put (LOG_INFO, "Setting ODE cfm value");
-        dWorldSetCFM (worldID, cfmValue);
+        log->format (LOG_INFO, "Setting ODE cfm value to %f", SystemData::getSystemDataPointer()->getCfmValue());
+        dWorldSetCFM (worldID, SystemData::getSystemDataPointer()->getCfmValue());
     }
-    if (double erpValue = SystemData::getSystemDataPointer()->getErpValue() != -1)
+    if (SystemData::getSystemDataPointer()->getErpValue() != -1)
     {
-        log->put (LOG_INFO, "Setting ODE erp value");
-        dWorldSetERP (worldID, erpValue);
+        log->format (LOG_INFO, "Setting ODE erp value to %f", SystemData::getSystemDataPointer()->getErpValue());
+        dWorldSetERP (worldID, SystemData::getSystemDataPointer()->getErpValue());
     }
-
+    
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
     dWorldSetGravity (ghostWorldID, 0, 0, 0);

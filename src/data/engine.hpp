@@ -17,7 +17,11 @@ class Clutch;
 class Engine : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+  
+    // physics
     double torqueLinearMultiplier;
     double rotationalVelocity;
     double prevRotationalVelocity;
@@ -27,18 +31,15 @@ class Engine : public WorldObject
     double engineInertia;
     double engineFriction;
     Clutch *pOutTorque;
-  
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
   public:
-
     // data
     Engine (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Engine ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
     double getTorque ();
     double getRotationalVelocity ();
     void setOutputPointer (Clutch *output);

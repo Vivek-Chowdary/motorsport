@@ -20,7 +20,11 @@ class Wheel;
 class Gearbox : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    // physics
     double gearboxFriction;
     double gearboxInertia;
     double angularVel;
@@ -32,17 +36,15 @@ class Gearbox : public WorldObject
     Clutch *inputClass;
     Wheel *pOutWheel1;
     Wheel *pOutWheel2;
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
   public:
-
     // data
     Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n, Clutch *input);
     ~Gearbox ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
     double getTorque ();
     double getRevTorque ();
     double getAngularVel ();

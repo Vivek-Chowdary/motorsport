@@ -24,25 +24,31 @@ namespace Ogre {
 class Wheel : public WorldObject
 {
   private:
+    // data
     static int instancesCount;
     std::string index;
     double powered;
     double torque;
     double angularVel;
-  public:
-
-    // data
-    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
-    ~Wheel ();
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    std::string getIndex();
     
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepPhysics ();
     void stopPhysics ();
+    
+    // graphics
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopGraphics ();
+  public:
+    // data
+    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~Wheel ();
+    std::string getIndex();
+    
+    // physics
+    void stepPhysics ();
     dBodyID wheelID;
     dGeomID wheelGeomID;
     void setPosition (Vector3d position);
@@ -53,13 +59,9 @@ class Wheel : public WorldObject
     double getAngularVel();
     
     // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
-    void stopGraphics ();
-
     class Ogre::Entity;
     class Ogre::SceneNode;
-
     Ogre::Entity * wheelEntity;
     Ogre::SceneNode * wheelNode;
 };
