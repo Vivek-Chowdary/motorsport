@@ -1,0 +1,197 @@
+############################################
+You'll need to download certain libraries and programs in order to be able to compile motorsport.
+I suggest you download the files to a common directory, such as c:\temp. I'll assume you'll use that directory for extracting zipped files.
+############################################
+
+
+
+############################################
+STEPS:
+
+1:DOWNLOAD AND INSTALL SUBVERSION:
+Open a browser and go to this page:
+	http://subversion.tigris.org/servlets/ProjectDocumentList?folderID=91
+Download and execute the latest subversion installer
+	svn-X.X.X-setup.exe
+Execute it. install it wherever you want (click "next" all the time should work)
+possibly reboot the computer, in order for the new PATH env. variable to take effect
+You now have a working installation of subversion. We'll use it to download motorsport source code.
+
+2:DOWNLOAD MOTORSPORT:
+Open a new command line window
+Create a new dir
+	md \motorsport
+	cd \motorsport
+Download everything
+	svn co svn://motorsport-sim.org/motorsport/trunk ./
+If you do...
+	dir
+...you'll see 4 directories. We'll be working mainly in the 3pl (3rd Party Libraries) directory.
+
+
+3:DOWNLOAD AND INSTALL DEVCPP:
+Open a browser and go to this page:
+	http://www.bloodshed.net/dev/devcpp.html
+Download the latest Dev-C++ with mingw/GCC, for example
+	http://prdownloads.sourceforge.net/dev-cpp/devcpp4990setup.exe
+Execute it. clicking "next" all the time should make it install in
+	c:\dev-cpp.
+We're going to use some of devcpp's tools. These tools are located in
+	c:\dev-cpp\bin
+In order to use them, i suggest you add it to the path.
+For example, in Windows9x, add this line to the c:\autoexec.bat file:
+	set path=c:\dev-cpp\bin;%path%
+Once you've done that, you'll have to reboot in order for it to take affect everywhere.
+
+4:DOWNLOAD AND INSTALL SDL:
+Open a browser and go to this page:
+	http://www.libsdl.org/download-1.2.php
+Download the latest development libraries for Win32. for example
+	http://www.libsdl.org/release/SDL-devel-1.2.7-mingw32.tar.gz
+Extract its contents to c:\temp. You'll now have a new dir named:
+	c:\temp\sdl-1.2.7
+a) Copy...
+	c:\temp\sdl-1.2.7\include
+...contents to:
+	c:\motorsport\3pl\windows\include
+b) Copy...
+	c:\temp\sdl-1.2.7\lib
+...contents to:
+	c:\motorsport\3pl\windows\lib
+c) Copy the...
+	c:\temp\sdl-1.2.7\bin\sdl.dll
+...file to:
+	c:\motorsport\src\
+We're now finished with SDL.
+
+5:DOWNLOAD AND INSTALL ODE:
+Open a browser and go to this page:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/viewcat.php?op=&cid=7
+Download the 0.039, mingw version of ODE:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/visit.php?cid=7&lid=32
+Extract the file contents to c:\temp. You'llnow have a new dir named:
+	c:\temp\libode-0.39-lib-mingw
+a) Copy the 'ode' directory from...
+	c:\temp\libode-0.39-lib-mingw\src\include
+...to:
+	c:\motorsport\3pl\windows\include
+b) Copy the 'libode.a' and 'libode.def' files from...
+	c:\temp\libode-0.39-lib-mingw\lib
+...to:
+	c:\motorsport\3pl\windows\lib
+Now we're almost done with ODE.
+
+6:DOWNLOAD AND INSTALL OGRE, FREETYPE, AND FINISH ODE:
+Open a browser and go to this page:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/viewcat.php?cid=5
+Download the ogre-0.14-mingw.DevPak:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/visit.php?cid=5&lid=5
+Rename the file from...
+	ogre-0.14-mingw.DevPak
+to:
+	ogre-0.14-mingw.tar.rar
+Extract its contents to c:\temp.
+Extract its contents to c:\temp using winrar.
+IMPORTANT: you'll probably need to use winrar instead of winzip. I had :)
+You'll now have 2 new dirs, and one new file in c:\temp.
+a) Copy everything except 'plugins.cfg' from...
+	c:\temp\ogre-0.14-mingw\bin
+...to:
+	c:\motorsport\src
+Now we're done with ODE, and with part of Ogre.
+b) Copy everything from...
+	c:\temp\ogre-0.14-mingw\include
+...to:
+	c:\motorsport\3pl\windows\include
+c) Copy everything from...
+	c:\temp\ogre-0.14-mingw\lib
+...to:
+	c:\motorsport\3pl\windows\lib
+Now we're done with Ogre.
+d) Copy freetype.dll from...
+	c:\temp\ogre-0.14-mingw\bin
+...to:
+	c:\motorsport\3pl\windows\lib
+Now we're done with FreeType.
+
+7:DOWNLOAD AND INSTALL XERCES-C
+Open a browser and go to this page:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/viewcat.php?cid=5
+Download the xerces-c_2_5_0-mingw devpack:
+	http://the-agency.sourceforge.net/xoops/modules/mydownloads/visit.php?cid=5&lid=2
+Rename the file from...
+	xerces-c_2_5_0-mingw.DevPak
+...to:
+	xerces-c_2_5_0-mingw.tar.rar
+Extract its contents to c:\temp using winrar.
+You'll now have a new dir and a new file.
+a)Copy the contents from...
+	c:\temp\xerces-c_2_5_0-mingw\include
+...to:
+	c:\motorsport\3pl\windows\include
+b)Copy all the contents from...
+	c:\temp\xerces-c_2_5_0-mingw\lib
+...to:
+	c:\motorsport\3pl\windows\lib
+c)Copy the file 'xerces-c_2_5_0.dll' from...
+	c:\temp\xerces-c_2_5_0-mingw\lib
+...to:
+	c:\motorsport\src
+We still need some files. We're gonna have to take them from the MSVC version of xerces-c.
+Open a browser and go to this page:
+	http://apache.rediris.es/xml/xerces-c/binaries/win32
+Download the xerces-c_2_5_0-windows_nt-msvc_60.zip:
+	http://apache.rediris.es/xml/xerces-c/binaries/win32/xerces-c_2_5_0-windows_nt-msvc_60.zip
+Extract its contents to c:\temp. You'll now have a new dir named:
+	c:\temp\xerces-c_2_5_0-windows_nt-msvc_60
+Now go to this directory...
+	c:\temp\xerces-c_2_5_0-windows_nt-msvc_60\include\xercesc\util
+...and copy the 21 '*.c' files in it (no need to browse the subdirectories) to...
+	c:\motorsport\3pl\windows\include\xercesc\util
+
+8:DOWNLOAD AND INSTALL PTHREADS:
+Open a browser or ftp client and go here:
+	ftp://sources.redhat.com/pub/pthreads-win32
+Download the latest *.exe file. For example:
+	ftp://sources.redhat.com/pub/pthreads-win32/pthreads-2004-06-22.exe
+Execute it in order to extract its contents to c:\temp.
+You'll now have 3 new dirs in c:\temp.
+Copy all the *GC*.* files from...
+	c:\temp\Pre-built\lib
+...to:
+	c:\motorsport\3pl\windows\lib
+We have finished with PTHREADS now.
+
+9:DONE!!!
+Well, that has been the installation of all the required libs and mosp sources.
+If you are using GNU/Linux, for example Gentoo, you ca do all the above with something like this:
+	emerge ogre ode sdl subversion
+	mkdir ~/motorsport
+	cd ~/motorsport
+	svn co svn://motorsport-sim.org/motorsport/trunk ./
+############################################
+
+############################################
+HOW TO COMPILE AND RUN MOTORSPORT
+
+Change to the motorsport source code dir:
+	cd \motorsport\src
+Delete previous object files (probably none at this time):
+	make clean
+Optionally, delete all the log and temporary files:
+	make clobber
+Compile and link the whole thing:
+	make all
+Execute it
+	motorsport.exe
+You can do all the last 4 steps at once:
+	make clean clobber all run
+(clobber will automatically execute the 'clean' target anyway)
+############################################
+
+That's it.
+If you have a problem, if no one else can help,
+and if you can find them, maybe you can browse...
+the mosp forums at rscnet ;)
+
+	made by STenyaK < stenyak[AT]gmx[DOT]net >
