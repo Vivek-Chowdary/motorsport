@@ -30,11 +30,11 @@ int main (int argc, char **argv)
 {
     // Display copyright note.
     std::cout << "===============================================================================" << std::endl;
-    std::cout << "Motorsport, Copyright (C) 2003, 2004 \"Motorsport\" developers (*)." << std::endl;
+    std::cout << "Motorsport, Copyright (C) 2003-2005 \"Motorsport\" developers (*)." << std::endl;
     std::cout << "Motorsport comes with ABSOLUTELY NO WARRANTY; for details, read (*)." << std::endl;
     std::cout << "This is free software, and you are welcome to redistribute it under certain conditions; ";
     std::cout << "read (*) for details." << std::endl << std::endl;
-    std::cout << "(*)Complete information provided at http://motorsport-sim.org/svn/trunk/doc/LICENSE" << std::endl;
+    std::cout << "(*)Complete information provided at doc/LICENSE" << std::endl;
     std::cout << "===============================================================================" << std::endl;
 
     // We start the main log engine.
