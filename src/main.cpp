@@ -1,23 +1,12 @@
-/******************************************************************************
-*
-* Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
-*
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
-* See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
-******************************************************************************/
+/*****************************************************************************\
+|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
+|* Licensed under the GNU General Public License (*)                         *|
+|*                                                                           *|
+|* (*) Complete information is provided at the following URL:                *|
+|*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
+\*****************************************************************************/
+
 #include "main.hpp"
 
 #include "SDL.h"
@@ -28,17 +17,25 @@
 #include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
 #include "physicsEngine.hpp"    // calculates the physics of the world data
 #include "guiEngine.hpp"    // displays all the user interface on screen
-
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
 #endif
-
 #include <string>
 #include "data/xmlParser.hpp"
+#include <iostream>
 
 int main (int argc, char **argv)
 {
+    // Display copyright note.
+    std::cout << "===============================================================================" << std::endl;
+    std::cout << "Motorsport, Copyright (C) 2003, 2004 \"Motorsport\" developers (*)." << std::endl;
+    std::cout << "Motorsport comes with ABSOLUTELY NO WARRANTY; for details, read (*)." << std::endl;
+    std::cout << "This is free software, and you are welcome to redistribute it under certain conditions; ";
+    std::cout << "read (*) for details." << std::endl << std::endl;
+    std::cout << "(*)Complete information provided at http://motorsport/svn/trunk/doc/LICENSE" << std::endl;
+    std::cout << "===============================================================================" << std::endl;
+
     // We start the main log engine.
     XmlFile * xmlFile = new XmlFile ("mainConfig.xml");
     LogEngine * log = processXmlRootNode (xmlFile->getRootNode());

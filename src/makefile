@@ -1,3 +1,16 @@
+#*****************************************************************************#
+#* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *#
+#* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *#
+#* Licensed under the GNU General Public License (*)                         *#
+#*                                                                           *#
+#* (*) Complete information is provided at the following URL:                *#
+#*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *#
+#*****************************************************************************#
+
+
+
+
+
 ###########################################
 #Find out current OS
 ifdef SHELL
@@ -101,7 +114,6 @@ PLATFORM_INCLUDE_DIRS := \
 	/usr/local/include/OGRE \
 	/usr/local/include/SDL
 endif
-
 #All paths...	
 INCLUDE_DIRS := \
 	$(PLATFORM_INCLUDE_DIRS) \
@@ -256,7 +268,6 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 %.o : %.c
 	$(CC) $(CFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
-
 
 #Phony targets definitions
 .PHONY: all
