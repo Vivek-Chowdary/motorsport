@@ -38,7 +38,7 @@ class World : public WorldObject
     static World *worldPointer;
   public:
     static World *getWorldPointer ();
-    void processXmlRootNode(xercesc_2_4::DOMNode*);
+    void processXmlRootNode(DOMNode * n);
     World ();
     ~World ();
 
