@@ -69,31 +69,31 @@ LIBRARIES := \
 	xerces-c
 
 SOURCES := \
-	log/logEngine.cpp \
-        log/logParser.cpp \
-        data/cubeData.cpp \
-        data/cubeDataParser.cpp \
-        data/cameraData.cpp \
-        data/domParser.cpp \
-	data/dataEngine.cpp \
-        data/dataParser.cpp \
-        data/dataParser.cpp \
-        graphics/cubeGraphics.cpp \
-        graphics/cameraGraphics.cpp \
-	graphics/graphicsEngine.cpp \
-        graphics/graphicsParser.cpp \
-	gui/guiEngine.cpp \
-        gui/guiParser.cpp \
-        physics/cubePhysics.cpp \
-	physics/physicsEngine.cpp \
-        physics/physicsParser.cpp \
-        input/cubeInput.cpp \
-        input/cameraInput.cpp \
-	input/inputEngine.cpp \
-        input/inputParser.cpp \
+	main.cpp \
 	system.cpp \
 	world.cpp \
-	main.cpp
+	log/logEngine.cpp \
+	data/dataEngine.cpp \
+	physics/physicsEngine.cpp \
+	graphics/graphicsEngine.cpp \
+	input/inputEngine.cpp \
+	gui/guiEngine.cpp \
+        data/domParser.cpp \
+        data/mainParser.cpp \
+        data/logParser.cpp \
+        data/dataParser.cpp \
+        data/cubeDataParser.cpp \
+        data/graphicsParser.cpp \
+        data/physicsParser.cpp \
+        data/inputParser.cpp \
+        data/guiParser.cpp \
+        data/cubeData.cpp \
+        data/cameraData.cpp \
+        physics/cubePhysics.cpp \
+        graphics/cubeGraphics.cpp \
+        graphics/cameraGraphics.cpp \
+        input/cubeInput.cpp \
+        input/cameraInput.cpp
 
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
