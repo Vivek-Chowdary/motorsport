@@ -46,6 +46,7 @@ SystemData::SystemData ( )
         physicsStepsPerSecond = 0;
         graphicsSteps = 0;
         graphicsStepsPerSecond = 0;
+        takeScreenshot = false;
     }
 }
 
@@ -84,4 +85,16 @@ void SystemData::invertStatisticsEnabled (  )
 void SystemData::enableStatistics (  )
 {
     statisticsEnabled = true;
+}
+
+void SystemData::setTakeScreenshot (  )
+{
+    takeScreenshot = true;
+}
+
+bool SystemData::getTakeScreenshot (  )
+{
+    if (!takeScreenshot) return false;
+    takeScreenshot = false;
+    return true;
 }

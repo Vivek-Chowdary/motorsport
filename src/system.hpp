@@ -32,6 +32,7 @@ class SystemData
     bool statisticsEnabled;
     static SystemData * systemDataPointer;
     bool mainLoopEnabled;
+    bool takeScreenshot;
   public:
     static SystemData * getSystemDataPointer ( );
     SystemData ( );
@@ -56,6 +57,9 @@ class SystemData
     bool getStatisticsEnabled (  );
     void invertStatisticsEnabled (  );
     void enableStatistics (  );
+
+    void setTakeScreenshot();
+    bool getTakeScreenshot();
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

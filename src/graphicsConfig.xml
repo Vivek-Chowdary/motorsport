@@ -2,7 +2,7 @@
 <graphicsConfig
     localLogLevel = "LOG_VERBOSE"
     localLogName = "GFX"
-    screenshotFile = "sshot.png"
+    screenshotFile = "screenshot.png"
     >
     <ogre
         configFile = "resources.cfg"

@@ -25,6 +25,7 @@
 #include "Ogre.h"
 #include "OgreConfigFile.h"
 #include "stdio.h"
+#include "string.h"
 #include "cube.hpp"
 #include "camera.hpp"
 
@@ -43,6 +44,8 @@ class GraphicsEngine
     /// Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
     
+    /// Name of the file were screenshots will be saved.
+    char * screenshotFilename;
   public:
     int width;
     int height;

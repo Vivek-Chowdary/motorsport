@@ -57,6 +57,18 @@ int InputEngine::step ( void )
             log->put ( LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop..." );
             systemData->disableMainLoop (  );
             break;
+        case SDL_KEYDOWN:
+            log->put ( LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed." );
+            switch ( event.key.keysym.sym )
+            {
+            case SDLK_PRINT:
+                log->put ( LOG_INFO, "User wants to take a screenshot." );
+                systemData->setTakeScreenshot ();
+                break;
+            default:
+                break;
+            }
+            break;
         default:
             break;
         }
@@ -236,12 +248,6 @@ void InputEngine::processKeyboard ( )
         systemData->disableMainLoop (  );
     }
         
-    if ( keyState[SDLK_PRINT] )
-    {
-        log->put ( LOG_INFO, "Taking a screenshot to sshot.png" );
-        systemData->ogreWindow->writeContentsToFile ( "sshot.png" );
-    }
-
     if ( keyState[SDLK_f] )
     {
         log->put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );

@@ -36,7 +36,6 @@ GraphicsEngine::GraphicsEngine (  )
     Data data;
     data.graphics = this;
     processConfigFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)&data);
-//    log = new LogEngine ( LOG_VERBOSE, "GFX" );
 
     //get the direction of the graphics data
     log->put ( LOG_INFO, "Setting up data pointers..." );
@@ -139,6 +138,13 @@ void GraphicsEngine::setupResources ( void )
 
 int GraphicsEngine::step ( void )
 {
+    //take a screenshot if needed
+    if ( systemData->getTakeScreenshot (  ) )
+    {
+        log->format ( LOG_INFO, "Taking a screenshot in %s.", screenshotFilename );
+        systemData->ogreWindow->writeContentsToFile ( screenshotFilename );
+    }
+    
     //Update Ogre's cubes positions with Ode's positions.
     int numberOfCubes = Cube::cubeList.size (  );
 
@@ -158,6 +164,9 @@ GraphicsEngine::~GraphicsEngine ( void )
 {
     log->put ( LOG_INFO, "Unloading ogre window data from memory..." );
     delete ( systemData->ogreWindow );
+    
+    log->put ( LOG_INFO, "Unloading screenshot filename from memory...");
+    delete screenshotFilename;
 
     //finally stop the log engine
     delete log;
@@ -224,13 +233,16 @@ int GraphicsEngine::processGraphicsConfigFile ( DOMNode * n, void * data)
                         if ( !strncmp ( name, "screenshotFile", 15 ) )
                         {
                             XERCES_STD_QUALIFIER cout <<
-                                "\tFound the screenshot filename (not working):";
+                                "\tFound the screenshot filename:";
                             XMLString::release ( &name );
                             name =
                                 XMLString::transcode ( pAttributeNode->
                                                        getValue (  ) );
                             XERCES_STD_QUALIFIER cout << name <<
                                 XERCES_STD_QUALIFIER endl;
+                            (*(Data*)data).graphics->log->put ( LOG_INFO, "Loading screenshot filename into memory...");
+                            (*(Data*)data).graphics->screenshotFilename = new char[strlen(name)+1];
+                            strncpy ((*(Data*)data).graphics->screenshotFilename, name, strlen(name)+1);
                         }
                         XMLString::release ( &name );
                     }
