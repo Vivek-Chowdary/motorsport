@@ -20,6 +20,7 @@
 #include "suspension.hpp"
 #include "camera.hpp"
 #include "system.hpp"
+#include "SDL.h"
 
 
 int Vehicle::instancesCount = 0;
@@ -27,15 +28,17 @@ int Vehicle::instancesCount = 0;
 Vehicle::Vehicle (const std::string & xmlFilename)
 {
     log = new LogEngine (LOG_DEVELOPER, "VEH");
-    log->put (LOG_CCREATOR, "Starting to parse the vehicle xml file");
     SystemData::getSystemDataPointer()->tmpPath = xmlFilename;
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/vehicles/");
     file.append(xmlFilename);
     file.append("/vehicle.xml");
+    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", file.c_str());
+    Uint32 time = SDL_GetTicks();
     XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
+    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", file.c_str(), (SDL_GetTicks() - time) / 1000.0);
 
     userDriver = false;
     instancesCount++;

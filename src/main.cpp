@@ -50,7 +50,6 @@ int main (int argc, char **argv)
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
     log->put (LOG_DEVELOPER, "Creating gui engine");
     GuiEngine *guiEngine = new GuiEngine ();
-    log->loadscreen(LOG_ENDUSER, "Showing load screen...");
     guiEngine->showLoadscreen ();
     log->loadscreen (LOG_DEVELOPER, "Creating physics engine...");
     PhysicsEngine *physicsEngine = new PhysicsEngine ();

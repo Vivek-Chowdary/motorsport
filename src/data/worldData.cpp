@@ -19,6 +19,7 @@
 #include "camera.hpp"
 #include "vector3d.hpp"
 #include "data/vehiclePosition.hpp"
+#include "SDL.h"
 
 World *World::worldPointer = NULL;
 
@@ -43,10 +44,12 @@ World::World (char * xmlFilename)
         std::string file = SystemData::getSystemDataPointer()->dataDir;
         file.append("/worlds/");
         file.append(xmlFilename);
-        log->loadscreen(LOG_CCREATOR,"Reading %s world file", file.c_str());
+        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", file.c_str());
+        Uint32 time = SDL_GetTicks();
         XmlFile* xmlFile = new XmlFile (file.c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
+        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", file.c_str(), (SDL_GetTicks() - time) / 1000.0);
     }
 }
 

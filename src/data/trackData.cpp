@@ -18,18 +18,21 @@
 #include "ode/ode.h"
 #include "vehiclePosition.hpp"
 #include "world.hpp"
+#include "SDL.h"
 
 Track::Track (const std::string & xmlFilename)
 {
     log = new LogEngine (LOG_DEVELOPER, "TRK");
-    log->put (LOG_CCREATOR, "Starting to parse the track xml file");
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/tracks/");
     file.append(xmlFilename);
     file.append("/track.xml");
+    log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", file.c_str());
+    Uint32 time = SDL_GetTicks();
     XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
+    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", file.c_str(), (SDL_GetTicks() - time) / 1000.0);
 }
 
 Track::~Track ()
