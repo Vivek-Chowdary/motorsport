@@ -42,22 +42,6 @@ ShowLocals=true
 12=
 13=
 
-[filelist]
-0=/home/stenyak/cvs/motorsport/src/data/dataEngine.cpp
-1=/home/stenyak/cvs/motorsport/src/data/dataEngine.hpp
-2=/home/stenyak/cvs/motorsport/src/graphics/graphicsEngine.cpp
-3=/home/stenyak/cvs/motorsport/src/graphics/graphicsEngine.hpp
-4=/home/stenyak/cvs/motorsport/src/input/inputEngine.cpp
-5=/home/stenyak/cvs/motorsport/src/input/inputEngine.hpp
-6=/home/stenyak/cvs/motorsport/src/log/logEngine.cpp
-7=/home/stenyak/cvs/motorsport/src/log/logEngine.hpp
-8=/home/stenyak/cvs/motorsport/src/main.cpp
-9=/home/stenyak/cvs/motorsport/src/main.hpp
-10=/home/stenyak/cvs/motorsport/src/system.cpp
-11=/home/stenyak/cvs/motorsport/src/system.hpp
-12=/home/stenyak/cvs/motorsport/src/world.cpp
-13=/home/stenyak/cvs/motorsport/src/world.hpp
-
 [replace_text]
 0=log.put (false, 2, 
 1=log.put (true, 2, 

@@ -29,7 +29,8 @@
 ******************************************************************************/
 
 #include <stdio.h>
-
+#include <stdarg.h>
+#include <time.h>
 
 /******************************************************************************
 *
@@ -46,7 +47,9 @@ class LogEngine
 		int start (signed char level, char *filePath, bool appendMode=false);
 		//writes textToLog to the .logFile (level 0=error; level 1=warning; level >1=info)
 		int put (signed char level, char *textToLog, bool useNewLine=true);
-		//same as put - but appends the data to the same line
+		//writes text with the level + printf-like format string (appending line by default)
+        int format(signed char level, const char *textToLogFormat, ...);
+        //same as put - but appends the data to the same line
 		int append (signed char level, char *textToLog);
 		//stops the log process
 		int stop (void);

@@ -48,6 +48,20 @@ int LogEngine::start (signed char level, char *filePath, bool appendMode)
 }
 
 
+int LogEngine::format(signed char level, const char *textToLogFormat, ...)
+{
+    char buffer[1024];
+    va_list arglist;
+
+    //convert parameters to a string
+    va_start (arglist, textToLogFormat);
+    vsprintf (buffer, textToLogFormat, arglist);
+    va_end (arglist);
+    
+    //put the string with a new line
+    return (put (level, buffer));
+}
+
 int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
 { 
     //check if we have been told to write this kind of log
@@ -63,16 +77,16 @@ int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
             // (level 0=error; 1=warning; >1=info)
             switch (level)
             {
-                case 0: fputs ("\n(EE): ", logFile); break;
-                case 1: fputs ("\n(WW): ", logFile); break;
-                default:fputs ("\n(II): ", logFile); break;
+                case 0: fputs (" (EE): ", logFile); break;
+                case 1: fputs (" (WW): ", logFile); break;
+                default:fputs (" (II): ", logFile); break;
             }
         }
         //write log text
         fputs (textToLog, logFile);
+	    return (0);
     }
-	
-	return (0);
+	return (-1);
 }
 
 int LogEngine::append (signed char level, char *textToLog)
