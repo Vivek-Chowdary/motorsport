@@ -29,12 +29,8 @@ int main (int argc, char **argv)
 
     // We declare the 'global' data and engines.
     log->put (LOG_INFO, "( 1 ): Loading engines and libraries...");
-    log->put (LOG_INFO, "Creating world data");
-    new WorldData ();
     log->put (LOG_INFO, "Creating system data");
     new SystemData ();
-    log->put (LOG_INFO, "Creating data engine");
-    DataEngine *dataEngine = new DataEngine ();
     log->put (LOG_INFO, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
     log->put (LOG_INFO, "Creating physics engine");
@@ -53,7 +49,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->put (LOG_INFO, "( 2 ): Loading world data...");
     log->put (LOG_INFO, "Loading initial world data");
-    dataEngine->loadWorldData ();
+    new World();
 
     // We start the main loop.
     log->put (LOG_INFO, "( 3 ): Starting simulation...");
@@ -76,6 +72,7 @@ int main (int argc, char **argv)
             log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
         // Run the physics engine until the game time is in sync with the real loop time.
+        
         while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
         {
             systemData->simulationTime += systemData->physicsTimeStep;
@@ -94,7 +91,7 @@ int main (int argc, char **argv)
     // We unload the world data from memory.
     log->put (LOG_INFO, "( 4 ): Unloading world data...");
     log->put (LOG_INFO, "Unloading world data");
-    dataEngine->unloadWorldData ();
+    delete World::getWorldPointer();
 
     // We delete the 'global' data and engines.
     log->put (LOG_INFO, "( 5 ): Unloading engines and libraries...");
@@ -106,8 +103,6 @@ int main (int argc, char **argv)
     delete inputEngine;
     log->put (LOG_INFO, "Deleting gui engine");
     delete guiEngine;
-    log->put (LOG_INFO, "Deleting data engine");
-    delete dataEngine;
     log->put (LOG_INFO, "Deleting log engine");
     delete log;
     stopSdl ();

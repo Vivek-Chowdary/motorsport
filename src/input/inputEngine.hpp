@@ -39,8 +39,6 @@ class InputEngine
     LogEngine * log;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-    // / Pointer to the world data, used by different engines in order to store the simulated world data.
-    WorldData *worldData;
 
     // / Keyboard keys state array.
     /** This is a pointer to SDL's internal keyboard keys state array. It allows to check whether a key is pressed or not, instead of having to go through the whole events queue, storing data by ourselves.

@@ -30,7 +30,6 @@ GuiEngine::GuiEngine ()
     
     // get the direction of the graphics data
     log->put (LOG_INFO, "Setting up data pointers...");
-    worldData = WorldData::getWorldDataPointer ();
     systemData = SystemData::getSystemDataPointer ();
 }
 

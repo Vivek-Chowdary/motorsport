@@ -54,7 +54,7 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
             contact[i].surface.slip2 = 0.0;
             contact[i].surface.soft_erp = 0.8;
             contact[i].surface.soft_cfm = 0.01;
-            dJointID c = dJointCreateContact (WorldData::getWorldDataPointer ()->worldID, WorldData::getWorldDataPointer ()->jointGroupID, contact + i);
+            dJointID c = dJointCreateContact (World::getWorldPointer ()->worldID, World::getWorldPointer ()->jointGroupID, contact + i);
             dJointAttach (c, dGeomGetBody (o1), dGeomGetBody (o2));
         }
     }
@@ -66,54 +66,54 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->put (LOG_TRACE, "Doing an step: calculating a physics step");
 
-    int size = worldData->cubeList.size ();
+    int size = World::getWorldPointer ()->cubeList.size ();
     for (int i = 0; i < size; i++)
     {
-        worldData->cubeList[i]->stepPhysics ();
+        World::getWorldPointer ()->cubeList[i]->stepPhysics ();
     }
 
-    size = worldData->bodyList.size ();
+    size = World::getWorldPointer ()->bodyList.size ();
     for (int i = 0; i < size; i++)
     {
-        worldData->bodyList[i]->stepPhysics ();
+        World::getWorldPointer ()->bodyList[i]->stepPhysics ();
     }
 
-    dSpaceCollide (worldData->spaceID, 0, &nearCallback);
+    dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);
     switch (stepType)
     {
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (worldData->worldID, systemData->physicsTimeStep);
+        dWorldStep (World::getWorldPointer ()->worldID, systemData->physicsTimeStep);
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (worldData->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
     }
-    dJointGroupEmpty (worldData->jointGroupID);
+    dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
 
     // camera should be a physics object?
     {
         float x = 0, z = 0;
         // translation of the camera, advancing or strafing
-        x += (worldData->cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
-        x -= (worldData->cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
-        z -= (worldData->cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
-        z += (worldData->cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
+        x += (World::getWorldPointer ()->cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
+        x -= (World::getWorldPointer ()->cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
+        z -= (World::getWorldPointer ()->cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
+        z += (World::getWorldPointer ()->cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
         x /= 100;
         z /= 100;
-        worldData->cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
+        World::getWorldPointer ()->cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
     }
     {
         float x = 0, z = 0;
-        x -= worldData->cameraList[0]->getRotateRight ();
-        x += worldData->cameraList[0]->getRotateLeft ();
-        z += worldData->cameraList[0]->getRotateUp ();
-        z -= worldData->cameraList[0]->getRotateDown ();
+        x -= World::getWorldPointer ()->cameraList[0]->getRotateRight ();
+        x += World::getWorldPointer ()->cameraList[0]->getRotateLeft ();
+        z += World::getWorldPointer ()->cameraList[0]->getRotateUp ();
+        z -= World::getWorldPointer ()->cameraList[0]->getRotateDown ();
         x /= 100;
         z /= 100;
-        worldData->cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
-        worldData->cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
+        World::getWorldPointer ()->cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
+        World::getWorldPointer ()->cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
     }
 
     return (0);
@@ -121,13 +121,6 @@ int PhysicsEngine::computeStep (void)
 
 PhysicsEngine::~PhysicsEngine (void)
 {
-    log->put (LOG_INFO, "Destroying ODE world");
-    dSpaceDestroy (worldData->spaceID);
-    log->put (LOG_INFO, "Destroying ODE main collision space");
-    dWorldDestroy (worldData->worldID);
-    log->put (LOG_INFO, "Destroying ODE joints group");
-    dJointGroupDestroy (worldData->jointGroupID);
-    log->put (LOG_INFO, "Shutting down ODE");
     dCloseODE ();
 
     // finally stop the log engine
@@ -268,33 +261,24 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
 
     // get the direction of the graphics data
     log->put (LOG_INFO, "Setting up data pointers...");
-    worldData = WorldData::getWorldDataPointer ();
     systemData = SystemData::getSystemDataPointer ();
 
     log->put (LOG_INFO, "Setting physics data");
     systemData->physicsDesiredFrequency = frequency;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
     log->format (LOG_INFO, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
-
-    log->put (LOG_INFO, "Creating ODE world");
-    worldData->worldID = dWorldCreate ();
-    worldData->spaceID = dHashSpaceCreate (0);
-    worldData->jointGroupID = dJointGroupCreate (0);
-
-    log->put ( LOG_INFO, "Setting ODE world gravity");
-    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
-
+/*
     if (cfmValue != -1)
     {
         log->put (LOG_INFO, "Setting ODE cfm value");
-        dWorldSetCFM (worldData->worldID, cfmValue);
+        dWorldSetCFM (World::getWorldPointer ()->worldID, cfmValue);
     }
     if (erpValue != -1)
     {
         log->put (LOG_INFO, "Setting ODE erp value");
-        dWorldSetERP (worldData->worldID, erpValue);
+        dWorldSetERP (World::getWorldPointer ()->worldID, erpValue);
     }
-
+*/
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
     localLogName.clear();
 }

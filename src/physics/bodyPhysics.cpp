@@ -94,8 +94,8 @@ void Body::startPhysics (DOMNode * n)
     log->put (LOG_TRACE, "Finished body physics.");
     dMass tmpMass;
     dMassSetBoxTotal (&tmpMass, mass, length, width, height);
-    bodyID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
-    bodyGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, length, width, height);
+    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
     dGeomSetBody (bodyGeomID, bodyID);
 
     author.clear();

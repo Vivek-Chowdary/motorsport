@@ -30,7 +30,6 @@ InputEngine::InputEngine ()
 
     log->put (LOG_INFO, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
-    worldData = WorldData::getWorldDataPointer ();
 
     log->put (LOG_INFO, "Initializing keyboard data array");
     keyState = SDL_GetKeyState (NULL);
@@ -85,11 +84,11 @@ void InputEngine::processMouseMovement ()
 {
     if (mouseMovementX)
     {
-        worldData->cameraList[0]->setRotateRight (mouseMovementX);
+        World::getWorldPointer ()->cameraList[0]->setRotateRight (mouseMovementX);
     }
     if (mouseMovementY)
     {
-        worldData->cameraList[0]->setRotateUp (mouseMovementY);
+        World::getWorldPointer ()->cameraList[0]->setRotateUp (mouseMovementY);
     }
 }
 
@@ -105,77 +104,77 @@ void InputEngine::processKeyboard ()
     if (keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keypress...");
-        worldData->cameraList[0]->setRotateRight (20);
+        World::getWorldPointer ()->cameraList[0]->setRotateRight (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the right.");
     }
 
     if (keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keypress...");
-        worldData->cameraList[0]->setRotateLeft (20);
+        World::getWorldPointer ()->cameraList[0]->setRotateLeft (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the left.");
     }
 
     if (keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keypress...");
-        worldData->cameraList[0]->setRotateUp (20);
+        World::getWorldPointer ()->cameraList[0]->setRotateUp (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the top.");
     }
 
     if (keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keypress...");
-        worldData->cameraList[0]->setRotateDown (20);
+        World::getWorldPointer ()->cameraList[0]->setRotateDown (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the bottom.");
     }
 
     if (keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        worldData->cameraList[0]->goForward = true;
+        World::getWorldPointer ()->cameraList[0]->goForward = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        worldData->cameraList[0]->goBack = true;
+        World::getWorldPointer ()->cameraList[0]->goBack = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        worldData->cameraList[0]->goLeft = true;
+        World::getWorldPointer ()->cameraList[0]->goLeft = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        worldData->cameraList[0]->goRight = true;
+        World::getWorldPointer ()->cameraList[0]->goRight = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_o])
     {
-        worldData->cubeList[0]->setMoveToXNegative (1);
+        World::getWorldPointer ()->cubeList[0]->setMoveToXNegative (1);
     }
 
     if (keyState[SDLK_p])
     {
-        worldData->cubeList[0]->setMoveToXPositive (1);
+        World::getWorldPointer ()->cubeList[0]->setMoveToXPositive (1);
     }
 
     if (keyState[SDLK_i])
     {
-        worldData->cubeList[0]->setMoveToYPositive (1);
+        World::getWorldPointer ()->cubeList[0]->setMoveToYPositive (1);
     }
 
     if (keyState[SDLK_k])
     {
-        worldData->cubeList[0]->setMoveToYNegative (1);
+        World::getWorldPointer ()->cubeList[0]->setMoveToYNegative (1);
     }
 
     if (keyState[SDLK_HOME])
@@ -240,77 +239,77 @@ void InputEngine::processKeyboard ()
     if (!keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease...");
-        worldData->cameraList[0]->setRotateRight (0);
+        World::getWorldPointer ()->cameraList[0]->setRotateRight (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease...");
-        worldData->cameraList[0]->setRotateLeft (0);
+        World::getWorldPointer ()->cameraList[0]->setRotateLeft (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keyrelease...");
-        worldData->cameraList[0]->setRotateUp (0);
+        World::getWorldPointer ()->cameraList[0]->setRotateUp (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease...");
-        worldData->cameraList[0]->setRotateDown (0);
+        World::getWorldPointer ()->cameraList[0]->setRotateDown (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        worldData->cameraList[0]->goForward = false;
+        World::getWorldPointer ()->cameraList[0]->goForward = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        worldData->cameraList[0]->goBack = false;
+        World::getWorldPointer ()->cameraList[0]->goBack = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        worldData->cameraList[0]->goLeft = false;
+        World::getWorldPointer ()->cameraList[0]->goLeft = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keyprelease...");
-        worldData->cameraList[0]->goRight = false;
+        World::getWorldPointer ()->cameraList[0]->goRight = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_o])
     {
-        worldData->cubeList[0]->setMoveToXNegative (0);
+        World::getWorldPointer ()->cubeList[0]->setMoveToXNegative (0);
     }
 
     if (!keyState[SDLK_p])
     {
-        worldData->cubeList[0]->setMoveToXPositive (0);
+        World::getWorldPointer ()->cubeList[0]->setMoveToXPositive (0);
     }
 
     if (!keyState[SDLK_i])
     {
-        worldData->cubeList[0]->setMoveToYPositive (0);
+        World::getWorldPointer ()->cubeList[0]->setMoveToYPositive (0);
     }
 
     if (!keyState[SDLK_k])
     {
-        worldData->cubeList[0]->setMoveToYNegative (0);
+        World::getWorldPointer ()->cubeList[0]->setMoveToYNegative (0);
     }
 }
 

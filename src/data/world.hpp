@@ -19,31 +19,36 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 ******************************************************************************/
-#ifndef DATA_ENGINE_HPP
-#define DATA_ENGINE_HPP
-#include "xmlParser.hpp"
-#include "logEngine.hpp"
-#include "world.hpp"
-#include "system.hpp"
-#include <string.h>
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#include "cube.hpp"
-#include "body.hpp"
-#include "camera.hpp"
 
-class DataEngine
+#ifndef WORLD_HPP
+#   define WORLD_HPP
+#   include "SDL.h"
+#   include "ode.h"
+#   include <vector>
+#   include "logEngine.hpp"
+#   include "worldObject.hpp"
+#   include "system.hpp"
+#   include "cube.hpp"
+#   include "body.hpp"
+#   include "camera.hpp"
+
+class World : public WorldObject
 {
   private:
-    LogEngine *log;              //a log object for logging independently from other engines and main
-    WorldData *worldData;
-    SystemData *systemData;
+    static World *worldPointer;
   public:
-    DataEngine ();            // starts the data engine
-    ~DataEngine (void);        // stops the data engine
-    int loadWorldData (void);
-    int unloadWorldData (void);
-    void processXmlRootNode (DOMNode * n);
-    static LogEngine * getLogPointer (void);
+    static World *getWorldPointer ();
+    void processXmlRootNode(xercesc_2_4::DOMNode*);
+    World ();
+    ~World ();
+
+    dWorldID worldID;
+    dSpaceID spaceID;
+    dJointGroupID jointGroupID;
+
+    std::vector < Cube * > cubeList;
+    std::vector < Body * >bodyList;
+    std::vector < Camera * >cameraList;
 };
+
 #endif

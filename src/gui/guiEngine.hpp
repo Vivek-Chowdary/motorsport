@@ -40,8 +40,6 @@ class GuiEngine
     /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
     */
     LogEngine * log;
-    // / Pointer to the world data, used by different engines in order to store the simulated world data.
-    WorldData *worldData;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
     // / Allows or disallows to show statistics on screen

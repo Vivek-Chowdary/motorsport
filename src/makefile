@@ -183,15 +183,14 @@ LIBRARIES := \
 SOURCES := \
 	main.cpp \
 	system.cpp \
-	world.cpp \
 	log/logEngine.cpp \
-	data/dataEngine.cpp \
 	physics/physicsEngine.cpp \
 	graphics/graphicsEngine.cpp \
 	input/inputEngine.cpp \
 	gui/guiEngine.cpp \
 	data/xmlParser.cpp \
         data/worldObject.cpp \
+	data/worldData.cpp \
 	data/cubeData.cpp \
 	data/bodyData.cpp \
 	data/cameraData.cpp \

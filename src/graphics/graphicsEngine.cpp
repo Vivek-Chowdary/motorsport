@@ -95,17 +95,17 @@ int GraphicsEngine::computeStep (void)
         systemData->ogreWindow->writeContentsToFile (screenshotFilename.c_str());
     }
     // Update Ogre's bodies positions with Ode's positions.
-    int numberOfBodies = worldData->bodyList.size ();
+    int numberOfBodies = World::getWorldPointer ()->bodyList.size ();
     for (int currentBody = 0; currentBody < numberOfBodies; currentBody++)
     {
-        worldData->bodyList[currentBody]->stepGraphics ();
+        World::getWorldPointer ()->bodyList[currentBody]->stepGraphics ();
     }
 
     // Update Ogre's cubes positions with Ode's positions.
-    int numberOfCubes = worldData->cubeList.size ();
+    int numberOfCubes = World::getWorldPointer ()->cubeList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        worldData->cubeList[currentCube]->stepGraphics ();
+        World::getWorldPointer ()->cubeList[currentCube]->stepGraphics ();
     }
 
     // Let the listener frames be started and ended: they are needed for particle systems.
@@ -326,7 +326,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 
     // get the direction of the graphics data
     log->put (LOG_INFO, "Setting up data pointers...");
-    worldData = WorldData::getWorldDataPointer ();
     systemData = SystemData::getSystemDataPointer ();
 
     log->format (LOG_INFO, "Graphics data initialized to %ix%i@%ibpp", width, height, bpp);

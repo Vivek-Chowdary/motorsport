@@ -34,7 +34,6 @@
 #include "body.hpp"
 #include "camera.hpp"
 #include "xmlParser.hpp"
-#include "dataEngine.hpp"
 
 /// Manages everything related to the rendering process.
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, track, etc...).
@@ -46,8 +45,6 @@ class GraphicsEngine
     /** This log engine allows the graphics engine to write data in the log file, allowing to be differenciated from other engines.
     */
     LogEngine * log;
-    // / Pointer to the world data, used by different engines in order to store the simulated world data.  
-    WorldData *worldData;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
 

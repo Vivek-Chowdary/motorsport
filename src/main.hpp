@@ -25,7 +25,6 @@
 #   include "world.hpp"        // contains the IDF for the simulated/virtual world data
 #   include "system.hpp"       // contains the IDF for the system data
 #   include "logEngine.hpp"    // allows to easily log actions
-#   include "dataEngine.hpp"   // loads/saves data from memory into the virtual world
 #   include "inputEngine.hpp"  // process the queue of input events
 #   include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
 #   include "physicsEngine.hpp"    // calculates the physics of the world data
