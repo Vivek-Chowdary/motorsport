@@ -40,10 +40,51 @@ int GuiEngine::step ( void )
 //makes the graphics engine draw one frame
 {
     log.put ( LOG_VERBOSE, "Doing an step..." );
+    static Uint32 lastRefreshTime = 0;
+    if (SDL_GetTicks() - lastRefreshTime >= 1000)
+    {
+        updateStatistics();
+        lastRefreshTime += 1000;
+    }
     log.append ( LOG_VERBOSE, "Ok" );
+
+    Overlay *overlay = ( Overlay * ) OverlayManager::getSingleton (  ).
+    getByName ( "gui" );
+    if ( !overlay )
+    {
+        Except ( Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay gui overlay", "statusPanel" );
+    }
+    
+    overlay->hide (  );
+    if ( systemData->graphicsData.getStatisticsEnabled() )
+    {
+    overlay->show (  );
+    }
+
 
     return ( 0 );
 }
+
+
+void GuiEngine::updateStatistics ( void  )
+{
+    // update stats when necessary
+    GuiElement *guiAvg = GuiManager::getSingleton (  ).getGuiElement ( "gui/AverageFps" );
+    GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "gui/CurrFps" );
+    GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "gui/BestFps" );
+    GuiElement *guiPhysics = GuiManager::getSingleton (  ).getGuiElement ( "gui/PhysicsRate" );
+    const RenderTarget::FrameStats & stats = systemData->graphicsData.ogreWindow->getStatistics (  );
+    guiAvg->setCaption ( "Average FPS: " + StringConverter::toString ( stats.avgFPS ) );
+    guiCurr->setCaption ( "Current FPS: " + StringConverter::toString ( systemData->graphicsStepsPerSecond ) );
+    guiBest->setCaption ( "Best FPS: " + StringConverter::toString ( stats.bestFPS ) + "FPS " + StringConverter::toString ( stats.bestFrameTime ) + " ms" );
+    guiPhysics->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
+    GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "gui/NumTris" );
+    guiTris->setCaption ( "Triangle Count: " + StringConverter::toString ( stats.triangleCount ) );
+    GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "gui/DebugText" );
+    guiDbg->setCaption ( systemData->graphicsData.ogreWindow->getDebugText (  ) );
+}
+
+                                                        
 
 int GuiEngine::stop ( void )
 {

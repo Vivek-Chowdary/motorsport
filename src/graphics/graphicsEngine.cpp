@@ -47,8 +47,8 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     worldData->camera1->ogreCamera =
         graphicsData->ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 0 ) );
-    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 10, 10, 0 ) );
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 1200, 20, -200 ) );
+    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, -200 ) );
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
     
     // Create one viewport, entire window
@@ -161,52 +161,12 @@ int GraphicsEngine::step ( void )
     {
         worldData->cubeList[currentCube].updateOgrePosition();
     }
-
-    //Update status of statistics overlays.
-    showStatistics ( graphicsData->getStatisticsEnabled (  ) );
-    
     //Let the listener frames be started and ended: they are needed for particle systems.
     graphicsData->ogreRoot->_fireFrameStarted (  );
     graphicsData->ogreWindow->update (  );
     graphicsData->ogreRoot->_fireFrameEnded (  );
     
-    //Update statistics.... this should be done inside the main loop.
-    updateStatistics (  );
-
     return ( 0 );
-}
-
-void GraphicsEngine::showStatistics ( bool show )
-{
-    Overlay *overlay = ( Overlay * ) OverlayManager::getSingleton (  ).
-        getByName ( "gui" );
-    if ( !overlay )
-        Except ( Exception::ERR_ITEM_NOT_FOUND,
-                 "Could not find overlay gui overlay",
-                 "statusPanel" );
-    overlay->hide (  );
-    if ( show )
-    {
-        overlay->show (  );
-    }
-}
-
-void GraphicsEngine::updateStatistics (  )
-{
-    // update stats when necessary
-    GuiElement *guiAvg = GuiManager::getSingleton (  ).getGuiElement ( "gui/AverageFps" );
-    GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "gui/CurrFps" );
-    GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "gui/BestFps" );
-    GuiElement *guiPhysics = GuiManager::getSingleton (  ).getGuiElement ( "gui/PhysicsRate" );
-    const RenderTarget::FrameStats & stats = graphicsData->ogreWindow->getStatistics (  );
-    guiAvg->setCaption ( "Average FPS: " + StringConverter::toString ( stats.avgFPS ) );
-    guiCurr->setCaption ( "Current FPS: " + StringConverter::toString ( systemData->graphicsStepsPerSecond ) );
-    guiBest->setCaption ( "Best FPS: " + StringConverter::toString ( stats.bestFPS ) + "FPS " + StringConverter::toString ( stats.bestFrameTime ) + " ms" );
-    guiPhysics->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
-    GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "gui/NumTris" );
-    guiTris->setCaption ( "Triangle Count: " + StringConverter::toString ( stats.triangleCount ) );
-    GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "gui/DebugText" );
-    guiDbg->setCaption ( graphicsData->ogreWindow->getDebugText (  ) );
 }
 
 int GraphicsEngine::stop ( void )

@@ -25,6 +25,9 @@
 
 #include "logEngine.hpp"
 #include "SDL.h"
+#include "Ogre.h"
+
+using namespace Ogre;
 
 class GuiEngine
 {
@@ -34,5 +37,6 @@ class GuiEngine
   public:
     int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
     int step ( void );          //makes the graphics engine draw one frame
+    void updateStatistics( void );
     int stop ( void );          //stops the graphics engine
 };
