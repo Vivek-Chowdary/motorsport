@@ -28,27 +28,65 @@ InputEngine::InputEngine ()
     log->put (LOG_INFO, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
 
-    log->put (LOG_INFO, "Initializing keyboard data array");
-    keyState = SDL_GetKeyState (NULL);
-    log->put (LOG_INFO, "Initializing mouse data variables");
-
+    log->put (LOG_INFO, "Initializing mouse axis");
     systemData->axisMap[getIDMouseAxis (0)] = new Axis; //axis X, mouse #1
     systemData->axisMap[getIDMouseAxis (1)] = new Axis; //axis Y, mouse #1
     systemData->axisMap[getIDMouseAxis (0)]->setNewRawValue (systemData->width);
     systemData->axisMap[getIDMouseAxis (0)]->setNewRawValue (0);
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (-systemData->height);
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (0);
+    
+    log->put (LOG_INFO, "Initializing keyboard data array");
+    keyState = SDL_GetKeyState (NULL);
+    
+    log->put (LOG_INFO, "Initializing keyboard axis");
     for (int i=SDLK_FIRST; i<SDLK_LAST; i++)
     {
         systemData->axisMap[getIDKeyboardKey (i)] = new Axis;
         systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (1);
         systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (0);
     }
+    
+    log->put (LOG_INFO, "Initializing joystick axis");
+    log->put (LOG_WARNING, "Using hardcoded joystick bindings. Don't use more than 5 joysticks, 10 axis per joystick, or 20 buttons per joystick!");
+    // Since axis-bindings are hardcoded in Evo1, we create a couple of joystick axis here:
+    //  5 joysticks
+    //    20 buttons each
+    //    10 axis each
+    for (int joy = 0; joy < 5; joy++)
+    {
+        for (int axis = 0; axis < 10; axis++)
+        {
+            systemData->axisMap[getIDJoyAxis (joy, axis)] = new Axis;
+            log->format (LOG_INFO, "Joystick axis #%i initialized.", getIDJoyAxis(joy, axis));
+        }
+        for (int button = 0; button < 20; button++)
+        {
+            systemData->axisMap[getIDJoyButton (joy, button)] = new Axis;
+            SystemData::getSystemDataPointer()->axisMap[getIDJoyButton (joy, button)]->setNewRawValue (1);
+            SystemData::getSystemDataPointer()->axisMap[getIDJoyButton (joy, button)]->setNewRawValue (0);
+            log->format (LOG_INFO, "Joystick axis #%i initialized.", getIDJoyButton(joy, button));
+        }
+    }
+    log->put (LOG_INFO, "Hardcoded joystick axis initializated.");
+
+    log->put (LOG_INFO, "Printing info about what joysticks have actually been found on the system...");
+    // Now we'll log what's available, just for informative purposes.
+    int nJoysticks = SDL_NumJoysticks();
+    for(int nJoy = 0; nJoy < nJoysticks; nJoy++ ) 
+    {
+        SDL_Joystick * joystick = SDL_JoystickOpen(nJoy);
+        log->format(LOG_INFO, "Found joystick \"%s\" with %i axis and %i buttons.", SDL_JoystickName(nJoy), SDL_JoystickNumAxes(joystick), SDL_JoystickNumButtons(joystick));
+    }
+    log->format (LOG_INFO, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
+
+    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
 int InputEngine::computeStep (void)
 {
     std::string tmpString;
+    int id;
     SDL_Event event;
     while (SDL_PollEvent (&event))
     {
@@ -109,6 +147,25 @@ int InputEngine::computeStep (void)
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (1)]->setNewRawValue (-event.motion.y);
             log->format (LOG_TRACE, "Mouse movement: (%i, %i)", event.motion.x, -event.motion.y);
             break;
+        case SDL_JOYAXISMOTION:
+            id = getIDJoyAxis (event.jaxis.which, event.jaxis.axis);
+            axisIDtoStr(id, tmpString);
+            log->format (LOG_VERBOSE, "New SDL_JOYAXISMOTION event: %s", tmpString.c_str());
+            SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (event.jaxis.value);
+            log->format (LOG_TRACE, "Joystick axis movement: (%i)", event.jaxis.value);
+            break;
+        case SDL_JOYBUTTONDOWN:
+            id = getIDJoyButton (event.jbutton.which, event.jbutton.button);
+            axisIDtoStr(id, tmpString);
+            log->format (LOG_VERBOSE, "New SDL_JOYBUTTONDOWN event: %s", tmpString.c_str());
+            SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (1);
+            break;
+        case SDL_JOYBUTTONUP:
+            id = getIDJoyButton (event.jbutton.which, event.jbutton.button);
+            axisIDtoStr(id, tmpString);
+            log->format (LOG_VERBOSE, "New SDL_JOYBUTTONUP event: %s", tmpString.c_str());
+            SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (0);
+            break;
         default:
             break;
         }
@@ -120,6 +177,22 @@ int InputEngine::computeStep (void)
     {
         World::getWorldPointer()->trackList[0]->cameraList[i]->stepInput();
     }
+    
+    
+    log->telemetry (LOG_TRACE, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,3)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,4)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,5)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,0)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,1)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,2)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,3)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,4)]->getValue(),
+                                   SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,5)]->getValue());
+ //   log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 
     return (0);
 }

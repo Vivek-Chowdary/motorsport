@@ -10,8 +10,8 @@
     <body
         mesh = "../data/vehicles/mosp1/body.mesh"
         ogreName = "mosp1Body"
-        _renderMode="solid"
-        renderMode="wireframe"
+        renderMode="solid"
+        _renderMode="wireframe"
         length = "4.66"
         width = "2.08"
         height = "1.2" 
@@ -72,40 +72,44 @@
     </diff>
     <steeringWheel
         inputAxis = "normalizedRelativeRotation"
-        wheelAngleMultiplier = "15.0"
+        maxAngle = "900"
         >
     </steeringWheel>
     <suspensionList>
         <unidimensional
             index = "FrontRight"
-            springConstant =  "60500"
+            springConstant =  "80500"
             dampingConstant = "2000"
-            position = "+1.44 +0.857 -0.45"
+            position = "+1.44 +0.857 -0.4"
             rotation = "-90 0 0"
+            steeringAngle = "80"
             >
         </unidimensional>
         <unidimensional
             index = "FrontLeft"
-            springConstant =  "60500"
+            springConstant =  "80500"
             dampingConstant = "2000"
-            position = "+1.44 -0.857 -0.45"
+            position = "+1.44 -0.857 -0.4"
             rotation = "+90 0 0"
+            steeringAngle = "80"
             >
         </unidimensional>
         <unidimensional
             index = "RearRight"
-            springConstant =  "60900"
+            springConstant =  "80900"
             dampingConstant = "2000"
             position = "-1.35 +0.88 -0.45"
             rotation = "-90 0 0"
+            steeringAngle = "0"
             >
         </unidimensional>
         <unidimensional
             index = "RearLeft"
-            springConstant =  "60900"
+            springConstant =  "80900"
             dampingConstant = "2000"
             position = "-1.35 -0.88 -0.45"
             rotation = "+90 0 0"
+            steeringAngle = "0"
             >
         </unidimensional>
     </suspensionList>
