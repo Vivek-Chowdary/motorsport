@@ -171,9 +171,16 @@ void Suspension::stepPhysics ()
                         rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
     }   }   }   }   }
     const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
-    rightSteering *= steeringAngle * piK / 2;
-    leftSteering *= steeringAngle * piK / 2;
-    angle += rightSteering - leftSteering;
+
+    // Override keyboard data with joystick axis if the keyboard is not used.
+    if (rightSteering == 0 and leftSteering == 0)
+    {
+        angle = (SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue() - 0.5) * steeringAngle * piK / 2;
+    } else {
+        rightSteering *= steeringAngle * piK / 2;
+        leftSteering *= steeringAngle * piK / 2;
+        angle += rightSteering - leftSteering;
+    }
 
     // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
