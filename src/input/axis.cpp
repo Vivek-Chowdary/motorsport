@@ -35,7 +35,7 @@ void Axis::setNewRawValue(int value)
     //normalize raw value and store it. 
     if (maxRawValue == minRawValue)
     {
-        this->value = value?1:0;
+        this->value = 0.5;
     }else{
         this->value = ( double(value - minRawValue) / double(maxRawValue - minRawValue)); //store normalized value
     }
