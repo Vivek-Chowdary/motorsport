@@ -58,7 +58,16 @@ InputEngine::InputEngine ()
         for (int axis = 0; axis < 10; axis++)
         {
             systemData->axisMap[getIDJoyAxis (joy, axis)] = new Axis;
-            log->format (LOG_INFO, "Joystick axis #%i initialized.", getIDJoyAxis(joy, axis));
+            if (axis == 1 || axis == 2)
+            {
+                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
+                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
+            } else {
+                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (2);
+                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
+                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
+            }
+            log->format (LOG_INFO, "Joystick axis #%i initialized. %f", getIDJoyAxis(joy, axis), SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->getValue());
         }
         for (int button = 0; button < 20; button++)
         {

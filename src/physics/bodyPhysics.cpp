@@ -63,12 +63,39 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             attribute.clear();
         }
     }
+    // create dBody
+    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    
+    // create transform spaces (in order to be able to 'offset' the collision geoms
+    geomSpace = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
+    geomSpace2 = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
+
+    // bind geoms with transformation spaces
+    dGeomTransformSetCleanup (geomSpace, 1);
+    dGeomTransformSetCleanup (geomSpace2, 1);
+    
+    // create collision geoms
+    bodyGeomID = dCreateBox (0, length, width, height / 2.0);
+    bodyGeom2ID = dCreateBox (0, length / 2.0, width / 2.0, height / 2.0);
+
+    // insert collision geoms into transformation spaces
+    dGeomTransformSetGeom (geomSpace, bodyGeomID);
+    dGeomTransformSetGeom (geomSpace2, bodyGeom2ID);
+
+    // apply offsets to the collision geoms
+    dGeomSetPosition (bodyGeomID, 0, 0, - height / 4.0);
+    dGeomSetPosition (bodyGeom2ID, -width / 6, 0, (height / 4.0) + 0.1);
+
+    // associate the dBody with the 2 collision geoms via the transformation spaces
+    dGeomSetBody (geomSpace, bodyID);
+    dGeomSetBody (geomSpace2, bodyID);
+
+    // set dBody mass
     dMass tmpMass;
     dMassSetBoxTotal (&tmpMass, mass, length, width, height);
-    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
-    bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
-    dGeomSetBody (bodyGeomID, bodyID);
     dBodySetMass (bodyID, &tmpMass);
+
+    // make sure it's initialized with correct values.
     setPosition(Vector3d(0, 0, 0));
     setRotation(Vector3d(0, 0, 0));
     dBodySetLinearVel  (bodyID, 0, 0, 0);
@@ -99,7 +126,8 @@ Vector3d Body::getRotation ()
 
 void Body::stopPhysics ()
 {
-    dGeomDestroy (bodyGeomID);
+    dGeomDestroy (geomSpace);
+    dGeomDestroy (geomSpace2);
     dBodyDestroy (bodyID);
 }
 

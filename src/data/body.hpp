@@ -45,6 +45,9 @@ class Body : public WorldObject
     void stepPhysics ();
     dBodyID bodyID;
     dGeomID bodyGeomID;
+    dGeomID bodyGeom2ID;
+    dGeomID geomSpace;
+    dGeomID geomSpace2;
     void setPosition (Vector3d position);
     void setRotation (Vector3d rotation);
     Vector3d getPosition ();

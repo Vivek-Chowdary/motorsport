@@ -49,9 +49,11 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
         {
             contact[i].surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
             if (dGeomGetClass (o1) == dSphereClass || dGeomGetClass (o2) == dSphereClass)
+            {
                 contact[i].surface.mu = 20;
-            else
-                contact[i].surface.mu = 0.5;
+            } else {
+                contact[i].surface.mu = 0.6;
+            }
             contact[i].surface.slip1 = 0.0;
             contact[i].surface.slip2 = 0.0;
             // FIXME!!! check what kind of surfaces are colliding, setting the appropriate cfm and erp values!
