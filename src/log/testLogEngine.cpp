@@ -26,6 +26,9 @@ std::string TestLogFile = "motorsport.log";
 // TODO: A lot of redundancy, refactor.
 //
 
+#include "guiEngine.hpp"
+
+
 void EraseTestFileContents ()
 {
     std::fstream testFile;
@@ -119,8 +122,8 @@ void TestLogEngineConstructor_SeveralInstances ()
 
         MAssert (bufString.find ("TS1") != std::string::npos);
         MAssert (bufString.find ("TS2") != std::string::npos);
-        MAssert (bufString.find ("2 engine") != std::string::npos);
-        MAssert (bufString.find ("s 0 engine") == std::string::npos);
+        MAssert (bufString.find ("2 log engine") != std::string::npos);
+        MAssert (bufString.find ("s 0 log engine") == std::string::npos);
     }
 
     std::fstream testFile;
@@ -130,7 +133,7 @@ void TestLogEngineConstructor_SeveralInstances ()
 
     std::string bufString (buf);
 
-    MAssert (bufString.find ("s 0 engine") != std::string::npos);
+    MAssert (bufString.find ("s 0 log engine") != std::string::npos);
 
 
     LogFileRestore ();
@@ -194,7 +197,7 @@ void TestPut_filter_eq ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.put (LOG_WARNING, "logtext") == 0);
+        logEngine.put (LOG_WARNING, "logtext");
     }
 
     std::fstream testFile;
@@ -216,16 +219,14 @@ void TestPut_filter_gt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_ENDUSER, "TST");
-        MAssert (logEngine.format (LOG_WARNING, "logtext") == 0);
+        logEngine.format (LOG_WARNING, "logtext");
     }
 
     std::fstream testFile;
     testFile.open (TestLogFile.c_str (), std::fstream::in);
     char buf[4096];
     testFile.getline (buf, 4096);   // eat line
-    testFile.getline (buf, 4096);   // eat line
     testFile.getline (buf, 4096);   // read line
-
     std::string bufString (buf);
 
     MAssert (bufString.find ("logtext") != std::string::npos);
@@ -241,7 +242,7 @@ void TestPut_filter_lt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.format (LOG_ENDUSER, "logtext") == -1);
+        logEngine.format (LOG_ENDUSER, "logtext");
     }
 
     std::fstream testFile;
@@ -274,7 +275,7 @@ void TestFormat_basics ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_DEVELOPER, "TST");
-        MAssert (logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#') == 0);
+        logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#');
     }
 
     std::fstream testFile;
@@ -298,7 +299,7 @@ void TestFormat_filter_eq ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#') == 0);
+        logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#');
     }
 
     std::fstream testFile;
@@ -320,16 +321,14 @@ void TestFormat_filter_gt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_ENDUSER, "TST");
-        MAssert (logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#') == 0);
+        logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#');
     }
 
     std::fstream testFile;
     testFile.open (TestLogFile.c_str (), std::fstream::in);
     char buf[4096];
     testFile.getline (buf, 4096);   // eat line
-    testFile.getline (buf, 4096);   // eat line
     testFile.getline (buf, 4096);   // read line
-
     std::string bufString (buf);
 
     MAssert (bufString.find ("s:a string d:42 #") != std::string::npos);
@@ -345,7 +344,7 @@ void TestFormat_filter_lt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.format (LOG_ENDUSER, "s:%s d:%d %c", "a string", 42, '#') == -1);
+        logEngine.format (LOG_ENDUSER, "s:%s d:%d %c", "a string", 42, '#');
     }
 
     std::fstream testFile;

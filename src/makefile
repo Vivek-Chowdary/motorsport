@@ -315,7 +315,7 @@ $(TARGET) :$(OBJECTS)
 	@echo    "----------------------------------------------"
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o data/xmlParser.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o data/xmlParser.o log/fakeGuiEngine.o tools/vector3d.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
