@@ -22,10 +22,12 @@
 
 #include "system.hpp"
 #include "world.hpp"
-
 #include "logEngine.hpp"
 #include "SDL.h"
 #include "Ogre.h"
+#include "domParser.hpp"
+
+struct GuiData;
 
 using namespace Ogre;
 
@@ -43,6 +45,8 @@ class GuiEngine
     WorldData *worldData;
     /// Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
+    /// Allows or disallows to show statistics on screen
+    bool showStatistics;
   public:
     /// Creates a new gui engine.
     /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
@@ -52,10 +56,22 @@ class GuiEngine
     /** Deletes de gui engine, as well as its associated log engine. It also removes all the related data from memory.
     */
     ~GuiEngine ( );
+    /// Updates some statistics.
+    /** Updates some statistics (framerates, etc...) in order to show them on screen if needed..
+    */
+    void updateStatistics ( void  );
     /// Renders all the gui on screen.
     /** Renders on screen all the system data (gui) for this frame.
     */
-    void updateStatistics ( void  );
-    
     int step ( void );
+    /// Called by the generic XML parser; it loads configuration data from a file.
+    static int processGuiConfigFile ( DOMNode * n, void * data);
+};
+
+struct GuiData
+{
+    GuiEngine * gui;
+    LOG_LEVEL localLogLevel;
+    char * localLogName;
+    bool showStatistics; //1->yes.  0->no.
 };

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<guiConfig
+    localLogLevel = "LOG_INFO"
+    localLogName = "GUI"
+    showStatistics = "1"
+    >
+</guiConfig>

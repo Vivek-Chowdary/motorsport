@@ -25,15 +25,25 @@
 GuiEngine::GuiEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine ( LOG_INFO, "GUI" );
+    GuiData * data = new GuiData;
+    data->gui = this;
+    data->showStatistics = 1;
+    processConfigFile ( "guiConfig.xml", &GuiEngine::processGuiConfigFile, (void*)data );
+    
+    log = new LogEngine ( data->localLogLevel, data->localLogName );
+    log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
 
     //get the direction of the graphics data
     log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
 
-    log->put ( LOG_INFO, "Enabling statistics");
-    systemData->enableStatistics (  );
+    log->put ( LOG_INFO, "Setting showStatistics ");
+    showStatistics = data->showStatistics;
+
+    log->put ( LOG_INFO, "Unloading temporary parsing data from memory..." );
+    delete [](data->localLogName);
+    delete data;
 }
 
 int GuiEngine::step ( void )
@@ -51,16 +61,17 @@ int GuiEngine::step ( void )
     getByName ( "gui" );
     if ( !overlay )
     {
-        Except ( Exception::ERR_ITEM_NOT_FOUND, "Could not find overlay gui overlay", "statusPanel" );
+        Except ( Exception::ERR_ITEM_NOT_FOUND, "Could not find gui overlay", "statusPanel" );
     }
     
-    overlay->hide (  );
-    if ( systemData->getStatisticsEnabled() )
+    if ( systemData->getInvertShowStatistics (  ) )
     {
-        overlay->show (  );
+        log->put ( LOG_INFO, "Showing/hiding statistics on screen." );
+        showStatistics = !showStatistics;
     }
-
-
+    if ( showStatistics ) overlay->show (  );
+    else overlay->hide (  );
+    
     return ( 0 );
 }
 

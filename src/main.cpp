@@ -40,6 +40,7 @@ int main ( int argc, char **argv )
 {
     LogEngine * log = new LogEngine(LOG_INFO, "MAI");
     //we declare the 'global' data and engines
+    log->put(LOG_INFO, "( 1 ): Loading engines and libraries...");
     log->put(LOG_INFO, "Starting SDL subsystems");
     sdl_start ( log );
     log->put(LOG_INFO, "Creating world data");
@@ -60,9 +61,11 @@ int main ( int argc, char **argv )
     
     log->put(LOG_INFO, "Getting system data pointer");
     SystemData * systemData = SystemData::getSystemDataPointer();
+    log->put(LOG_INFO, "( 2 ): Loading world data...");
     log->put(LOG_INFO, "Loading initial world data");
     data->loadWorldData (  );
 
+    log->put(LOG_INFO, "( 3 ): Starting simulation...");
     log->put(LOG_INFO, "Initializating main loop");
     systemData->lastStatTime = systemData->currentPhysicsTime = SDL_GetTicks (  );
     log->put(LOG_INFO, "Enabling main loop");
@@ -111,6 +114,11 @@ int main ( int argc, char **argv )
     }
     log->put(LOG_INFO, "Main loop finished");
 
+    log->put(LOG_INFO, "( 4 ): Unloading world data...");
+    log->put(LOG_INFO, "Unloading world data");
+    data->unloadWorldData (  );
+    
+    log->put(LOG_INFO, "( 5 ): Unloading engines and libraries...");
     log->put(LOG_INFO, "Deleting graphics engine");
     delete graphics;
     log->put(LOG_INFO, "Deleting physics engine");
@@ -119,8 +127,6 @@ int main ( int argc, char **argv )
     delete input;
     log->put(LOG_INFO, "Deleting gui engine");
     delete gui;
-    log->put(LOG_INFO, "Unloading world data");
-    data->unloadWorldData (  );
     log->put(LOG_INFO, "Deleting data engine");
     delete data;
     log->put(LOG_INFO, "Deleting log engine");

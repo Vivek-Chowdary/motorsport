@@ -50,9 +50,10 @@ LogEngine::LogEngine ( LOG_LEVEL localLevel, const char *name ):logName ( name )
             std::cerr << "Error: Logfile could not be opened.\n";
             return;
         }
-        globalLevel = data->globalLevel;
+        put ( LOG_INFO, "Temporary parsing data already loaded into memory...");
         put ( LOG_INFO, "LogFile created" );
-        put ( LOG_INFO, "Global log level set" );
+        put ( LOG_INFO, "Setting global log level..." );
+        globalLevel = data->globalLevel;
 
         put ( LOG_INFO, "Setting log format() method text buffer length..." );
         textBuffer = data->textBuffer;
@@ -65,7 +66,7 @@ LogEngine::LogEngine ( LOG_LEVEL localLevel, const char *name ):logName ( name )
     //increase logEngines counter
     numberOfLogEngines++;
     format ( LOG_INFO,
-             "Start of logging for this engine. There's %i engine[s] now.",
+             "Start of logging for this engine. There's %i log engine[s] now.",
              numberOfLogEngines );
 
     return;
@@ -136,7 +137,7 @@ LogEngine::~LogEngine (  )
     //decrease number of logEngines
     numberOfLogEngines--;
     format ( LOG_INFO,
-             "End of logging for this engine. There's %i engine[s] now.",
+             "End of logging for this engine. There's %i log engine[s] left now.",
              numberOfLogEngines );
 
     if ( numberOfLogEngines == 0 )

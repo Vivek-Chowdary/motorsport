@@ -80,6 +80,7 @@ SOURCES := \
 	graphics/graphicsEngine.cpp \
         graphics/graphicsParser.cpp \
 	gui/guiEngine.cpp \
+        gui/guiParser.cpp \
         physics/cubePhysics.cpp \
 	physics/physicsEngine.cpp \
         physics/physicsParser.cpp \

@@ -54,7 +54,7 @@ int InputEngine::step ( void )
         {
         case SDL_QUIT:
             //this can be the user cliking to close the window
-            log->put ( LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop..." );
+            log->put ( LOG_INFO, "New SDL_QUIT event: User wants to exit. Notifying to stop mainLoop..." );
             systemData->disableMainLoop (  );
             break;
         case SDL_KEYDOWN:
@@ -65,6 +65,9 @@ int InputEngine::step ( void )
                 log->put ( LOG_INFO, "User wants to take a screenshot." );
                 systemData->setTakeScreenshot ();
                 break;
+            case SDLK_f:
+                log->put ( LOG_INFO, "User wants to show/hide statistics on screen." );
+                systemData->setInvertShowStatistics (  );
             default:
                 break;
             }
@@ -244,16 +247,10 @@ void InputEngine::processKeyboard ( )
 
     if ( keyState[SDLK_q] )
     {
-        log->put ( LOG_VERBOSE, "Processing a 'Q' keypress: exiting program" );
+        log->put ( LOG_INFO, "Processing a 'Q' keypress: User wants to exit. Notifying to stop mainLoop..." );
         systemData->disableMainLoop (  );
     }
         
-    if ( keyState[SDLK_f] )
-    {
-        log->put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );
-        systemData->invertStatisticsEnabled (  );
-    }
-    
     //Processing key releases...
     if ( !keyState[SDLK_RIGHT] )
     {

@@ -47,6 +47,7 @@ SystemData::SystemData ( )
         graphicsSteps = 0;
         graphicsStepsPerSecond = 0;
         takeScreenshot = false;
+        invertShowStatistics = false;
     }
 }
 
@@ -72,6 +73,7 @@ void SystemData::disableMainLoop ( void )   //allows the program to stop running
     mainLoopEnabled = false;
 }
 
+/*
 bool SystemData::getStatisticsEnabled (  )
 {
     return statisticsEnabled;
@@ -85,6 +87,18 @@ void SystemData::invertStatisticsEnabled (  )
 void SystemData::enableStatistics (  )
 {
     statisticsEnabled = true;
+}
+*/
+void SystemData::setInvertShowStatistics (  )
+{
+    invertShowStatistics = true;
+}
+
+bool SystemData::getInvertShowStatistics (  )
+{
+    if (!invertShowStatistics) return false;
+    invertShowStatistics = false;
+    return true;
 }
 
 void SystemData::setTakeScreenshot (  )
