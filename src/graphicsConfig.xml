@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<graphicsConfig
+    localLogLevel = "LOG_VERBOSE"
+    localLogName = "GFX"
+    screenshotFile = "sshot.png"
+    >
+    <ogre
+        configFile = "resources.cfg"
+        sceneManager = "ST_GENERIC"
+        anisotropic = "1"
+        filtering = "ogre::TFO_BILINEAR"
+        width = "1024"
+        height = "768"
+        bpp = "0" 
+        renderer = "OpenGL"
+        defaultNumMipmaps = "5"
+        >
+    </ogre>
+</graphicsConfig>

@@ -31,6 +31,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <domParser.hpp>
+
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
 */
@@ -76,12 +78,18 @@ class LogEngine
     /** Stores the number of log engine instances that have been created. This number is increased or decreased everytime a log engine is created or deleted.
     */
     static int numberOfLogEngines;
+    /// Amount of chars allocated for log message conversion.
+    /** Indicates how many chars will be allocated for performing the conversion between the original printf-like format, to the final char* text.
+    */
+    static int textBuffer;
     /// Helper function translating log level into a short code.
     /** Helper function translating log level into a short code. 
 	@param verbosity level to get code for.
 	@return code as a short c-string.
     */
     const char* GetLogLevelCode(LOG_LEVEL level);
+    /// Called by the generic XML parser; it loads configuration data from a file.
+    static int processLogConfigFile ( DOMNode * n, void * data );
   public:
     /// Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.
@@ -116,11 +124,8 @@ class LogEngine
     */
     int format ( LOG_LEVEL level, const char *textToLogFormat, ... );
 
-
-
     /// Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode();
-  
 
 };
 

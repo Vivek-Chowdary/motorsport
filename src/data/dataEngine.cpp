@@ -90,4 +90,6 @@ DataEngine::~DataEngine ( void )
 {
     //finally stop the log engine
     delete log;
+
+//    processConfigFile ( "mainConfig.xml" );
 }

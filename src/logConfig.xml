@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<logConfig
+        globalLevel ="LOG_INFO"
+        fileName = "motorsport.log"
+        textBuffer = "1024"
+        >
+</logConfig>

@@ -49,6 +49,7 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
+	$(BASE_INCLUDE_DIR)/xercesc \
 	$(BASE_INCLUDE_DIR)/../local/include/OGRE \
 	$(BASE_INCLUDE_DIR)/../local/include/SDL
 	
@@ -64,12 +65,14 @@ LIBRARIES := \
 	ode \
 	pthread \
 	freetype \
-	OgreMain
+	OgreMain \
+	xerces-c
 
 SOURCES := \
 	log/logEngine.cpp \
         data/cubeData.cpp \
         data/cameraData.cpp \
+        data/domParser.cpp \
 	data/dataEngine.cpp \
         graphics/cubeGraphics.cpp \
         graphics/cameraGraphics.cpp \
@@ -123,8 +126,7 @@ clean:
 .PHONY: clobber
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
-	rm -f Ogre.log motorsport.log
-	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp
+	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp *.log
 	@echo    "----------------------------------------------"
 
 .PHONY: run

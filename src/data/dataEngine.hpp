@@ -27,6 +27,7 @@
 #include "Ogre.h"
 #include "cube.hpp"
 #include "camera.hpp"
+#include "domParser.hpp"
 
 class DataEngine
 {
