@@ -51,7 +51,7 @@ int DataEngine::loadWorldData ( void )
 
     //create 2 cubes in the world data
     log.put ( LOG_INFO, "Creating an array of 2 cubes..." );
-    worldData->numberOfCubes = 5;
+    worldData->numberOfCubes = 100;
     worldData->cubeList = new Cube[worldData->numberOfCubes];
     log.append ( LOG_INFO, "Ok" );
 
@@ -79,7 +79,7 @@ int DataEngine::loadSystemData ( void )
     log.format ( LOG_INFO, "b%i", systemData->graphicsData.bpp );
 
     log.put ( LOG_INFO, "Setting physics system data..." );
-    systemData->physicsData.desiredStepsPerSecond = 500;
+    systemData->physicsData.desiredStepsPerSecond = 100;
     systemData->physicsData.timeStep =
         1000 / systemData->physicsData.desiredStepsPerSecond;
 

@@ -58,8 +58,12 @@ PhysicsEngine::PhysicsEngine ( )
 
     log.put ( LOG_INFO, "Creating ODE world");
     worldData->worldID = dWorldCreate();
+    worldData->spaceID = dHashSpaceCreate(0);
+    worldData->jointGroupID = dJointGroupCreate (0);
     log.put ( LOG_INFO, "Setting ODE world gravity");
-    dWorldSetGravity (worldData->worldID, 0,0,-0.0001);
+//    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
+    dWorldSetCFM (worldData->worldID, 1e-5);
+    dWorldSetERP (worldData->worldID, 0.8);
     log.put ( LOG_INFO, "Creating sample mass");
     dMass mass;
     log.put ( LOG_INFO, "Assigning box mass values");
@@ -69,12 +73,42 @@ PhysicsEngine::PhysicsEngine ( )
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
-    
         worldData->cubeList[currentCube].cubeID = dBodyCreate (worldData->worldID);
-        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * 300, currentCube / 10 % 10 * 300, currentCube / 100 % 10 * 300 * ((int(currentCube/1000))+1));
+        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * 200, currentCube / 10 % 10 * 200, currentCube / 100 % 10 * 200 * ((int(currentCube/1000))+1));
 
         dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
-        dBodyAddForce (worldData->cubeList[0/*currentCube*/].cubeID,0.01,0,0);
+        dBodyAddForce (worldData->cubeList[currentCube].cubeID,random()%2?1/float(25+random()%200):-1/float(25+random()%200),random()%2?1/float(25+random()%200):-1/float(25+random()%200),random()%2?1/float(25+random()%200):-1/float(25+random()%200));
+        worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
+        dGeomSetBody (worldData->cubeList[currentCube].cubeGeomID,worldData->cubeList[currentCube].cubeID);
+    }
+}
+
+
+static void nearCallback (void *data, dGeomID o1, dGeomID o2)
+{
+    int i,n;
+    dBodyID b1 = dGeomGetBody(o1);
+    dBodyID b2 = dGeomGetBody(o2);
+    if (b1 && b2 && dAreConnected(b1, b2))
+        return;
+
+    const int N = 10;
+    dContact contact[N];
+    n = dCollide (o1,o2,N,&contact[0].geom,sizeof(dContact));
+    if (n > 0) {
+        for (i=0; i<n; i++) {
+            contact[i].surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
+            if (dGeomGetClass(o1) == dSphereClass || dGeomGetClass(o2) == dSphereClass)
+                contact[i].surface.mu = 20;
+            else
+                contact[i].surface.mu = 0.5;
+            contact[i].surface.slip1 = 0.0;
+            contact[i].surface.slip2 = 0.0;
+            contact[i].surface.soft_erp = 0.8;
+            contact[i].surface.soft_cfm = 0.01;
+            dJointID c = dJointCreateContact (WorldData::getWorldDataPointer()->worldID,WorldData::getWorldDataPointer()->jointGroupID,contact+i);
+            dJointAttach (c,dGeomGetBody(o1),dGeomGetBody(o2));
+        }
     }
 }
 
@@ -83,8 +117,12 @@ int PhysicsEngine::step ( void )
 {
     //mega-verbosity
     log.put ( LOG_TRACE, "Doing an step: calculating a physics step" );
+    log.put ( LOG_INFO, "Doing an step.....");
 
+    dSpaceCollide (worldData->spaceID,0,&nearCallback);
     dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
+    dJointGroupEmpty (worldData->jointGroupID);
+                                                     
     
     float x = 0,
         z = 0;

@@ -34,6 +34,7 @@ class Cube
     Ogre::SceneNode * cubeNode;
     
     dBodyID cubeID;
+    dGeomID cubeGeomID;
     void updateOgrePosition();
     void updateOgreOrientation();
 };
@@ -68,6 +69,7 @@ class WorldData
 
     dWorldID worldID;
     dSpaceID spaceID;
+    dJointGroupID jointGroupID;
                             
 };
 

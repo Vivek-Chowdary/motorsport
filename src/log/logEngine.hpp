@@ -47,13 +47,13 @@ class LogEngine
     /// Indicates the file where logs will be writen.
     /** Indicates a plain-text file where log messages can be writen.
     */
-    FILE *logFile;
 
     /// Indicates how much information will be stored in this log.
     /** Indicates the level of verbosity of the log. All log messages with a number higher to this one will be discarded, and therefore not writen to the log file.
     */
     LOG_LEVEL logLevel;
   public:
+    static FILE *logFile;
 
     /// Starts the log process.
     /** Initializes the pertinent data in order to allow logging. No logging should be attempted before executing this method.

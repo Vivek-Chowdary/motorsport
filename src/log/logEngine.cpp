@@ -23,6 +23,8 @@
 #include "logEngine.hpp"
 //TODO use iostreams for file management/writing
 
+FILE * LogEngine::logFile = NULL;
+
 int LogEngine::start ( LOG_LEVEL level, const char *filePath, bool appendMode )
 {
     //check if the level is correct
