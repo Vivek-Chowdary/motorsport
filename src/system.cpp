@@ -97,3 +97,20 @@ bool SystemData::getTakeScreenshot ()
     takeScreenshot = false;
     return true;
 }
+
+double SystemData::getCfmValue()
+{
+    return cfmValue;
+}
+double SystemData::getErpValue()
+{
+    return erpValue;
+}
+void SystemData::setCfmValue(const double & value)
+{
+    cfmValue = value;
+}
+void SystemData::setErpValue(const double & value)
+{
+    erpValue = value;
+}

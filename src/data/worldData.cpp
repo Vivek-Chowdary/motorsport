@@ -28,6 +28,7 @@ World *World::getWorldPointer ()
 {
     if (worldPointer == 0)
     {
+        std::cout << "WARNING: Auto-creating a default world!" << std::endl;
         worldPointer = new World(/*"../data/defaultWorld.xml"*/);
     }
     return (worldPointer);
@@ -47,6 +48,17 @@ World::World ()
     worldID = dWorldCreate ();
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);
+
+    if (double cfmValue = SystemData::getSystemDataPointer()->getCfmValue() != -1)
+    {
+        log->put (LOG_INFO, "Setting ODE cfm value");
+        dWorldSetCFM (worldID, cfmValue);
+    }
+    if (double erpValue = SystemData::getSystemDataPointer()->getErpValue() != -1)
+    {
+        log->put (LOG_INFO, "Setting ODE erp value");
+        dWorldSetERP (worldID, erpValue);
+    }
 
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, 0,0,-0.000098);
@@ -136,4 +148,5 @@ World::~World ()
     dJointGroupDestroy (jointGroupID);
 
     worldPointer = NULL;
+    delete log;
 }

@@ -132,8 +132,8 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "FSX" ;
     int frequency = 250;
-    double cfmValue = -1;
-    double erpValue = -1;
+    SystemData::getSystemDataPointer()->setCfmValue (-1);
+    SystemData::getSystemDataPointer()->setErpValue (-1);
     int stepType = 1;
     int dWorldStepFast1MaxIterations = 100;
 
@@ -211,7 +211,7 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
                                             tmpLog->format (LOG_INFO, "\tFound the constraint force mixing factor (CFM): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
-                                                cfmValue = stod (attribute);
+                                                SystemData::getSystemDataPointer()->setCfmValue (stod (attribute));
                                             }
                                         }
                                         if (attribute == "erpValue")
@@ -221,7 +221,7 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
                                             tmpLog->format (LOG_INFO, "\tFound the error reduction parameter (ERP): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
-                                                erpValue = stod (attribute);
+                                                SystemData::getSystemDataPointer()->setErpValue (stod (attribute));
                                             }
                                         }
                                         if (attribute == "stepType")
@@ -267,18 +267,6 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
     systemData->physicsDesiredFrequency = frequency;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
     log->format (LOG_INFO, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
-/*
-    if (cfmValue != -1)
-    {
-        log->put (LOG_INFO, "Setting ODE cfm value");
-        dWorldSetCFM (World::getWorldPointer ()->worldID, cfmValue);
-    }
-    if (erpValue != -1)
-    {
-        log->put (LOG_INFO, "Setting ODE erp value");
-        dWorldSetERP (World::getWorldPointer ()->worldID, erpValue);
-    }
-*/
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+
     localLogName.clear();
 }

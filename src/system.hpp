@@ -31,10 +31,18 @@ class SystemData
     bool mainLoopEnabled;
     bool takeScreenshot;
     bool invertShowStatistics;
+    double cfmValue;     
+    double erpValue;
   public:
     static SystemData *getSystemDataPointer ();
-      SystemData ();
-     ~SystemData ();
+    SystemData ();
+    ~SystemData ();
+
+    double getCfmValue();
+    void setCfmValue(const double & value);
+    double getErpValue();
+    void setErpValue(const double & value);
+    
 
     Uint32 physicsTimeStep;
     Uint32 physicsDesiredFrequency;
