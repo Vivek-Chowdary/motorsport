@@ -36,15 +36,9 @@ InputEngine::InputEngine ( )
     worldData = WorldData::getWorldDataPointer ();
     inputData = &( systemData->inputData );
  
-    log->put ( LOG_INFO, "Creating and zeroing keys state array" );
-    maxNumberOfKeys = 384;
-    keyState = new bool[maxNumberOfKeys];
-    for (int i = 0; i < maxNumberOfKeys; i++)
-    {
-        keyState [i] = false;
-    }
-
-    log->put ( LOG_INFO, "Initializing mouse data");
+    log->put ( LOG_INFO, "Initializing keyboard data array" );
+    keyState = SDL_GetKeyState ( NULL );  
+    log->put ( LOG_INFO, "Initializing mouse data variables");
     mouseMovementX = mouseMovementY = 0;
 }
 
@@ -55,16 +49,6 @@ int InputEngine::step ( void )
     {
         switch ( event.type )
         {
-        case SDL_KEYDOWN:
-            log->put ( LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed." );
-            keyState[event.key.keysym.sym] = true;
-            break;
-
-        case SDL_KEYUP:
-            log->put ( LOG_VERBOSE, "New SDL_KEYUP event: finding out what key's been released." );
-            keyState[event.key.keysym.sym] = false;
-            break;
-
         case SDL_QUIT:
             //this can be the user cliking to close the window
             log->put ( LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop..." );

@@ -33,7 +33,7 @@ class InputEngine
     SystemData *systemData;
     WorldData *worldData;
     int maxNumberOfKeys;//see "/usr/include/SDL/SDL_keysym.h"
-    bool * keyState;
+    Uint8 * keyState;
     int mouseMovementX;
     int mouseMovementY;
   public:
