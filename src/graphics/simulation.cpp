@@ -121,10 +121,13 @@ bool Simulation::manualInitialize ( const String & desiredRenderer, int resX,
     if ( renderers->empty (  ) )
         return false;
 
+    printf("\n\nDesired renderer:[%s]",&(*desiredRenderer));
+    printf("\n\nAvailable renderers(until we find the desired one:");
     for ( RenderSystemList::iterator it = renderers->begin (  );
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
+        printf("\n\t[%s]",&(*renderSystem->getName()));
         if ( strstr
              ( &( *renderSystem->getName (  ) ), &( *desiredRenderer ) ) )
         {

@@ -65,6 +65,8 @@ LIBRARIES := \
 SOURCES := \
 	log/logEngine.cpp \
 	data/dataEngine.cpp \
+        graphics/simulation.cpp \
+        graphics/simframelistener.cpp \
 	graphics/graphicsEngine.cpp \
 	gui/guiEngine.cpp \
 	physics/physicsEngine.cpp \

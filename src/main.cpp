@@ -117,19 +117,20 @@ void SimLoop::Shutdown (  )
 
 void GuiLoop::Initialize (  )
 {
-    sdl_start ( *log );
-    gui->start ( worldData, systemData );
+//    sdl_start ( *log );
+//    gui->start ( worldData, systemData );
 }
 
 void GuiLoop::Shutdown (  )
 {
-    gui->stop (  );
+//    gui->stop (  );
     sdl_stop (  );
 }
 
 void MainLoop::Initialize (  )
 {
     log->start ( LOG_VERBOSE, "./logMain.txt" );
+    gui->start ( worldData, systemData );
 
     systemData->guiData.lastMenuIndex = 1;  //goto main menu
     systemData->guiData.nextMenuIndex = 1;  //goto main menu
@@ -142,6 +143,7 @@ void MainLoop::Initialize (  )
 
 void MainLoop::Shutdown (  )
 {
+    gui->stop (  );
     data->unloadSystemData (  );
     data->stop (  );
     log->stop (  );
@@ -183,6 +185,7 @@ int main ( int argc, char **argv )
             simLoop.Run (  );
             simLoop.Shutdown (  );
         }
+        //systemData.disableMainLoop (  );
     }
     mainLoop.Shutdown (  );
 

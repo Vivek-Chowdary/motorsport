@@ -81,6 +81,10 @@ module.source.files=\
 	../../input/inputEngine.hpp\
 	../../graphics/graphicsEngine.cpp\
 	../../graphics/graphicsEngine.hpp\
+	../../graphics/simulation.cpp\
+	../../graphics/simulation.hpp\
+	../../graphics/simframelistener.cpp\
+	../../graphics/simframelistener.hpp\
 	../../gui/guiEngine.cpp\
 	../../gui/guiEngine.hpp\
 	../../system.cpp\
