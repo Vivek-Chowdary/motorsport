@@ -133,12 +133,9 @@ int PhysicsEngine::computeStep (void)
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
         dWorldStep (worldData->worldID, systemData->physicsTimeStep);
         break;
-#ifndef WIN32
-		// IJB - dWordStepFast1 is not defined in MSVC
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-		dWorldStepFast1 (worldData->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
-#endif
+        dWorldStepFast1 (worldData->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
     }
     dJointGroupEmpty (worldData->jointGroupID);
 

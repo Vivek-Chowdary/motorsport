@@ -235,6 +235,15 @@
 		<Filter
 			Name="data">
 			<File
+				RelativePath="..\..\data\body.hpp">
+			</File>
+			<File
+				RelativePath="..\..\data\bodyData.cpp">
+			</File>
+			<File
+				RelativePath="..\..\data\bodyDataParser.cpp">
+			</File>
+			<File
 				RelativePath="..\..\data\camera.hpp">
 			</File>
 			<File
@@ -478,6 +487,9 @@
 		<Filter
 			Name="graphics">
 			<File
+				RelativePath="..\..\graphics\bodyGraphics.cpp">
+			</File>
+			<File
 				RelativePath="..\..\graphics\cameraGraphics.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -656,6 +668,9 @@
 		</Filter>
 		<Filter
 			Name="physics">
+			<File
+				RelativePath="..\..\physics\bodyPhysics.cpp">
+			</File>
 			<File
 				RelativePath="..\..\physics\cubePhysics.cpp">
 				<FileConfiguration
