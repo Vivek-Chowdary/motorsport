@@ -56,7 +56,7 @@ int DataEngine::loadWorldData ( void )
     log->format ( LOG_INFO, "Creating an array of %i cubes", numberOfCubes );
     for ( int i = 0; i < numberOfCubes; i++ )
     {
-        const int separation = 150;
+        const int separation = 250;
         Cube * cubePointer;
         if ( i != numberOfCubes-1 )
         {

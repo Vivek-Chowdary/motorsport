@@ -170,6 +170,20 @@ void InputEngine::processKeyboard ( )
     {
         Cube::cubeList[0]->setMoveToYNegative(1);
     }
+    
+    if ( keyState[SDLK_HOME] )
+    {
+        log->put ( LOG_VERBOSE, "Processing a SDLK_HOME keypress..." );
+        systemData->physicsDesiredStepsPerSecond = 30;
+        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
+    }
+        
+    if ( keyState[SDLK_END] )
+    {
+        log->put ( LOG_VERBOSE, "Processing a SDLK_END keypress..." );
+        systemData->physicsDesiredStepsPerSecond = 250;
+        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
+    }
         
     if ( keyState[SDLK_KP_MINUS] )
     {
