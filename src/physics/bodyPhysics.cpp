@@ -107,7 +107,9 @@ void Body::stepPhysics ()
 {
     if (this == World::getWorldPointer ()->vehicleList[0]->body)
     {
-        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 50000;
+        double moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
+        moveZ += SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
+        moveZ -= SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
         dBodyAddForce (bodyID, 0, 0, moveZ);
     }
 }

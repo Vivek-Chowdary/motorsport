@@ -34,6 +34,7 @@ class Suspension : public WorldObject
     Vector3d * position;
     double springConstant;
     double dampingConstant;
+    double steeringAngle;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics

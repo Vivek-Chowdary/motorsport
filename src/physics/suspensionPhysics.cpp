@@ -25,6 +25,7 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     springConstant = 0;
     dampingConstant = 0;
+    steeringAngle = 0.0;
     position = new Vector3d (0, 0, 0);
     rotation = new Vector3d (0, 0, 0);
     if (n->hasAttributes ())
@@ -65,6 +66,13 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the suspension damping constant: %s", attribute.c_str() );
                 dampingConstant = stod (attribute);
+            }
+            if (attribute == "steeringAngle")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the suspension max. steering angle: %s", attribute.c_str() );
+                steeringAngle = stod (attribute);
             }
             attribute.clear();
         }
@@ -136,40 +144,39 @@ void Suspension::stopPhysics ()
 void Suspension::stepPhysics ()
 {
     double angle = 0;
-    if (this == World::getWorldPointer ()->vehicleList[0]->suspensionMap["FrontRight"] || this == World::getWorldPointer ()->vehicleList[0]->suspensionMap["FrontLeft"])
-    {
-        double leftSteering = 0;
-        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_1)]->getValue() * 5 / 5;
+    double leftSteering = 0;
+    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_1)]->getValue() * 5 / 5;
+    if (leftSteering == 0) {
+        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_2)]->getValue() * 4 / 5;
         if (leftSteering == 0) {
-            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_2)]->getValue() * 4 / 5;
+            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_3)]->getValue() * 3 / 5;
             if (leftSteering == 0) {
-                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_3)]->getValue() * 3 / 5;
+                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_4)]->getValue() * 2 / 5;
                 if (leftSteering == 0) {
-                    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_4)]->getValue() * 2 / 5;
+                    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_5)]->getValue() * 1 / 5;
                     if (leftSteering == 0) {
-                        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_5)]->getValue() * 1 / 5;
-                        if (leftSteering == 0) {
-                            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() * 5 / 5;
-        }   }   }   }   }
-        double rightSteering = 0;
-        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_0)]->getValue() * 5 / 5;
+                        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() * 5 / 5;
+    }   }   }   }   }
+    double rightSteering = 0;
+    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_0)]->getValue() * 5 / 5;
+    if (rightSteering == 0) {
+        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_9)]->getValue() * 4 / 5;
         if (rightSteering == 0) {
-            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_9)]->getValue() * 4 / 5;
+            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_8)]->getValue() * 3 / 5;
             if (rightSteering == 0) {
-                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_8)]->getValue() * 3 / 5;
+                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_7)]->getValue() * 2 / 5;
                 if (rightSteering == 0) {
-                    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_7)]->getValue() * 2 / 5;
+                    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_6)]->getValue() * 1 / 5;
                     if (rightSteering == 0) {
-                        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_6)]->getValue() * 1 / 5;
-                        if (rightSteering == 0) {
-                            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
-        }   }   }   }   }
-        rightSteering *= 5/4;
-        leftSteering *= 5/4;
-        angle += rightSteering - leftSteering;
-    }
-        // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
-    dJointSetHinge2Param (jointID, dParamHiStop, angle);
-    dJointSetHinge2Param (jointID, dParamLoStop, angle-0.00001);
-    dJointSetHinge2Param (jointID, dParamHiStop, angle);
+                        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
+    }   }   }   }   }
+    const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
+    rightSteering *= steeringAngle * piK / 2;
+    leftSteering *= steeringAngle * piK / 2;
+    angle += rightSteering - leftSteering;
+
+    // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
+    dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
+    dJointSetHinge2Param (jointID, dParamLoStop, angle-0.0000001);
+    dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
 }
