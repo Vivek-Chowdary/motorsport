@@ -49,7 +49,7 @@ project.menu.need.terminal=0
 project.configure.options=
 anjuta.program.arguments=
 preferences.indent.automatic=1
-preferences.use.tabs=1
+preferences.use.tabs=0
 preferences.indent.opening=0
 preferences.indent.closing=0
 preferences.tabsize=4
@@ -75,7 +75,15 @@ module.source.files=\
 	main.hpp\
 	log/logEngine.hpp\
 	data/dataEngine.cpp\
-	data/dataEngine.hpp
+	data/dataEngine.hpp\
+	input/inputEngine.cpp\
+	input/inputEngine.hpp\
+	graphics/graphicsEngine.cpp\
+	graphics/graphicsEngine.hpp\
+	system.cpp\
+	system.hpp\
+	world.cpp\
+	world.hpp
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

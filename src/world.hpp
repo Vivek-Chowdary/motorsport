@@ -19,9 +19,13 @@
 *
 ******************************************************************************/
 
-#ifndef MAIN_HPP
-#define MAIN_HPP
-
+#ifndef WORLD_HPP
+#define WORLD_HPP
+#ifdef WIN32
+	#include "SDL/sdl.h"
+#else										
+	#include <SDL/SDL.h>
+#endif
 
 /******************************************************************************
 *
@@ -29,5 +33,25 @@
 *
 ******************************************************************************/
 
+
+class Rectangle
+{    
+    SDL_Rect rectangle;
+    int visible;
+    public:
+        void setPosition (Sint16 newPosX, Sint16 newPosY);
+        void setSize (Uint16 newWidth, Uint16 newHeight);
+        void setVisible (int visibility);
+        int isVisible ();
+        Uint8 red, green, blue;
+        SDL_Rect *sdlRectangle ();
+};
+
+class WorldData
+{ //this will contain everything related to the simulated/virtual world
+    public:
+        int numberOfRectangles;
+        Rectangle *rectangleList;  //for our example,the worlddata has only 2 rect.
+};
 
 #endif

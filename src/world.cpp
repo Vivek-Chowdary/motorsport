@@ -19,15 +19,45 @@
 *
 ******************************************************************************/
 
-#ifndef MAIN_HPP
-#define MAIN_HPP
-
-
 /******************************************************************************
 *
-* Classes
+* Includes
 *
 ******************************************************************************/
 
+#include "world.hpp"
 
-#endif
+/******************************************************************************
+*
+* Functions
+*
+******************************************************************************/
+
+void Rectangle::setPosition (Sint16 newPosX, Sint16 newPosY)
+{
+    rectangle.x = newPosX;
+    rectangle.y = newPosY;
+
+}
+
+void Rectangle::setSize (Uint16 newWidth, Uint16 newHeight)
+{
+    rectangle.w = newWidth;
+    rectangle.h = newHeight;
+}
+
+void Rectangle::setVisible (int visibility)
+{
+    visible = visibility;
+}
+
+int Rectangle::isVisible ()
+{
+    return visible;
+}
+
+
+SDL_Rect* Rectangle::sdlRectangle ()
+{
+    return &rectangle;
+}

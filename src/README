@@ -1,0 +1,67 @@
+Explanation on the program structure:
+
+ENGINES
+=======
+Every directory is reserved for one engine. Currently there's 4 engines:
+
+Data --> stores and loads data from/to memory to/from harddisk
+Graphics --> draws the world data on screen
+Input --> takes user input and transforms it into world data or system data
+Log --> creates log files for every engine and for the main program
+
+
+DATA IDF
+========
+The data IDF is stored in the world.hpp and sytem.hpp files. They have in formation about the world data and the system data.
+
+World data --> stores all the information related to the simulation; to the virtual world (a simulated real world), from the point of view of a real life driver. 
+System data --> stores the rest of information
+
+For example:
+Do a r/l driver know about cars? Yes -> world data
+Do a r/l driver know about screen color depth? No -> system data
+Do a r/l driver know about track surfaces? Yes -> world data
+Do a r/l driver know about joystick calibration? No -> system data
+Do a r/l driver know about saving a replay? No -> system data
+Do a r/l driver know about weather? Yes -> world data
+Well you get the idea...
+
+-The physics engine only needs to know about world data: i.e. it takes current car position and applies the gravity force
+-The input engine needs to know about both world and system data: i.e. modify the car's pedal position (world), and know about the controller configuration (system).
+-The graphics engine needs to know about both world and system data: i.e. display the cars on screen (world), display chat text on screen in multiplayer (system), display the FPS in a corner of the screen (system), etc...
+-The log engine need nothing: it's given a text, and the logengine takes it and writes it to the harddisk.
+-The data engine needs to know about both: i.e. it's the data engine who loads cars/tracks to RAM, and it's the data engine who reads the screen resolution config from a file,
+There's more engines (net,ai,replay,sound...) to come, but we will talk about them when we need.
+
+Currently, the internal data is accesed following layout #2 in this post:
+    http://forum.racesimcentral.com/showpost.php?p=1518446&postcount=7
+...but it can be changed it we feel it's better to follow layout #1.
+
+
+Also, we need to decide what data should be global and which should be local to every of the engines.
+For example, ODE's "dynamic world" should be global, since the graphics engine will access it in order to draw things. Other engines will also access it.
+However, controller config may be needed by only the input engine, so it can be safely put in the InputEngine class, and not in the systemData variable.
+We still need to decide that.
+
+
+MAIN PROGRAM
+============
+The main program does several things:
+-start the engines
+*-start the simulation
+*-stop the simulation
+-stop the engines
+
+The log engine is the first one to be started. Then goes the dataEngine, since it will provide the internal data needed to start the rest of engines. Then the rest of engines are started.
+
+The world data is loaded into memory before the simulation starts, and is unloaded from memory when the simulation stops.
+Currently, there's no gui, or menus or anything, so it's always:
+-start program
+*-enter simulation mode
+*-close simulation mode
+-close program
+When we have experience with ParaGUI, we will see how to restructure the lines with '*' in order to provide support for menues etc.
+
+
+
+Well that's all about this release of the base code. As you can see, i haven't integrated ODE. I may do it next week when i finish the university exam, or just do it yourself if you feel you can do it :)

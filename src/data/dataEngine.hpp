@@ -26,6 +26,11 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
+#ifdef WIN32
+	#include "SDL/sdl.h"
+#else										
+	#include <SDL/SDL.h>
+#endif
 
 
 /******************************************************************************
@@ -34,12 +39,19 @@
 *
 ******************************************************************************/
 
-class dataEngine
+class DataEngine
 {
-	logEngine log;	//a log object for logging independently from other engines and main
+	LogEngine log;	//a log object for logging independently from other engines and main
+    WorldData *worldData;
+    SystemData *systemData;
 	public:
-		void start (void);		//starts the data engine
-		/*here will probably go some new functions such as:
+		int start (WorldData *wrlData, SystemData *sysData);		//starts the data engine
+	    int loadWorldData (void);
+	    int unloadWorldData (void);
+	    int loadSystemData (void);
+        int unloadSystemData (void);
+
+    /*here will probably go some new functions such as:
 
 			int loadCarModel(carList*,FILE*carXmlFile);
 			int loadTrackModel(track*,FILE*trackXmlFile);
@@ -49,5 +61,5 @@ class dataEngine
 			int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*);
 
 		etc...*/
-		void stop (void);		//stops the data engine
+		int stop (void);		//stops the data engine
 };

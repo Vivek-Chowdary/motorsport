@@ -19,15 +19,53 @@
 *
 ******************************************************************************/
 
-#ifndef MAIN_HPP
-#define MAIN_HPP
-
+#ifndef SYSTEM_HPP
+#define SYSTEM_HPP
+#ifdef WIN32
+	#include "SDL/sdl.h"
+#else										
+	#include <SDL/SDL.h>
+#endif
 
 /******************************************************************************
 *
 * Classes
 *
 ******************************************************************************/
+
+struct GraphicsData
+{
+    SDL_Surface *screen;
+    SDL_PixelFormat *fmt;
+    int width;
+    int height;
+    int bpp;
+    Uint32 flags;
+    char *title;
+    char *icon;
+};
+
+struct InputData
+{
+    //here will go the definition of controllers, be it keyboard, mouse, wheel...
+    // and probably some other things, such as number of controllers, number of
+    // axis available, axis-calibration data...
+};
+
+class SystemData
+{ //this contains all the data not related with the simulated/virtual world
+
+    int mainLoopDone;    //allows to stop the mainloop (exit)
+    public:
+        //main program
+        void startMainLoop (void); //sets mainLoopDone to 1
+        void stopMainLoop (void); //set mainLoopDone to 0
+        int isLoopDone (void);
+
+        struct GraphicsData graphicsData;
+        struct InputData inputData;
+
+};
 
 
 #endif

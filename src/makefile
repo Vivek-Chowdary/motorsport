@@ -26,11 +26,36 @@
 ###############################################################################
 
 ifeq ("$(OS)", "Windows_NT")
+
 PLATFORM := WIN32
+TYPE := CYGWIN
 EXE_EXT := .exe
+
 else
+
 PLATFOM := LINUX
+TYPE :=
 EXE_EXT :=
+
+endif
+
+
+###############################################################################
+#
+# Environment check
+#
+###############################################################################
+
+ifeq ("$(PLATFORM)", "WIN32")
+
+ifeq ("$(MOTORSPORT_INCLUDE_DIRS)", "")
+$(error $(PLATFORM) environment not set - see INSTALL for info)
+endif
+
+ifeq ("$(MOTORSPORT_LIBRARY_DIRS)", "")
+$(error $(PLATFORM) environment not set - see INSTALL for info)
+endif
+
 endif
 
 
@@ -42,9 +67,19 @@ endif
 
 CC_PLUS_PLUS := g++
 CC := gcc
-CC_FLAGS := -c
-INCLUDE_DIRS := data log
-DEFINES :=
+CC_FLAGS := -c -Wall
+
+INCLUDE_DIRS_WIN32 := $(MOTORSPORT_INCLUDE_DIRS)
+INCLUDE_DIRS_LINUX := /usr/include
+
+INCLUDE_DIRS := \
+    input \
+    graphics \
+    data \
+    log \
+    $(INCLUDE_DIRS_$(PLATFORM))
+
+DEFINES := $(PLATFORM) $(TYPE)
 
 
 ###############################################################################
@@ -56,9 +91,16 @@ DEFINES :=
 TARGET := motorsport$(EXE_EXT)
 
 LD := g++
+
 LD_FLAGS_WIN32 := -mno-cygwin -mwindows
 LD_FLAGS_LINUX :=
+
 LD_FLAGS := $(LD_FLAGS_$(PLATFORM))
+
+LIBRARY_DIRS_WIN32 := $(MOTORSPORT_LIBRARY_DIRS)
+LIBRARY_DIRS_LINUX := /usr/lib
+
+LIBRARY_DIRS := $(LIBRARY_DIRS_$(PLATFORM))
 
 
 ###############################################################################
@@ -67,9 +109,22 @@ LD_FLAGS := $(LD_FLAGS_$(PLATFORM))
 #
 ###############################################################################
 
+LIBRARIES_WIN32 := mingw32
+LIBRARIES_LINUX :=
+
+LIBRARIES := \
+    $(LIBRARIES_$(PLATFORM)) \
+    SDLmain \
+    SDL \
+    ode
+
 SOURCES := \
     log/logEngine.cpp \
     data/dataEngine.cpp \
+    graphics/graphicsEngine.cpp \
+    input/inputEngine.cpp \
+    system.cpp \
+    world.cpp \
     main.cpp
 
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
@@ -110,6 +165,6 @@ clobber : clean
 	rm -f log*.txt
 
 $(TARGET) : $(OBJECTS)
-	$(LD) $(LD_FLAGS) $(patsubst %,-L%,$(LIB_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBS))
+	$(LD) $(LD_FLAGS) $(patsubst %,-L%,$(LIBRARY_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBRARIES))
 	chmod +x $@
 	@echo "build completed successfully"

@@ -25,10 +25,20 @@
 *
 ******************************************************************************/
 
-//#include "main.hpp"
-//#include "logEngine.hpp"
-#include "dataEngine.hpp"
+#include <stdlib.h>
+#ifdef WIN32
+	#include "SDL/sdl.h"
+#else										
+	#include <SDL/SDL.h>
+#endif
 
+//#include "main.hpp"
+#include "world.hpp"        //contains the IDF for the simulated/virtual world data
+#include "system.hpp"       //contains the IDF for the system data
+#include "logEngine.hpp"    //allows to easily log actions
+#include "dataEngine.hpp"   //loads/saves data from memory into the virtual world
+#include "inputEngine.hpp"  //process the queue of input events
+#include "graphicsEngine.hpp"//displays the virtual and system data (sim+gui)
 
 /******************************************************************************
 *
@@ -36,49 +46,127 @@
 *
 ******************************************************************************/
 
+
+int sdl_start (LogEngine *log)
+{ //initialization functions for SDL
+  	if (atexit (SDL_Quit) != 0){
+        //warning message
+        log->put(1,"Cannot set exit function");
+    }
+	return (0);
+}
+
+void sdl_stop (void)
+{ //exit functions for SDL
+    SDL_Quit ();
+}
+
 int main (int argc, char **argv)
 {
+    //we declare the 'global' data
+    SystemData systemData;
+    WorldData worldData;
+
 	//we declare the engines
-	//(more engines will be declared here when available)
-	//How now brown cow - this is a test of Kirk's mediocre CVS skills
-	logEngine log;
-	dataEngine data;
+	LogEngine log;
+	DataEngine data;
+	InputEngine input;
+	GraphicsEngine graphics;
+
+	//we start the engines (gentlemen, start yo.... err yes you get the idea ;)
+	log.start (-1, "./logMain.txt", false);
+
+	log.put (0, "Starting SDL...");
+	sdl_start (&log);
+    log.put (-1,"Ok");
+
+    /* //the physics engine isn't there yet, but it will also need to know
+       // where's the world data (aka virtual world objects).
+    log.put (0, "Starting the physics engine");
+    physics.start (&worldData);
+    log.put (-1,"Ok");
+    */ //see world.hpp for more info on physics engine
+
+    log.put (0, "Starting the data engine...");
+	data.start (&worldData, &systemData);
+    log.put (-1,"Ok");
+
+    log.put (0, "Starting the input engine...");
+	input.start (&(systemData.inputData),&systemData,&worldData);
+    log.put (-1,"Ok");
+
+    //we must initialize some system data in order to start the graphics engine
+    log.put (0, "Loading system data...");
+    //data.loadSystemData (640, 480); //ideally, all system data should be read
+                                    //from harddisk (xml files, or ini files),
+                                    //and allow to be changed in runtime by the
+                                    //user. that's why loadSystemData should not
+                                    //have any parameters
+    data.loadSystemData ();
+    log.put (-1,"Ok");
+	
+    //now we continue starting the engines
+    log.put (0, "Starting the graphics engine...");
+	if (graphics.start (&(systemData.graphicsData),&worldData)) exit (-1);
+    log.put (-1,"Ok");
+
+    log.put (0, "All engines started!");
+
+    //we start the simulation --------------------------------------------------
+    //first we load the virtual world objects
+    log.put (0, "Loading virtual world objects...");
+    data.loadWorldData ();
+    log.put (-1,"Ok");
+
+    //then we set up the main loop
+    log.put (0, "Starting simulation (main loop)...");
+    systemData.startMainLoop ();
+    log.put (-1,"Ok");
+
+    //then we finally start the main loop
+    while (!systemData.isLoopDone ())
+	{
+        //mega-verbosity
+        //log.put (0, "Doing a loop: calling gfx and input engines");
+
+		graphics.step ();
+		input.step ();
+	}
+    log.put (0, "Stopping simulation (main loop)...");
+    log.put (-1,"Ok");
+
+    log.put (0, "Unloading virtual world objects...");
+	data.unloadWorldData ();
+    log.put (-1,"Ok");
+    //-------------------------------------------------------simulation finished
+    
+	//the simulation has finished: we stop all the engines
+	log.put (0, "Stopping the graphics engine...");
+	graphics.stop ();
+    log.put (-1,"Ok");
+
+	log.put (0, "Stopping the input engine...");
+	input.stop ();
+    log.put (-1,"Ok");
+
+    log.put (0, "Stopping SDL...");
+    sdl_stop ();
+    log.put (-1,"Ok");
 
 
-	//we start the main program log
-	log.start ("./logMain.txt", false);
-
-	//we start the data engine
-	log.put ("Starting data engine");
-	data.start ();
-
-	/*we start the rest of the engines the same way (when possible)
-	[...]
-	(we will probably check for errors returned by the .start functions)
-	*/
+    //we must free the memory used for systemdata before stopping the dataEngine
+    log.put (0, "Unloading system data...");
+    data.unloadSystemData ();
+    log.put (-1,"Ok");
 
 
-	/*here will go either the 'game code', or a  "gui.start();" which will take
-	care of it all (gui, main loop, etc.)... we still need to decide that.
-	probably the best idea is to use a single piece of code for managing the
-	sim-mainLoop and the gui code (which would mean the gui isn't a separate
-	engine).
-	[...]
-	end of 'game' code
-	*/
-
-
-	//starting to stop the program: we stop all the engines that where loaded
-	log.put ("Stopping data engine");
+	log.put (0, "Stopping the data engine...");
 	data.stop ();
+    log.put (-1,"Ok");
 
-	/*the rest of engines will be closed the same way
-	[...]
-	(we will probably check for errors returned by the .stop functions)
-	*/
 
-	//we stop the main program log
-	log.stop ();
+    log.put (0, "All engines stopped!");
+    log.stop ();
 
 	//and finally back to the OS
 	return (0);
