@@ -44,17 +44,32 @@ InputEngine::InputEngine ()
         systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (0);
     }
     
-    log->put (LOG_DEVELOPER, "Initializing joystick axis");
-    log->put (LOG_ENDUSER, "Using hardcoded joystick bindings. Don't use more than 5 joysticks, 10 axis per joystick, or 20 buttons per joystick!");
-    // Since axis-bindings are hardcoded in Evo1, we create a couple of joystick axis here:
-    //  5 joysticks
-    //    20 buttons each
-    //    10 axis each
-    for (int joy = 0; joy < 5; joy++)
+    log->put (LOG_DEVELOPER, "Initializing dummy joystick devices");
+    systemData->axisMap[getIDJoyAxis (0, 0)] = new Axis;
+    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (2);
+    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (0);
+    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (1);
+    systemData->axisMap[getIDJoyAxis (0, 1)] = new Axis;
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (0);
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (1);
+    systemData->axisMap[getIDJoyAxis (0, 2)] = new Axis;
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (0);
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (1);
+    
+    log->put (LOG_DEVELOPER, "Initializing real joystick devices");
+    int nJoysticks = SDL_NumJoysticks();
+    for (int joy = 0; joy < nJoysticks; joy++ ) 
     {
-        for (int axis = 0; axis < 10; axis++)
+        SDL_Joystick * joystick = SDL_JoystickOpen(joy);
+        int nAxis = SDL_JoystickNumAxes(joystick);
+        int nButtons = SDL_JoystickNumButtons(joystick);
+        log->format(LOG_ENDUSER, "Found joystick \"%s\" with %i axis and %i buttons.", SDL_JoystickName(joy), nAxis, nButtons);
+        for (int axis = 0; axis < nAxis; axis++)
         {
-            systemData->axisMap[getIDJoyAxis (joy, axis)] = new Axis;
+            if (!( (joy == 0) && ((axis == 0)||(axis==1)||(axis==2)) ))
+            {
+                systemData->axisMap[getIDJoyAxis (joy, axis)] = new Axis;
+            }
             if (axis == 1 || axis == 2)
             {
                 SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
@@ -66,7 +81,7 @@ InputEngine::InputEngine ()
             }
             log->format (LOG_DEVELOPER, "Joystick axis #%i initialized. %f", getIDJoyAxis(joy, axis), SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->getValue());
         }
-        for (int button = 0; button < 20; button++)
+        for (int button = 0; button < nButtons; button++)
         {
             systemData->axisMap[getIDJoyButton (joy, button)] = new Axis;
             SystemData::getSystemDataPointer()->axisMap[getIDJoyButton (joy, button)]->setNewRawValue (1);
@@ -74,18 +89,7 @@ InputEngine::InputEngine ()
             log->format (LOG_DEVELOPER, "Joystick axis #%i initialized.", getIDJoyButton(joy, button));
         }
     }
-    log->put (LOG_DEVELOPER, "Hardcoded joystick axis initializated.");
-
-    log->put (LOG_DEVELOPER, "Printing info about what joysticks have actually been found on the system...");
-    // Now we'll log what's available, just for informative purposes.
-    int nJoysticks = SDL_NumJoysticks();
-    for(int nJoy = 0; nJoy < nJoysticks; nJoy++ ) 
-    {
-        SDL_Joystick * joystick = SDL_JoystickOpen(nJoy);
-        log->format(LOG_ENDUSER, "Found joystick \"%s\" with %i axis and %i buttons.", SDL_JoystickName(nJoy), SDL_JoystickNumAxes(joystick), SDL_JoystickNumButtons(joystick));
-    }
     log->format (LOG_ENDUSER, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
-
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
@@ -220,7 +224,8 @@ int InputEngine::computeStep (void)
         World::getWorldPointer()->trackList[0]->cameraList[i]->stepInput();
     }
     
-/*    log->telemetry (LOG_TRACE, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
+ /* Be careful with this debugging code!! you need to have created all the axis you're going to debug!
+    log->telemetry (LOG_ENDUSER, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue(),
@@ -233,7 +238,7 @@ int InputEngine::computeStep (void)
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,3)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,4)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,5)]->getValue());
-    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5"); */
+    log->telemetry (LOG_ENDUSER, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");*/
 
     return (0);
 }
