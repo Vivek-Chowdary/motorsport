@@ -83,9 +83,6 @@ PARAGUI_CALLBACK ( setRes640_handler )
 
 int GuiEngine::optionsMenu ( void )
 {
-    PG_Application tmpMenu;
-
-    currentMenu = &tmpMenu;
     currentMenu->LoadTheme ( "default" );
 
     currentMenu->DisableDirtyUpdates ( true );
@@ -125,9 +122,6 @@ int GuiEngine::optionsMenu ( void )
 
 int GuiEngine::mainMenu ( void )
 {
-    PG_Application tmpMenu;
-
-    currentMenu = &tmpMenu;
     currentMenu->LoadTheme ( "default" );
 
     currentMenu->DisableDirtyUpdates ( true );
@@ -202,15 +196,21 @@ int GuiEngine::step ( void )
 //makes the graphics engine draw one frame
 {
     log.put ( LOG_VERBOSE, "Doing an step..." );
+    currentMenu = new PG_Application;
     switch ( systemData->guiData.nextMenuIndex )
     {
+    default:
+        printf("\nloading default (main menu)\n");
     case 1:
+        printf("\nloading main menu\n");
         mainMenu (  );
         break;
     case 2:
+        printf("\nloading options menu\n");
         optionsMenu (  );
         break;
     }
+    delete currentMenu;
     log.append ( LOG_VERBOSE, "Ok" );
 
     return ( 0 );
