@@ -70,22 +70,23 @@ module.source.name=.
 module.source.type=
 module.source.expanded=1
 module.source.files=\
-	main.cpp\
-	log/logEngine.cpp\
-	main.hpp\
-	log/logEngine.hpp\
-	data/dataEngine.cpp\
-	data/dataEngine.hpp\
-	input/inputEngine.cpp\
-	input/inputEngine.hpp\
-	graphics/graphicsEngine.cpp\
-	graphics/graphicsEngine.hpp\
-	system.cpp\
-	system.hpp\
-	world.cpp\
-	world.hpp\
-	physics/physicsEngine.cpp\
-	physics/physicsEngine.hpp
+	../../main.cpp\
+	../../log/logEngine.cpp\
+	../../main.hpp\
+	../../log/logEngine.hpp\
+	../../data/dataEngine.cpp\
+	../../data/dataEngine.hpp\
+	../../input/inputEngine.cpp\
+	../../input/inputEngine.hpp\
+	../../graphics/graphicsEngine.cpp\
+	../../graphics/graphicsEngine.hpp\
+	../../system.cpp\
+	../../system.hpp\
+	../../world.cpp\
+	../../world.hpp\
+	../../physics/physicsEngine.cpp\
+	../../physics/physicsEngine.hpp\
+	../../physics/test_ode.cpp
 
 module.pixmap.name=pixmaps
 module.pixmap.type=
