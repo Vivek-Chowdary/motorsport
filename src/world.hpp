@@ -25,15 +25,16 @@
 
 #    include "SDL.h"
 #    include "Ogre.h"
+#include "ode.h"
 
 class Cube
 {
   public:
     Ogre::Entity * cubeEntity;
     Ogre::SceneNode * cubeNode;
-    int posX,
-        posY,
-        posZ;
+    
+    dBodyID cubeID;
+    void updateOgrePosition();
 };
 
 class MospCamera
@@ -58,6 +59,9 @@ class WorldData
     Cube *cubeList;             //for our example,the worlddata has a set of cubes.
     MospCamera *camera1;
 
+    dWorldID worldID;
+    dSpaceID spaceID;
+                            
 };
 
 #endif

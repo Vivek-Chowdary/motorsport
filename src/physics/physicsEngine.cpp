@@ -55,6 +55,30 @@ int PhysicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     testOde();
     log.append(LOG_INFO, "Ok");
 */
+
+    log.put ( LOG_INFO, "Creating ODE world");
+    worldData->worldID = dWorldCreate();
+    log.put ( LOG_INFO, "Setting ODE world gravity");
+    dWorldSetGravity (worldData->worldID, 0,0,-0.0001);
+    log.put ( LOG_INFO, "Creating sample mass");
+    dMass mass;
+    log.put ( LOG_INFO, "Assigning box mass values");
+    dMassSetBoxTotal (&mass, 1, 1, 1, 1);
+    log.put ( LOG_INFO, "Creating cubes in ODE world");
+    
+    for ( int currentCube = 0;
+          currentCube < worldData->numberOfCubes; currentCube++ )
+    {
+    
+        worldData->cubeList[currentCube].cubeID = dBodyCreate (worldData->worldID);
+        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * 300, currentCube / 10 % 10 * 300, currentCube / 100 % 10 * 300 * ((int(currentCube/1000))+1));
+
+        dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
+        dBodyAddForce (worldData->cubeList[0/*currentCube*/].cubeID,0.01,0,0);
+        
+    }
+    
+
     return ( 0 );
 }
 
@@ -63,6 +87,9 @@ int PhysicsEngine::step ( void )
 {
     //mega-verbosity
     log.put ( LOG_TRACE, "Doing an step: calculating a physics step" );
+
+    dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
+    
     float x = 0,
         z = 0;
 
@@ -83,22 +110,26 @@ int PhysicsEngine::step ( void )
         10.0f : 0;
     z -= ( worldData->camera1->rotateDown ) ? float ( physicsData->timeStep ) /
         10.0f : 0;
+    //FIXME this for the new x,y,z coords. system!
     worldData->camera1->ogreCamera->pitch ( z );
     worldData->camera1->ogreCamera->yaw ( x );
 
+    //rotate the cubes... this is still not handled by ODE
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
-        worldData->cubeList[currentCube].cubeNode->
+/*        worldData->cubeList[currentCube].cubeNode->
             pitch ( float ( physicsData->timeStep ) /
                     ( ( currentCube % 2 ) ? 20.0f : -15.0f ) );
-    }
+  */  }
 
     return ( 0 );
 }
 
 int PhysicsEngine::stop ( void )
 {
+    log.put ( LOG_INFO, "Removing ODE world data from memory");
+    dCloseODE();
     //finally stop the log engine
     log.stop (  );
 

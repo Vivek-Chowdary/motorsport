@@ -47,9 +47,18 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     worldData->camera1->ogreCamera =
         systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
     // Position it at 500 in Z direction
-    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 500 ) );
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 0 ) );
     // Look back along -Z
-    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, -300 ) );
+    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 10, 10, 0 ) );
+/*    Quaternion quato;
+    quato.FromRotationMatrix(Matrix3(   1,0,0,
+                                        0,0,1,
+                                        0,-1,0));
+    worldData->camera1->ogreCamera->setOrientation (quato);
+    */
+    //worldData->camera1->ogreCamera->setOrientation (Ogre::Quaternion (x,y,z));
+    worldData->camera1->ogreCamera->setOrientation(Quaternion (-1.0,0.0,0.0,0.0));
+
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
     // Create one viewport, entire window
     Viewport *vp =
@@ -78,9 +87,6 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
                getRootSceneNode (  )->createChild (  ) );
         worldData->cubeList[i].cubeNode->attachObject ( worldData->cubeList[i].
                                                         cubeEntity );
-        worldData->cubeList[i].cubeNode->translate ( i % 10 * 300,
-                                                     i / 10 % 10 * 300,
-                                                     i / 100 % 10 * 300 * ((int(i/1000))+1));
     }
 
     MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
@@ -172,6 +178,12 @@ void GraphicsEngine::setupResources ( void )
 int GraphicsEngine::step ( void )
     //makes the graphics engine draw one frame
 {
+
+    for ( int currentCube = 0;
+          currentCube < worldData->numberOfCubes; currentCube++ )
+    {
+        worldData->cubeList[currentCube].updateOgrePosition();
+    }
     systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
     showStatistics ( systemData->graphicsData.getStatisticsEnabled (  ) );
     systemData->graphicsData.ogreWindow->update (  );

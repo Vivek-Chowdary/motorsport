@@ -94,13 +94,17 @@ void SimLoop::Run (  )
 
 void SimLoop::Initialize (  )
 {
+    log->put ( LOG_INFO, "Loading world data");
     data->loadWorldData (  );
+    log->put ( LOG_INFO, "Starting graphics engine");
     if ( graphics->start ( worldData, systemData ) )
     {
         log->put ( LOG_ERROR, "Could not start the graphics engine." );
         exit ( -1 );
     }
+    log->put ( LOG_INFO, "Starting input engine");
     input->start ( worldData, systemData );
+    log->put ( LOG_INFO, "Starting physics engine");
     physics->start ( worldData, systemData );
 }
 

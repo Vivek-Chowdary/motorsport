@@ -21,3 +21,10 @@
 ******************************************************************************/
 
 #include "world.hpp"
+
+void Cube::updateOgrePosition()
+{
+    const dReal * temp = dBodyGetPosition(cubeID);
+    cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
+}
+

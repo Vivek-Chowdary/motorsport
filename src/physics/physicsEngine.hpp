@@ -22,6 +22,7 @@
 
 #include "logEngine.hpp"
 #include "Ogre.h"
+#include "ode.h"
 
 class PhysicsEngine
 {

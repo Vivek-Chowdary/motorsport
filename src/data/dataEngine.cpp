@@ -53,7 +53,7 @@ int DataEngine::loadWorldData ( void )
 
     //create 2 cubes in the world data
     log.put ( LOG_INFO, "Creating an array of 2 cubes..." );
-    worldData->numberOfCubes = 500;
+    worldData->numberOfCubes = 5;
     worldData->cubeList = new Cube[worldData->numberOfCubes];
     log.append ( LOG_INFO, "Ok" );
 
