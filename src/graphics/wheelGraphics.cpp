@@ -50,9 +50,7 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     char name[256];
-    std::string ogreName = name;
-    ogreName.append ("%i");
-    sprintf (name, ogreName.c_str(), instancesCount);
+    sprintf (name, "%i", instancesCount);
     wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
@@ -66,7 +64,6 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     wheelNode->attachObject (wheelEntity);
  
     mesh.clear();
-    ogreName.clear();
 }
 void Wheel::stepGraphics ()
 {

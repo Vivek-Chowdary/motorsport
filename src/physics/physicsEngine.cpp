@@ -23,6 +23,7 @@
 #include "ode/ode.h"
 
 PhysicsEngine::PhysicsEngine ()
+  : stepType(0), dWorldStepFast1MaxIterations(0) 
 {
     XmlFile * xmlFile = new XmlFile ("physicsConfig.xml");
     processXmlRootNode (xmlFile->getRootNode());
