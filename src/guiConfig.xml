@@ -3,5 +3,6 @@
     localLogLevel = "LOG_INFO"
     localLogName = "GUI"
     showStatistics = "1"
+    telemetryLines = "5"
     >
 </guiConfig>

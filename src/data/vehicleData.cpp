@@ -236,6 +236,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     wheelMap["RearRight"]->setInputPointer(transferW1);
     wheelMap["RearLeft"]->setInputPointer(transferW2);
 
+    startPhysics(NULL);
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)

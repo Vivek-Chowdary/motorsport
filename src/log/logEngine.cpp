@@ -8,10 +8,12 @@
 \*****************************************************************************/
 
 #include "logEngine.hpp"
+#include "guiEngine.hpp"
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <xmlParser.hpp>
 
 //TODO use iostreams for file management/writing
@@ -44,6 +46,31 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     return;
 }
 
+int LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
+{
+    // check if we have been told to write this kind of log
+    if (level > globalLevel || level > logLevel)
+        return (-1);
+
+    // TODO use strings instead of simple char*
+    char buffer[1024];
+    va_list arglist;
+
+    // TODO check returning values
+    // convert parameters to a string
+    va_start (arglist, textToLogFormat);
+#if defined( _STLPORT_VERSION ) || !defined(WIN32)
+    vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
+#else
+//#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
+    vsprintf (buffer, textToLogFormat, arglist);
+#endif
+    va_end (arglist);
+
+    GuiEngine::getGuiEnginePointer()->addTelemetryLine (buffer);
+    // put the string with a new line
+    return (put (level, buffer));
+}
 int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
     // check if we have been told to write this kind of log

@@ -13,6 +13,8 @@
 #   include <fstream>
 #   include "xercesc_fwd.hpp"
 
+//forward declarations
+class GuiEngine;
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
@@ -38,7 +40,7 @@ enum LOG_LEVEL
 */
 class LogEngine
 {
-
+    private:
     // / Indicates how much information will be stored in this log instance.
     /** Indicates the level of verbosity of the log. All log messages with a number higher to this one will be discarded, and therefore not writen to the log file.
     */
@@ -46,7 +48,7 @@ class LogEngine
     // / Indicates a short name, prefixed to every log line.
     /** Indicates a short name or initials for instance of the log engine. It allows to know which "engine" this log is associated with.
     */
-      std::string logName;
+    std::string logName;
     // / Indicates the file where logs will be writen.
     /** Indicates a plain-text file where log messages can be writen.
     */
@@ -105,6 +107,8 @@ class LogEngine
     */
     int format (LOG_LEVEL level, const char *textToLogFormat, ...);
 
+    int telemetry (LOG_LEVEL level, const char *textToLogFormat, ...);
+    
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();
 };

@@ -16,27 +16,46 @@
 #include "OgreNoMemoryMacros.h"
 using namespace Ogre;
 
+GuiEngine *GuiEngine::guiEnginePointer = NULL;
+
+GuiEngine *GuiEngine::getGuiEnginePointer ()
+{
+    return (guiEnginePointer);
+}
+
 GuiEngine::GuiEngine ()
 {
-    XmlFile * xmlFile = new XmlFile ("guiConfig.xml");
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
-    
-    // get the direction of the graphics data
-    log->put (LOG_INFO, "Setting up data pointers...");
-    systemData = SystemData::getSystemDataPointer ();
+    if (guiEnginePointer != 0)
+    {
+        delete this;
+    } else {
+        XmlFile * xmlFile = new XmlFile ("guiConfig.xml");
+        processXmlRootNode (xmlFile->getRootNode());
+        delete xmlFile;
+
+        // get the direction of the graphics data
+        log->put (LOG_INFO, "Setting up data pointers...");
+        systemData = SystemData::getSystemDataPointer ();
+
+        // updating singleton pointer
+        guiEnginePointer = this;
+    }
 }
 
 int GuiEngine::computeStep (void)
 //makes the graphics engine draw one frame
 {
     log->put (LOG_VERBOSE, "Doing an step...");
+    //update all statistics every second
     static Uint32 lastRefreshTime = 0;
     if (SDL_GetTicks () - lastRefreshTime >= 1000)
     {
         updateStatistics ();
         lastRefreshTime += 1000;
     }
+    //update last telemetry line every frame
+    GuiElement *telText = GuiManager::getSingleton ().getGuiElement ("telemetry/text");
+    telText->setCaption (telemetryText + tempLine);
 
     Overlay *overlay = (Overlay *) OverlayManager::getSingleton ().getByName ("gui");
     if (!overlay)
@@ -81,12 +100,40 @@ void GuiEngine::updateStatistics (void)
     guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (1000 / float(systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (systemData->physicsTimeStep) + " ms)" );
     GuiElement *guiTris = GuiManager::getSingleton ().getGuiElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
-    GuiElement *telLine1 = GuiManager::getSingleton ().getGuiElement ("telemetry/line1");
-    telLine1->setCaption (systemData->ogreWindow->getDebugText () + "1: Car speed=140kph, averageSuspHeight=0.1  , gear=4, tod=13:05.10");
-    GuiElement *telLine2 = GuiManager::getSingleton ().getGuiElement ("telemetry/line2");
-    telLine2->setCaption (systemData->ogreWindow->getDebugText () + "2: Car speed=150kph, averageSuspHeight=0.098, gear=4, tod=13.05.20");
-    GuiElement *telLine3 = GuiManager::getSingleton ().getGuiElement ("telemetry/line3");
-    telLine3->setCaption (systemData->ogreWindow->getDebugText () + "3: Car speed=157kph, averageSuspHeight=0.092, gear=4, tod=13.05.30");
+    
+    GuiElement *telText = GuiManager::getSingleton ().getGuiElement ("telemetry/text");
+    telemetryText.append (tempLine);
+    if (telemetryText.size() == 0)
+    {
+        telText->setCaption ("Telemetry not active.");
+    } else {
+        telemetryText.append ("\n");
+        int num = 0;
+        int lastLineEnd = telemetryText.rfind ('\n', telemetryText.size()-1);
+        while (lastLineEnd >= 0)
+        {
+            num++;
+            if (num > telemetryLines-1)
+            {
+                telemetryText.erase (0, lastLineEnd+1);
+                lastLineEnd = -1;
+            } else {
+                lastLineEnd = telemetryText.rfind ('\n', lastLineEnd-1);
+            }
+        }
+        telText->setCaption (telemetryText + tempLine);
+    }
+}
+
+void GuiEngine::addTelemetryLine (char * line)
+{
+    if (telemetryText.size() == 0)
+    {
+        GuiElement *telHeader = GuiManager::getSingleton ().getGuiElement ("telemetry/header");
+        telHeader->setCaption (line);
+        telemetryText.append (line);
+    }
+    tempLine.assign (line);
 }
 
 GuiEngine::~GuiEngine (void)
@@ -136,12 +183,19 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                             tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
 
                         }
-                        if (name == "showStatistics")
+                        if (attribute == "showStatistics")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue ());
                             showStatistics = stob (attribute);
                             tmpLog->format (LOG_INFO, "Found whether to show the statistics or not: %s", attribute.c_str());
+                        }
+                        if (attribute == "telemetryLines")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue ());
+                            telemetryLines = stoi (attribute);
+                            tmpLog->format (LOG_INFO, "Found the number of telemetry lines: %s", attribute.c_str());
                         }
                         attribute.clear();
                     }

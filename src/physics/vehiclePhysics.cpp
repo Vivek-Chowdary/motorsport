@@ -22,6 +22,7 @@
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     velocity = 0.0;
+    log->telemetry (LOG_TRACE, "VehSpeed       <Insert        More           Properties     Here>");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -148,5 +149,5 @@ void Vehicle::stepPhysics ()
     const dReal * bodyVel;
     bodyVel = dBodyGetLinearVel(body->bodyID);
     velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
-    log->format (LOG_TRACE, "Vehicle Velocity (m/s): %f",velocity);
+    log->telemetry (LOG_TRACE, "%f", velocity);
 }

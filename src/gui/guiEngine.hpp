@@ -8,11 +8,11 @@
 \*****************************************************************************/
 
 #include "xercesc_fwd.hpp"
+#include <string>
 
 //forward declaration
 class SystemData;
 class LogEngine;
-
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
@@ -20,6 +20,7 @@ class LogEngine;
 class GuiEngine
 {
   private:
+    static GuiEngine * guiEnginePointer;
     // / Log engine used by the gui engine.
     /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
     */
@@ -28,6 +29,9 @@ class GuiEngine
     SystemData *systemData;
     // / Allows or disallows to show statistics on screen
     bool showStatistics;
+    std::string telemetryText;
+    std::string tempLine;
+    int telemetryLines;
   public:
     // / Creates a new gui engine.
     /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
@@ -45,7 +49,11 @@ class GuiEngine
     /** Renders on screen all the system data (gui) for this frame.
     */
     int computeStep (void);
+
+    void addTelemetryLine (char * line);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    static GuiEngine *getGuiEnginePointer();
 };
 
