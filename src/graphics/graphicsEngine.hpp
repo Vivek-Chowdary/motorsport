@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -25,8 +26,14 @@
 *
 ******************************************************************************/
 
+
+
 #include "logEngine.hpp"
 #include "SDL.h"
+
+#include "Ogre.h"
+#include "ExampleApplication.h"
+
 
 
 /******************************************************************************
@@ -37,12 +44,13 @@
 
 class GraphicsEngine
 {
-    LogEngine log;  //a log object for logging independently from other engines and main
+    LogEngine log;              //a log object for logging independently from other engines and main
     GraphicsData *graphicsData;
     WorldData *worldData;
     SystemData *systemData;
-    public:
-        int start (WorldData *wrlData, SystemData *sysData);        //starts the graphics engine
-        int step (void);        //makes the graphics engine draw one frame
-        int stop (void);        //stops the graphics engine
+    ExampleApplication *app;
+  public:
+    int start (WorldData * wrlData, SystemData * sysData);  //starts the graphics engine
+    int step (void);            //makes the graphics engine draw one frame
+    int stop (void);            //stops the graphics engine
 };

@@ -14,8 +14,8 @@ else
 PLATFOM := LINUX
 TYPE :=
 EXE_EXT := 
-BASE_INCLUDE_DIR := ../3pl/linux/include
-BASE_LIBRARY_DIR := ../3pl/linux/lib
+BASE_INCLUDE_DIR := /usr/include
+BASE_LIBRARY_DIR := /usr/lib
 LD_FLAGS:=
 LIBRARIES_LINUX :=
 endif
@@ -106,6 +106,7 @@ clean:
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
 	rm -f log*.txt
+	rm -f *.log
 	@echo    "----------------------------------------------"
 
 .PHONY: run
