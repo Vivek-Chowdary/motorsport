@@ -72,7 +72,7 @@ PARAGUI_CALLBACK(exit_handler)
 
 PARAGUI_CALLBACK(startSim_handler)
 {
-    ((GuiEngine*)clientdata)->getLog()->put(LOG_INFO,"Comenzando simulacion");
+    ((GuiEngine*)clientdata)->getLog()->put(LOG_INFO,"Starting simulation.");
     ((GuiEngine*)clientdata)->getSystemData()->enableSimLoop();
     ((GuiEngine*)clientdata)->getSystemData()->disableGuiLoop();
     ((GuiEngine*)clientdata)->getCurrentMenu()->Quit();
