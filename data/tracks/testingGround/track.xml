@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <track
     name = "Testing Ground"
+    revision = "1"
     description = "A simple track, featuring an infinite cement ground, and a clear sky. Located in the middle of a dry area surrounded by some small mountains."
     author = "STenyaK"
     contact = "stenyak AT gmx DOT net"
@@ -25,32 +26,20 @@
         >
         <vehicle
             index = "center"
-            posX = "10"
-            posY = "10"
-            posZ = "3"
-            rotX = "0.0"
-            rotY = "0.0"
-            rotZ = "0.0"
+            position = "10 10 3"
+            rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
             index = "centerHigh"
-            posX = "0.0"
-            posY = "0.0"
-            posZ = "100"
-            rotX = "0.0"
-            rotY = "0.0"
-            rotZ = "0.0"
+            position = "0 0 100"
+            rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
             index = "other"
-            posX = "0.0"
-            posY = "0.0"
-            posZ = "5.0"
-            rotX = "0.0"
-            rotY = "0.0"
-            rotZ = "0.0"
+            position = "0 0 5"
+            rotation = "0 0 0"
             >
         </vehicle>
     </vehiclePositionList>
@@ -58,62 +47,38 @@
         >
         <camera
             index = "0"
-            posX = "6.0"
-            posY = "12.0"
-            posZ = "1.0"
-            destX = "20.0"
-            destY = "10.0"
-            destZ = "0.5"
+            position = "6 12 1"
+            target = "20 10 0.5"
             >
         </camera>
         <camera
             index = "low"
-            posX = "-20.0"
-            posY = "-25.0"
-            posZ = "2.0"
-            destX = "0.0"
-            destY = "0.0"
-            destZ = "0.0"
+            position = "-20 -25 2"
+            target = "0 0 0"
             >
         </camera>
         <camera
             index = "high"
-            posX = "-1.0"
-            posY = "1.0"
-            posZ = "110.0"
-            destX = "0.0"
-            destY = "0.0"
-            destZ = "0.0"
+            position = "-1 1 110"
+            target = "0 0 0"
             >
         </camera>
         <camera
             index = "far"
-            posX = "100.0"
-            posY = "100.0"
-            posZ = "20.0"
-            destX = "0.0"
-            destY = "0.0"
-            destZ = "0.0"
+            position = "100 100 20"
+            target = "0 0 0"
             >
         </camera>
         <camera
             index = "lateral"
-            posX = "10.0"
-            posY = "10.0"
-            posZ = "2.0"
-            destX = "10.0"
-            destY = "-10.0"
-            destZ = "0.0"
+            position = "10 10 2"
+            target = "10 -10 0"
             >
         </camera>
         <camera
             index = "walking"
-            posX = "-2.0"
-            posY = "2.0"
-            posZ = "1.70"
-            destX = "0.0"
-            destY = "1.0"
-            destZ = "1.70"
+            position = "-2 2 1.7"
+            rotation = "0 1 1.7"
             >
         </camera>
     </cameraList>

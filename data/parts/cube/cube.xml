@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <cube
     name = "Cube"
+    revision = "1"
     description = "A strange wooden cube"
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"

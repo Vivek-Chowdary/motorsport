@@ -1,4 +1,4 @@
-material intake/SOLID/mosp1-blueBody.tga
+material intake/SOLID/mosp1-body.tga
 {
   receive_shadows on
   technique
@@ -17,7 +17,7 @@ material intake/SOLID/mosp1-blueBody.tga
   }
 }
 
-material bodyblack/SOLID/mosp1-blueBody.tga
+material bodyblack/SOLID/mosp1-body.tga
 {
   receive_shadows on
   technique
@@ -96,7 +96,7 @@ material shock1/SOLID/
   }
 }
 
-material glass/SOLID/mosp1-blueBody.tga
+material glass/SOLID/mosp1-body.tga
 {
   receive_shadows on
   technique
@@ -115,7 +115,7 @@ material glass/SOLID/mosp1-blueBody.tga
   }
 }
 
-material chrome/SOLID/mosp1-blueBody.tga
+material chrome/SOLID/mosp1-body.tga
 {
   receive_shadows on
   technique
@@ -134,7 +134,7 @@ material chrome/SOLID/mosp1-blueBody.tga
   }
 }
 
-material bodycolor/SOLID/mosp1-blueBody.tga
+material bodycolor/SOLID/mosp1-body.tga
 {
   receive_shadows on
   technique

@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <vehicle
     name = "Mosp1"
+    revision = "1"
     description = "The first official Motorsport vehicle. Made by Habalux, it started it's life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car."
     author = "Habalux, STenyaK"
     contact = "habalux at rscforums, stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <body
+        material = "mosp1bodyMaterial"
+        mesh = "../data/vehicles/mosp1/body.mesh"
+        ogreName = "mosp1Body"
+        length = "4.66"
+        width = "2.08"
+        height = "1.2" 
+        mass = "1250.0"
         >
-        <graphics
-            material = "mosp1bodyMaterial"
-            mesh = "../data/vehicles/mosp1/body.mesh"
-            ogreName = "mosp1Body"
-            >
-        </graphics>
-        <physics
-            length = "4.66"
-            width = "2.08"
-            height = "1.2" 
-            mass = "1250.0"
-            >
-        </physics>
     </body>
     <clutchPedal
         inputAxis = "normalizedRelativeRotation"
@@ -65,46 +60,42 @@
         >
     </steeringWheel>
     <suspensionList>
-        <suspension
-            name = "FrontRight"
-            springConstant = "1?"
-            damperConstant = "1?"
-            posX = "+1.6"
-            posY = "+0.9"
-            posZ = "-0.2"
+        <unidimensional
+            index = "FrontRight"
+            springConstant = "1"
+            dampingConstant = "1"
+            position = "+1.5 +1 -0.4"
+            rotation = "90 0 0"
             >
-        </suspension>
-        <suspension
-            name = "FrontLeft"
-            springConstant = "1?"
-            damperConstant = "1?"
-            posX = "+1.6"
-            posY = "-0.9"
-            posZ = "-0.2"
+        </unidimensional>
+        <unidimensional
+            index = "FrontLeft"
+            springConstant = "1"
+            dampingConstant = "1"
+            position = "+1.5 -1 -0.4"
+            rotation = "-90 0 0"
             >
-        </suspension>
-        <suspension
-            name = "RearRight"
-            springConstant = "1?"
-            damperConstant = "1?"
-            posX = "-1.7"
-            posY = "+0.92"
-            posZ = "-0.25"
+        </unidimensional>
+        <unidimensional
+            index = "RearRight"
+            springConstant = "1"
+            dampingConstant = "1"
+            position = "-1.5 +1 -0.4"
+            rotation = "90 0 0"
             >
-        </suspension>
-        <suspension
-            name = "RearLeft"
-            springConstant = "1?"
-            damperConstant = "1?"
-            posX = "-1.7"
-            posY = "-0.92"
-            posZ = "-0.25"
+        </unidimensional>
+        <unidimensional
+            index = "RearLeft"
+            springConstant = "1"
+            dampingConstant = "1"
+            position = "-1.5 -1 -0.4"
+            rotation = "-90 0 0"
             >
-        </suspension>
+        </unidimensional>
     </suspensionList>
     <wheelList>
         <wheel
-            name = "FrontRight"
+            index = "FrontRight"
             mass = "15.1"
             radius = "0.33"
             width = "0.125"
@@ -113,7 +104,7 @@
             >
         </wheel>
         <wheel
-            name = "FrontLeft"
+            index = "FrontLeft"
             mass = "15.1"
             radius = "0.33"
             width = "0.125"
@@ -122,7 +113,7 @@
             >
         </wheel>
         <wheel
-            name = "RearRight"
+            index = "RearRight"
             mass = "15.0"
             radius = "0.33"
             width = "0.125"
@@ -131,7 +122,7 @@
             >
         </wheel>
         <wheel
-            name = "RearLeft"
+            index = "RearLeft"
             mass = "15.0"
             radius = "0.33"
             width = "0.125"
