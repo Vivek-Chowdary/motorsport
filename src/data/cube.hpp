@@ -36,7 +36,7 @@ class Cube
         float moveToYNegative;
 
     public:
-        Cube ( char * cubeName, float size, float posX, float posY, float posZ );
+        Cube ( int cubeNumber , float size, float posX, float posY, float posZ );
         ~Cube ( );
 
         //physics
@@ -47,7 +47,7 @@ class Cube
         dGeomID cubeGeomID;
 
         //graphics
-        void startGraphics (char * cubeName);
+        void startGraphics (int cubeNumber );
         void stepGraphics();
         void stopGraphics ( );
         Ogre::Entity * cubeEntity;

@@ -89,9 +89,9 @@ int GuiEngine::processGuiConfigFile ( DOMNode * n, void * data)
                             XERCES_STD_QUALIFIER cout << name <<
                                 XERCES_STD_QUALIFIER endl;
                             
-                            if ( !strncpy ( name, "0", 2 ) )
+                            if ( !strncmp ( name, "0", 2 ) )
                                 (*(GuiData*)data).showStatistics = false;
-                            if ( !strncpy ( name, "1", 2 ) )
+                            if ( !strncmp ( name, "1", 2 ) )
                                 (*(GuiData*)data).showStatistics = true;
                         }
                         XMLString::release ( &name );

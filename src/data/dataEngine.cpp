@@ -61,7 +61,7 @@ int DataEngine::loadWorldData ( void )
     vp->setBackgroundColour ( Ogre::ColourValue (0,0,0));
 
     // Create the cubes
-    int numberOfCubes = 200; //Cube::cubeList.size();
+    int numberOfCubes = 200;
     log->format ( LOG_INFO, "Creating an array of %i cubes", numberOfCubes );
     for ( int i = 0; i < numberOfCubes; i++ )
     {
@@ -69,14 +69,12 @@ int DataEngine::loadWorldData ( void )
         Cube * cubePointer;
         if ( i != numberOfCubes-1 )
         {
-            char name[20];
-            sprintf ( name, "Cube%i", i );
             float size = 100;
-            cubePointer = new Cube ( name, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int(i/1000))+1) ));
+            cubePointer = new Cube ( i, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int(i/1000))+1) ));
             dBodySetAngularVel (cubePointer->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
         }else{
             float size = 10000.0;
-            cubePointer = new Cube("BigCube",size, 0, 0, (-size/2)-(separation*5));
+            cubePointer = new Cube( i, size, 0, 0, (-size/2)-(separation*5));
         }
         Cube::cubeList.push_back (cubePointer);
     }

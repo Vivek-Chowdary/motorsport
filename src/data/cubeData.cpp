@@ -23,11 +23,11 @@
 
 std::vector <Cube *>Cube::cubeList;
 
-Cube::Cube ( char * cubeName, float size, float posX, float posY, float posZ )
+Cube::Cube ( int cubeNumber, float size, float posX, float posY, float posZ )
 {
     startPhysics ( size, posX, posY, posZ );
     startInput ( );
-    startGraphics ( cubeName );
+    startGraphics ( cubeNumber );
 }
 
 Cube::~Cube ()

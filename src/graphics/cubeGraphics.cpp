@@ -21,9 +21,11 @@
 
 #include "cube.hpp"
 
-void Cube::startGraphics ( char * cubeName )
+void Cube::startGraphics ( int cubeNumber /*char * cubeName*/ )
 {
-    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( cubeName, "../data/cube.mesh" );
+    char name[20];
+    sprintf (name, "Cube%i", cubeNumber);
+    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( name, "../data/cube.mesh" );
     cubeEntity->setMaterialName ("cube");
     cubeNode = static_cast < Ogre::SceneNode* > (SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild() );
     cubeNode->attachObject (cubeEntity);
