@@ -44,7 +44,6 @@ class PhysicsEngine
 	LogEngine log;	//a log object for logging independently from other engines and main
     PhysicsData *physicsData;
     WorldData *worldData;
-    Uint32 timeStep;
 	public:
         int start (WorldData *wrlData, SystemData *sysData);		//starts the graphics engine
 		int step (void);        //makes the graphics engine draw one frame
