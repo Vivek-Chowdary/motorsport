@@ -21,41 +21,25 @@
 
 #include "body.hpp"
 
-std::vector < Body * >Body::bodyList;
-
-Body::Body (int bodyNumber, float posX, float posY, float posZ)
+Body::Body (char * xmlFilename)
 {
-    BodyData *bodyData = new BodyData;
-    bodyData->body = this;
-    bodyData->physics = new BodyPhysicsData;
-    bodyData->physics->mass = 100;
-    bodyData->physics->length = 1;
-    bodyData->physics->width = 1;
-    bodyData->physics->height = 1;
-    bodyData->graphics = new BodyGraphicsData;
-    processXmlFile ("../data/body.xml", &Body::processBodyDataFile, (void *) bodyData);
+    log = new LogEngine (LOG_TRACE, "BOD");
+    
+    log->put (LOG_INFO, "Starting to parse the body xml file");
+    XmlFile * xmlFile = new XmlFile (xmlFilename);
+    processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
 
-    startPhysics (posX, posY, posZ, bodyData->physics);
-    startGraphics (bodyNumber, bodyData->graphics);
-
-    // delete [](bodyData->name);
-    // delete [](bodyData->description);
-    // delete [](bodyData->physics->author);
-    // delete [](bodyData->physics->license);
-    delete bodyData->physics;
-    // delete [](bodyData->graphics->author);
-    // delete [](bodyData->graphics->license);
-    delete[](bodyData->graphics->material);
-    delete[](bodyData->graphics->mesh);
-    delete[](bodyData->graphics->ogreName);
-    delete bodyData->graphics;
-    delete bodyData;
+    instancesCount++;
 }
 
 Body::~Body ()
 {
+    instancesCount--;
+
     stopPhysics ();
     stopGraphics ();
+    stopInput ();
 }
 
 
@@ -68,4 +52,92 @@ void Body::updateOgreOrientation ()
 {
     const dReal *temp = dBodyGetQuaternion (bodyID);    // need to allocate memory first??
     bodyNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
+}
+
+void Body::processXmlRootNode (DOMNode * n)
+{
+    DOMNode * graphicsNode = 0;
+    DOMNode * physicsNode = 0;
+    if (n == 0)
+    {
+        log->put (LOG_ERROR, "Null body xml root node");
+    }
+    if (n)
+    {
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (n->getNodeName ());
+            log->format (LOG_TRACE, "Name: %s", name);;
+
+            if (!strncmp (name, "body", 5))
+            {
+                log->put (LOG_TRACE, "Found the body main data config element.");
+                if (n->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "name", 5))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the name: %s", name);
+                        }
+                        if (!strncmp (name, "description", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the description: %s", name);
+                        }
+                        if (!strncmp (name, "author", 7))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the author: %s", name);
+                        }
+                        if (!strncmp (name, "contact", 5))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                        }
+                        if (!strncmp (name, "license", 8))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the license: %s", name);
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
+                {
+                    if (n)
+                    {
+                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+                        {
+                            char *name = XMLString::transcode (n->getNodeName ());
+                            log->format (LOG_TRACE, "Name: %s", name);;
+                            if (!strncmp (name, "graphics", 9))
+                            {
+                                log->put (LOG_TRACE, "Found the body graphics data element.");
+                                graphicsNode = n;
+                            }
+                            if (!strncmp (name, "physics", 8))
+                            {
+                                log->put (LOG_TRACE, "Found the body physics data element.");
+                                physicsNode = n;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    startPhysics (physicsNode);
+    startGraphics (graphicsNode);
 }

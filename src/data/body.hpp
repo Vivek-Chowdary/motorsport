@@ -24,57 +24,41 @@
 #   include "ode.h"
 #   include "Ogre.h"
 #   include "OgreNoMemoryMacros.h"
-#   include <vector>
 #   include "system.hpp"
+#   include "worldObject.hpp"
+class Body;
 #   include "world.hpp"
-#   include "xmlParser.hpp"
-#   include "logEngine.hpp"
 
-struct BodyData;
 struct BodyPhysicsData;
 struct BodyGraphicsData;
 
-class Body
+class Body : public WorldObject
 {
   private:
     //empty
+
   public:
-      Body (int bodyNumber, float posX, float posY, float posZ);
-     ~Body ();
+    // data
+    Body (char * xmlFilename);
+    ~Body ();
+    void updateOgrePosition ();
+    void updateOgreOrientation ();
+    void processXmlRootNode (DOMNode * n);
 
     // physics
-    void startPhysics (float posX, float posY, float posZ, BodyPhysicsData * physics);
+    void startPhysics (DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
     dBodyID bodyID;
     dGeomID bodyGeomID;
-    void processBodyPhysicsDataNode (DOMNode * n, BodyPhysicsData * physics);
+    void setPosition (float posX, float posY, float posZ);
 
     // graphics
-    void startGraphics (int bodyNumber, BodyGraphicsData * graphics);
+    void startGraphics (DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
     Ogre::Entity * bodyEntity;
     Ogre::SceneNode * bodyNode;
-    void processBodyGraphicsDataNode (DOMNode * n, BodyGraphicsData * graphics);
-
-    // input
-    //empty
-
-    // data
-    static std::vector < Body * >bodyList;
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
-    static void processBodyDataFile (DOMNode * n, void *data);
-};
-
-struct BodyData
-{
-    Body *body;
-    char *name;
-    char *description;
-    BodyPhysicsData *physics;
-    BodyGraphicsData *graphics;
 };
 
 struct BodyPhysicsData

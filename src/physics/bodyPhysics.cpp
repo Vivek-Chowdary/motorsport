@@ -21,14 +21,96 @@
 
 #include "body.hpp"
 
-void Body::startPhysics (float posX, float posY, float posZ, BodyPhysicsData * physics)
+void Body::startPhysics (DOMNode * n)
 {
+    BodyPhysicsData * physics = new BodyPhysicsData;
+    physics->mass = 100;
+    physics->length = 1;
+    physics->width = 1;
+    physics->height = 1;
+
+    log->put (LOG_TRACE, "Parsing body physic.");
+    if (n == 0)
+    {
+        log->put (LOG_ERROR, "Null body physics XML node");
+    }
+    if (n->hasAttributes ())
+    {
+        // get all the attributes of the node
+        DOMNamedNodeMap *pAttributes = n->getAttributes ();
+        int nSize = pAttributes->getLength ();
+
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+            char *name = XMLString::transcode (pAttributeNode->getName ());
+            if (!strncmp (name, "author", 7))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the author: %s", name);
+            }
+            if (!strncmp (name, "contact", 5))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+            }
+            if (!strncmp (name, "license", 8))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the license: %s", name);
+            }
+            if (!strncmp (name, "mass", 5))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the body total mass: %s", name);
+
+                physics->mass = atof (name);
+            }
+            if (!strncmp (name, "length", 7))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the body length: %s", name);
+
+                physics->length = atof (name);
+            }
+            if (!strncmp (name, "width", 6))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the body width: %s", name);
+
+                physics->width = atof (name);
+            }
+            if (!strncmp (name, "height", 7))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the body height: %s", name);
+
+                physics->height = atof (name);
+            }
+            XMLString::release (&name);
+        }
+    }
+    log->put (LOG_TRACE, "Finished body physic.");
+
     dMass mass;
     dMassSetBoxTotal (&mass, physics->mass, physics->length, physics->width, physics->height);
     bodyID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
-    dBodySetPosition (bodyID, posX, posY, posZ);
     bodyGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->length, physics->width, physics->height);
     dGeomSetBody (bodyGeomID, bodyID);
+
+    delete physics;
+}
+
+void Body::setPosition (float posX, float posY, float posZ)
+{               
+    dBodySetPosition (bodyID, posX, posY, posZ);
 }
 
 void Body::stopPhysics ()

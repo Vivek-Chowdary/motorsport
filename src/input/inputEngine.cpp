@@ -97,11 +97,11 @@ void InputEngine::processMouseMovement ()
 {
     if (mouseMovementX)
     {
-        Camera::cameraList[0]->setRotateRight (mouseMovementX);
+        worldData->cameraList[0]->setRotateRight (mouseMovementX);
     }
     if (mouseMovementY)
     {
-        Camera::cameraList[0]->setRotateUp (mouseMovementY);
+        worldData->cameraList[0]->setRotateUp (mouseMovementY);
     }
 }
 
@@ -117,77 +117,77 @@ void InputEngine::processKeyboard ()
     if (keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keypress...");
-        Camera::cameraList[0]->setRotateRight (20);
+        worldData->cameraList[0]->setRotateRight (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the right.");
     }
 
     if (keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keypress...");
-        Camera::cameraList[0]->setRotateLeft (20);
+        worldData->cameraList[0]->setRotateLeft (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the left.");
     }
 
     if (keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keypress...");
-        Camera::cameraList[0]->setRotateUp (20);
+        worldData->cameraList[0]->setRotateUp (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the top.");
     }
 
     if (keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keypress...");
-        Camera::cameraList[0]->setRotateDown (20);
+        worldData->cameraList[0]->setRotateDown (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the bottom.");
     }
 
     if (keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        Camera::cameraList[0]->goForward = true;
+        worldData->cameraList[0]->goForward = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        Camera::cameraList[0]->goBack = true;
+        worldData->cameraList[0]->goBack = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        Camera::cameraList[0]->goLeft = true;
+        worldData->cameraList[0]->goLeft = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        Camera::cameraList[0]->goRight = true;
+        worldData->cameraList[0]->goRight = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_o])
     {
-        Cube::cubeList[0]->setMoveToXNegative (1);
+        worldData->cubeList[0]->setMoveToXNegative (1);
     }
 
     if (keyState[SDLK_p])
     {
-        Cube::cubeList[0]->setMoveToXPositive (1);
+        worldData->cubeList[0]->setMoveToXPositive (1);
     }
 
     if (keyState[SDLK_i])
     {
-        Cube::cubeList[0]->setMoveToYPositive (1);
+        worldData->cubeList[0]->setMoveToYPositive (1);
     }
 
     if (keyState[SDLK_k])
     {
-        Cube::cubeList[0]->setMoveToYNegative (1);
+        worldData->cubeList[0]->setMoveToYNegative (1);
     }
 
     if (keyState[SDLK_HOME])
@@ -252,77 +252,77 @@ void InputEngine::processKeyboard ()
     if (!keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease...");
-        Camera::cameraList[0]->setRotateRight (0);
+        worldData->cameraList[0]->setRotateRight (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease...");
-        Camera::cameraList[0]->setRotateLeft (0);
+        worldData->cameraList[0]->setRotateLeft (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keyrelease...");
-        Camera::cameraList[0]->setRotateUp (0);
+        worldData->cameraList[0]->setRotateUp (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease...");
-        Camera::cameraList[0]->setRotateDown (0);
+        worldData->cameraList[0]->setRotateDown (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        Camera::cameraList[0]->goForward = false;
+        worldData->cameraList[0]->goForward = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        Camera::cameraList[0]->goBack = false;
+        worldData->cameraList[0]->goBack = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        Camera::cameraList[0]->goLeft = false;
+        worldData->cameraList[0]->goLeft = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keyprelease...");
-        Camera::cameraList[0]->goRight = false;
+        worldData->cameraList[0]->goRight = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_o])
     {
-        Cube::cubeList[0]->setMoveToXNegative (0);
+        worldData->cubeList[0]->setMoveToXNegative (0);
     }
 
     if (!keyState[SDLK_p])
     {
-        Cube::cubeList[0]->setMoveToXPositive (0);
+        worldData->cubeList[0]->setMoveToXPositive (0);
     }
 
     if (!keyState[SDLK_i])
     {
-        Cube::cubeList[0]->setMoveToYPositive (0);
+        worldData->cubeList[0]->setMoveToYPositive (0);
     }
 
     if (!keyState[SDLK_k])
     {
-        Cube::cubeList[0]->setMoveToYNegative (0);
+        worldData->cubeList[0]->setMoveToYNegative (0);
     }
 }
 

@@ -22,9 +22,13 @@
 
 #ifndef WORLD_HPP
 #   define WORLD_HPP
-
 #   include "SDL.h"
 #   include "ode.h"
+#   include <vector>
+#   include "worldObject.hpp"
+#   include "cube.hpp"
+#   include "body.hpp"
+#   include "camera.hpp"
 
 class WorldData
 {                               // this will contain everything related to the simulated/virtual world
@@ -32,12 +36,16 @@ class WorldData
     static WorldData *worldDataPointer;
   public:
     static WorldData *getWorldDataPointer ();
-      WorldData ();
-     ~WorldData ();
+    WorldData ();
+    ~WorldData ();
 
     dWorldID worldID;
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
+
+    std::vector < Cube * > cubeList;
+    std::vector < Body * >bodyList;
+    std::vector < Camera * >cameraList;
 };
 
 #endif

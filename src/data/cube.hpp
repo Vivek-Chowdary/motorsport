@@ -26,6 +26,8 @@
 #   include "OgreNoMemoryMacros.h"
 #   include "system.hpp"
 #   include "worldObject.hpp"
+class Cube;
+#   include "world.hpp"
 
 struct CubePhysicsData;
 struct CubeGraphicsData;
@@ -37,13 +39,11 @@ class Cube : public WorldObject
     float moveToXNegative;
     float moveToYPositive;
     float moveToYNegative;
-    static int instancesCount;
 
   public:
     // data
     Cube (char * xmlFilename);
     ~Cube ();
-    static std::vector < Cube * >cubeList;
     void updateOgrePosition ();
     void updateOgreOrientation ();
     float getMoveToXPositive ();

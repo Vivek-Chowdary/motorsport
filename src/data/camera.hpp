@@ -22,9 +22,10 @@
 #ifndef CAMERA_HPP
 #   define CAMERA_HPP
 #   include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#   include <vector>
+#   include "OgreNoMemoryMacros.h"
 #   include "system.hpp"
+class Camera;
+#   include "world.hpp"
 
 class Camera
 {
@@ -35,14 +36,14 @@ class Camera
     int rotateDown;
 
   public:
-      Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
-     ~Camera ();
+    Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    ~Camera ();
 
     // graphics
     void startGraphics (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     void stepGraphics ();
     void stopGraphics ();
-      Ogre::Camera * ogreCamera;
+    Ogre::Camera * ogreCamera;
 
     // input
     void startInput ();
@@ -58,7 +59,6 @@ class Camera
     bool goRight;
 
     // data
-    static std::vector < Camera * >cameraList;
     int getRotateUp ();
     int getRotateDown ();
     int getRotateLeft ();

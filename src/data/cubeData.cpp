@@ -21,10 +21,6 @@
 
 #include "cube.hpp"
 
-std::vector < Cube * >Cube::cubeList;
-
-int Cube::instancesCount = 0;
-
 Cube::Cube (char * xmlFilename)
 {
     log = new LogEngine (LOG_TRACE, "CUB");
@@ -75,6 +71,8 @@ void Cube::updateOgreOrientation ()
 
 void Cube::processXmlRootNode (DOMNode * n)
 {
+    DOMNode * graphicsNode = 0;
+    DOMNode * physicsNode = 0;
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -138,12 +136,12 @@ void Cube::processXmlRootNode (DOMNode * n)
                             if (!strncmp (name, "graphics", 9))
                             {
                                 log->put (LOG_TRACE, "Found the cube graphics data element.");
-                                startGraphics (n);
+                                graphicsNode = n;
                             }
                             if (!strncmp (name, "physics", 8))
                             {
                                 log->put (LOG_TRACE, "Found the cube physics data element.");
-                                startPhysics (n);
+                                physicsNode = n;
                             }
                         }
                     }
@@ -151,6 +149,8 @@ void Cube::processXmlRootNode (DOMNode * n)
             }
         }
     }
+    startGraphics(graphicsNode);
+    startPhysics(physicsNode);
     startInput ();
 }
 

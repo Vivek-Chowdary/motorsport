@@ -18,37 +18,5 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 ******************************************************************************/
-
-#ifndef WORLDOBJECT_HPP
-#   define WORLDOBJECT_HPP
-#   include "system.hpp"
-#   include "xmlParser.hpp"
-#   include "logEngine.hpp"
-
-class WorldObject
-{
-  protected:
-    LogEngine * log;
-    static int instancesCount;
-
-  public:
-    // data
-    virtual ~WorldObject (){};
-    virtual void processXmlRootNode (DOMNode * n) = 0;
-    
-    // physics
-    virtual void startPhysics (DOMNode * n){};
-    virtual void stepPhysics (){};
-    virtual void stopPhysics (){};
-
-    // graphics
-    virtual void startGraphics (DOMNode * n){};
-    virtual void stepGraphics (){};
-    virtual void stopGraphics (){};
-
-    // input
-    virtual void startInput (DOMNode * n){};
-    virtual void stepInput (){};
-    virtual void stopInput (){};
-};
-#endif
+#include "worldObject.hpp"
+int WorldObject::instancesCount = 0;

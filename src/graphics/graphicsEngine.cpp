@@ -190,17 +190,17 @@ int GraphicsEngine::computeStep (void)
         systemData->ogreWindow->writeContentsToFile (screenshotFilename);
     }
     // Update Ogre's bodies positions with Ode's positions.
-    int numberOfBodies = Body::bodyList.size ();
+    int numberOfBodies = worldData->bodyList.size ();
     for (int currentBody = 0; currentBody < numberOfBodies; currentBody++)
     {
-        Body::bodyList[currentBody]->stepGraphics ();
+        worldData->bodyList[currentBody]->stepGraphics ();
     }
 
     // Update Ogre's cubes positions with Ode's positions.
-    int numberOfCubes = Cube::cubeList.size ();
+    int numberOfCubes = worldData->cubeList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        Cube::cubeList[currentCube]->stepGraphics ();
+        worldData->cubeList[currentCube]->stepGraphics ();
     }
 
     // Let the listener frames be started and ended: they are needed for particle systems.

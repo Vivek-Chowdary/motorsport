@@ -21,8 +21,6 @@
 
 #include "camera.hpp"
 
-std::vector < Camera * >Camera::cameraList;
-
 Camera::Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {
 

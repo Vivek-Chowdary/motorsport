@@ -195,10 +195,10 @@ SOURCES := \
 	data/logParser.cpp \
 	data/dataParser.cpp \
 	data/graphicsParser.cpp \
-	data/bodyDataParser.cpp \
 	data/physicsParser.cpp \
 	data/inputParser.cpp \
 	data/guiParser.cpp \
+        data/worldObject.cpp \
 	data/cubeData.cpp \
 	data/bodyData.cpp \
 	data/cameraData.cpp \

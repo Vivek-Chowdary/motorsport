@@ -113,16 +113,16 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->put (LOG_TRACE, "Doing an step: calculating a physics step");
 
-    int size = Cube::cubeList.size ();
+    int size = worldData->cubeList.size ();
     for (int i = 0; i < size; i++)
     {
-        Cube::cubeList[i]->stepPhysics ();
+        worldData->cubeList[i]->stepPhysics ();
     }
 
-    size = Body::bodyList.size ();
+    size = worldData->bodyList.size ();
     for (int i = 0; i < size; i++)
     {
-        Body::bodyList[i]->stepPhysics ();
+        worldData->bodyList[i]->stepPhysics ();
     }
 
     dSpaceCollide (worldData->spaceID, 0, &nearCallback);
@@ -143,24 +143,24 @@ int PhysicsEngine::computeStep (void)
     {
         float x = 0, z = 0;
         // translation of the camera, advancing or strafing
-        x += (Camera::cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
-        x -= (Camera::cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
-        z -= (Camera::cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
-        z += (Camera::cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
+        x += (worldData->cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
+        x -= (worldData->cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
+        z -= (worldData->cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
+        z += (worldData->cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
         x /= 100;
         z /= 100;
-        Camera::cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
+        worldData->cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
     }
     {
         float x = 0, z = 0;
-        x -= Camera::cameraList[0]->getRotateRight ();
-        x += Camera::cameraList[0]->getRotateLeft ();
-        z += Camera::cameraList[0]->getRotateUp ();
-        z -= Camera::cameraList[0]->getRotateDown ();
+        x -= worldData->cameraList[0]->getRotateRight ();
+        x += worldData->cameraList[0]->getRotateLeft ();
+        z += worldData->cameraList[0]->getRotateUp ();
+        z -= worldData->cameraList[0]->getRotateDown ();
         x /= 100;
         z /= 100;
-        Camera::cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
-        Camera::cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
+        worldData->cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
+        worldData->cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
     }
 
     return (0);

@@ -56,11 +56,11 @@ int DataEngine::loadWorldData (void)
 	for (i = 0; i < numberOfCameras; i++)
     {
         Camera *cameraPointer = new Camera (i, -20, -20, 5, 0, 0, 0);
-        Camera::cameraList.push_back (cameraPointer);
+        WorldData::getWorldDataPointer()->cameraList.push_back (cameraPointer);
     }
     log->put (LOG_INFO, "Setting camera viewport");
 
-    Ogre::Viewport * vp = systemData->ogreWindow->addViewport (Camera::cameraList[0]->ogreCamera);
+    Ogre::Viewport * vp = systemData->ogreWindow->addViewport (worldData->cameraList[0]->ogreCamera);
     vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
 
     // Create the skybox
@@ -76,8 +76,9 @@ int DataEngine::loadWorldData (void)
         log->format (LOG_VERBOSE, "Adding body number %i", i);
         const int separation = 5;
         Body *bodyPointer;
-        bodyPointer = new Body (i,- separation - i / 10 % 10 * separation, - separation - i % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
-        Body::bodyList.push_back (bodyPointer);
+        bodyPointer = new Body ("../data/body.xml");
+        bodyPointer->setPosition (- separation - i / 10 % 10 * separation, - separation - i % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
+        WorldData::getWorldDataPointer()->bodyList.push_back (bodyPointer);
     }
 
     // Create the cubes
@@ -90,7 +91,7 @@ int DataEngine::loadWorldData (void)
         Cube *cubePointer;
         cubePointer = new Cube ("../data/cube.xml");
         cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
-        Cube::cubeList.push_back (cubePointer);
+        WorldData::getWorldDataPointer()->cubeList.push_back (cubePointer);
     }
 
     return (0);
@@ -100,12 +101,12 @@ int DataEngine::unloadWorldData (void)
 {
     // unload the bodies from memory
     log->put (LOG_INFO, "Unloading bodies from memory...");
-    Body::bodyList.clear ();
+    WorldData::getWorldDataPointer()->bodyList.clear ();
     // unload the cubes from memory
     log->put (LOG_INFO, "Unloading cubes from memory...");
-    Cube::cubeList.clear ();
+    WorldData::getWorldDataPointer()->cubeList.clear ();
     log->put (LOG_INFO, "Unloading cameras from memory...");
-    Camera::cameraList.clear ();
+    WorldData::getWorldDataPointer()->cameraList.clear ();
 
     return (0);
 }
