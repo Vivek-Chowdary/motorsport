@@ -32,7 +32,6 @@ class InputEngine
     InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;
-    int maxNumberOfKeys;//see "/usr/include/SDL/SDL_keysym.h"
     Uint8 * keyState;
     int mouseMovementX;
     int mouseMovementY;
