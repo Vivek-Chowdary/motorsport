@@ -27,7 +27,7 @@
 
 #include <stdlib.h>
 #ifdef WIN32
-	#include "SDL/sdl.h"
+	#include "sdl.h"
 #else										
 	#include <SDL/SDL.h>
 #endif
