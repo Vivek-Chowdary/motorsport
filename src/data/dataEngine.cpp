@@ -46,6 +46,9 @@ DataEngine::DataEngine ()
 
 int DataEngine::loadWorldData (void)
 {
+    // Create the infinite plane
+    dCreatePlane (WorldData::getWorldDataPointer ()->spaceID, 0, 0, 1, 0);
+
     // create the camera and initialize it
     int numberOfCameras = 4;
     log->format (LOG_INFO, "Creating %i cameras", numberOfCameras);
