@@ -29,7 +29,7 @@
 #include "../world.hpp"
 #include "inputEngine.hpp"
 #ifdef WIN32
-	#include "SDL/sdl.h"
+	#include "sdl.h"
 #else										
 	#include <SDL/SDL.h>
 #endif
