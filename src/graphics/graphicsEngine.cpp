@@ -25,22 +25,22 @@
 #include "graphicsEngine.hpp"
 #include <stdlib.h>
 
-int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
+GraphicsEngine::GraphicsEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start ( LOG_VERBOSE, "logGraphics.txt" );
 
     //get the direction of the graphics data
     log.put ( LOG_INFO, "Setting up data pointers..." );
-    graphicsData = &( sysData->graphicsData );
-    worldData = wrlData;
-    systemData = sysData;
+    worldData = WorldData::getWorldDataPointer();
+    systemData = SystemData::getSystemDataPointer();
+    graphicsData = &(systemData->graphicsData);
     log.append ( LOG_INFO, "Ok" );
 
     graphicsData->ogreRoot = new Root (  );
     setupResources (  );
-    if ( !configure (  ) )
-        return false;
+    if ( !configure (  ) );
+//        return false;
     graphicsData->ogreSceneManager =
         graphicsData->ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
@@ -80,8 +80,6 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     //Set some graphics settings
     MaterialManager::getSingleton (  ).setDefaultAnisotropy ( graphicsData->anisotropic );
     MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( graphicsData->filtering );
-    return ( 0 );
-
 }
 
 bool GraphicsEngine::configure (  )
@@ -169,10 +167,8 @@ int GraphicsEngine::step ( void )
     return ( 0 );
 }
 
-int GraphicsEngine::stop ( void )
+GraphicsEngine::~GraphicsEngine ( void )
 {
     //finally stop the log engine
     log.stop (  );
-
-    return ( 0 );
 }

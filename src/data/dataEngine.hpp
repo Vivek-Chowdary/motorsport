@@ -28,11 +28,13 @@
 
 class DataEngine
 {
+  private:
     LogEngine log;              //a log object for logging independently from other engines and main
     WorldData *worldData;
     SystemData *systemData;
   public:
-    int start ( WorldData * wrlData, SystemData * sysData );    //starts the data engine
+    DataEngine ( );    //starts the data engine
+    ~DataEngine ( void );          //stops the data engine
     int loadWorldData ( void );
     int unloadWorldData ( void );
     int loadSystemData ( void );
@@ -44,5 +46,4 @@ class DataEngine
        or maybe...
        int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*);
        etc... */
-    int stop ( void );          //stops the data engine
 };

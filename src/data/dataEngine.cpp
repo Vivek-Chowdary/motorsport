@@ -22,20 +22,18 @@
 
 #include "dataEngine.hpp"
 
-int DataEngine::start ( WorldData * wrlData, SystemData * sysData )
+DataEngine::DataEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start ( LOG_INFO, "logData.txt" );
 
     log.put ( LOG_INFO, "Setting up data pointers..." );
     //we tell the dataEngine where to find/store all the data in memory.
-    worldData = wrlData;        //world data is for the simulated world data (cars,
+    worldData = WorldData::getWorldDataPointer(); //world data is for the simulated world data (cars,
     // track, weather, etc...)
-    systemData = sysData;       //system data is for the rest of things (screen
+    systemData = SystemData::getSystemDataPointer ();       //system data is for the rest of things (screen
     // resolution, 
     log.append ( LOG_INFO, "Ok" );
-
-    return ( 0 );
 }
 
 int DataEngine::loadWorldData ( void )
@@ -110,10 +108,8 @@ int DataEngine::unloadSystemData ( void )
     return ( 0 );
 }
 
-int DataEngine::stop ( void )
+DataEngine::~DataEngine ( void )
 {
     //finally stop the log engine
     log.stop (  );
-
-    return ( 0 );
 }

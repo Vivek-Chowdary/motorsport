@@ -81,8 +81,12 @@ class GuiData
 class SystemData
 {                               //this contains all the data not related with the simulated/virtual world
 
+    static SystemData * systemDataPointer;
     bool mainLoopEnabled;
   public:
+    static SystemData * getSystemDataPointer ( );
+    SystemData ( );
+    ~SystemData ( );
     //independent data
     GraphicsData graphicsData;
     InputData inputData;

@@ -22,7 +22,7 @@
 
 #include "inputEngine.hpp"
 
-int InputEngine::start ( WorldData * wrlData, SystemData * sysData )
+InputEngine::InputEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start ( LOG_VERBOSE, "logInput.txt" );
@@ -32,12 +32,10 @@ int InputEngine::start ( WorldData * wrlData, SystemData * sysData )
     // some dataEngine functions, which will act as an interface to the data
     // stored in memory with the IDF.
     log.put ( LOG_INFO, "Setting up data pointers..." );
-    inputData = &( sysData->inputData );
-    systemData = sysData;
-    worldData = wrlData;
+    systemData = SystemData::getSystemDataPointer ();
+    worldData = WorldData::getWorldDataPointer ();
+    inputData = &( systemData->inputData );
     log.append ( LOG_INFO, "Ok" );
-
-    return ( 0 );
 }
 
 int InputEngine::step ( void )  //processes user input queue
@@ -88,13 +86,11 @@ int InputEngine::step ( void )  //processes user input queue
     return ( 0 );
 }
 
-int InputEngine::stop ( void )
+InputEngine::~InputEngine ( void )
 {
 
     //finally stop the log engine
     log.stop (  );
-
-    return ( 0 );
 }
 
 void InputEngine::processInputKeyDown ( SDLKey keySymbol )

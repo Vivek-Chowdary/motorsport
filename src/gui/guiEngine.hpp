@@ -31,12 +31,13 @@ using namespace Ogre;
 
 class GuiEngine
 {
+  private:
     LogEngine log;              //a log object for logging independently from other engines and main
     WorldData *worldData;
     SystemData *systemData;
   public:
-    int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
+    GuiEngine ( );    //starts the graphics engine
+    ~GuiEngine ( );          //stops the graphics engine
     int step ( void );          //makes the graphics engine draw one frame
     void updateStatistics( void );
-    int stop ( void );          //stops the graphics engine
 };

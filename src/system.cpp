@@ -22,6 +22,33 @@
 
 #include "system.hpp"
 
+SystemData * SystemData::systemDataPointer = NULL;
+
+SystemData * SystemData::getSystemDataPointer ()
+{
+    if (!systemDataPointer)
+    {
+        new SystemData ();
+    }
+    return ( systemDataPointer );
+}
+
+SystemData::SystemData ( )
+{
+    if (systemDataPointer)
+    {
+        delete this;
+    }else{
+        systemDataPointer = this;
+    }
+}
+
+SystemData::~SystemData ( )
+{
+    delete systemDataPointer;
+    systemDataPointer = NULL;
+}
+
 bool mainLoopEnabled;
 
 bool SystemData::canMainLoopRun ( void )    //does the program have to keep running?

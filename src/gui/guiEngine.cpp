@@ -22,18 +22,16 @@
 
 #include "guiEngine.hpp"
 
-int GuiEngine::start ( WorldData * wrlData, SystemData * sysData )
+GuiEngine::GuiEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start ( LOG_INFO, "logGui.txt" );
 
     //get the direction of the graphics data
     log.put ( LOG_INFO, "Setting up data pointers..." );
-    worldData = wrlData;
-    systemData = sysData;
+    worldData = WorldData::getWorldDataPointer();
+    systemData = SystemData::getSystemDataPointer();
     log.append ( LOG_INFO, "Ok" );
-
-    return ( 0 );
 }
 
 int GuiEngine::step ( void )
@@ -86,10 +84,8 @@ void GuiEngine::updateStatistics ( void  )
 
                                                         
 
-int GuiEngine::stop ( void )
+GuiEngine::~GuiEngine ( void )
 {
     //finally stop the log engine
     log.stop (  );
-
-    return ( 0 );
 }

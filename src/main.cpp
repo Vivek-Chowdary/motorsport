@@ -41,32 +41,23 @@ void sdl_stop ( void )
 int main ( int argc, char **argv )
 {
     //we declare the 'global' data
-    SystemData * systemData = new SystemData;
-    WorldData * worldData = new WorldData;
-
+    new SystemData();
+    new WorldData();
+    DataEngine * data = new DataEngine();
+    data->loadSystemData (  );
+    data->loadWorldData (  );
     //we declare the engines
-    LogEngine * log = new LogEngine;
-    DataEngine * data = new DataEngine;
-    InputEngine * input = new InputEngine;
-    GraphicsEngine * graphics = new GraphicsEngine;
-    PhysicsEngine * physics = new PhysicsEngine;
-    GuiEngine * gui = new GuiEngine;
+    LogEngine * log = new LogEngine();
+    InputEngine * input = new InputEngine();
+    GraphicsEngine * graphics = new GraphicsEngine();
+    PhysicsEngine * physics = new PhysicsEngine();
+    GuiEngine * gui = new GuiEngine();
 
     log->start ( LOG_VERBOSE, "./logMain.txt" );
     //sdl_start ( *log );
-    gui->start ( worldData, systemData );
-    data->start ( worldData, systemData );
-    data->loadSystemData (  );
+    
+    SystemData * systemData = SystemData::getSystemDataPointer();
     systemData->enableMainLoop (  );
-    log->put ( LOG_INFO, "Loading world data");
-    data->loadWorldData (  );
-    log->put ( LOG_INFO, "Starting graphics engine");
-    graphics->start ( worldData, systemData );
-    log->put ( LOG_INFO, "Starting input engine");
-    input->start ( worldData, systemData );
-    log->put ( LOG_INFO, "Starting physics engine");
-    physics->start ( worldData, systemData );
-
     systemData->lastStatTime = systemData->currentPhysicsTime =
         SDL_GetTicks (  );
     while ( systemData->canMainLoopRun (  ) )
@@ -105,13 +96,13 @@ int main ( int argc, char **argv )
         // for the car input parts (car pedals, car st.wheel,...)
     }
 
-    graphics->stop (  );
-    physics->stop (  );
-    input->stop (  );
+    delete graphics;
+    delete physics;
+    delete input;
     data->unloadWorldData (  );
-    gui->stop (  );
+    delete gui;
     data->unloadSystemData (  );
-    data->stop (  );
+    delete data;
     log->stop (  );
     //sdl_stop (  );
 

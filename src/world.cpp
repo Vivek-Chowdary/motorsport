@@ -22,6 +22,33 @@
 
 #include "world.hpp"
 
+WorldData * WorldData::worldDataPointer = NULL;
+
+WorldData * WorldData::getWorldDataPointer ( )
+{
+    if (!worldDataPointer)
+    {
+        new WorldData ();
+    }
+    return ( worldDataPointer );
+}
+
+WorldData::WorldData ( )
+{
+    if (worldDataPointer)
+    {
+        delete this;
+    }else{
+        worldDataPointer = this;
+    }
+}
+
+WorldData::~WorldData ( )
+{
+    delete worldDataPointer;
+    worldDataPointer = NULL;
+}
+
 void Cube::updateOgrePosition()
 {
     const dReal * temp = dBodyGetPosition(cubeID);

@@ -29,15 +29,15 @@ using namespace Ogre;
 
 class GraphicsEngine
 {
-    LogEngine log;              //a log object for logging independently from other engines and main
-    GraphicsData *graphicsData;
+  private:
     WorldData *worldData;
     SystemData *systemData;
-    //Simulation *sim;
+    LogEngine log;              //a log object for logging independently from other engines and main
+    GraphicsData *graphicsData;
   public:
-    int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
+    GraphicsEngine ( );    //starts the graphics engine
+    ~GraphicsEngine ( void );          //stops the graphics engine
     int step ( void );          //makes the graphics engine draw one frame
-    int stop ( void );          //stops the graphics engine
 
     bool configure (  );
     bool manualInitialize (  );

@@ -27,14 +27,15 @@
 
 class InputEngine
 {
+  private:
     LogEngine log;              //a log object for logging independently from other engines and main
     InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;
   public:
-    int start ( WorldData * wrlData, SystemData * sysData );    //starts the input engine
+    InputEngine ( );    //starts the input engine
+    ~InputEngine ( void );          //stops the input engine
     int step ( void );          //processes user input queue
     void processInputKeyDown ( SDLKey keySymbol );
     void processInputKeyUp ( SDLKey keySymbol );
-    int stop ( void );          //stops the input engine
 };

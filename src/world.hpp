@@ -52,9 +52,15 @@ class MospCamera
     bool rotateRight;
 };
 
+
 class WorldData
 {                               //this will contain everything related to the simulated/virtual world
+  private:
+    static WorldData * worldDataPointer;
   public:
+    static WorldData * getWorldDataPointer ( );
+    WorldData  ( );
+    ~WorldData ( );
     int numberOfCubes;
     Cube *cubeList;             //for our example,the worlddata has a set of cubes.
     MospCamera *camera1;

@@ -38,16 +38,16 @@
 #    endif
 #endif
 
-int PhysicsEngine::start ( WorldData * wrlData, SystemData * sysData )
+PhysicsEngine::PhysicsEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
     log.start ( LOG_INFO, "logPhysics.txt" );
 
     //get the direction of the graphics data
     log.put ( LOG_INFO, "Setting up data pointers..." );
-    physicsData = &( sysData->physicsData );
-    worldData = wrlData;
-    systemData = sysData;
+    worldData = WorldData::getWorldDataPointer();
+    systemData = SystemData::getSystemDataPointer();
+    physicsData = &(systemData->physicsData );
     log.append ( LOG_INFO, "Ok" );
 
 /*    //get the direction of the graphics data
@@ -75,11 +75,7 @@ int PhysicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
         dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
         dBodyAddForce (worldData->cubeList[0/*currentCube*/].cubeID,0.01,0,0);
-        
     }
-    
-
-    return ( 0 );
 }
 
 int PhysicsEngine::step ( void )
@@ -126,12 +122,10 @@ int PhysicsEngine::step ( void )
     return ( 0 );
 }
 
-int PhysicsEngine::stop ( void )
+PhysicsEngine::~PhysicsEngine ( void )
 {
     log.put ( LOG_INFO, "Removing ODE world data from memory");
     dCloseODE();
     //finally stop the log engine
     log.stop (  );
-
-    return ( 0 );
 }
