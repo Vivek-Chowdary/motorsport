@@ -55,5 +55,7 @@ class GuiEngine
     /// Renders all the gui on screen.
     /** Renders on screen all the system data (gui) for this frame.
     */
+    void updateStatistics ( void  );
+    
     int step ( void );
 };
