@@ -43,9 +43,11 @@ class LogEngine
     signed char logLevel;
 	public:
 		//starts the log process, specifying the level of verbosity
-		int start (bool appendMode, signed char level, char *filePath);
+		int start (signed char level, char *filePath, bool appendMode=false);
 		//writes textToLog to the .logFile (level 0=error; level 1=warning; level >1=info)
-		int put (bool appendMode, signed char level, char *textToLog);
+		int put (signed char level, char *textToLog, bool useNewLine=true);
+		//same as put - but appends the data to the same line
+		int append (signed char level, char *textToLog);
 		//stops the log process
 		int stop (void);
 };

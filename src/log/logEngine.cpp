@@ -33,7 +33,7 @@
 *
 ******************************************************************************/
 
-int LogEngine::start (bool appendMode, signed char level, char *filePath)
+int LogEngine::start (signed char level, char *filePath, bool appendMode)
 {
 	//check if we append (or rewrite the whole file)
 	logFile = fopen (filePath, (appendMode ? "a" : "w"));
@@ -42,19 +42,19 @@ int LogEngine::start (bool appendMode, signed char level, char *filePath)
     logLevel = level;
     
 	//we put some text at the start of the current log
-	put (false, 2, "Start of LogFile");
+	put (2, "Start of LogFile");
 	
 	return (0);
 }
 
 
-int LogEngine::put (bool appendMode, signed char level, char *textToLog)
+int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
 { 
     //check if we have been told to write this kind of log
     if (level <= logLevel)
     {
         //check if we should append or create a new line
-        if (appendMode)
+        if (!useNewLine)
         {
             // separate previous log with a blank space
             fputc (' ', logFile);
@@ -75,10 +75,14 @@ int LogEngine::put (bool appendMode, signed char level, char *textToLog)
 	return (0);
 }
 
+int LogEngine::append (signed char level, char *textToLog)
+{
+	return put(level, textToLog, false /* don't useNewLine */);
+}
 
 int LogEngine::stop (void)
 {
-	put (false, 2, "End of LogFile");
+	put (2, "End of LogFile");
 	fclose (logFile);
 	
 	return (0);
