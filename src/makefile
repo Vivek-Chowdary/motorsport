@@ -70,6 +70,7 @@ LIBRARIES := \
 
 SOURCES := \
 	log/logEngine.cpp \
+        log/logParser.cpp \
         data/cubeData.cpp \
         data/cameraData.cpp \
         data/domParser.cpp \
@@ -77,6 +78,7 @@ SOURCES := \
         graphics/cubeGraphics.cpp \
         graphics/cameraGraphics.cpp \
 	graphics/graphicsEngine.cpp \
+        graphics/graphicsParser.cpp \
 	gui/guiEngine.cpp \
         physics/cubePhysics.cpp \
 	physics/physicsEngine.cpp \

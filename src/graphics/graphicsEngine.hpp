@@ -29,6 +29,8 @@
 #include "cube.hpp"
 #include "camera.hpp"
 
+struct GraphicsData;
+
 /// Manages everything related to the rendering process.
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, track, etc...).
 */
@@ -70,13 +72,41 @@ class GraphicsEngine
     /// Selects a renderer and switches to the chosen resolution.
     /** Selects a renderer and switches to the chosen resolution. If the desired render (OpenGL) is not found, the first available one is then chosen.
     */
-    bool manualInitialize (  );
+    bool manualInitialize ( GraphicsData * data );
     /// Tells Ogre where to find resources.
     /** Tells Ogre where to find resources via the resources.cfg file. This allows Ogre to know where all the data (meshes, materials, textures...) can be found, not needing to explicitly indicate it.
     */
-    void setupResources (  );
+    void setupResources ( GraphicsData * data );
 
     /// Called by the generic XML parser; it loads configuration data from a file.
     static int processGraphicsConfigFile ( DOMNode * n, void * data );
         
 };
+
+struct GraphicsData
+{
+    GraphicsEngine * graphics;
+    LOG_LEVEL localLogLevel;
+    char * localLogName;
+    char * screenshotFile;
+    char * ogreConfigFile;
+    /*  ST_GENERIC
+        ST_EXTERIOR_CLOSE
+        ST_EXTERIOR_FAR
+        ST_EXTERIOR_REAL_FAR
+        ST_INTERIOR */
+    Ogre::SceneType sceneManager;
+    int anisotropy;
+    /*  TFO_NONE
+        TFO_BILINEAR
+        TFO_TRILINEAR
+        TFO_ANISOTROPIC */
+    Ogre::TextureFilterOptions filtering;
+    int width;
+    int height;
+    int bpp;
+    char * renderer;
+    int defaultNumMipMaps;
+    bool fullScreen; //0, 1
+};
+

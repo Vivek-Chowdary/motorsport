@@ -25,35 +25,37 @@
 #include "graphicsEngine.hpp"
 #include <stdlib.h>
 
-struct Data
-{
-    GraphicsEngine * graphics;
-};
-
 GraphicsEngine::GraphicsEngine (  )
 {
     //first of all start the logger (automatically logs the start of itself)
-    Data data;
-    data.graphics = this;
-    processConfigFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)&data);
+    GraphicsData * data = new GraphicsData;
+    data->graphics = this;
+    processConfigFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)data);
+
+    log = new LogEngine ( data->localLogLevel, data->localLogName );
+    log->put( LOG_INFO, "Temporary parsing data already loaded into memory...");
 
     //get the direction of the graphics data
     log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer (  );
     systemData = SystemData::getSystemDataPointer (  );
 
+    log->put ( LOG_INFO, "Loading screenshot filename into memory...");
+    screenshotFilename = new char[strlen(data->screenshotFile)+1];
+    strncpy (screenshotFilename, data->screenshotFile, strlen(data->screenshotFile)+1);
+
     log->put ( LOG_INFO, "Setting screen properties..." );
-    width = 800;
-    height = 600;
-    bpp = 0;
-    fullScreen = false;
+    width = data->width;
+    height = data->height;
+    bpp = data->bpp;
+    fullScreen = data->fullScreen;
     log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width,
                   height, bpp );
 
     ogreRoot = new Ogre::Root (  );
-    setupResources (  );
+    setupResources ( data );
     // Initialise the system
-    if ( !manualInitialize (  ) )
+    if ( !manualInitialize ( data ) )
     {
 //        return false;
     }
@@ -64,10 +66,10 @@ GraphicsEngine::GraphicsEngine (  )
                                                       "No" );
     systemData->ogreWindow = ogreRoot->initialise ( true );
     systemData->ogreSceneManager =
-        ogreRoot->getSceneManager ( Ogre::ST_GENERIC );
+        ogreRoot->getSceneManager ( data->sceneManager );
 
     // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
+    Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( data->defaultNumMipMaps );
 
     // Create the skybox
     Ogre::Quaternion rotationToZAxis;
@@ -77,12 +79,19 @@ GraphicsEngine::GraphicsEngine (  )
                                               rotationToZAxis );
 
     //Set some graphics settings
-    Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy ( 1 );
+    Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy ( data->anisotropy );
     Ogre::MaterialManager::getSingleton (  ).
-        setDefaultTextureFiltering ( Ogre::TFO_BILINEAR );
+        setDefaultTextureFiltering ( data->filtering );
+
+    log->put( LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete [](data->localLogName);
+    delete [](data->screenshotFile);
+    delete [](data->ogreConfigFile);
+    delete [](data->renderer);
+    delete data;
 }
 
-bool GraphicsEngine::manualInitialize (  )
+bool GraphicsEngine::manualInitialize ( GraphicsData * data )
 {
     Ogre::RenderSystem * renderSystem;
     bool ok = false;
@@ -96,7 +105,8 @@ bool GraphicsEngine::manualInitialize (  )
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
-        if ( strstr ( &( *renderSystem->getName (  ) ), "OpenGL" ) )
+        log->put ( LOG_INFO, "Loading ogre renderer name into memory...");
+        if ( strstr ( &( *renderSystem->getName (  ) ), data->renderer ) )
         {
             ok = true;
             break;
@@ -119,11 +129,12 @@ bool GraphicsEngine::manualInitialize (  )
     return true;
 }
 
-void GraphicsEngine::setupResources ( void )
+void GraphicsEngine::setupResources ( GraphicsData * data )
 {
     // Load resource paths from config file
     Ogre::ConfigFile cf;
-    cf.load ( "resources.cfg" );
+    log->put ( LOG_INFO, "Loading ogre config filename into memory...");
+    cf.load ( data->ogreConfigFile );
 
     // Go through all settings in the file
     Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
@@ -172,90 +183,3 @@ GraphicsEngine::~GraphicsEngine ( void )
     delete log;
 }
 
-int GraphicsEngine::processGraphicsConfigFile ( DOMNode * n, void * data)
-{
-//    DOMNode *child;
-    if ( n )
-    {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
-        {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
-
-            if ( !strncmp ( name, "graphicsConfig", 15 ) )
-            {
-                XERCES_STD_QUALIFIER cout << "Found the graphics engine config element." << XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
-
-                    LOG_LEVEL tmpLogLevel = LOG_INFO;
-                    char * tmpLogName = NULL;
-                    
-                    for ( int i = 0; i < nSize; ++i )
-                    {
-                        DOMAttr *pAttributeNode =
-                            ( DOMAttr * ) pAttributes->item ( i );
-                        char *name =
-                            XMLString::transcode ( pAttributeNode->
-                                                   getName (  ) );
-                        if ( !strncmp ( name, "localLogLevel", 14 ) )
-                        {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the local log level:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                tmpLogLevel = LOG_ERROR;
-                            if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                tmpLogLevel = LOG_WARNING;
-                            if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                tmpLogLevel = LOG_INFO;
-                            if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                tmpLogLevel = LOG_VERBOSE;
-                            if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                tmpLogLevel = LOG_TRACE;
-                        }
-
-                        if ( !strncmp ( name, "localLogName", 13 ) )
-                        {
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the log name:";
-                            tmpLogName = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                        }
-                        if ( !strncmp ( name, "screenshotFile", 15 ) )
-                        {
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the screenshot filename:";
-                            XMLString::release ( &name );
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            (*(Data*)data).graphics->log->put ( LOG_INFO, "Loading screenshot filename into memory...");
-                            (*(Data*)data).graphics->screenshotFilename = new char[strlen(name)+1];
-                            strncpy ((*(Data*)data).graphics->screenshotFilename, name, strlen(name)+1);
-                        }
-                        XMLString::release ( &name );
-                    }
-                    (*(Data*)data).graphics->log = new LogEngine ( tmpLogLevel, tmpLogName );
-                    XMLString::release ( &tmpLogName );
-                }
-            }
-        }
-
-        /*        for ( child = n->getFirstChild (  ); child != 0; child = child->getNextSibling (  ) )
-           {
-           processLogConfigFile ( child );
-           } */
-    }
-    return 1;
-}
