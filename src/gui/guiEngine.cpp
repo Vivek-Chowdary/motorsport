@@ -78,8 +78,11 @@ int GuiEngine::computeStep (void)
     }
     if (showStatistics)
     {
+        if (telemetryText.size() != 0)
+        {
+            telemetryOverlay->show();
+        }
         overlay->show ();
-        telemetryOverlay->show ();
     } else {
         overlay->hide ();
         telemetryOverlay->hide ();
@@ -162,6 +165,8 @@ void GuiEngine::addTelemetryLine (const char * line)
 {
     if (telemetryText.size() == 0)
     {
+        Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
+        telemetryOverlay->show();
         GuiElement *telHeader = GuiManager::getSingleton ().getGuiElement ("telemetry/header");
         telHeader->setCaption (line);
         telemetryText.append (line);
