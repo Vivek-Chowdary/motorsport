@@ -25,7 +25,7 @@
 int main ( int argc, char **argv )
 {
     MainData * mainData = new MainData;
-    processConfigFile ( "mainConfig.xml", &InputEngine::processInputConfigFile, (void*)mainData );
+    processConfigFile ( "mainConfig.xml", &processMainConfigFile, (void*)mainData );
     
     LogEngine *log = new LogEngine ( mainData->localLogLevel, mainData->localLogName );
     log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
@@ -201,19 +201,19 @@ int processMainConfigFile ( DOMNode * n, void *data )
                             XERCES_STD_QUALIFIER cout << name <<
                                 XERCES_STD_QUALIFIER endl;
                             if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                ( *( InputData * ) data ).localLogLevel =
+                                ( *( MainData * ) data ).localLogLevel =
                                     LOG_ERROR;
                             if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                ( *( InputData * ) data ).localLogLevel =
+                                ( *( MainData * ) data ).localLogLevel =
                                     LOG_WARNING;
                             if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                ( *( InputData * ) data ).localLogLevel =
+                                ( *( MainData * ) data ).localLogLevel =
                                     LOG_INFO;
                             if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                ( *( InputData * ) data ).localLogLevel =
+                                ( *( MainData * ) data ).localLogLevel =
                                     LOG_VERBOSE;
                             if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                ( *( InputData * ) data ).localLogLevel =
+                                ( *( MainData * ) data ).localLogLevel =
                                     LOG_TRACE;
                         }
                         if ( !strncmp ( name, "localLogName", 13 ) )
@@ -227,9 +227,9 @@ int processMainConfigFile ( DOMNode * n, void *data )
                             XERCES_STD_QUALIFIER cout << name <<
                                 XERCES_STD_QUALIFIER endl;
 
-                            ( *( InputData * ) data ).localLogName =
+                            ( *( MainData * ) data ).localLogName =
                                 new char[strlen ( name ) + 1];
-                            strncpy ( ( *( InputData * ) data ).localLogName,
+                            strncpy ( ( *( MainData * ) data ).localLogName,
                                       name, strlen ( name ) + 1 );
                         }
                         XMLString::release ( &name );
