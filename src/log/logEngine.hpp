@@ -84,7 +84,7 @@ class LogEngine
 	@param verbosity level to get code for.
 	@return code as a short c-string.
     */
-    const char *GetLogLevelCode (LOG_LEVEL level);
+    const std::string GetLogLevelCode (LOG_LEVEL level);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
@@ -93,7 +93,7 @@ class LogEngine
         @param localLevel level of verbosity of this log.
         @param name 3 characters with an identifier for the log.
     */
-      LogEngine (LOG_LEVEL localLevel, const char *name);
+      LogEngine (LOG_LEVEL localLevel, const std::string & name);
     // / Deletes the log engine, closing the log file if needed.
     /** Deletes the log engine and associated data. If there's no other log engines left, the log file will be closed.
     */

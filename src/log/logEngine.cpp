@@ -25,7 +25,7 @@ LOG_LEVEL LogEngine::globalLevel = LOG_ENDUSER;
 int LogEngine::numberOfLogEngines = 0;
 int LogEngine::textBuffer = 128;
 
-LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logLevel (localLevel), logName (name)
+LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
 {
     // we set the log name (3 chars, extended with space if needed)
     logName.resize (3, ' ');
@@ -92,7 +92,7 @@ void LogEngine::put (LOG_LEVEL level, const char *textToLog)
     log(level, LOG_FILE, textToLog);
 }
 
-const char *LogEngine::GetLogLevelCode (LOG_LEVEL level)
+const std::string LogEngine::GetLogLevelCode (LOG_LEVEL level)
 {
     switch (level)
     {
@@ -162,7 +162,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     }
     if (mask & LOG_LOADSCREEN)
     {
-        GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (buffer);
+        GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (std::string(buffer));
     }
     if ((mask & LOG_FILE))
     {
