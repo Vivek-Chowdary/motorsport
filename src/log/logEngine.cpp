@@ -21,26 +21,33 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
+//TODO use iostreams for file management/writing
 
 int LogEngine::start ( LOG_LEVEL level, const char *filePath, bool appendMode )
 {
-    //check if we append (or rewrite the whole file)
-    logFile = fopen ( filePath, ( appendMode ? "a" : "w" ) );
-
+    //check if the level is correct
+    if ( level < 0 || level > MAX_LOG_LEVEL ) return ( -2 );
+        
     //we set the level of verbosity
     logLevel = level;
 
-    //we put some text at the start of the current log
-    put ( LOG_INFO, "Start of LogFile" );
+    //check if we append (or rewrite the whole file)
+    if ( ( logFile = fopen ( filePath, ( appendMode ? "a" : "w" ) ) ) == NULL ) return ( -1 );
 
-    return ( 0 );
+    //we put some text at the start of the current log
+    //TODO check returning value
+    put ( LOG_INFO, "Start of log file" );
+
+    return ( 1 );
 }
 
 int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
 {
+    //TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
 
+    //TODO check returning values
     //convert parameters to a string
     va_start ( arglist, textToLogFormat );
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
@@ -57,48 +64,50 @@ int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
 
 int LogEngine::put ( LOG_LEVEL level, const char *textToLog, bool useNewLine )
 {
+    //check if the level is correct
+    if ( level < 0 || logLevel > MAX_LOG_LEVEL ) return ( -2 );
+    
     //check if we have been told to write this kind of log
-    if ( level <= logLevel )
+    if ( level > logLevel ) return ( -1 );
+    
+    //check if we should append or create a new line
+    if ( !useNewLine )
     {
-        //check if we should append or create a new line
-        if ( !useNewLine )
-        {
-            // separate previous log with a blank space
-            fputc ( ' ', logFile );
-        }
-        else
-        {
-            //write log level information
-            switch ( level )
-            {
-            case LOG_ERROR:
-                fputs ( "\n(EE): ", logFile );
-                break;
-            case LOG_WARNING:
-                fputs ( "\n(WW): ", logFile );
-                break;
-            default:
-                fputs ( "\n(II): ", logFile );
-                break;
-            }
-        }
-        //write log text
-        fputs ( textToLog, logFile );
-        fflush ( logFile );
-        return ( 0 );
+        // separate previous log with a blank space
+        if ( fputc ( ' ', logFile ) == EOF ) return ( -3 );
     }
-    return ( -1 );
+    else
+    {
+        //write log level information
+        switch ( level )
+        {
+        case LOG_ERROR:
+            if ( fputs ( "\n(EE): ", logFile ) == EOF ) return ( -3 );
+            break;
+        case LOG_WARNING:
+            if ( fputs ( "\n(WW): ", logFile ) == EOF ) return ( -3 );
+            break;
+        default:
+            if ( fputs ( "\n(II): ", logFile ) == EOF ) return ( -3 );
+            break;
+        }
+    }
+    //write log text
+    if ( fputs ( textToLog, logFile ) == EOF ) return ( -3 );
+    if ( fflush ( logFile ) != 0) return ( -3 );
+    return ( 0 );
 }
 
 int LogEngine::append ( LOG_LEVEL level, const char *textToLog )
 {
-    return put ( level, textToLog, false /* don't useNewLine */  );
+    //writes the log message without a newline.
+    return put ( level, textToLog, false );
 }
 
 int LogEngine::stop ( void )
 {
-    put ( LOG_INFO, "End of LogFile" );
-    fclose ( logFile );
+    if ( put ( LOG_INFO, "End of LogFile" ) < 0 ) return ( -1 );
+    if ( fclose ( logFile ) != 0 ) return ( -2 );
 
     return ( 0 );
 }

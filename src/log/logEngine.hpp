@@ -37,6 +37,7 @@ enum LOG_LEVEL
     LOG_VERBOSE = 3,            //!< Message with information for complete information.
     LOG_TRACE = 4               //!< Message with lots of information, good for debugging.
 };
+#define MAX_LOG_LEVEL 4
 
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
@@ -61,6 +62,7 @@ class LogEngine
         @param appendMode allows to append data to the log file. It rewrites the whole file by default.
         @return 1 on success.
         @return -1 if there was problems opening the log file.
+        @return -2 if the level is incorrect.
     */
     int start ( LOG_LEVEL level,
                 const char *filePath, bool appendMode = false );
@@ -69,7 +71,7 @@ class LogEngine
     /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). It's possible to avoid writing a newline before the message.
         @param level level of the log message.
         @param textToLog message that is to be logged if its level os low enough.
-        @param useNewLine writes a '\n' right before the message (default behaviour) if set to 'true'.
+        @param useNewLine writes a '\\n' right before the message (default behaviour) if set to 'true'.
         @return 1 on success.
         @return -1 if the message level is too high to be logged.
         @return -2 if there was problem writing to the file. 
@@ -82,8 +84,9 @@ class LogEngine
         @param textToLogFormat first part of a printf-like formated log message.
         @param ... optional additional parameters that complete the log message format.
         @return 1 on success.
-        @return -1 if the message level is too high to be logger.
-        @return -2 if there was a problem writing to the file.
+        @return -1 if the message level is too high to be logged.
+        @return -2 if the message level is incorrect.
+        @return -3 if there was a problem writing to the file.
     */
     int format ( LOG_LEVEL level, const char *textToLogFormat, ... );
 
@@ -93,14 +96,16 @@ class LogEngine
         @param textToLog message that is to be logged if its level os low enough.
         @return 1 on success.
         @return -1 if the message level is too high to be logged.
-        @return -2 if there was problem writing to the file. 
+        @return -2 if the message level is incorrect.
+        @return -3 if there was a problem writing to the file.
     */
     int append ( LOG_LEVEL level, const char *textToLog );
 
     /// Stops the log process
     /** Closes the log file.
         @return 1 on success.
-        @return -1 if there was problems while closing the file.
+        @return -1 if there was a problem writing the end of log message
+        @return -2 if there was problems while closing the file.
     */
     int stop ( void );
 };
