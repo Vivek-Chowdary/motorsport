@@ -46,6 +46,10 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
 
 int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
+    // check if we have been told to write this kind of log
+    if (level > globalLevel || level > logLevel)
+        return (-1);
+
     // TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
