@@ -138,6 +138,20 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     logLine << buffer;
 
     // send to recievers
+    const bool telemetryOnly = true; // only modifiable at compile time
+    if (telemetryOnly)
+    {
+        if (mask & LOG_TELEMETRY)
+        {
+            GuiEngine::getGuiEnginePointer ()->addTelemetryLine (buffer);
+            logFile << logLine.str () << "\n";
+            logFile.flush ();
+        }
+        if (mask & LOG_LOADSCREEN)
+        {
+            GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (buffer);
+        }
+    } else {
     if (mask & LOG_TELEMETRY)
     {
         GuiEngine::getGuiEnginePointer ()->addTelemetryLine (buffer);
@@ -154,6 +168,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     {
         logFile << logLine.str () << "\n";
         logFile.flush ();
+    }
     }
     // exit after logging an error
     if (level == LOG_ERROR)
