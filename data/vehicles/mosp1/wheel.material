@@ -5,7 +5,7 @@ material rim/SOLID/mosp1wheel.tga
   {
     pass
     {
-      ambient 5.2 5.2 5.2
+      ambient 0 0 0
       //diffuse 0.800000 0.800000 0.800000
       //specular 0.500000 0.500000 0.500000 50.000000
       //emissive 0.000000 0.000000 0.000000
@@ -33,7 +33,7 @@ material wheel/SOLID/mosp1wheel.tga
   {
     pass
     {
-      ambient 5.2 5.2 5.2
+      ambient 0 0 0
       //diffuse 0.400000 0.400000 0.400000
       //specular 0.500000 0.500000 0.500000 50.000000
       //emissive 0.000000 0.000000 0.000000

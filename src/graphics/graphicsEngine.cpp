@@ -422,6 +422,11 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 #endif
     log->put (LOG_DEVELOPER, "Getting ogre scene manager");
     systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
+    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_NONE);    
+//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(5.0, 5.0, 5.0));
 
     // Set default mipmap level (NB some APIs ignore this)
     log->put (LOG_ENDUSER, "Setting up default number of mipmap levels");

@@ -5,7 +5,7 @@ material intake/SOLID/mosp1-body.tga
   {
     pass
     {
-      ambient 5.2 5.2 5.2
+      ambient 0.069 0.069 0.069
       //diffuse 0.600000 0.600000 0.600000
       //specular 0.500000 0.500000 0.500000 20.000000
       //emissive 0.000000 0.000000 0.000000
@@ -24,7 +24,7 @@ material bodyblack/SOLID/mosp1-body.tga
   {
     pass
     {
-      ambient 5.2 5.2 5.2
+      ambient 0.069 0.069 0.069
       diffuse 0.000000 0.000000 0.000000
       specular 0.800000 0.800000 0.800000 50.000000
       //emissive 0.000000 0.000000 0.000000
@@ -44,7 +44,7 @@ material glass/SOLID/mosp1-body.tga
     pass
     {
       scene_blend alpha_blend
-      ambient 5.2 5.2 5.2
+      ambient 0.069 0.069 0.069
       //diffuse 0.800000 0.800000 0.800000
       //specular 0.700000 0.700000 0.700000 280.000000
       //emissive 0.000000 0.000000 0.000000
@@ -82,7 +82,7 @@ material chrome/SOLID/mosp1-body.tga
   {
     pass
     {
-      ambient 5.2 5.2 5.2
+      ambient 0.069 0.069 0.069
       //diffuse 0.800000 0.800000 0.800000
       //specular 1.000000 1.000000 1.000000 340.000000
       //emissive 0.000000 0.000000 0.000000
@@ -110,7 +110,7 @@ material bodycolor/SOLID/mosp1-body.tga
   {
         pass
         {
-                ambient 5.2 5.2 5.2
+                ambient 0.069 0.069 0.069
                 // diffuse 0 0 0
                 //specular 0.2 0.2 0.2 1
                 // specular 0.500000 0.500000 0.500000 50.000000
@@ -148,7 +148,7 @@ material headlight/SOLID/mosp1-body.tga
   {
         pass
         {
-                ambient 5.2 5.2 5.2
+                ambient 0.069 0.069 0.069
                 // diffuse 0 0 0
                 //specular 0.2 0.2 0.2 1
                 // specular 0.500000 0.500000 0.500000 50.000000
