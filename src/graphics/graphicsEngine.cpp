@@ -37,15 +37,15 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     systemData = sysData;
     log.append ( LOG_INFO, "Ok" );
 
-    systemData->graphicsData.ogreRoot = new Root (  );
+    graphicsData->ogreRoot = new Root (  );
     setupResources (  );
     if ( !configure (  ) )
         return false;
-    systemData->graphicsData.ogreSceneManager =
-        systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
+    graphicsData->ogreSceneManager =
+        graphicsData->ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
     worldData->camera1->ogreCamera =
-        systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
+        graphicsData->ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
     worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 0 ) );
     worldData->camera1->ogreCamera->lookAt ( Vector3 ( 10, 10, 0 ) );
@@ -53,7 +53,7 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     
     // Create one viewport, entire window
     Viewport *vp =
-        systemData->graphicsData.ogreWindow->addViewport ( worldData->camera1->
+        graphicsData->ogreWindow->addViewport ( worldData->camera1->
                                                            ogreCamera );
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     
@@ -63,33 +63,23 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     // Create the skybox
     Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix(Matrix3(1,0,0,0,0,-1,0,1,0));
-    systemData->graphicsData.ogreSceneManager->setSkyBox ( true,
-                                                           "MotorsportSkyBox", 5000, true, rotationToZAxis );
+    graphicsData->ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
                                                            
     //Create cubes
     for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
         char nombre[20];
         sprintf ( nombre, "Cubo%i", i );
-        worldData->cubeList[i].cubeEntity =
-            systemData->graphicsData.ogreSceneManager->createEntity ( nombre,
-                                                                      "../data/cube.mesh" );
-        worldData->cubeList[i].cubeNode =
-            static_cast <
-            SceneNode *
-            >( systemData->graphicsData.ogreSceneManager->
+        worldData->cubeList[i].cubeEntity = graphicsData->ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
+        worldData->cubeList[i].cubeEntity->setMaterialName("cube");
+        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( graphicsData->ogreSceneManager->
                getRootSceneNode (  )->createChild (  ) );
-        worldData->cubeList[i].cubeNode->attachObject ( worldData->cubeList[i].
-                                                        cubeEntity );
+        worldData->cubeList[i].cubeNode->attachObject ( worldData->cubeList[i].cubeEntity );
     }
 
     //Set some graphics settings
-    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
-                                                              graphicsData.
-                                                              anisotropic );
-    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( systemData->
-                                                                    graphicsData.
-                                                                    filtering );
+    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( graphicsData->anisotropic );
+    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( graphicsData->filtering );
     return ( 0 );
 
 }
@@ -102,8 +92,7 @@ bool GraphicsEngine::configure (  )
         // If returned true, everything's ok, we have a valid config.
         // Here we choose to let the system create a default rendering window
         // by passing 'true'
-        systemData->graphicsData.ogreWindow =
-            systemData->graphicsData.ogreRoot->initialise ( true );
+        graphicsData->ogreWindow = graphicsData->ogreRoot->initialise ( true );
         return true;
     }
     return false;
@@ -174,12 +163,12 @@ int GraphicsEngine::step ( void )
     }
 
     //Update status of statistics overlays.
-    showStatistics ( systemData->graphicsData.getStatisticsEnabled (  ) );
+    showStatistics ( graphicsData->getStatisticsEnabled (  ) );
     
     //Let the listener frames be started and ended: they are needed for particle systems.
-    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
-    systemData->graphicsData.ogreWindow->update (  );
-    systemData->graphicsData.ogreRoot->_fireFrameEnded (  );
+    graphicsData->ogreRoot->_fireFrameStarted (  );
+    graphicsData->ogreWindow->update (  );
+    graphicsData->ogreRoot->_fireFrameEnded (  );
     
     //Update statistics.... this should be done inside the main loop.
     updateStatistics (  );
@@ -189,35 +178,35 @@ int GraphicsEngine::step ( void )
 
 void GraphicsEngine::showStatistics ( bool show )
 {
-    Overlay *o = ( Overlay * ) OverlayManager::getSingleton (  ).
-        getByName ( "Core/DebugOverlay" );
-    if ( !o )
+    Overlay *overlay = ( Overlay * ) OverlayManager::getSingleton (  ).
+        getByName ( "gui" );
+    if ( !overlay )
         Except ( Exception::ERR_ITEM_NOT_FOUND,
-                 "Could not find overlay Core/DebugOverlay",
-                 "showDebugOverlay" );
-    o->hide (  );
+                 "Could not find overlay gui overlay",
+                 "statusPanel" );
+    overlay->hide (  );
     if ( show )
     {
-        o->show (  );
+        overlay->show (  );
     }
 }
 
 void GraphicsEngine::updateStatistics (  )
 {
     // update stats when necessary
-    GuiElement *guiAvg = GuiManager::getSingleton (  ).getGuiElement ( "Core/AverageFps" );
-    GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "Core/CurrFps" );
-    GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "Core/BestFps" );
-    GuiElement *guiWorst = GuiManager::getSingleton (  ).getGuiElement ( "Core/WorstFps" );
-    const RenderTarget::FrameStats & stats = systemData->graphicsData.ogreWindow->getStatistics (  );
+    GuiElement *guiAvg = GuiManager::getSingleton (  ).getGuiElement ( "gui/AverageFps" );
+    GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "gui/CurrFps" );
+    GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "gui/BestFps" );
+    GuiElement *guiPhysics = GuiManager::getSingleton (  ).getGuiElement ( "gui/PhysicsRate" );
+    const RenderTarget::FrameStats & stats = graphicsData->ogreWindow->getStatistics (  );
     guiAvg->setCaption ( "Average FPS: " + StringConverter::toString ( stats.avgFPS ) );
     guiCurr->setCaption ( "Current FPS: " + StringConverter::toString ( systemData->graphicsStepsPerSecond ) );
     guiBest->setCaption ( "Best FPS: " + StringConverter::toString ( stats.bestFPS ) + "FPS " + StringConverter::toString ( stats.bestFrameTime ) + " ms" );
-    guiWorst->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
-    GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "Core/NumTris" );
+    guiPhysics->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
+    GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "gui/NumTris" );
     guiTris->setCaption ( "Triangle Count: " + StringConverter::toString ( stats.triangleCount ) );
-    GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "Core/DebugText" );
-    guiDbg->setCaption ( systemData->graphicsData.ogreWindow->getDebugText (  ) );
+    GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "gui/DebugText" );
+    guiDbg->setCaption ( graphicsData->ogreWindow->getDebugText (  ) );
 }
 
 int GraphicsEngine::stop ( void )

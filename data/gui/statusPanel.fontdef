@@ -1,0 +1,7 @@
+TrebuchetMSBold
+{
+	type 		truetype
+	source 		trebucbd.ttf
+	size 		32
+	resolution 	55
+}

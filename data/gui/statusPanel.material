@@ -1,0 +1,51 @@
+material gui/StatsBlockBorder
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				statusPanelBorder.png
+			}
+		}
+	}
+}
+material gui/StatsBlockCenter
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture statusPanelCenter.png
+			}
+		}
+	}
+}
+material gui/StatsBreak
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_check off
+
+			texture_unit
+			{
+				texture statusPanelBreak.png
+			}
+		}
+	}
+}

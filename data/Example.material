@@ -1,4 +1,4 @@
-material MotorsportSkyBox
+material skybox
 {
 	technique
 	{
@@ -15,7 +15,7 @@ material MotorsportSkyBox
 		}
 	}
 }
-material 1 - Default
+material cube
 {
 	technique
 	{
