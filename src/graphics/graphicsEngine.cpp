@@ -24,6 +24,7 @@
 #include "log/logEngine.hpp"
 #include "world.hpp"
 #include "SDL/SDL_keysym.h"
+#include "vehicle.hpp"
 
 GraphicsEngine::GraphicsEngine ()
 {

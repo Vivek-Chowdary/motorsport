@@ -14,11 +14,11 @@
 #   include <vector>
 #   include <string>
 #   include "worldObject.hpp"
-#   include "vehicle.hpp"
 
 //forward declaration
 class Camera;
 class Track;
+class Vehicle;
 
 class World : public WorldObject
 {
