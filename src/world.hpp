@@ -26,39 +26,38 @@
 #    include "SDL.h"
 #    include "Ogre.h"
 
-class Rectangle
+class Cube
 {
-    SDL_Rect rectangle;
-    int visible;
   public:
-    void setPosition ( Sint16 newPosX, Sint16 newPosY );
-    Sint16 getPositionX ( void );
-    Sint16 getPositionY ( void );
-    void setSize ( Uint16 newWidth, Uint16 newHeight );
-    Sint16 getSizeX ( void );
-    Sint16 getSizeY ( void );
-    void setVisible ( int visibility );
-    int isVisible (  );
-    Uint8 red,
-          green,
-          blue;
-    SDL_Rect *sdlRectangle (  );
-    bool colorSpeed;            //0 -> increasing; 1 -> decreasing
+    Ogre::Entity * cubeEntity;
+    Ogre::SceneNode * cubeNode;
+    int posX,
+        posY,
+        posZ;
 };
 
 class MospCamera
 {
+
   public:
     Ogre::Camera * ogreCamera;
-
+    bool goBack;
+    bool goForward;
+    bool goLeft;
+    bool goRight;
+    bool rotateUp;
+    bool rotateDown;
+    bool rotateLeft;
+    bool rotateRight;
 };
 
 class WorldData
 {                               //this will contain everything related to the simulated/virtual world
   public:
-    int numberOfRectangles;
-    Rectangle *rectangleList;   //for our example,the worlddata has only 2 rect.
+    int numberOfCubes;
+    Cube *cubeList;             //for our example,the worlddata has a set of cubes.
     MospCamera *camera1;
+
 };
 
 #endif

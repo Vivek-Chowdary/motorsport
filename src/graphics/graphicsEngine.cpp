@@ -39,7 +39,8 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
     systemData->graphicsData.ogreRoot = new Root (  );
     setupResources (  );
-    if ( !configure (  ) ) return false ;
+    if ( !configure (  ) )
+        return false;
     systemData->graphicsData.ogreSceneManager =
         systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
@@ -57,9 +58,31 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     // Set default mipmap level (NB some APIs ignore this)
     TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
+
     // Create the scene
     systemData->graphicsData.ogreSceneManager->setSkyBox ( true,
                                                            "MotorsportSkyBox" );
+
+    for ( int i = 0; i < worldData->numberOfCubes; i++ )
+    {
+        char nombre[20];
+
+        sprintf ( nombre, "Cubo%i", i );
+        worldData->cubeList[i].cubeEntity =
+            systemData->graphicsData.ogreSceneManager->createEntity ( nombre,
+                                                                      "../data/cube.mesh" );
+        worldData->cubeList[i].cubeNode =
+            static_cast <
+            SceneNode *
+            >( systemData->graphicsData.ogreSceneManager->
+               getRootSceneNode (  )->createChild (  ) );
+        worldData->cubeList[i].cubeNode->attachObject ( worldData->cubeList[i].
+                                                        cubeEntity );
+        worldData->cubeList[i].cubeNode->translate ( i % 10 * 300,
+                                                     i / 10 % 10 * 300,
+                                                     i / 100 % 10 * 300 );
+    }
+
     MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
                                                               graphicsData.
                                                               anisotropic );
@@ -76,11 +99,11 @@ bool GraphicsEngine::configure (  )
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
     //        if(mRoot->showConfigDialog())
-    if ( manualInitialize () )
+    if ( manualInitialize (  ) )
     {
-    // If returned true, user clicked OK so initialise
-    // Here we choose to let the system create a default rendering window
-    // by passing 'true'
+        // If returned true, user clicked OK so initialise
+        // Here we choose to let the system create a default rendering window
+        // by passing 'true'
         systemData->graphicsData.ogreWindow =
             systemData->graphicsData.ogreRoot->initialise ( true );
         return true;
@@ -88,7 +111,7 @@ bool GraphicsEngine::configure (  )
     return false;
 }
 
-bool GraphicsEngine::manualInitialize ( )
+bool GraphicsEngine::manualInitialize (  )
 {
     RenderSystem *renderSystem;
     bool ok = false;
@@ -101,8 +124,7 @@ bool GraphicsEngine::manualInitialize ( )
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
-        if ( strstr
-             ( &( *renderSystem->getName (  ) ), "OpenGL") )
+        if ( strstr ( &( *renderSystem->getName (  ) ), "OpenGL" ) )
         {
             ok = true;
             break;
@@ -110,14 +132,15 @@ bool GraphicsEngine::manualInitialize ( )
     }
     if ( !ok )
     {
-    // We still don't have a renderer; pick up the first one from the list
+        // We still don't have a renderer; pick up the first one from the list
         renderSystem = ( *renderers->begin (  ) );
     }
 
     Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
 
-    sprintf ( resolution, "%i x %i", graphicsData->width, graphicsData->height );
+    sprintf ( resolution, "%i x %i", graphicsData->width,
+              graphicsData->height );
 
     // Manually set configuration options. These are optional.
     renderSystem->setConfigOption ( "Video Mode", resolution );
@@ -169,7 +192,9 @@ void GraphicsEngine::showStatistics ( bool show )
     if ( show )
     {
         o->show (  );
-    }else{
+    }
+    else
+    {
         o->hide (  );
     }
 }
@@ -179,7 +204,9 @@ void GraphicsEngine::updateStatistics (  )
     static String currFps = "Current FPS: ";
     static String avgFps = "Average FPS: ";
     static String bestFps = "Best FPS: ";
-    static String worstFps = "Worst FPS: ";
+
+    //static String worstFps = "Worst FPS: ";
+    static String worstFps = "Physics Rate: ";
     static String tris = "Triangle Count: ";
 
     // update stats when necessary
@@ -197,15 +224,21 @@ void GraphicsEngine::updateStatistics (  )
     guiCurr->setCaption ( currFps +
                           StringConverter::toString ( stats.lastFPS ) );
     guiBest->setCaption ( bestFps +
-                          StringConverter::toString ( stats.bestFPS ) + " " +
+                          StringConverter::toString ( stats.bestFPS ) + "FPS " +
                           StringConverter::toString ( stats.bestFrameTime ) +
                           " ms" );
     guiWorst->setCaption ( worstFps +
-                           StringConverter::toString ( stats.worstFPS ) +
-                           " " +
-                           StringConverter::toString ( stats.
-                                                       worstFrameTime ) +
-                           " ms" );
+                           StringConverter::toString ( 1000.0f /
+                                                       float ( systemData->
+                                                               physicsData.
+                                                               timeStep ) ) +
+                           //StringConverter::toString ( stats.worstFPS ) +
+                           "Hz " +
+                           //StringConverter::toString ( stats.
+                           //                            worstFrameTime ) +
+                           StringConverter::toString ( systemData->physicsData.
+                                                       timeStep ) + " ms" );
+    //" ms" );
     GuiElement *guiTris =
         GuiManager::getSingleton (  ).getGuiElement ( "Core/NumTris" );
     guiTris->setCaption ( tris +

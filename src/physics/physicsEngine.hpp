@@ -21,7 +21,7 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#include "SDL.h"
+#include "Ogre.h"
 
 class PhysicsEngine
 {

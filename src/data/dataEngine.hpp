@@ -21,7 +21,6 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#include "SDL.h"
 #include "world.hpp"
 #include "system.hpp"
 #include <string.h>

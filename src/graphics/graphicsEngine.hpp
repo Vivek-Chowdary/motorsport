@@ -22,12 +22,9 @@
 
 #include "logEngine.hpp"
 #include "SDL.h"
-
 #include "Ogre.h"
-#    include "OgreConfigFile.h"
-#    include "stdio.h"
-//#include "simulation.hpp"
-//#include "ExampleApplication.h"
+#include "OgreConfigFile.h"
+#include "stdio.h"
 using namespace Ogre;
 
 class GraphicsEngine
@@ -40,12 +37,12 @@ class GraphicsEngine
   public:
     int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
     int step ( void );          //makes the graphics engine draw one frame
-    void showStatistics ( bool show ); //renders the statistics if (show).
+    void showStatistics ( bool show );  //renders the statistics if (show).
     void updateStatistics (  ); //updates data about framerates, etc..
     int stop ( void );          //stops the graphics engine
 
-    bool configure ( );
-    bool manualInitialize();
-    void setupResources ();
+    bool configure (  );
+    bool manualInitialize (  );
+    void setupResources (  );
 
 };

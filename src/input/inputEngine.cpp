@@ -60,8 +60,16 @@ int InputEngine::step ( void )  //processes user input queue
             //this is the user pressing a key in the keyboard
             log.put ( LOG_VERBOSE,
                       "New SDL_KEYDOWN event: finding out what key's been pressed." );
-            processInput ( event.key.keysym.sym );
+            processInputKeyDown ( event.key.keysym.sym );
             break;
+
+        case SDL_KEYUP:
+            //this is the user pressing a key in the keyboard
+            log.put ( LOG_VERBOSE,
+                      "New SDL_KEYUP event: finding out what key's been released." );
+            processInputKeyUp ( event.key.keysym.sym );
+            break;
+
         case SDL_QUIT:
             //this can be the user cliking to close the window
             log.put ( LOG_VERBOSE,
@@ -89,7 +97,7 @@ int InputEngine::stop ( void )
     return ( 0 );
 }
 
-void InputEngine::processInput ( SDLKey keySymbol )
+void InputEngine::processInputKeyDown ( SDLKey keySymbol )
 {
     // in the future, the player will be able to assign, at least, *which* events
     // (keypress, joystick axis modification....) do *what* in the virtual world
@@ -117,7 +125,7 @@ void InputEngine::processInput ( SDLKey keySymbol )
         break;
 
         // the user wants to modify world data using the inputEngine. in this
-        // example, the inputEngine makes the rectangles visible/invisible.
+        // example, the inputEngine moves the camera around.
         // when we get ode working, the inputEngine will change some properties
         // of the world objects, which in that case will be for example
         // worldObjectList.gasPedal.modifyAngle (angle+10)
@@ -128,43 +136,50 @@ void InputEngine::processInput ( SDLKey keySymbol )
         // therefore modifying.... etc...
     case SDLK_RIGHT:
         log.put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keypress..." );
-        worldData->rectangleList[0].setVisible ( 0 );
-        log.append ( LOG_VERBOSE, "rectangle0 is now invisible." );
-        worldData->camera1->ogreCamera->yaw( -10.0f );
-        log.put ( LOG_VERBOSE, "Camera1 rotated to the right.");
+        worldData->camera1->rotateRight = true;
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the right." );
         break;
 
     case SDLK_LEFT:
         log.put ( LOG_VERBOSE, "Processing a SDLK_LEFT keypress..." );
-        worldData->rectangleList[0].setVisible ( 1 );
-        log.append ( LOG_VERBOSE, "rectangle0 is now visible." );
-        worldData->camera1->ogreCamera->yaw( +10.0f );
-        log.put ( LOG_VERBOSE, "Camera1 rotated to the left.");
+        worldData->camera1->rotateLeft = true;
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the left." );
         break;
 
     case SDLK_UP:
         log.put ( LOG_VERBOSE, "Processing a SDLK_UP keypress..." );
-        worldData->rectangleList[1].setVisible ( 0 );
-        log.append ( LOG_VERBOSE, "rectangle1 is now invisible." );
-        worldData->camera1->ogreCamera->pitch( +10.0f );
-        log.put ( LOG_VERBOSE, "Camera1 rotated to the top.");
+        worldData->camera1->rotateUp = true;
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the top." );
         break;
 
     case SDLK_DOWN:
         log.put ( LOG_VERBOSE, "Processing a SDLK_DOWN keypress..." );
-        worldData->rectangleList[1].setVisible ( 1 );
-        log.append ( LOG_VERBOSE, "rectangle1 is now visible." );
-        worldData->camera1->ogreCamera->pitch( -10.0f );
-        log.put ( LOG_VERBOSE, "Camera1 rotated to the bottom.");
+        worldData->camera1->rotateDown = true;
+        log.put ( LOG_VERBOSE, "Camera1 rotated to the bottom." );
         break;
 
-    case SDLK_SPACE:
-        log.put ( LOG_VERBOSE, "Processing a SDLK_SPACE keypress..." );
-        worldData->rectangleList[0].colorSpeed =
-            !( worldData->rectangleList[0].colorSpeed );
-        worldData->rectangleList[1].colorSpeed =
-            !( worldData->rectangleList[1].colorSpeed );
-        log.append ( LOG_VERBOSE, "rectangles colorSpeed are now reversed." );
+    case 'w':
+        log.put ( LOG_VERBOSE, "Processing a w keypress..." );
+        worldData->camera1->goForward = true;
+        log.put ( LOG_VERBOSE, "Camera moved." );
+        break;
+
+    case 's':
+        log.put ( LOG_VERBOSE, "Processing a w keypress..." );
+        worldData->camera1->goBack = true;
+        log.put ( LOG_VERBOSE, "Camera moved." );
+        break;
+
+    case 'a':
+        log.put ( LOG_VERBOSE, "Processing a w keypress..." );
+        worldData->camera1->goLeft = true;
+        log.put ( LOG_VERBOSE, "Camera moved." );
+        break;
+
+    case 'd':
+        log.put ( LOG_VERBOSE, "Processing a w keypress..." );
+        worldData->camera1->goRight = true;
+        log.put ( LOG_VERBOSE, "Camera moved." );
         break;
 
     case SDLK_KP_MINUS:
@@ -223,15 +238,87 @@ void InputEngine::processInput ( SDLKey keySymbol )
 
     case SDLK_PRINT:
         log.put ( LOG_INFO, "Taking a screenshot to sshot.png" );
-        systemData->graphicsData.ogreWindow->writeContentsToFile("sshot.png");
+        systemData->graphicsData.ogreWindow->
+            writeContentsToFile ( "sshot.png" );
         log.append ( LOG_INFO, "Ok" );
         break;
 
     case 'f':
-        log.put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );
+        log.put ( LOG_VERBOSE,
+                  "Processing a 'F' keypress: turning on/off framerates display..." );
         // something
-        systemData->graphicsData.invertStatisticsEnabled();
+        systemData->graphicsData.invertStatisticsEnabled (  );
         log.append ( LOG_VERBOSE, "Ok" );
+        break;
+
+        //this is left for non-assigned input events.
+    default:
+        log.put ( LOG_VERBOSE,
+                  "Processing an unknown keypress: doing nothing..." );
+        // something
+        log.append ( LOG_VERBOSE, "Ok" );
+        break;
+    }
+}
+
+void InputEngine::processInputKeyUp ( SDLKey keySymbol )
+{
+    // in the future, the player will be able to assign, at least, *which* events
+    // (keypress, joystick axis modification....) do *what* in the virtual world
+    // data.
+    // if people want, we can also allow the user to assign *which* events do
+    // *what* in the system data. this means the user could be able to navigate
+    // through the menus with whatever they want. for example, instead of using
+    // the mouse to click gui buttons, the use the steering wheel to select the
+    // button and the gas pedal to 'click' the button.
+    switch ( keySymbol )
+    {
+    case SDLK_RIGHT:
+        log.put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease..." );
+        worldData->camera1->rotateRight = false;
+        log.put ( LOG_VERBOSE, "Camera1 stopped rotating." );
+        break;
+
+    case SDLK_LEFT:
+        log.put ( LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease..." );
+        worldData->camera1->rotateLeft = false;
+        log.put ( LOG_VERBOSE, "Camera1 stopped rotating." );
+        break;
+
+    case SDLK_UP:
+        log.put ( LOG_VERBOSE, "Processing a SDLK_UP keyrelease..." );
+        worldData->camera1->rotateUp = false;
+        log.put ( LOG_VERBOSE, "Camera1 stopped rotating." );
+        break;
+
+    case SDLK_DOWN:
+        log.put ( LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease..." );
+        worldData->camera1->rotateDown = false;
+        log.put ( LOG_VERBOSE, "Camera1 stopped rotating." );
+        break;
+
+    case 'w':
+        log.put ( LOG_VERBOSE, "Processing a w keyrelease..." );
+        worldData->camera1->goForward = false;
+        log.put ( LOG_VERBOSE, "Camera stopped moving." );
+        break;
+
+    case 's':
+        log.put ( LOG_VERBOSE, "Processing a w keyrelease..." );
+        worldData->camera1->goBack = false;
+        log.put ( LOG_VERBOSE, "Camera stopped moving." );
+        break;
+
+    case 'a':
+        log.put ( LOG_VERBOSE, "Processing a w keyrelease..." );
+        worldData->camera1->goLeft = false;
+        log.put ( LOG_VERBOSE, "Camera stopped moving." );
+        break;
+
+    case 'd':
+        log.put ( LOG_VERBOSE, "Processing a w keyprelease..." );
+        worldData->camera1->goRight = false;
+        log.put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 
         //this is left for non-assigned input events.

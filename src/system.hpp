@@ -31,28 +31,19 @@ class GraphicsData
   private:
     bool statisticsEnabled;
   public:
-    SDL_Surface * screen;
-    SDL_PixelFormat *fmt;
-
     int width;
     int height;
     int bpp;
-    Uint32 flags;
-
-    char *title;
-    char *icon;
-    int titleLength;
-    int iconLength;
 
     bool getStatisticsEnabled (  );
     void invertStatisticsEnabled (  );
     void enableStatistics (  );
 
     int anisotropic;
-    Ogre::TextureFilterOptions filtering;
-    Ogre::RenderWindow * ogreWindow;
-    Ogre::SceneManager * ogreSceneManager;
-    Ogre::Root * ogreRoot;
+        Ogre::TextureFilterOptions filtering;
+        Ogre::RenderWindow * ogreWindow;
+        Ogre::SceneManager * ogreSceneManager;
+        Ogre::Root * ogreRoot;
 
     //note that the camera data (origin, dest., angle, focus, etc...) should not
     // be here. that's part of the worldData. there should exist real TV
@@ -64,7 +55,7 @@ class GraphicsData
 
 class InputData
 {
-    public:
+  public:
     //here will go the definition of controllers, be it keyboard, mouse, wheel...
     // and probably some other things, such as number of controllers, number of
     // axis available, axis-calibration data...
@@ -72,7 +63,7 @@ class InputData
 
 class PhysicsData
 {
-    public:
+  public:
     Uint32 timeStep;
     Uint32 desiredStepsPerSecond;
     // this struct is used by the physics engine. it will store things like
@@ -82,7 +73,7 @@ class PhysicsData
 
 class GuiData
 {
-    public:
+  public:
     int nextMenuIndex;          //main menu = 1;  options menu = 2;
     int lastMenuIndex;
 };
@@ -95,7 +86,7 @@ class SystemData
     bool guiLoopEnabled;
   public:
     //independent data
-    GraphicsData graphicsData;
+         GraphicsData graphicsData;
     InputData inputData;
     PhysicsData physicsData;
     GuiData guiData;

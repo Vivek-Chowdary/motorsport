@@ -34,6 +34,7 @@ class InputEngine
   public:
     int start ( WorldData * wrlData, SystemData * sysData );    //starts the input engine
     int step ( void );          //processes user input queue
-    void processInput ( SDLKey keySymbol );
+    void processInputKeyDown ( SDLKey keySymbol );
+    void processInputKeyUp ( SDLKey keySymbol );
     int stop ( void );          //stops the input engine
 };

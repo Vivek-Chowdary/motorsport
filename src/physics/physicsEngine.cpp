@@ -63,45 +63,35 @@ int PhysicsEngine::step ( void )
 {
     //mega-verbosity
     log.put ( LOG_TRACE, "Doing an step: calculating a physics step" );
+    float x = 0,
+        z = 0;
 
-    for ( int currentRectangle = 0;
-          currentRectangle < worldData->numberOfRectangles; currentRectangle++ )
+    //translation of the camera1, advancing or strafing
+    x += ( worldData->camera1->goRight ) ? physicsData->timeStep : 0;
+    x -= ( worldData->camera1->goLeft ) ? physicsData->timeStep : 0;
+    z -= ( worldData->camera1->goForward ) ? physicsData->timeStep : 0;
+    z += ( worldData->camera1->goBack ) ? physicsData->timeStep : 0;
+    worldData->camera1->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
+    x = z = 0;
+    //rotation of the camera1, to the sides or up/down
+    //+x -- rotateRight, +z -- rotateUp
+    x -= ( worldData->camera1->rotateRight ) ? float ( physicsData->timeStep ) /
+        10.0f : 0;
+    x += ( worldData->camera1->rotateLeft ) ? float ( physicsData->timeStep ) /
+        10.0f : 0;
+    z += ( worldData->camera1->rotateUp ) ? float ( physicsData->timeStep ) /
+        10.0f : 0;
+    z -= ( worldData->camera1->rotateDown ) ? float ( physicsData->timeStep ) /
+        10.0f : 0;
+    worldData->camera1->ogreCamera->pitch ( z );
+    worldData->camera1->ogreCamera->yaw ( x );
+
+    for ( int currentCube = 0;
+          currentCube < worldData->numberOfCubes; currentCube++ )
     {
-        //change rectangle colors
-        //do we have to increase or to decrease current color values?
-        if ( worldData->rectangleList[currentRectangle].colorSpeed )
-        {
-            worldData->rectangleList[currentRectangle].red -=
-                1 + physicsData->timeStep;
-            worldData->rectangleList[currentRectangle].green -=
-                2 + physicsData->timeStep;
-            worldData->rectangleList[currentRectangle].blue -=
-                0 + physicsData->timeStep;
-        }
-        else
-        {
-            worldData->rectangleList[currentRectangle].red +=
-                2 + ( physicsData->timeStep % 256 );
-            worldData->rectangleList[currentRectangle].green +=
-                0 + ( physicsData->timeStep % 256 );
-            worldData->rectangleList[currentRectangle].blue +=
-                1 + ( physicsData->timeStep % 256 );
-        }
-        //move rectangles on screen
-        Sint16 currentX =
-            worldData->rectangleList[currentRectangle].getPositionX (  );
-        Sint16 currentY =
-            worldData->rectangleList[currentRectangle].getPositionY (  );
-        currentX += physicsData->timeStep;
-        if ( currentX +
-             worldData->rectangleList[currentRectangle].getSizeX (  ) >
-             systemData->graphicsData.width )
-        {
-            currentX = 0;
-        }
-        worldData->rectangleList[currentRectangle].setPosition ( currentX,
-                                                                 currentY );
-
+        worldData->cubeList[currentCube].cubeNode->
+            pitch ( float ( physicsData->timeStep ) /
+                    ( ( currentCube % 2 ) ? 20.0f : -15.0f ) );
     }
 
     return ( 0 );

@@ -41,35 +41,20 @@ int DataEngine::start ( WorldData * wrlData, SystemData * sysData )
 int DataEngine::loadWorldData ( void )
 {
     //create the camera1 and initialize it
-    log.put ( LOG_INFO, "Creating camera1");
+    log.put ( LOG_INFO, "Creating camera1..." );
     worldData->camera1 = new MospCamera;
-    log.append ( LOG_INFO, "Ok" );
+    worldData->camera1->rotateDown =
+        worldData->camera1->rotateUp =
+        worldData->camera1->rotateLeft =
+        worldData->camera1->rotateRight =
+        worldData->camera1->goBack =
+        worldData->camera1->goForward =
+        worldData->camera1->goLeft = worldData->camera1->goRight = false;
 
-    //create 2 rectangles in the world data
-    log.put ( LOG_INFO, "Creating an array of 2 rectangles..." );
-    worldData->numberOfRectangles = 2;
-    worldData->rectangleList = new Rectangle[2];
-    log.append ( LOG_INFO, "Ok" );
-
-    //initializating rectangle values
-    log.put ( LOG_INFO, "Assigning initial rectangle 1 values..." );
-    worldData->rectangleList[0].setVisible ( 1 );
-    worldData->rectangleList[0].setSize ( 80, 80 );
-    worldData->rectangleList[0].setPosition ( 40, 80 );
-    worldData->rectangleList[0].red = 255;
-    worldData->rectangleList[0].green = 0;
-    worldData->rectangleList[0].blue = 0;
-    worldData->rectangleList[0].colorSpeed = 0;
-    log.append ( LOG_INFO, "Ok" );
-
-    log.put ( LOG_INFO, "Assigning initial rectangle 2 values..." );
-    worldData->rectangleList[1].setVisible ( 1 );
-    worldData->rectangleList[1].setSize ( 160, 160 );
-    worldData->rectangleList[1].setPosition ( 350, 240 );
-    worldData->rectangleList[1].red = 0;
-    worldData->rectangleList[1].green = 255;
-    worldData->rectangleList[1].blue = 255;
-    worldData->rectangleList[0].colorSpeed = 1;
+    //create 2 cubes in the world data
+    log.put ( LOG_INFO, "Creating an array of 2 cubes..." );
+    worldData->numberOfCubes = 500;
+    worldData->cubeList = new Cube[worldData->numberOfCubes];
     log.append ( LOG_INFO, "Ok" );
 
     return ( 0 );
@@ -85,7 +70,7 @@ int DataEngine::loadSystemData ( void )
 
     //set screen properties
     log.put ( LOG_INFO, "Setting screen properties..." );
-    systemData->graphicsData.enableStatistics();
+    systemData->graphicsData.enableStatistics (  );
     systemData->graphicsData.anisotropic = 1;
     systemData->graphicsData.filtering = Ogre::TFO_BILINEAR;
     systemData->graphicsData.width = 1024;
@@ -94,30 +79,8 @@ int DataEngine::loadSystemData ( void )
     log.format ( LOG_INFO, "h%i", systemData->graphicsData.height );
     systemData->graphicsData.bpp = 0;
     log.format ( LOG_INFO, "b%i", systemData->graphicsData.bpp );
-    systemData->graphicsData.flags =
-        SDL_SWSURFACE /*SDL_HWSURFACE */  | SDL_DOUBLEBUF | SDL_HWACCEL;
-    log.append ( LOG_INFO, "Ok" );
 
-    //set window properties
-    systemData->graphicsData.titleLength = 256;
-    systemData->graphicsData.iconLength = 16;
-
-    log.put ( LOG_INFO, "Allocating memory for window properties..." );
-    systemData->graphicsData.title =
-        new char[systemData->graphicsData.titleLength];
-    systemData->graphicsData.icon =
-        new char[systemData->graphicsData.iconLength];
-
-    log.append ( LOG_INFO, "Ok" );
-
-    log.put ( LOG_INFO, "Setting initial window properties..." );
-    strncpy ( systemData->graphicsData.title, "Motorsport",
-              systemData->graphicsData.titleLength );
-    strncpy ( systemData->graphicsData.icon, "Motorsport",
-              systemData->graphicsData.iconLength );
-    log.append ( LOG_INFO, "Ok" );
-
-    //set physics parameters
+    log.put ( LOG_INFO, "Setting physics system data..." );
     systemData->physicsData.desiredStepsPerSecond = 500;
     systemData->physicsData.timeStep =
         1000 / systemData->physicsData.desiredStepsPerSecond;
@@ -127,13 +90,12 @@ int DataEngine::loadSystemData ( void )
 
 int DataEngine::unloadWorldData ( void )
 {
-    //unload the rectangles from memory
-    log.put ( LOG_INFO, "Unloading rectangles from memory..." );
-    delete[]( worldData->rectangleList );
-    log.append ( LOG_INFO, "Ok" );
+    //unload the cubes from memory
+    log.put ( LOG_INFO, "Unloading cubes from memory..." );
+    delete[]( worldData->cubeList );
     log.put ( LOG_INFO, "Unloading camera1 from memory..." );
-    delete(worldData->camera1->ogreCamera);
-    delete(worldData->camera1);
+    delete ( worldData->camera1->ogreCamera );
+    delete ( worldData->camera1 );
     log.append ( LOG_INFO, "Ok" );
 
     return ( 0 );
@@ -141,11 +103,8 @@ int DataEngine::unloadWorldData ( void )
 
 int DataEngine::unloadSystemData ( void )
 {
-    //unload the rectangles from memory
     log.put ( LOG_INFO, "Unloading window data from memory..." );
-    delete[]( systemData->graphicsData.title );
-    delete[]( systemData->graphicsData.icon );
-    delete(systemData->graphicsData.ogreWindow);
+    delete ( systemData->graphicsData.ogreWindow );
     log.append ( LOG_INFO, "Ok" );
 
     return ( 0 );
