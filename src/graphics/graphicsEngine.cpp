@@ -34,22 +34,27 @@ GraphicsEngine::GraphicsEngine ( )
     log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
-    graphicsData = &(systemData->graphicsData);
 
-    graphicsData->ogreRoot = new Root (  );
+    systemData->graphicsData.ogreRoot = new Root (  );
     setupResources (  );
-    if ( !configure (  ) );
+    // Initialise the system
+    if ( !manualInitialize (  ) )
+    {
 //        return false;
-    graphicsData->ogreSceneManager = graphicsData->ogreRoot->getSceneManager ( ST_GENERIC );
+    }
+    // Here we choose to let the system create a default rendering window
+    // by passing 'true'
+    systemData->graphicsData.ogreWindow = systemData->graphicsData.ogreRoot->initialise ( true );
+    systemData->graphicsData.ogreSceneManager = systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
-    worldData->camera->ogreCamera = graphicsData->ogreSceneManager->createCamera ( "Camera1" );
+    worldData->camera->ogreCamera = systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
     worldData->camera->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
     worldData->camera->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
     worldData->camera->ogreCamera->setNearClipDistance ( 5 );
     
     // Create one viewport, entire window
-    Viewport *vp = graphicsData->ogreWindow->addViewport ( worldData->camera->ogreCamera );
+    Viewport *vp = systemData->graphicsData.ogreWindow->addViewport ( worldData->camera->ogreCamera );
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     
     // Set default mipmap level (NB some APIs ignore this)
@@ -58,36 +63,22 @@ GraphicsEngine::GraphicsEngine ( )
     // Create the skybox
     Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix(Matrix3(1,0,0,0,0,-1,0,1,0));
-    graphicsData->ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
+    systemData->graphicsData.ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
                                                            
     //Create cubes
     for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
         char nombre[20];
         sprintf ( nombre, "Cubo%i", i );
-        worldData->cubeList[i].cubeEntity = graphicsData->ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
+        worldData->cubeList[i].cubeEntity = systemData->graphicsData.ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
         worldData->cubeList[i].cubeEntity->setMaterialName("cube");
-        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( graphicsData->ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
+        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( systemData->graphicsData.ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
         worldData->cubeList[i].cubeNode->attachObject (worldData->cubeList[i].cubeEntity);
     }
 
     //Set some graphics settings
-    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( graphicsData->anisotropic );
-    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( graphicsData->filtering );
-}
-
-bool GraphicsEngine::configure (  )
-{
-    // Initialise the system
-    if ( manualInitialize (  ) )
-    {
-        // If returned true, everything's ok, we have a valid config.
-        // Here we choose to let the system create a default rendering window
-        // by passing 'true'
-        graphicsData->ogreWindow = graphicsData->ogreRoot->initialise ( true );
-        return true;
-    }
-    return false;
+    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->graphicsData.anisotropic );
+    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( systemData->graphicsData.filtering );
 }
 
 bool GraphicsEngine::manualInitialize (  )
@@ -116,7 +107,7 @@ bool GraphicsEngine::manualInitialize (  )
 
     Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
-    sprintf ( resolution, "%i x %i", graphicsData->width, graphicsData->height );
+    sprintf ( resolution, "%i x %i", systemData->graphicsData.width, systemData->graphicsData.height );
 
     // Manually set configuration options. These are optional.
     renderSystem->setConfigOption ( "Video Mode", resolution );
@@ -150,9 +141,9 @@ int GraphicsEngine::step ( void )
         worldData->cubeList[currentCube].updateOgreOrientation();
     }
     //Let the listener frames be started and ended: they are needed for particle systems.
-    graphicsData->ogreRoot->_fireFrameStarted (  );
-    graphicsData->ogreWindow->update (  );
-    graphicsData->ogreRoot->_fireFrameEnded (  );
+    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
+    systemData->graphicsData.ogreWindow->update (  );
+    systemData->graphicsData.ogreRoot->_fireFrameEnded (  );
     
     return ( 0 );
 }

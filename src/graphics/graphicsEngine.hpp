@@ -55,8 +55,12 @@ class GraphicsEngine
     */
     int step ( void );
 
-    bool configure (  );
+    /// Selects a renderer and switches to the chosen resolution.
+    /** Selects a renderer and switches to the chosen resolution. If the desired render (OpenGL) is not found, the first available one is then chosen.
+    */
     bool manualInitialize (  );
+    /// Tells Ogre where to find resources.
+    /** Tells Ogre where to find resources via the resources.cfg file. This allows Ogre to know where all the data (meshes, materials, textures...) can be found, not needing to explicitly indicate it.
+    */
     void setupResources (  );
-
 };
