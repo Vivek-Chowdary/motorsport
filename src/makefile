@@ -191,10 +191,6 @@ SOURCES := \
 	input/inputEngine.cpp \
 	gui/guiEngine.cpp \
 	data/xmlParser.cpp \
-	data/graphicsParser.cpp \
-	data/physicsParser.cpp \
-	data/inputParser.cpp \
-	data/guiParser.cpp \
         data/worldObject.cpp \
 	data/cubeData.cpp \
 	data/bodyData.cpp \

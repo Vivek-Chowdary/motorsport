@@ -66,7 +66,7 @@ class GuiEngine
     */
     int computeStep (void);
     // / Called by the generic XML parser; it loads configuration data from a file.
-    static void processGuiConfigFile (DOMNode * n, void *data);
+    void processXmlRootNode (DOMNode * n);
 };
 
 struct GuiData

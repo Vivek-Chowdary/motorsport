@@ -86,7 +86,7 @@ class GraphicsEngine
     void setupResources (GraphicsData * data);
 
     // / Called by the generic XML parser; it loads configuration data from a file.
-    static void processGraphicsConfigFile (DOMNode * n, void *data);
+    void processXmlRootNode (DOMNode * n);
 };
 
 struct GraphicsData

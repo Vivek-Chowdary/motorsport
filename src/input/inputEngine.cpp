@@ -24,13 +24,9 @@
 
 InputEngine::InputEngine ()
 {
-    // first of all start the logger (automatically logs the start of itself)
-    InputData *data = new InputData;
-    data->input = this;
-    processXmlFile ("inputConfig.xml", &InputEngine::processInputConfigFile, (void *) data);
-
-    log = new LogEngine (data->localLogLevel, data->localLogName);
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+    XmlFile * xmlFile = new XmlFile ("inputConfig.xml");
+    processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
 
     log->put (LOG_INFO, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
@@ -40,14 +36,6 @@ InputEngine::InputEngine ()
     keyState = SDL_GetKeyState (NULL);
     log->put (LOG_INFO, "Initializing mouse data variables");
     mouseMovementX = mouseMovementY = 0;
-
-    // Disable cursor on screen
-//    SDL_ShowCursor(SDL_DISABLE);
-//    SDL_WM_GrabInput(SDL_GRAB_ON);
-
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete data;
 }
 
 int InputEngine::computeStep (void)
@@ -330,4 +318,69 @@ InputEngine::~InputEngine (void)
 {
     // finally stop the log engine
     delete log;
+}
+
+void InputEngine::processXmlRootNode (DOMNode * n)
+{
+    InputData *data = new InputData;
+    LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
+    if (n)
+    {
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (n->getNodeName ());
+            tmpLog->format (LOG_INFO, "Name: %s", name);
+
+            if (!strncmp (name, "inputConfig", 12))
+            {
+                tmpLog->put (LOG_INFO, "Found the input engine config element.");
+                if (n->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", name);
+
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(InputData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(InputData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(InputData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(InputData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 10))
+                                (*(InputData *) data).localLogLevel = LOG_TRACE;
+                        }
+
+                        if (!strncmp (name, "localLogName", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "\tFound the log name: %s", name);
+
+                            (*(InputData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(InputData *) data).localLogName, name, strlen (name) + 1);
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+            }
+        }
+    }
+    delete tmpLog;
+    
+    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete[](data->localLogName);
+    delete data;
 }

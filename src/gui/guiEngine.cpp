@@ -24,26 +24,10 @@
 
 GuiEngine::GuiEngine ()
 {
-    // first of all start the logger (automatically logs the start of itself)
-    GuiData *data = new GuiData;
-    data->gui = this;
-    data->showStatistics = 1;
-    processXmlFile ("guiConfig.xml", &GuiEngine::processGuiConfigFile, (void *) data);
-
-    log = new LogEngine (data->localLogLevel, data->localLogName);
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-
-    // get the direction of the graphics data
-    log->put (LOG_INFO, "Setting up data pointers...");
-    worldData = WorldData::getWorldDataPointer ();
-    systemData = SystemData::getSystemDataPointer ();
-
-    log->put (LOG_INFO, "Setting showStatistics ");
-    showStatistics = data->showStatistics;
-
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete data;
+    XmlFile * xmlFile = new XmlFile ("guiConfig.xml");
+    processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
+    
 }
 
 int GuiEngine::computeStep (void)
@@ -99,4 +83,87 @@ GuiEngine::~GuiEngine (void)
 {
     // finally stop the log engine
     delete log;
+}
+
+void GuiEngine::processXmlRootNode (DOMNode * n)
+{
+    GuiData *data = new GuiData;
+    data->showStatistics = 1;
+
+    LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
+    if (n)
+    {
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        {
+            char *name = XMLString::transcode (n->getNodeName ());
+            tmpLog->format (LOG_INFO, "Name: %s", name);
+
+            if (!strncmp (name, "guiConfig", 10))
+            {
+                tmpLog->put (LOG_INFO, "Found the gui engine config element.");
+                if (n->hasAttributes ())
+                {
+                    // get all the attributes of the node
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", name);
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(GuiData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(GuiData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(GuiData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(GuiData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(GuiData *) data).localLogLevel = LOG_TRACE;
+                        }
+
+                        if (!strncmp (name, "localLogName", 13))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "Found the log name: %s", name);
+                            (*(GuiData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(GuiData *) data).localLogName, name, strlen (name) + 1);
+                        }
+                        if (!strncmp (name, "showStatistics", 15))
+                        {
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            tmpLog->format (LOG_INFO, "Found whether to show the statistics or not: %s", name);
+                            if (!strncmp (name, "0", 2))
+                                (*(GuiData *) data).showStatistics = false;
+                            if (!strncmp (name, "1", 2))
+                                (*(GuiData *) data).showStatistics = true;
+                        }
+                        XMLString::release (&name);
+                    }
+                }
+            }
+        }
+    }
+    delete tmpLog;
+
+    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+
+    // get the direction of the graphics data
+    log->put (LOG_INFO, "Setting up data pointers...");
+    worldData = WorldData::getWorldDataPointer ();
+    systemData = SystemData::getSystemDataPointer ();
+
+    log->put (LOG_INFO, "Setting showStatistics ");
+    showStatistics = data->showStatistics;
+
+    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete[](data->localLogName);
+    delete data;
 }

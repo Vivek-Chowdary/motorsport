@@ -76,7 +76,7 @@ class InputEngine
     */
     int computeStep (void);
     // / Called by the generic XML parser; it loads configuration data from a file.
-    static void processInputConfigFile (DOMNode * n, void *data);
+    void processXmlRootNode (DOMNode * n);
 
 };
 

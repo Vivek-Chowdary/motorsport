@@ -74,8 +74,6 @@ inline bool DOMCountErrorHandler::getSawErrors () const
     return fSawErrors;
 }
 
-int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, void *data), void *data);
-
 class XmlFile
 {
     bool errorOccurred;
