@@ -26,6 +26,9 @@ Track::Track (const std::string & xmlFilename)
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/tracks/");
     file.append(xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, "FileSystem", "tracks - " + xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file + "/skybox.zip", "Zip", "tracks - " + xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("tracks - " + xmlFilename);
     file.append("/track.xml");
     log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", file.c_str());
     Uint32 time = SDL_GetTicks();

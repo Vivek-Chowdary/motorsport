@@ -9,6 +9,8 @@
 
 #include "world.hpp"
 #include "vehicle.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "body.hpp"
@@ -32,6 +34,9 @@ Vehicle::Vehicle (const std::string & xmlFilename)
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/vehicles/");
     file.append(xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, "FileSystem", "vehicles - " + xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file + "/skybox.zip", "Zip", "vehicles - " + xmlFilename);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + xmlFilename);
     file.append("/vehicle.xml");
     log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", file.c_str());
     Uint32 time = SDL_GetTicks();

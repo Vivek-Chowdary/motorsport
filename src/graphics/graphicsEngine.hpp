@@ -58,7 +58,7 @@ class GraphicsEngine
     // / Tells Ogre where to find resources.
     /** Tells Ogre where to find resources via the resources.cfg file. This allows Ogre to know where all the data (meshes, materials, textures...) can be found, not needing to explicitly indicate it.
     */
-    void setupResources (const std::string & ogreConfigFile);
+    void setupResources ();
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };

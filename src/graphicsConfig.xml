@@ -7,7 +7,6 @@
     initialScreenshotFileNumber = "0"
     >
     <ogre
-        configFile = "resources.cfg"
         linuxPluginsDir = "/usr/lib/OGRE"
         windowsPluginsDir = "plugins"
         sceneManager = "ST_GENERIC"

@@ -68,30 +68,18 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
     renderSystem->setConfigOption ("Video Mode", resolution);
 }
 
-void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
+void GraphicsEngine::setupResources ()
 {
     //load some default constant resources
     std::string dataDir = SystemData::getSystemDataPointer()->dataDir;
-//    Ogre::MaterialManager::getSingleton().parseAllSources();
-
-    // Load some the user resources
-    Ogre::ConfigFile cf;
-    log->put (LOG_CCREATOR, "Loading user resources into memory...");
-    cf.load (ogreConfigFile.c_str());
-    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator ();
-    Ogre::String typeName, archName;
-    while (i.hasMoreElements ())
-    {
-        typeName = i.peekNextKey ();
-        archName = i.getNext ();
-        std::string file = dataDir;
-        file.append("/");
-        file.append(archName);
-        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, typeName, "General");
-    }
-
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation("./", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir, "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/gui", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/vehicles", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/tracks", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/parts", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/parts/cube", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 }
 
 int GraphicsEngine::computeStep (void)
@@ -242,7 +230,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     std::string localLogName = "GFX";
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
-    std::string ogreConfigFile = "resources.cfg";
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -324,11 +311,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                         DOMAttr *attNode = (DOMAttr *) attList->item (i);
                                         std::string attribute;
                                         assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "configFile")
-                                        {
-                                            assignXmlString (ogreConfigFile, attNode->getValue());
-                                            tmpLog->format (LOG_ENDUSER, "Found the ogre config filename: %s", ogreConfigFile.c_str());
-                                        }
                                         #ifdef WIN32
                                         if (attribute == "windowsPluginsDir")
                                         #else
@@ -473,10 +455,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     log->put (LOG_DEVELOPER, "Creating Ogre root element");
     ogreRoot = new Ogre::Root ("plugins.cfg", "removeme.cfg", "motorsport-ogre.log");
 
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/");
-    file.append(ogreConfigFile);
-  
     // select renderer and set resolution and bpp
     manualInitialize (renderer);
 
@@ -488,7 +466,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     // Here we choose to let the system create a default rendering window
     log->put (LOG_DEVELOPER, "Initializing ogre root element");
     systemData->ogreWindow = ogreRoot->initialise (true);  
-    setupResources (file);
+    setupResources ();
 #ifdef WIN32
     // This is a bit of a hack way to get the HWND from Ogre.
     // Currently only works for the OpenGL renderer.
