@@ -34,33 +34,28 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "length")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body physics length: %s", attribute.c_str() );
                 length = stod (attribute);
             }
             if (attribute == "width")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "height")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body physics height: %s", attribute.c_str() );
                 height = stod (attribute);
             }
             if (attribute == "mass")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
-            attribute.clear();
         }
     }
     // create dBody

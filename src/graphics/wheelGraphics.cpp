@@ -29,13 +29,11 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "mesh")
             {
-                mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "renderMode")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel rendering mode: %s", attribute.c_str());
 
@@ -46,7 +44,6 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 if(attribute == "solid")
                     renderMode=Ogre::SDL_SOLID;
             }
-            attribute.clear();
         }
     }
     char name[256];
@@ -67,8 +64,6 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     wheelNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     wheelNode->attachObject (wheelEntity);
- 
-    mesh.clear();
 }
 void Wheel::stepGraphics ()
 {

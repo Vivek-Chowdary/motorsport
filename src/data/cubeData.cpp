@@ -76,35 +76,29 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
                         }
                         if (attribute == "description")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the description: %s", attribute.c_str());
                         }
                         if (attribute == "author")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the author: %s", attribute.c_str());
                         }
                         if (attribute == "contact")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the contact information: %s", attribute.c_str());
                         }
                         if (attribute == "license")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the license: %s", attribute.c_str());
                         }
-                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -113,7 +107,6 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            name.clear();
                             assignXmlString (name, n->getNodeName());
                             if (name == "graphics")
                             {
@@ -129,7 +122,6 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     }
                 }
             }
-            name.clear();
         }
     }
     startGraphics(graphicsNode);

@@ -35,30 +35,25 @@ void Cube::startPhysics (DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "author")
             {
-                author.clear();
                 assignXmlString (author, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the author: %s", author.c_str());
             }
             if (attribute == "contact")
             {
-                contact.clear();
                 assignXmlString (contact, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
             }
             if (attribute == "license")
             {
-                license.clear();
                 assignXmlString (license, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
             }
             if (attribute == "size")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the cube physics size: %s", attribute.c_str() );
                 size = stoi (attribute);
             }
-            attribute.clear();
         }
     }
     dMass mass;
@@ -67,9 +62,6 @@ void Cube::startPhysics (DOMNode * n)
     cubeGeomID = dCreateBox (World::getWorldPointer ()->spaceID, size, size, size);
     dGeomSetBody (cubeGeomID, cubeID);
     dBodySetMass (cubeID, &mass);
-
-    author.clear();
-    license.clear();
 }
 
 void Cube::setPosition (Vector3d position)

@@ -49,7 +49,6 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
                     gearMap[tmpGear->getIndex()]=tmpGear;
   //                  tmpGear->setRefBody(body->bodyID);
                 }
-                nodeName.clear();
             }
         }
     }
@@ -77,26 +76,22 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "index")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
                 index = stoi (attribute);
             }
             if (attribute == "ratio")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the Gear Ratio: %s", attribute.c_str() );
                 ratio = stod (attribute);
             }
             if (attribute == "label")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
                 label = attribute;
             }
-            attribute.clear();
         }
     }
 }

@@ -283,7 +283,6 @@ LogEngine *processXmlRootNode (DOMNode * n)
                             assignXmlString (SystemData::getSystemDataPointer ()->dataDir, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the data directory: %s", SystemData::getSystemDataPointer ()->dataDir.c_str());
                         }
-                        attribute.erase ();
                     }
                 }
             }
@@ -293,6 +292,5 @@ LogEngine *processXmlRootNode (DOMNode * n)
     delete tmpLog;
     returnLog->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
     returnLog->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
-    localLogName.erase ();
     return returnLog;
 }

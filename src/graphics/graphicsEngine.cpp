@@ -166,9 +166,6 @@ GraphicsEngine::~GraphicsEngine (void)
     log->put (LOG_DEVELOPER, "Unloading ogre window data from memory...");
     delete (systemData->ogreWindow);
 
-    log->put (LOG_DEVELOPER, "Unloading screenshot filename from memory...");
-    screenshotFilename.clear();
-
     // finally stop the log engine
     delete log;
 }
@@ -218,31 +215,26 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "localLogLevel")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
                         if (attribute == "localLogName")
                         {
-                            localLogName.clear();
                             assignXmlString (localLogName, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
                         if (attribute == "screenshotFile")
                         {
-                            screenshotFilename.clear();
                             assignXmlString (screenshotFilename, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the screenshot filename: %s", screenshotFilename.c_str());
                         }
                         if (attribute == "initialScreenshotFileNumber")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the initial screenshot number: %s", attribute.c_str());
                             initialFrame = stoi (attribute);
                         }
-                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -251,7 +243,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            name.clear();
                             assignXmlString (name, n->getNodeName());
                             tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
                             if (name == "ogre")
@@ -268,7 +259,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "configFile")
                                         {
-                                            ogreConfigFile.clear();
                                             assignXmlString (ogreConfigFile, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the ogre config filename: %s", ogreConfigFile.c_str());
                                         }
@@ -278,13 +268,11 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                         if (attribute == "linuxPluginsDir")
                                         #endif
                                         {
-                                            ogrePluginsDir.clear();
                                             assignXmlString (ogrePluginsDir, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the ogre plugins directory: %s", ogrePluginsDir.c_str());
                                         }
                                         if (attribute == "sceneManager")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the scene manager type: %s", attribute.c_str());
 
@@ -301,14 +289,12 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                         }
                                         if (attribute == "anisotropy")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the anisotropy level: %s", attribute.c_str());
                                             anisotropy = stoi (attribute);
                                         }
                                         if (attribute == "filtering")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the texture filtering level: %s", attribute.c_str());
                                             if (attribute == "TFO_NONE")
@@ -322,46 +308,39 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                         }
                                         if (attribute == "width")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the resolution width value: %s", attribute.c_str());
                                             width = stoi (attribute);
                                         }
                                         if (attribute == "height")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the resolution height value: %s", attribute.c_str());
                                             height = stoi (attribute);
                                         }
                                         if (attribute == "bpp")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the resolution bpp value: %s", attribute.c_str());
                                             bpp = stoi (attribute);
                                         }
                                         if (attribute == "renderer")
                                         {
-                                            renderer.clear();
                                             assignXmlString (renderer, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the renderer type: %s", renderer.c_str());
                                         }
                                         if (attribute == "defaultNumMipmaps")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the default number of mipmaps: %s", attribute.c_str());
                                             defaultNumMipMaps = stoi (attribute);
                                         }
                                         if (attribute == "fullScreen")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the fullscreen option: %s", attribute.c_str());
                                             fullScreen = stob (attribute);
                                         }
-                                        attribute.clear();
                                     }
                                 }
                             }
@@ -369,7 +348,6 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                     }
                 }
             }
-            name.clear();
         }
     }
     delete tmpLog;
@@ -458,11 +436,5 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     remove("plugins.cfg");
     log->put (LOG_DEVELOPER, "Removing temporary ogre file");
     remove("removeme.cfg");
-    
-    log->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
-    localLogName.clear();
-    ogreConfigFile.clear();
-    ogrePluginsDir.clear();
-    renderer.clear();
 }
 

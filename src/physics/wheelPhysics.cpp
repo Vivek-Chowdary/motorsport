@@ -43,33 +43,28 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "radius")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
                 radius = stod (attribute);
             }
             if (attribute == "width")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "mass")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             if (attribute == "powered")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the wheel power transmission: %s", attribute.c_str() );
                 powered = stod (attribute);
             }
-            attribute.clear();
         }
     }
     dMass tmpMass;

@@ -37,25 +37,21 @@ void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "index")
             {
-                index.clear();
                 assignXmlString (index, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the position index: %s", index.c_str());
             }
             if (attribute == "position")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue()); 
                 log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                 *positionOffset = stov3d(attribute);
             }
             if (attribute == "target")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the target: %s", attribute.c_str());
                 *targetOffset = stov3d(attribute);
             }
-            attribute.clear();
         }
     }
 }

@@ -233,7 +233,6 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "localLogLevel")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
@@ -241,35 +240,29 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
 
                         if (attribute == "localLogName")
                         {
-                            localLogName.clear();
                             assignXmlString (localLogName, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
 
                         }
                         if (attribute == "showStatistics")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue ());
                             showStatistics = stob (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found whether to show the statistics or not: %s", attribute.c_str());
                         }
                         if (attribute == "telemetryLines")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue ());
                             telemetryLines = stoi (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the number of telemetry lines: %s", attribute.c_str());
                         }
-                        attribute.clear();
                     }
                 }
             }
-            name.clear();
         }
     }
     delete tmpLog;
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    localLogName.clear();
     log->put (LOG_DEVELOPER, "All config has been parsed");
 }

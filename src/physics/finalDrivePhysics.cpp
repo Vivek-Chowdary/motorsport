@@ -40,26 +40,22 @@ void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "diffFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the differential friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             if (attribute == "diffInertia")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the differential inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
             if (attribute == "finalDriveRatio")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the final drive ratio: %s", attribute.c_str() );
                 finalDriveRatio = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }

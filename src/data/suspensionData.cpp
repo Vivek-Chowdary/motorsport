@@ -63,15 +63,12 @@ void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "index")
                         {
-                            index.clear();
                             assignXmlString (index, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the index: %s", index.c_str());
                         }
-                        attribute.clear();
                     }
                 }
             }
-            nodeName.clear();
         }
     }
     startPhysics (n);

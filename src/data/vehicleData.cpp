@@ -107,7 +107,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "position")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                             Vector3d position;
@@ -115,42 +114,35 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         }
                         if (attribute == "name")
                         {
-                            name.clear();
                             assignXmlString (name, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the name: %s", name.c_str());
                         }
                         if (attribute == "revision")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the revision number: %s", attribute.c_str());
                             revision = stoi(attribute);
                         }
                         if (attribute == "description")
                         {
-                            description.clear();
                             assignXmlString (description, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
-                            author.clear();
                             assignXmlString (author, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
-                            contact.clear();
                             assignXmlString (contact, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the author contact information: %s", contact.c_str());
                         }
                         if (attribute == "license")
                         {
-                            license.clear();
                             assignXmlString (license, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
                         }
-                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -159,7 +151,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            nodeName.clear();
                             assignXmlString (nodeName, n->getNodeName());
                             if (nodeName == "body")
                             {
@@ -205,7 +196,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     }
                 }
             }
-            nodeName.clear();
         }
     }
 
@@ -264,7 +254,6 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
                     tmpWheel->setRefBody(body->bodyID);
                 }
-                nodeName.clear();
             }
         }
     }
@@ -287,7 +276,6 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                     Suspension * tmpSusp = new Suspension (suspNode);
                     suspensionMap[tmpSusp->getIndex()]=tmpSusp;
                 }
-                nodeName.clear();
             }
         }
     }
@@ -310,7 +298,6 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
                     Camera * tmpCam = new Camera (cameraNode);
                     cameraList.push_back (tmpCam);
                 }
-                nodeName.clear();
             }
         }
     }

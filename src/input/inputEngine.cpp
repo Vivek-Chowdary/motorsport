@@ -271,26 +271,21 @@ void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "localLogLevel")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
                         if (attribute == "localLogName")
                         {
-                            localLogName.clear();
                             assignXmlString (localLogName, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
-                        attribute.clear();
                     }
                 }
             }
-            name.clear();
         }
     }
     delete tmpLog;
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    localLogName.clear();
     log->put (LOG_DEVELOPER, "All config has been parsed");
 }

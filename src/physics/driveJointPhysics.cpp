@@ -34,26 +34,22 @@ void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "coeffStaticFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
                 coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
                 coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
                 maxTorqueTransfer = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }
@@ -121,26 +117,22 @@ void Gear::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "coeffStaticFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
 //                coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
 //                coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
 //                maxTorqueTransfer = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }
@@ -199,26 +191,22 @@ void LSD::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "coeffStaticFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
 //                coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
 //                coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
 //                maxTorqueTransfer = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }

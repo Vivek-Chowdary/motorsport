@@ -30,19 +30,16 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "mesh")
             {
-                mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "ogreName")
             {
-                ogreName.clear();
                 assignXmlString (ogreName, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body graphics ogre-identifier format: %s", ogreName.c_str());
             }
             if (attribute == "renderMode")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body rendering mode: %s", attribute.c_str());
 
@@ -53,7 +50,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 if(attribute == "solid")
                     renderMode=Ogre::SDL_SOLID;
             }
-            attribute.clear();
         }
     }
     char name[256];
@@ -74,9 +70,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
- 
-    mesh.clear();
-    ogreName.clear();
 }
 void Body::stepGraphics ()
 {

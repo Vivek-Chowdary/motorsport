@@ -37,26 +37,22 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "torqueLinearMultiplier")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the engine torque linear multiplier: %s", attribute.c_str() );
                 torqueLinearMultiplier = stod (attribute);
             }
             if (attribute == "engineInertia")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the engine inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
             if (attribute == "engineFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }

@@ -157,7 +157,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "localLogLevel")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
@@ -165,32 +164,27 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
                         if (attribute == "localLogName")
                         {
-                            localLogName.clear();
                             assignXmlString (localLogName, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
                         if (attribute == "frequency")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             frequency = stoi (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the frecuency: %s", attribute.c_str());
                         }
                         if (attribute == "timeScale")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             timeScale = stoi (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the time scale: %s", attribute.c_str());
                         }
                         if (attribute == "pauseStep")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             pauseStep = stoi (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the pause step: %s", attribute.c_str());
                         }
-                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -199,7 +193,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            name.clear();
                             assignXmlString (name, n->getNodeName());
                             tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
                             if (name == "ode")
@@ -217,7 +210,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "cfmValue")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the constraint force mixing factor (CFM): %s", attribute.c_str());
                                             if (attribute != "default")
@@ -228,7 +220,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         }
                                         if (attribute == "erpValue")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the error reduction parameter (ERP): %s", attribute.c_str());
                                             if (attribute != "default")
@@ -239,7 +230,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         }
                                         if (attribute == "stepType")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the type of stepping to be used in ODE: %s", attribute.c_str());
                                             if (attribute == "dWorldStep")
@@ -249,13 +239,11 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         }
                                         if (attribute == "dWorldStepFast1MaxIterations")
                                         {
-                                            attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
                                             tmpLog->format (LOG_ENDUSER, "Found the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
 
                                             dWorldStepFast1MaxIterations = stoi (attribute);
                                         }
-                                        attribute.clear();
                                     }
                                 }
                             }
@@ -263,7 +251,6 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     }
                 }
             }
-            name.clear();
         }
     }
     delete tmpLog;
@@ -282,6 +269,4 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     systemData->timeScale = timeScale;
     systemData->pauseStep = pauseStep;
     log->format (LOG_ENDUSER, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
-
-    localLogName.clear();
 }

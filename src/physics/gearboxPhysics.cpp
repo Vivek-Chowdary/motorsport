@@ -40,19 +40,16 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "gearboxFriction")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the Gearbox Friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             if (attribute == "gearboxInertia")
             {
-                attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the Gearbox Inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
-            attribute.clear();
         }
     }
 }

@@ -66,11 +66,9 @@ void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "index")
             {
-                index.clear();
                 assignXmlString (index, attNode->getValue());
                 log->format (LOG_DEVELOPER, "Found the index: %s", index.c_str());
             }
-            attribute.clear();
         }
     }
     startPhysics (n);

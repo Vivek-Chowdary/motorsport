@@ -114,45 +114,38 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            name.clear();
                             assignXmlString (name, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the world name: %s", name.c_str());
                         }
                         if (attribute == "description")
                         {
-                            description.clear();
                             assignXmlString (description, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the world description: %s", description.c_str());
                         }
                         if (attribute == "useTrackCamera")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             useTrackCamera = stob (attribute);
                             log->format (LOG_CCREATOR, "Found the selected world camera: %s camera", attribute.c_str());
                         }
                         if (attribute == "gravityX")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityX = stod (attribute);
                             log->format (LOG_CCREATOR, "Found the world gravity X module: %s m/s^2", attribute.c_str());
                         }
                         if (attribute == "gravityY")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityY = stod (attribute);
                             log->format (LOG_CCREATOR, "Found the world gravity Y module: %s m/s^2", attribute.c_str());
                         }
                         if (attribute == "gravityZ")
                         {
-                            attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityZ = stod (attribute);
                             log->format (LOG_CCREATOR, "Found the world gravity Z module: %s m/s^2", attribute.c_str());
                         }
-                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -161,7 +154,6 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            name.clear();
                             assignXmlString (name, n->getNodeName());
                             if (name == "vehicle")
                             {
@@ -177,23 +169,19 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "directory")
                                         {
-                                            vehicleDirectory.clear();
                                             assignXmlString (vehicleDirectory, attNode->getValue());
                                             log->format (LOG_CCREATOR, "Found the vehicle directory: %s", vehicleDirectory.c_str());
                                         }
                                         if (attribute == "driver")
                                         {
-                                            driver.clear();
                                             assignXmlString (driver, attNode->getValue());
                                             log->format (LOG_CCREATOR, "Found the vehicle driver: %s", driver.c_str());
                                         }
                                         if (attribute == "startPosition")
                                         {
-                                            vehicleStartPosition.clear();
                                             assignXmlString (vehicleStartPosition, attNode->getValue());
                                             log->format (LOG_CCREATOR, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
                                         }
-                                        attribute.clear();
                                     }
                                 }
                             }
@@ -211,11 +199,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "directory")
                                         {
-                                            trackDirectory.clear();
                                             assignXmlString (trackDirectory, attNode->getValue());
                                             log->format (LOG_CCREATOR, "Found the track directory: %s", trackDirectory.c_str());
                                         }
-                                        attribute.clear();
                                     }
                                 }
                             }
@@ -223,7 +209,6 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                     }
                 }
             }
-            name.clear();
         }
     }
     log->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
@@ -298,12 +283,6 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     activeTrackCamera = trackList[0]->cameraList[0];
     activeVehicleCamera = vehicleList[0]->cameraList[0];
-
-    // Clean up things, leave others in memory (world properties).
-    log->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
-    vehicleDirectory.clear();
-    driver.clear();
-    trackDirectory.clear();
 }
 
 void World::setActiveCamera (Camera * camera)

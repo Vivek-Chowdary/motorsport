@@ -201,26 +201,21 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName ());
                         if (attribute == "globalLevel")
                         {
-                            attribute.clear ();
                             assignXmlString (attribute, attNode->getValue ());
                             globalLevel = stologlevel (attribute);
                         }
                         if (attribute == "fileName")
                         {
-                            fileName.clear ();
                             assignXmlString (fileName, attNode->getValue ());
                         }
                         if (attribute == "textBuffer")
                         {
-                            attribute.clear ();
                             assignXmlString (attribute, attNode->getValue ());
                             textBuffer = stoi (attribute);
                         }
-                        attribute.clear ();
                     }
                 }
             }
-            name.clear ();
         }
     } else {
         std::cerr << "ERROR: could not read LogEngine configuration values! Using default values." << std::endl;
@@ -233,7 +228,6 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         return;
     }
     put (LOG_ENDUSER, "LogFile created");
-    fileName.clear ();
 }
 
 LOG_LEVEL stologlevel (const std::string & srcString)
