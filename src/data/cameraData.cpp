@@ -31,6 +31,13 @@ Camera::~Camera ()
     stopPhysics();
 }
 
+void Camera::updateOgreRotation ()
+{
+    const dReal *temp = dBodyGetQuaternion (positionID);
+    Ogre::Quaternion tempRot (temp[0], temp[1], temp[2], temp[3]);
+    ogreCamera->setFixedYawAxis (true, tempRot.zAxis());
+}
+
 void Camera::updateOgrePosition ()
 {
     const dReal *temp = dBodyGetQuaternion (positionID);

@@ -29,6 +29,7 @@ class Camera
   public:
     Camera (Vector3d position, Vector3d target);
     ~Camera ();
+    void updateOgreRotation ();
     void updateOgrePosition ();
     void updateOgreTarget ();
     void setPositionID (dBodyID positionID);

@@ -16,22 +16,19 @@
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
 
-void Camera::startGraphics (/*float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ*/)
+void Camera::startGraphics ()
 {
     char name[20];
     sprintf (name, "Camera%i", instancesCount);
 
     ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (name);
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
-/*    ogreCamera->setPosition (Ogre::Vector3 (posX, posY, posZ));
-    ogreCamera->lookAt (Ogre::Vector3 (lookAtX, lookAtY, lookAtZ));*/
-    
-    // Set near clip plane at 1 mm. of distance.
     ogreCamera->setNearClipDistance (0.100);
 }
 
 void Camera::stepGraphics ()
 {
+    updateOgreRotation();
     updateOgrePosition();
     updateOgreTarget();
 }
