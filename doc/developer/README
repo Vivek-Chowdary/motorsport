@@ -1,4 +1,9 @@
-Explanation on the program structure:
+COMPILATION ISSUES
+==================
+If you're trying to compile motorsport under a unix-like environment, there's a few things you should check:
+-Edit src/makefile and change lines 17 and 18 to whatever path you wish to use. If you're using your usual system libraries, set them to /usr/lib and /usr/include. If you're using a custom version of the libraries, it's suggested to place under the 3pl/linux/ subdirectory (which follows a unix-like /usr structure too).
+-Edit src/plugins.cfg file and change line 5 to whatever path you wish to use (again). This is usually the same as the libs path specified above, appending "/OGRE" to it. There's already 2 examples lines, the commented one pointing to /usr/lib/OGRE, the uncommented one to 3pl/linux/lib/OGRE.
+
 
 ENGINES
 =======

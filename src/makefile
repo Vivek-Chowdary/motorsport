@@ -134,5 +134,7 @@ $(TARGET) :$(OBJECTS)
 	@echo    "---Exec...------------------------------------"
 	@echo -n "Motorsport successfully compiled!:     "
 	@ls -Falh $(TARGET) |cut -c 39-42
+	@echo    "If you have problems running motorsport,"
+	@echo    "read the doc/developer/README file."
 	@echo    "----------------------------------------------"
 
