@@ -82,7 +82,7 @@ int main (int argc, char **argv)
             log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
         // Run the physics engine until the game time is in sync with the real loop time.
-        while ((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep)
+        while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
         {
             systemData->simulationTime += systemData->physicsTimeStep;
             systemData->physicsSteps++;
