@@ -21,15 +21,16 @@
 ******************************************************************************/
 #ifndef DATA_ENGINE_HPP
 #define DATA_ENGINE_HPP
+#include "domParser.hpp"
 #include "logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include <string.h>
 #include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "cube.hpp"
 #include "body.hpp"
 #include "camera.hpp"
-#include "domParser.hpp"
 
 struct DataData;
 

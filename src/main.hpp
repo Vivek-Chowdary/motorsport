@@ -31,6 +31,7 @@
 #    include "physicsEngine.hpp"    // calculates the physics of the world data
 #    include "guiEngine.hpp"    // displays all the user interface on screen
 #ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
 #endif
 

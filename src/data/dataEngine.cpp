@@ -52,7 +52,8 @@ int DataEngine::loadWorldData (void)
     // create the camera and initialize it
     int numberOfCameras = 4;
     log->format (LOG_INFO, "Creating %i cameras", numberOfCameras);
-    for (int i = 0; i < numberOfCameras; i++)
+    int i;
+	for (i = 0; i < numberOfCameras; i++)
     {
         Camera *cameraPointer = new Camera (i, -20, -20, 5, 0, 0, 0);
         Camera::cameraList.push_back (cameraPointer);
@@ -82,7 +83,7 @@ int DataEngine::loadWorldData (void)
     // Create the cubes
     int numberOfCubes = 20;
     log->format (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
-    for (int i = 0; i < numberOfCubes; i++)
+    for (i = 0; i < numberOfCubes; i++)
     {
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
         const int separation = 4;

@@ -24,6 +24,7 @@
 #include "SDL.h"
 #include "Ogre.h"
 #include "OgreConfigFile.h"
+#include "OgreNoMemoryMacros.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"

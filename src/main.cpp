@@ -20,11 +20,7 @@
 ******************************************************************************/
 #include "main.hpp"
 
-#ifdef WIN32
-INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-#else
 int main (int argc, char **argv)
-#endif
 {
     // We start the main log engine.
     ParsingMainData *parsingMainData = new ParsingMainData;
@@ -37,22 +33,24 @@ int main (int argc, char **argv)
 
     // We declare the 'global' data and engines.
     log->put (LOG_INFO, "( 1 ): Loading engines and libraries...");
-    log->put (LOG_INFO, "Starting SDL subsystems");
-    startSdl (log);
     log->put (LOG_INFO, "Creating world data");
     new WorldData ();
     log->put (LOG_INFO, "Creating system data");
     new SystemData ();
     log->put (LOG_INFO, "Creating data engine");
     DataEngine *dataEngine = new DataEngine ();
-    log->put (LOG_INFO, "Creating input engine");
-    InputEngine *inputEngine = new InputEngine ();
     log->put (LOG_INFO, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
     log->put (LOG_INFO, "Creating physics engine");
     PhysicsEngine *physicsEngine = new PhysicsEngine ();
     log->put (LOG_INFO, "Creating gui engine");
     GuiEngine *guiEngine = new GuiEngine ();
+
+    log->put (LOG_INFO, "Starting SDL subsystems");
+    startSdl (log);
+    log->put (LOG_INFO, "Creating input engine");
+    InputEngine *inputEngine = new InputEngine ();
+
     log->put (LOG_INFO, "Getting system data pointer");
     SystemData *systemData = SystemData::getSystemDataPointer ();
 
@@ -124,7 +122,7 @@ int main (int argc, char **argv)
 
 void startSdl (LogEngine * log)
 {
-    if (SDL_Init (SDL_INIT_TIMER) < 0)
+    if (SDL_Init (SDL_INIT_EVERYTHING) < 0)
     {
         log->format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError ());
     }

@@ -23,6 +23,7 @@
 #    define SYSTEM_HPP
 #    include "SDL.h"
 #    include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 
 class SystemData
 {                               // this contains all the data not related with the simulated/virtual world

@@ -22,6 +22,7 @@
 #ifndef CAMERA_HPP
 #   define CAMERA_HPP
 #   include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #   include <vector>
 #   include "system.hpp"
 

@@ -57,6 +57,8 @@
 #ifndef DOM_PARSER_HPP
 #   define DOM_PARSER_HPP
 
+#include "OgreNoMemoryMacros.h"
+
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>

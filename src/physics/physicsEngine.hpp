@@ -22,6 +22,7 @@
 
 #include "logEngine.hpp"
 #include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "ode.h"
 #include "math.h"
 #include "system.hpp"

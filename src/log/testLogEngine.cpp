@@ -25,7 +25,9 @@
 #include <cstdarg>
 #include <cstdlib>
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <cerrno>
 #include <cstring>
 #include <string>

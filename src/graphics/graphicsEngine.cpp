@@ -19,7 +19,11 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 ******************************************************************************/
-
+#ifdef WIN32
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include "OgreWin32Window.h"
+#endif
 #include "graphicsEngine.hpp"
 
 GraphicsEngine::GraphicsEngine ()
@@ -57,6 +61,9 @@ GraphicsEngine::GraphicsEngine ()
         "\nPluginFolder=%s"
         "\n# Define plugins"
         "\nPlugin=RenderSystem_GL"
+#ifdef WIN32
+//        "\nPlugin=RenderSystem_Direct3D9"
+#endif
         "\nPlugin=Plugin_FileSystem"
         "\nPlugin=Plugin_ParticleFX"
         "\nPlugin=Plugin_BSPSceneManager"
@@ -80,7 +87,25 @@ GraphicsEngine::GraphicsEngine ()
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
     ogreRoot->getRenderSystem ()->setConfigOption ("Full Screen", fullScreen ? "Yes" : "No");
+#ifdef WIN32
+    // Let the user changes some parameters.
+	ogreRoot->showConfigDialog();
+#endif
     systemData->ogreWindow = ogreRoot->initialise (true);
+
+#ifdef WIN32
+    //
+    // This is a bit of a hack way to get the HWND from Ogre.
+    // Currently only works for the OpenGL renderer.
+    //
+	char tmp[64];
+    Ogre::Win32Window* ow32_win = static_cast<Ogre::Win32Window*>(systemData->ogreWindow);
+    if (ow32_win != NULL){
+	    sprintf(tmp, "SDL_WINDOWID=%d", ow32_win->getWindowHandle());
+	    _putenv(tmp);
+    }
+#endif
+
     systemData->ogreSceneManager = ogreRoot->getSceneManager (data->sceneManager);
 
     // Set default mipmap level (NB some APIs ignore this)

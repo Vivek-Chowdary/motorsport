@@ -25,6 +25,7 @@
 #include "logEngine.hpp"
 #include "SDL.h"
 #include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "domParser.hpp"
 
 struct GuiData;
