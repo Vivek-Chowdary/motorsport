@@ -39,7 +39,7 @@ int DataEngine::loadWorldData ( void )
 {
     //create the camera and initialize it
     int numberOfCameras = 1;
-    log->put ( LOG_INFO, "Creating camera..." );
+    log->put ( LOG_INFO, "Creating %i cameras", numberOfCameras );
     for (int i=0; i<numberOfCameras; i++)
     {
         Camera * cameraPointer = new Camera;
@@ -49,21 +49,39 @@ int DataEngine::loadWorldData ( void )
         cameraPointer->setRotateUp (0);
         cameraPointer->setRotateDown (0);
         cameraPointer->goBack = cameraPointer->goForward = cameraPointer->goLeft = cameraPointer->goRight = false;
+        char name[20];
+        sprintf ( name, "Camera%i", i );
+        Camera::cameraList[i]->ogreCamera = systemData->ogreSceneManager->createCamera ( name );
+        Camera::cameraList[i]->ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
+        Camera::cameraList[i]->ogreCamera->setPosition ( Ogre::Vector3 ( -2000, -2000, 500 ) );
+        Camera::cameraList[i]->ogreCamera->lookAt ( Ogre::Vector3 ( 0, 0, 0 ) );
+        Camera::cameraList[i]->ogreCamera->setNearClipDistance ( 5 );
     }
+    log->put ( LOG_INFO, "Setting camera viewport" );
+    Ogre::Viewport *vp = systemData->ogreWindow->addViewport ( Camera::cameraList[0]->ogreCamera );
+    vp->setBackgroundColour ( Ogre::ColourValue (0,0,0));
 
-    //create 2 cubes in the world data
-    int numberOfCubes = 200;
-    log->format ( LOG_INFO, "Creating an array of %i cubes...", numberOfCubes );
-    for (int i=0; i<numberOfCubes; i++)
+    // Create the cubes
+    int numberOfCubes = 200; //Cube::cubeList.size();
+    log->format ( LOG_INFO, "Creating an array of %i cubes", numberOfCubes );
+    for ( int i = 0; i < numberOfCubes; i++ )
     {
-        Cube * cubePointer = new Cube;
+        const int separation = 150;
+        Cube * cubePointer;
+        if ( i != numberOfCubes-1 )
+        {
+            char name[20];
+            sprintf ( name, "Cube%i", i );
+            float size = 100;
+            cubePointer = new Cube ( name, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation * ((int(i/1000))+1) );
+            dBodySetAngularVel (cubePointer->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
+        }else{
+            float size = 10000.0;
+            cubePointer = new Cube("BigCube",size, 0, 0, (-size/2)-(separation*5));
+        }
         Cube::cubeList.push_back (cubePointer);
-        cubePointer->setMoveToXPositive(0);
-        cubePointer->setMoveToXNegative(0);
-        cubePointer->setMoveToYPositive(0);
-        cubePointer->setMoveToYNegative(0);
     }
-
+    
     return ( 0 );
 }
 

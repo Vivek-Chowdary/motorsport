@@ -36,7 +36,7 @@ GraphicsEngine::GraphicsEngine ( )
     systemData = SystemData::getSystemDataPointer();
 
     log->put ( LOG_INFO, "Setting screen properties..." );
-    width = 1027;
+    width = 1024;
     height = 768;
     bpp = 0;
     log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp );
@@ -51,23 +51,7 @@ GraphicsEngine::GraphicsEngine ( )
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
     systemData->ogreWindow = ogreRoot->initialise ( true );
-    ogreSceneManager = ogreRoot->getSceneManager ( Ogre::ST_GENERIC );
-    // Create the camera
-    int numberOfCameras = Camera::cameraList.size();
-    for (int i=0; i<numberOfCameras; i++)
-    {
-        char name[20];
-        sprintf ( name, "Camera%i", i );
-        Camera::cameraList[i]->ogreCamera = ogreSceneManager->createCamera ( name );
-        Camera::cameraList[i]->ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
-        Camera::cameraList[i]->ogreCamera->setPosition ( Ogre::Vector3 ( -2000, -2000, 500 ) );
-        Camera::cameraList[i]->ogreCamera->lookAt ( Ogre::Vector3 ( 0, 0, 0 ) );
-        Camera::cameraList[i]->ogreCamera->setNearClipDistance ( 5 );
-    }
-    
-    // Create one viewport, entire window
-    Ogre::Viewport *vp = systemData->ogreWindow->addViewport ( Camera::cameraList[0]->ogreCamera );
-    vp->setBackgroundColour ( Ogre::ColourValue ( 0, 0, 0 ) );
+    systemData->ogreSceneManager = ogreRoot->getSceneManager ( Ogre::ST_GENERIC );
     
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
@@ -75,19 +59,7 @@ GraphicsEngine::GraphicsEngine ( )
     // Create the skybox
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix(Ogre::Matrix3(1,0,0,0,0,-1,0,1,0));
-    ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
-                                                           
-    //Create cubes
-    int numberOfCubes = Cube::cubeList.size();
-    for ( int i = 0; i < numberOfCubes; i++ )
-    {
-        char name[20];
-        sprintf ( name, "Cube%i", i );
-        Cube::cubeList[i]->cubeEntity = ogreSceneManager->createEntity ( name, "../data/cube.mesh" );
-        Cube::cubeList[i]->cubeEntity->setMaterialName("cube");
-        Cube::cubeList[i]->cubeNode = static_cast < Ogre::SceneNode * >( ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
-        Cube::cubeList[i]->cubeNode->attachObject (Cube::cubeList[i]->cubeEntity);
-    }
+    systemData->ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
 
     //Set some graphics settings
     Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy (1 );

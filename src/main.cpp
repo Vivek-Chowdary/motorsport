@@ -44,10 +44,11 @@ int main ( int argc, char **argv )
     sdl_start ( log );
     log->put(LOG_INFO, "Creating world data");
     new WorldData();
+    log->put(LOG_INFO, "Creating system data");
+    new SystemData();
+
     log->put(LOG_INFO, "Creating data engine");
     DataEngine * data = new DataEngine();
-    log->put(LOG_INFO, "Loading initial world data");
-    data->loadWorldData (  );
     log->put(LOG_INFO, "Creating input engine");
     InputEngine * input = new InputEngine();
     log->put(LOG_INFO, "Creating graphics engine");
@@ -59,6 +60,9 @@ int main ( int argc, char **argv )
     
     log->put(LOG_INFO, "Getting system data pointer");
     SystemData * systemData = SystemData::getSystemDataPointer();
+    log->put(LOG_INFO, "Loading initial world data");
+    data->loadWorldData (  );
+
     log->put(LOG_INFO, "Initializating main loop");
     systemData->lastStatTime = systemData->currentPhysicsTime = SDL_GetTicks (  );
     log->put(LOG_INFO, "Enabling main loop");

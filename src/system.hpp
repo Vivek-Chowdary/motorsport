@@ -58,6 +58,7 @@ class SystemData
     void enableStatistics (  );
 
     Ogre::RenderWindow * ogreWindow;
+    Ogre::SceneManager * ogreSceneManager;
 };
 
 #endif

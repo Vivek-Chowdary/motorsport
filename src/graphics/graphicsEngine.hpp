@@ -48,7 +48,6 @@ class GraphicsEngine
     int height;
     int bpp;
 
-    Ogre::SceneManager * ogreSceneManager;
     Ogre::Root * ogreRoot;
     
     /// Creates a new graphics engine.

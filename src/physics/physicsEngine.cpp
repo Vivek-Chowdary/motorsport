@@ -50,10 +50,6 @@ PhysicsEngine::PhysicsEngine ( )
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
 
-/*    //get the direction of the graphics data
-    log->put(LOG_INFO, "Testing ODE library...");
-    testOde();
-*/
     log->put ( LOG_INFO, "Setting physics data" );
     systemData->physicsDesiredStepsPerSecond = 30;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
@@ -67,35 +63,7 @@ PhysicsEngine::PhysicsEngine ( )
 //    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
     //dWorldSetCFM (worldData->worldID, 1e-5);
     //dWorldSetERP (worldData->worldID, 0.8);
-    //dWorldSetCFM (worldData->worldID, 1e-5);
-    //dWorldSetERP (worldData->worldID, 0.8);
-    log->put ( LOG_INFO, "Creating sample mass");
-    dMass mass;
-    log->put ( LOG_INFO, "Assigning box mass values");
-    dMassSetBoxTotal (&mass, 10, 1, 1, 1);
-    log->put ( LOG_INFO, "Creating cubes in ODE world");
-    
-    const int separation = 150;
-    int size = Cube::cubeList.size();
-    for ( int currentCube = 0; currentCube < size; currentCube++ )
-    {
-        Cube::cubeList[currentCube]->cubeID = dBodyCreate (worldData->worldID);
 
-        if (currentCube+1 == size)
-        {
-            const float width = 1000000.0;
-            dMassSetBox (&mass, 1, width, width, width);
-            dBodySetMass(Cube::cubeList[currentCube]->cubeID,&mass);
-            dBodySetPosition (Cube::cubeList[currentCube]->cubeID, 0, 0, (-width/2)-1000); 
-            Cube::cubeList[currentCube]->cubeGeomID = dCreateBox (worldData->spaceID, width,width,width);
-        }else{
-        dBodySetMass (Cube::cubeList[currentCube]->cubeID, &mass);
-            dBodySetPosition (Cube::cubeList[currentCube]->cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
-            dBodySetAngularVel (Cube::cubeList[currentCube]->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
-            Cube::cubeList[currentCube]->cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
-        }
-        dGeomSetBody (Cube::cubeList[currentCube]->cubeGeomID, Cube::cubeList[currentCube]->cubeID);
-    }
 }
 
 

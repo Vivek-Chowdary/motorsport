@@ -24,6 +24,8 @@
 #   include "ode.h"
 #   include "Ogre.h"
 #   include <vector>
+#   include "system.hpp"
+#   include "world.hpp"
 
 class Cube
 {
@@ -34,7 +36,9 @@ class Cube
         float moveToYNegative;
 
     public:
-        static std::vector <Cube*> cubeList;             //for our example,the worlddata has a set of cubes.
+        Cube ( char * cubeName, float size, float posX, float posY, float posZ );
+        ~Cube ( );
+        static std::vector <Cube*> cubeList;
         //should be private
         Ogre::Entity * cubeEntity;
         Ogre::SceneNode * cubeNode;
