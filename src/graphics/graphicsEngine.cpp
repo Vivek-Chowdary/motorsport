@@ -140,6 +140,13 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer ()->trackList[0]->cubeList[currentCube]->stepGraphics ();
     }
 
+    // Update cameras positions (should be done in the fsx engine FIXME.
+    int numberOfCameras = World::getWorldPointer ()->trackList[0]->cameraList.size ();
+    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    {
+        World::getWorldPointer ()->trackList[0]->cameraList[currentCamera]->stepGraphics ();
+    }
+
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
     systemData->ogreWindow->update ();

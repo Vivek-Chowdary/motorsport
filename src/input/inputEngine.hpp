@@ -45,19 +45,8 @@ class InputEngine
     */
     Uint8 *keyState;
 
-    // / Stores the latest horizontal mouse movement difference, in pixels.
-    /** Stores the latest horizontal mouse movement difference, in pixels. A positive value equals a movement to the right.
-    */
-    int mouseMovementX;
-    // / Stores the latest horizontal mouse movement difference, in pixels.
-    /** Stores the latest horizontal mouse movement difference, in pixels. A positive value equals a movement to the bottom.
-    */
-    int mouseMovementY;
-
     // / Finds out keyboard keys state, and modifies the world data according to it.
     void processKeyboard ();
-    // / Finds out mouse movements, and modifies the world data according to them.
-    void processMouseMovement ();
   public:
     // / Creates a new input engine.
     /** Creates a new input engine, with its associated own log engine. It initializes all necessary related data.

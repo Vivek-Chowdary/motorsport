@@ -117,18 +117,6 @@ int PhysicsEngine::computeStep (void)
         z /= 100;
         World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
     }
-    {
-        float x = 0, z = 0;
-        x -= World::getWorldPointer ()->getActiveCamera()->getRotateRight ();
-        x += World::getWorldPointer ()->getActiveCamera()->getRotateLeft ();
-        z += World::getWorldPointer ()->getActiveCamera()->getRotateUp ();
-        z -= World::getWorldPointer ()->getActiveCamera()->getRotateDown ();
-        x /= 100;
-        z /= 100;
-        World::getWorldPointer ()->getActiveCamera()->ogreCamera->yaw (x * (systemData->physicsTimeStep));
-        World::getWorldPointer ()->getActiveCamera()->ogreCamera->pitch (z * (systemData->physicsTimeStep));
-    }
-
     return (0);
 }
 

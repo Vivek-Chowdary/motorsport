@@ -24,6 +24,8 @@
 #include "system.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
+#include "world.hpp"
+#include "axis.hpp"
 
 void Camera::startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {
@@ -41,7 +43,16 @@ void Camera::startGraphics (float posX, float posY, float posZ, float lookAtX, f
 
 void Camera::stepGraphics ()
 {
-    // empty
+    if (this == World::getWorldPointer()->getActiveCamera() )
+    {
+        float rotX = -SystemData::getSystemDataPointer()->axisMap[2000000]->getValue() + 0.5;
+        float rotY = SystemData::getSystemDataPointer()->axisMap[2000001]->getValue() - 0.5;
+        //       SystemData::getSystemDataPointer()->axisMap[0000000XXX]->getValue() //keyboard... TODO
+        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
+        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
+        ogreCamera->yaw (rotX);
+        ogreCamera->pitch (rotY);
+    }
 }
 
 void Camera::stopGraphics ()

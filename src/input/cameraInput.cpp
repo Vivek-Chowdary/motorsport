@@ -23,7 +23,6 @@
 
 void Camera::startInput ()
 {
-    rotateLeft = rotateRight = rotateUp = rotateDown = 0;
     goBack = goForward = goLeft = goRight = false;
 }
 
@@ -35,21 +34,4 @@ void Camera::stepInput ()
 void Camera::stopInput ()
 {
 
-}
-
-void Camera::setRotateLeft (int multiplier)
-{
-    rotateLeft = multiplier;
-}
-void Camera::setRotateRight (int multiplier)
-{
-    rotateRight = multiplier;
-}
-void Camera::setRotateUp (int multiplier)
-{
-    rotateUp = multiplier;
-}
-void Camera::setRotateDown (int multiplier)
-{
-    rotateDown = multiplier;
 }

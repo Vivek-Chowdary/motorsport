@@ -20,8 +20,10 @@
 ******************************************************************************/
 
 #ifndef SYSTEM_HPP
-#    define SYSTEM_HPP
-#    include "SDL/SDL_types.h"
+#   define SYSTEM_HPP
+#   include "SDL/SDL_types.h"
+#   include <map>
+#   include "axis.hpp"
 
 namespace Ogre {
 class RenderWindow;
@@ -74,6 +76,7 @@ class SystemData
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;
+    std::map <int, Axis * > axisMap;
 };
 
 #endif

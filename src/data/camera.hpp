@@ -30,10 +30,6 @@ class Camera
 {
   private:
     static int instancesCount;
-    int rotateLeft;
-    int rotateRight;
-    int rotateUp;
-    int rotateDown;
 
   public:
     Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
@@ -50,20 +46,10 @@ class Camera
     void startInput ();
     void stepInput ();
     void stopInput ();
-    void setRotateUp (int multiplier);
-    void setRotateDown (int multiplier);
-    void setRotateLeft (int multiplier);
-    void setRotateRight (int multiplier);
     bool goBack;
     bool goForward;
     bool goLeft;
     bool goRight;
-
-    // data
-    int getRotateUp ();
-    int getRotateDown ();
-    int getRotateLeft ();
-    int getRotateRight ();
 };
 
 #endif

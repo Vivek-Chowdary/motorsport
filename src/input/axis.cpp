@@ -53,7 +53,7 @@ double Axis::getValue()
     //return the preprocessed value
     return value;
 }
-Axis::Axis () : minRawValue(std::numeric_limits<int>::min()), maxRawValue(std::numeric_limits<int>::max())
+Axis::Axis () : minRawValue(std::numeric_limits<int>::max()), maxRawValue(std::numeric_limits<int>::min())
 {
     //empty
 }
