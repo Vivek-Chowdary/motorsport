@@ -77,9 +77,12 @@ INCLUDE_DIRS := \
     input \
     graphics \
     physics \
+    gui \
     data \
     log \
     3pp/ode/include \
+    /usr/include/freetype2 \
+    /usr/include/SDL \
     . \
     $(INCLUDE_DIRS_$(PLATFORM))
 
@@ -123,12 +126,15 @@ LIBRARIES := \
     SDLmain \
     SDL \
     ode \
-    pthread
+    pthread \
+    freetype \
+    paragui
 
 SOURCES := \
     log/logEngine.cpp \
     data/dataEngine.cpp \
     graphics/graphicsEngine.cpp \
+    gui/guiEngine.cpp \
     physics/physicsEngine.cpp \
     input/inputEngine.cpp \
     system.cpp \

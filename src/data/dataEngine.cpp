@@ -98,14 +98,17 @@ int DataEngine::loadSystemData (void)
     //set screen properties
     log.put (LOG_INFO, "Setting screen properties...");
     systemData->graphicsData.width = 640;
+    log.format(LOG_INFO,"w%i",systemData->graphicsData.width);
     systemData->graphicsData.height = 480;
+    log.format(LOG_INFO,"h%i",systemData->graphicsData.height);
     systemData->graphicsData.bpp = 0;
+    log.format(LOG_INFO,"b%i",systemData->graphicsData.bpp);
     systemData->graphicsData.flags = SDL_SWSURFACE;
     log.append (LOG_INFO, "Ok");
 
     //set window properties
-    systemData->graphicsData.titleLength = 150;
-    systemData->graphicsData.iconLength = 15;
+    systemData->graphicsData.titleLength = 256;
+    systemData->graphicsData.iconLength = 16;
 
     log.put (LOG_INFO, "Allocating memory for window properties...");
     systemData->graphicsData.title = new char[systemData->graphicsData.titleLength];

@@ -45,12 +45,15 @@ LIBRARIES := $(LIBRARIES) \
     SDLmain \
     SDL \
     ode \
-    pthread
+    pthread \
+    freetype \
+    paragui
 
 SOURCES := $(SOURCES) \
     log/logEngine.cpp \
     data/dataEngine.cpp \
     graphics/graphicsEngine.cpp \
+    gui/guiEngine.cpp \
     physics/physicsEngine.cpp \
     input/inputEngine.cpp \
     system.cpp \

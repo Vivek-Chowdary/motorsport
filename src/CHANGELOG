@@ -2,6 +2,12 @@
 Motorsport - Changelog
 ----------------------
 
+2004-03-01 Bruno González  <stenyak@users.sourceforge.net>
+    * main program: added support for menues. All the code is divided into several functions, making it easier to understand the whole process
+    * gui: added gui system, with 2 basic menues: main menu and options menu
+    * input: new key [q] allows to exit the program, while [esc] takes you to the main menu
+    * system data: renamed some simLoop variables, added support for gui and sim loops management
+
 2004-02-11 Bruno González  <stenyak@users.sourceforge.net>
     * main program: physics engine loop bugfix, mainLoop-stats loop bugfix
     * added 3pp directory for Windows developers, thanks to Heson

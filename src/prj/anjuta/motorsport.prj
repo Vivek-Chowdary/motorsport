@@ -81,6 +81,8 @@ module.source.files=\
 	../../input/inputEngine.hpp\
 	../../graphics/graphicsEngine.cpp\
 	../../graphics/graphicsEngine.hpp\
+	../../gui/guiEngine.cpp\
+	../../gui/guiEngine.hpp\
 	../../system.cpp\
 	../../system.hpp\
 	../../world.cpp\

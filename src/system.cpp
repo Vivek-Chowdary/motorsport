@@ -33,17 +33,46 @@
 *
 ******************************************************************************/
 
-void SystemData::startMainLoop (void)
+bool mainLoopEnabled;
+bool simLoopEnabled;
+bool guiLoopEnabled;
+
+bool SystemData::canMainLoopRun(void)   //does the program have to keep running?
 {
-    mainLoopDone = 0;    
+    return mainLoopEnabled;
 }
 
-void SystemData::stopMainLoop (void)
+bool SystemData::canSimLoopRun(void)    //does the simulation have to keep running?
 {
-    mainLoopDone = 1;
+    return simLoopEnabled;
+}
+bool SystemData::canGuiLoopRun(void)    //does the gui have to keep running?
+{
+    return guiLoopEnabled;
 }
 
-int SystemData::isLoopDone (void)
+void SystemData::enableMainLoop (void)  //allows the program to start running
 {
-    return mainLoopDone;
+    mainLoopEnabled = true;
+}
+void SystemData::enableSimLoop (void)   //allows the simulation to start running
+{
+    simLoopEnabled = true;
+}
+void SystemData::enableGuiLoop (void)   //allows the gui to start running
+{
+    guiLoopEnabled = true;
+}
+
+void SystemData::disableMainLoop (void) //allows the program to stop running
+{
+    mainLoopEnabled = false;
+}
+void SystemData::disableSimLoop (void)  //allows the simulation to stop running
+{
+    simLoopEnabled = false;
+}
+void SystemData::disableGuiLoop (void)  //allows the gui to stop running{
+{
+    guiLoopEnabled = false;
 }

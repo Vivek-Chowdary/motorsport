@@ -19,9 +19,18 @@
 *
 ******************************************************************************/
 
-#ifndef WORLD_HPP
-#define WORLD_HPP
+/******************************************************************************
+*
+* Includes
+*
+******************************************************************************/
+
+#include "logEngine.hpp"
 #include "common/portability/sdl.h"
+
+#include <paragui/paragui.h>
+#include <paragui/pgapplication.h>
+
 
 /******************************************************************************
 *
@@ -29,30 +38,21 @@
 *
 ******************************************************************************/
 
-
-class Rectangle
-{    
-    SDL_Rect rectangle;
-    int visible;
+class GuiEngine
+{
+    LogEngine log;    //a log object for logging independently from other engines and main
+    WorldData *worldData;
+    SystemData *systemData;
+    PG_Application * currentMenu;
     public:
-        void setPosition (Sint16 newPosX, Sint16 newPosY);
-        Sint16 getPositionX (void);
-        Sint16 getPositionY (void);
-        void setSize (Uint16 newWidth, Uint16 newHeight);
-        Sint16 getSizeX (void);
-        Sint16 getSizeY (void);
-        void setVisible (int visibility);
-        int isVisible ();
-        Uint8 red, green, blue;
-        SDL_Rect *sdlRectangle ();
-        bool colorSpeed;    //0 -> increasing; 1 -> decreasing
+        int GuiEngine::optionsMenu(void);
+        int GuiEngine::mainMenu(void);
+        int testBasicParagui (void);
+        int start (WorldData *wrlData, SystemData *sysData);        //starts the graphics engine
+        int step (void);        //makes the graphics engine draw one frame
+        int stop (void);        //stops the graphics engine
+        PG_Application* getCurrentMenu(void);
+        WorldData *getWorldData(void);
+        SystemData *getSystemData(void);
+        LogEngine* getLog(void);
 };
-
-class WorldData
-{ //this will contain everything related to the simulated/virtual world
-    public:
-        int numberOfRectangles;
-        Rectangle *rectangleList;  //for our example,the worlddata has only 2 rect.
-};
-
-#endif

@@ -38,24 +38,24 @@
 *
 ******************************************************************************/
 enum LOG_LEVEL { LOG_ERROR = 0, LOG_WARNING = 1, LOG_INFO = 2, 
-		 LOG_VERBOSE = 3, LOG_TRACE = 4 };
+     LOG_VERBOSE = 3, LOG_TRACE = 4 };
 
 
 class LogEngine
 {
-	FILE *logFile;
-  LOG_LEVEL logLevel;
-public:
-		//starts the log process, specifying the level of verbosity
-  int start (LOG_LEVEL level, const char* filePath, bool appendMode=false);
-  //writes textToLog to the .logFile
-  int put (LOG_LEVEL level, const char* textToLog, bool useNewLine=true);
-		//writes text with the level + printf-like format string (appending line by default)
-  int format (LOG_LEVEL level, const char *textToLogFormat, ...);
+    FILE *logFile;
+    LOG_LEVEL logLevel;
+    public:
+        //starts the log process, specifying the level of verbosity
+        int start (LOG_LEVEL level, const char* filePath, bool appendMode=false);
+        //writes textToLog to the .logFile
+        int put (LOG_LEVEL level, const char* textToLog, bool useNewLine=true);
+        //writes text with the level + printf-like format string (appending line by default)
+        int format (LOG_LEVEL level, const char *textToLogFormat, ...);
         //same as put - but appends the data to the same line
-  int append (LOG_LEVEL level, const char* textToLog);
-		//stops the log process
-		int stop (void);
+        int append (LOG_LEVEL level, const char* textToLog);
+        //stops the log process
+        int stop (void);
 };
 
 #endif

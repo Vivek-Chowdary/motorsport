@@ -21,11 +21,7 @@
 
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
-#ifdef WIN32
-	#include "sdl.h"
-#else										
-	#include <SDL/SDL.h>
-#endif
+#include "common/portability/sdl.h"
 
 /******************************************************************************
 *
@@ -72,36 +68,47 @@ struct PhysicsData
     // system data for the physicsEngine, but i suppose you get the idea.
 };
 
+struct GuiData
+{
+    int nextMenuIndex; //main menu = 1;  options menu = 2;
+    int lastMenuIndex;
+};
+
 class SystemData
 { //this contains all the data not related with the simulated/virtual world
 
-    int mainLoopDone;    //allows to stop the mainloop (exit)
+    bool mainLoopEnabled;
+    bool simLoopEnabled;
+    bool guiLoopEnabled;
     public:
-        //I'm not sure at all about using private properties, instead of making
-        // it all public, because that means we're not using layout#2 for the
-        // system data.
-        //
-        //We should start working with paraGui in order to see how all this works.
-
-        void startMainLoop (void); //sets mainLoopDone to 1
-        void stopMainLoop (void); //set mainLoopDone to 0
-        int isLoopDone (void);
-
         //independent data
         struct GraphicsData graphicsData;
         struct InputData inputData;
         struct PhysicsData physicsData;
+        struct GuiData guiData;
 
         //main loop time control data
-        Uint32 currentLoopTime;
-        Uint32 calculatedPhysicsTime;
-
-        Uint32 lastSecondTime;
-
+        Uint32 currentSimLoopTime;
+        Uint32 currentPhysicsTime;
+        Uint32 lastStatTime;
         int physicsSteps;
         Uint32 physicsStepsPerSecond;
         int graphicsSteps;
         Uint32 graphicsStepsPerSecond;
+
+
+        bool canMainLoopRun(void);  //does the program have to keep running?
+        bool canSimLoopRun(void);   //does the simulation have to keep running?
+        bool canGuiLoopRun(void);   //does the gui have to keep running?
+
+        void enableMainLoop (void); //allows the program to start running
+        void enableSimLoop (void);  //allows the simulation to start running
+        void enableGuiLoop (void);  //allows the gui to start running
+
+        void disableMainLoop (void);//allows the program to stop running
+        void disableSimLoop (void); //allows the simulation to stop running
+        void disableGuiLoop (void); //allows the gui to stop running
+
 };
 
 

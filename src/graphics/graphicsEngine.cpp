@@ -49,9 +49,9 @@ int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
     systemData = sysData;
     log.append (LOG_INFO, "Ok");
     
-	//initialization of SDL_VIDEO
-	log.put(LOG_INFO, "Initializing SDL Video...");	
-	if (SDL_Init (SDL_INIT_VIDEO) == -1)
+    //initialization of SDL_VIDEO
+    log.put(LOG_INFO, "Initializing SDL Video...");	
+    if (SDL_Init (SDL_INIT_VIDEO) == -1)
     {
         log.put(LOG_ERROR, "SDL Video initialization falied:");
         log.append(LOG_ERROR, SDL_GetError ());
@@ -60,8 +60,8 @@ int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
     log.append (LOG_INFO, "Ok");
 
     //setting video mode
-	log.put(LOG_INFO, "Setting SDL Video Mode...");
-	(graphicsData->screen) = SDL_SetVideoMode (graphicsData->width,
+    log.format(LOG_INFO, "Setting SDL Video Mode...w%i,h%i,b%i",graphicsData->width,graphicsData->height,graphicsData->bpp);
+    (graphicsData->screen) = SDL_SetVideoMode (graphicsData->width,
                                                graphicsData->height,
                                                graphicsData->bpp,
                                                graphicsData->flags);
@@ -76,8 +76,8 @@ int GraphicsEngine::start (WorldData *wrlData, SystemData *sysData)
     log.put(LOG_INFO, "Setting SDL window color depth...");
     graphicsData->fmt = graphicsData->screen->format;
     log.append (LOG_INFO, "Ok");
-	
-	return (0);
+
+    return (0);
 }
 
 
@@ -108,7 +108,7 @@ int GraphicsEngine::step (void)
     }
     log.append (LOG_TRACE, "Ok");
 */
-	//draw all the rectangles in worldData
+    //draw all the rectangles in worldData
     log.put(LOG_TRACE, "Drawing rectangles on screen...");
     for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)
     {
@@ -131,7 +131,7 @@ int GraphicsEngine::step (void)
     log.append (LOG_TRACE, "Ok");
     
     //update the screen
-    SDL_UpdateRect (graphicsData->screen, 0, 0, 640, 480);
+    SDL_UpdateRect (graphicsData->screen, 0, 0, graphicsData->width,graphicsData->height);
 
     return (0);
 }
@@ -140,6 +140,6 @@ int GraphicsEngine::stop (void)
 {
     //finally stop the log engine
     log.stop ();
-	
-	return (0);
+
+    return (0);
 }

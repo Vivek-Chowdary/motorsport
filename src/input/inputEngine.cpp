@@ -29,11 +29,7 @@
 #include "world.hpp"
 #include "inputEngine.hpp"
 
-#ifdef WIN32
-	#include "sdl.h"
-#else										
-	#include <SDL/SDL.h>
-#endif
+#include "common/portability/sdl.h"
 
 
 /******************************************************************************
@@ -57,7 +53,7 @@ int InputEngine::start (WorldData *wrlData, SystemData *sysData)
     worldData = wrlData;
     log.append (LOG_INFO, "Ok");
 
-	return (0);
+    return (0);
 }
 
 
@@ -85,7 +81,7 @@ int InputEngine::step (void)   //processes user input queue
             case SDL_QUIT:
                 //this can be the user cliking to close the window
                 log.put(LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop...");
-                systemData->stopMainLoop ();
+                systemData->disableSimLoop();
                 log.append (LOG_VERBOSE, "Ok");
                 break;
             default:
@@ -104,8 +100,8 @@ int InputEngine::stop (void)
 
     //finally stop the log engine
     log.stop ();
-	
-	return (0);
+
+    return (0);
 }
 
 
@@ -131,7 +127,7 @@ void InputEngine::processInput (SDLKey keySymbol)
         case SDLK_RETURN:
         case SDLK_ESCAPE:
             log.put(LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
-            systemData->stopMainLoop ();
+            systemData->disableSimLoop();
             log.append (LOG_VERBOSE, "Ok");
             break;
         
@@ -214,13 +210,15 @@ void InputEngine::processInput (SDLKey keySymbol)
             log.append (LOG_VERBOSE, "physics rate increased.");
             break;
 
-        //this is left for non-assigned input events.
-        case 'G':
-            log.put(LOG_VERBOSE, "Processing a 'G' keypress: doing nothing...");
-            // something
+        case 'q':
+            log.put(LOG_VERBOSE, "Processing a 'Q' keypress: exiting program");
+            systemData->disableGuiLoop();
+            systemData->disableSimLoop();
+            systemData->disableMainLoop();
             log.append (LOG_VERBOSE, "Ok");
             break;
 
+        //this is left for non-assigned input events.
         case 'S':
             log.put(LOG_VERBOSE, "Processing a 'S' keypress: doing nothing...");
             // something

@@ -26,11 +26,7 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#ifdef WIN32
-	#include "sdl.h"
-#else										
-	#include <SDL/SDL.h>
-#endif
+#include "common/portability/sdl.h"
 
 /******************************************************************************
 *
@@ -40,13 +36,13 @@
 
 class InputEngine
 {
-    LogEngine log;	//a log object for logging independently from other engines and main
-	InputData *inputData;
+    LogEngine log;  //a log object for logging independently from other engines and main
+    InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;
-	public:
-		int start (WorldData *wrlData, SystemData *sysData);		//starts the input engine
+    public:
+        int start (WorldData *wrlData, SystemData *sysData);        //starts the input engine
         int step (void);   //processes user input queue
         void processInput (SDLKey keySymbol);
-		int stop (void);		//stops the input engine
+        int stop (void);        //stops the input engine
 };

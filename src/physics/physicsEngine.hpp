@@ -26,11 +26,7 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#ifdef WIN32
-    #include "sdl.h"
-#else
-    #include <SDL/SDL.h>
-#endif
+#include "common/portability/sdl.h"
 
 
 /******************************************************************************
