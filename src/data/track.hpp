@@ -28,6 +28,7 @@ class Track : public WorldObject
 {
   private:
     // data
+    std::string path;
     std::string name;
     int revision;
     std::string description;
