@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<dataConfig
+    localLogLevel = "LOG_INFO"
+    localLogName = "DAT"
+    >
+</dataConfig>

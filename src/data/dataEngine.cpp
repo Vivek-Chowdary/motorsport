@@ -25,7 +25,12 @@
 DataEngine::DataEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine ( LOG_INFO, "DAT" );
+    DataData * data = new DataData;
+    data->data = this;
+    processConfigFile ( "dataConfig.xml", &DataEngine::processDataConfigFile, (void*)data);
+    
+    log = new LogEngine ( data->localLogLevel, data->localLogName );
+    log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
 
     log->put ( LOG_INFO, "Setting up data pointers..." );
     //we tell the dataEngine where to find/store all the data in memory.
@@ -33,6 +38,10 @@ DataEngine::DataEngine ( )
     // track, weather, etc...)
     systemData = SystemData::getSystemDataPointer ();       //system data is for the rest of things (screen
     // resolution, 
+
+    log->put ( LOG_INFO, "Unloading temporary parsing data from memory" );
+    delete [](data->localLogName);
+    delete data;
 }
 
 int DataEngine::loadWorldData ( void )

@@ -29,6 +29,8 @@
 #include "camera.hpp"
 #include "domParser.hpp"
 
+struct DataData;
+
 class DataEngine
 {
   private:
@@ -47,4 +49,13 @@ class DataEngine
        or maybe...
        int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*);
        etc... */
+
+    static int processDataConfigFile ( DOMNode * n, void * data );
+};
+
+struct DataData
+{
+    DataEngine * data;
+    LOG_LEVEL localLogLevel;
+    char * localLogName;
 };

@@ -75,6 +75,8 @@ SOURCES := \
         data/cameraData.cpp \
         data/domParser.cpp \
 	data/dataEngine.cpp \
+        data/dataParser.cpp \
+        data/dataParser.cpp \
         graphics/cubeGraphics.cpp \
         graphics/cameraGraphics.cpp \
 	graphics/graphicsEngine.cpp \
