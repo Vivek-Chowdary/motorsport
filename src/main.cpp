@@ -53,7 +53,7 @@ int main ( int argc, char **argv )
     GuiEngine * gui = new GuiEngine;
 
     log->start ( LOG_VERBOSE, "./logMain.txt" );
-    sdl_start ( *log );
+    //sdl_start ( *log );
     gui->start ( worldData, systemData );
     data->start ( worldData, systemData );
     data->loadSystemData (  );
@@ -61,11 +61,7 @@ int main ( int argc, char **argv )
     log->put ( LOG_INFO, "Loading world data");
     data->loadWorldData (  );
     log->put ( LOG_INFO, "Starting graphics engine");
-    if ( graphics->start ( worldData, systemData ) )
-    {
-        log->put ( LOG_ERROR, "Could not start the graphics engine." );
-        exit ( -1 );
-    }
+    graphics->start ( worldData, systemData );
     log->put ( LOG_INFO, "Starting input engine");
     input->start ( worldData, systemData );
     log->put ( LOG_INFO, "Starting physics engine");
@@ -110,7 +106,6 @@ int main ( int argc, char **argv )
     }
 
     graphics->stop (  );
-    gui->stop (  );
     physics->stop (  );
     input->stop (  );
     data->unloadWorldData (  );
@@ -118,7 +113,7 @@ int main ( int argc, char **argv )
     data->unloadSystemData (  );
     data->stop (  );
     log->stop (  );
-    sdl_stop (  );
+    //sdl_stop (  );
 
     //and finally back to the OS
     return ( 0 );
