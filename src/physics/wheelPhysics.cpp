@@ -116,11 +116,19 @@ void Wheel::stopPhysics ()
 
 void Wheel::stepPhysics ()
 {
+    const dReal * angularVelVector;
     dBodyAddRelTorque (wheelID, 0, 0, torque * powered);
+    angularVelVector = dBodyGetAngularVel (wheelID);
+    angularVel = angularVelVector[1];    
     torque = 0;
 }
 
 void Wheel::addTorque(double torque)
 {
-    this->torque += torque;
+    this->torque = torque;
+}
+
+double Wheel::getAngularVel()
+{
+    return angularVel;
 }

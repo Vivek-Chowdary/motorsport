@@ -119,7 +119,8 @@ int GraphicsEngine::computeStep (void)
     // change camera if needed
     if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
-        int nextCam = World::getWorldPointer()->getActiveTrackCameraIndex()+1;
+        int nextCam;
+        nextCam = World::getWorldPointer()->getActiveTrackCameraIndex()+1;
         int maxCams = World::getWorldPointer()->trackList[0]->cameraList.size();
         if (nextCam >= maxCams )
         {

@@ -25,6 +25,8 @@
 #include "log/logEngine.hpp"
 #include "body.hpp"
 #include "engine.hpp"
+#include "clutch.hpp"
+#include "gearbox.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
 #include "camera.hpp"
@@ -68,6 +70,8 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     DOMNode * bodyNode = 0;
     DOMNode * engineNode = 0;
+    DOMNode * clutchNode = 0;
+    DOMNode * gearboxNode = 0;
     DOMNode * wheelListNode = 0;
     DOMNode * suspListNode = 0; //suspension
     DOMNode * cameraListNode = 0;
@@ -156,6 +160,16 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                 log->put (LOG_TRACE, "Found an engine.");
                                 engineNode = n;
                             }
+                            if (nodeName == "clutch")
+                            {
+                                log->put (LOG_TRACE, "Found a clutch.");
+                                clutchNode = n;
+                            }
+                            if (nodeName == "gearbox")
+                            {
+                                log->put (LOG_TRACE, "Found a gearbox.");
+                                gearboxNode = n;
+                            }
                             if (nodeName == "wheelList")
                             {
                                 log->put (LOG_TRACE, "Found a wheel list.");
@@ -180,9 +194,16 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
+    clutch = new Clutch (clutchNode, engine);
+    engine->setOutputPointer(clutch);
+    gearbox = new Gearbox (gearboxNode, clutch);
+    clutch->setOutputPointer(gearbox);
+        
     processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
     processXmlCameraListNode(cameraListNode);
+
+    gearbox->setOutputPointer(wheelMap["RearRight"], wheelMap["RearLeft"]);
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)

@@ -40,6 +40,7 @@ class Wheel : public WorldObject
     std::string index;
     double powered;
     double torque;
+    double angularVel;
   public:
 
     // data
@@ -49,7 +50,7 @@ class Wheel : public WorldObject
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     std::string getIndex();
-
+    
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
@@ -61,7 +62,8 @@ class Wheel : public WorldObject
     void setRotation (Vector3d rotation);
     Vector3d getRotation ();
     void addTorque (double torque);
-
+    double getAngularVel();
+    
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();

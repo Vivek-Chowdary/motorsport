@@ -25,6 +25,8 @@
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
 #include "engine.hpp"
+#include "clutch.hpp"
+#include "gearbox.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
 
@@ -113,6 +115,8 @@ void Vehicle::stopPhysics ()
 {
     body->stopPhysics();
     engine->stopPhysics();
+    clutch->stopPhysics();
+    gearbox->stopPhysics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
@@ -145,6 +149,8 @@ void Vehicle::stepPhysics ()
 {
     body->stepPhysics();
     engine->stepPhysics();
+    clutch->stepPhysics();
+    gearbox->stepPhysics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
@@ -153,7 +159,7 @@ void Vehicle::stepPhysics ()
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
-        wheelIter->second->addTorque (engine->getTorque());
+        wheelIter->second->addTorque (gearbox->getTorque());
         wheelIter->second->stepPhysics();
     }
 }

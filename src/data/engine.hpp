@@ -23,16 +23,23 @@
 #   define ENGINE_HPP
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
-
+//forward declaration
+class Clutch;
 
 class Engine : public WorldObject
 {
   private:
     static int instancesCount;
     double torqueLinearMultiplier;
-    double crankshaftRotationalSpeed;
+    double rotationalVelocity;
+    double prevRotationalVelocity;
+    double rotationalAcceleration;
     double torque;
-
+    double engineTorque;
+    double engineInertia;
+    double engineFriction;
+    Clutch *pOutTorque;
+  
   public:
 
     // data
@@ -45,6 +52,7 @@ class Engine : public WorldObject
     void stepPhysics ();
     void stopPhysics ();
     double getTorque ();
-
+    double getRotationalVelocity ();
+    void setOutputPointer (Clutch *output);
 };
 #endif

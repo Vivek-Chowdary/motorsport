@@ -45,3 +45,8 @@ void Engine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     startPhysics (n);
 }
+
+void Engine::setOutputPointer(Clutch *output)
+{
+    pOutTorque = output;
+}

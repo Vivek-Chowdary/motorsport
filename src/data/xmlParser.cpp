@@ -62,11 +62,19 @@ XmlFile::XmlFile (const char *xmlFileName)
     errorHandler.resetErrors ();
     doc = 0;
 
-    parser->setFeature (XMLUni::fgDOMNamespaces, true);
-    parser->setFeature (XMLUni::fgXercesSchema, true);
-    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, true);
-    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, true);
-    parser->setFeature (XMLUni::fgDOMValidateIfSchema, true);
+#ifdef WIN32
+/*    parser->setFeature (XMLUni::fgDOMNamespaces, false);
+    parser->setFeature (XMLUni::fgXercesSchema, false);
+    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, false);
+    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, false);
+    parser->setFeature (XMLUni::fgDOMValidateIfSchema, false);*/
+#else
+    parser->setFeature (XMLUni::fgDOMNamespaces, false);
+    parser->setFeature (XMLUni::fgXercesSchema, false);
+    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, false);
+    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, false);
+    parser->setFeature (XMLUni::fgDOMValidateIfSchema, false);
+#endif
 
     try
     {

@@ -1,5 +1,4 @@
-/******************************************************************************
-*
+/*****************************************************************************
 * Copyright (C) 2004 Daniel Toplak (homer.simpson123@gmx.de)
 *
 * This program is free software; you can redistribute it and/or
@@ -22,7 +21,7 @@
 #ifndef VECTOR3D_HPP
 #   define VECTOR3D_HPP
 #   include <vector>
-#   include <math.h>
+#   include <cmath>
 
 class Vector3d
 {
@@ -33,7 +32,7 @@ class Vector3d
     Vector3d ();
     Vector3d (double x, double y, double z);
     Vector3d(double qw, double qx, double qy, double qz); //quat to euler radians
-    Vector3d (const Vector3d & cpy);
+//    Vector3d (const Vector3d & cpy); default copy constructor used.
     const Vector3d & operator= (const Vector3d & cpy);
     bool operator== (const Vector3d & cpy) const;
     bool operator!= (const Vector3d & cpy) const;
@@ -43,8 +42,10 @@ class Vector3d
     const Vector3d & operator-= (const Vector3d & k);
     double distance () const;
     double distance (const Vector3d & k) const;
-    void degreesToRadians ();
+    Vector3d & degreesToRadians();
+    Vector3d & scalarAdd(const double value);
+    Vector3d & scalarMultiply(const double value);
+    Vector3d & scalarDivide(const double value);
 };
 
-#   include "vector3d.cpp"
 #endif

@@ -30,6 +30,8 @@
 //forward declarations
 class Body;
 class Engine;
+class Clutch;
+class Gearbox;
 class Wheel;
 class Suspension;
 class Vector3d;
@@ -58,6 +60,8 @@ class Vehicle : public WorldObject
     void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Body * body;
     Engine * engine;
+    Clutch * clutch;
+    Gearbox * gearbox;
     std::map < std::string, Wheel *> wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
     std::map < std::string, CameraPosition * > cameraPositionMap;

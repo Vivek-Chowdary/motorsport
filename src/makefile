@@ -55,7 +55,7 @@ CXXFLAGS := $(CFLAGS) -time
 
 ###########################################
 #Unit Test Programs (see also: RUN_TESTS)
-TEST_EXE := TestLogEngine TestAxis
+TEST_EXE := TestLogEngine TestAxis TestVector3d
 ###########################################
 
 
@@ -224,6 +224,11 @@ SOURCES := \
 	data/suspensionData.cpp \
 	physics/suspensionPhysics.cpp \
 	physics/cameraPhysics.cpp \
+        physics/clutchPhysics.cpp \
+        physics/gearboxPhysics.cpp \
+        data/clutchData.cpp \
+        data/gearboxData.cpp \
+        tools/vector3d.cpp \
 	main.cpp
 ###########################################
 
@@ -301,6 +306,10 @@ TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o data/xml
 	@chmod +x $@
 
 TestAxis: input/axis.o input/testAxis.o
+	$(LD)  -o $@ $^
+	@chmod +x $@
+
+TestVector3d: tools/vector3d.o tools/testVector3d.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 

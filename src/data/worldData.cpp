@@ -312,8 +312,10 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         setActiveCamera (trackList[0]->cameraList[0]);
     } else {
         //don't use track camera: use vehicle camera
-        setActiveCamera (vehicleList[0]->cameraList[1]);
+        setActiveCamera (vehicleList[0]->cameraList[0]);
     }
+    activeTrackCamera = trackList[0]->cameraList[0];
+    activeVehicleCamera = vehicleList[0]->cameraList[0];
 
     // Clean up things, leave others in memory (world properties).
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
