@@ -82,7 +82,7 @@ class XmlFile
     DOMBuilder * parser;
     XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc;
     public:
-        XmlFile (char * xmlFileName);
+        XmlFile (const char * xmlFileName);
         ~XmlFile ();
         DOMNode * getRootNode();
 };

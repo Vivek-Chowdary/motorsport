@@ -36,7 +36,7 @@ class Body : public WorldObject
 
   public:
     // data
-    Body (char * xmlFilename);
+    Body (const std::string & xmlFilename);
     ~Body ();
     void updateOgrePosition ();
     void updateOgreOrientation ();

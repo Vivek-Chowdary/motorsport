@@ -34,7 +34,7 @@ void DOMCountErrorHandler::resetErrors ()
     fSawErrors = false;
 }
 
-XmlFile::XmlFile (char *xmlFileName)
+XmlFile::XmlFile (const char *xmlFileName)
 {
     errorOccurred = false;
     bool recognizeNEL = false;

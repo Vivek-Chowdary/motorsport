@@ -49,7 +49,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->put (LOG_INFO, "( 2 ): Loading world data...");
     log->put (LOG_INFO, "Loading initial world data");
-    new World();
+    new World("../data/worlds/default.xml");
 
     // We start the main loop.
     log->put (LOG_INFO, "( 3 ): Starting simulation...");

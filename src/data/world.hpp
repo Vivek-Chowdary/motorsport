@@ -36,15 +36,21 @@ class World : public WorldObject
 {
   private:
     static World *worldPointer;
+    std::string name;
+    std::string description;
   public:
     static World *getWorldPointer ();
     void processXmlRootNode(DOMNode * n);
-    World ();
+    World (char * xmlFilename);
     ~World ();
 
     dWorldID worldID;
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
+
+    //Track * track;
+    //Car * body;
+    Body * body;
 
     std::vector < Cube * > cubeList;
     std::vector < Body * >bodyList;
