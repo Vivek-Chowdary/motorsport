@@ -45,8 +45,8 @@ class GuiEngine
     SystemData *systemData;
     PG_Application * currentMenu;
     public:
-        int GuiEngine::optionsMenu(void);
-        int GuiEngine::mainMenu(void);
+        int optionsMenu(void);
+        int mainMenu(void);
         int testBasicParagui (void);
         int start (WorldData *wrlData, SystemData *sysData);        //starts the graphics engine
         int step (void);        //makes the graphics engine draw one frame
