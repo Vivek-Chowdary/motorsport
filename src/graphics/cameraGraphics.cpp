@@ -15,6 +15,7 @@
 #include "world.hpp"
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
+#include "vector3d.hpp"
 
 void Camera::startGraphics ()
 {
@@ -29,8 +30,22 @@ void Camera::startGraphics ()
 void Camera::stepGraphics ()
 {
     updateOgreRotation();
-    updateOgrePosition();
-    updateOgreTarget();
+    Vector3d position (updateOgrePosition());
+    Vector3d target (updateOgreTarget());
+    double distance = target.distance(position);
+    const double maxD = 150;
+    const double minD = 15;
+    const double minF = 5;
+    const double maxF = 45;
+    if (distance > maxD)
+    {
+        ogreCamera->setFOVy (minF);
+    } else if (distance < minD)
+    {
+        ogreCamera->setFOVy (maxF);
+    } else {
+        ogreCamera->setFOVy ( maxF - ( ( ( distance - minD ) / ( maxD - minD ) ) * (maxF - minF) ) );
+    }
 }
 
 void Camera::stopGraphics ()

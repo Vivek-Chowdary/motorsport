@@ -43,8 +43,8 @@ class Camera : public WorldObject
     Camera (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Camera ();
     void updateOgreRotation ();
-    void updateOgrePosition ();
-    void updateOgreTarget ();
+    Vector3d updateOgrePosition ();
+    Vector3d updateOgreTarget ();
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);

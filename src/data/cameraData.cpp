@@ -42,7 +42,7 @@ void Camera::updateOgreRotation ()
     ogreCamera->setFixedYawAxis (true, tempRot.zAxis());
 }
 
-void Camera::updateOgrePosition ()
+Vector3d Camera::updateOgrePosition ()
 {
     const dReal *temp = dBodyGetQuaternion (positionID);
     Ogre::Quaternion tempRot(temp[0], temp[1], temp[2], temp[3]);
@@ -56,8 +56,9 @@ void Camera::updateOgrePosition ()
     pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
 
     ogreCamera->setPosition (pos);
+    return Vector3d (pos.x, pos.y, pos.z);
 }
-void Camera::updateOgreTarget ()
+Vector3d Camera::updateOgreTarget ()
 {
     const dReal *temp = dBodyGetQuaternion (targetID);
     Ogre::Quaternion tempRot(temp[0], temp[1], temp[2], temp[3]);
@@ -71,5 +72,6 @@ void Camera::updateOgreTarget ()
     pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
 
     ogreCamera->lookAt (pos);
+    return Vector3d (pos.x, pos.y, pos.z);
 }
 
