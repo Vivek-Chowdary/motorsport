@@ -57,7 +57,8 @@ DEFINES := $(PLATFORM) $(TYPE)
 TARGET := motorsport$(EXE_EXT)
 LD := g++
 CC := gcc
-CXX := ccache g++
+CXX := g++
+#CXX := ccache g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
 CXXFLAGS := $(CFLAGS) -time
 ###########################################
