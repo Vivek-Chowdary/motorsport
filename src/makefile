@@ -13,6 +13,16 @@ endif
 
 
 ###########################################
+#Hacks for space removal
+Pat_empty:=
+Pat_space:=$(Pat_empty) $(Pat_empty)
+###########################################
+
+
+
+
+
+###########################################
 #Compiler options
 ifeq ("$(PLATFORM)", "WIN32")
 TYPE := MINGW
@@ -239,7 +249,7 @@ clobber : clean
 .PHONY: run
 run:
 	@echo    "---Run...-------------------------------------"
-	./motorsport 2>/dev/null
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH)$(subst $(Pat_space),$(Pat_empty),$(patsubst %,:%,$(LIBRARY_DIRS))); ./motorsport 2>/dev/null
 	@echo    "----------------------------------------------"
 
 .PHONY: tags
