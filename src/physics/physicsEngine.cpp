@@ -49,11 +49,11 @@ int PhysicsEngine::start (WorldData *wrlData, SystemData *sysData)
     systemData = sysData;
     log.append(LOG_INFO, "Ok");
     
-    //get the direction of the graphics data
+/*    //get the direction of the graphics data
     log.put(LOG_INFO, "Testing ODE library...");
     testOde();
     log.append(LOG_INFO, "Ok");
-    
+*/
     return (0);
 }
 
