@@ -51,6 +51,8 @@ class GraphicsData
     int anisotropic;
     Ogre::TextureFilterOptions filtering;
     Ogre::RenderWindow * ogreWindow;
+    Ogre::SceneManager * ogreSceneManager;
+    Ogre::Root * ogreRoot;
 
     //note that the camera data (origin, dest., angle, focus, etc...) should not
     // be here. that's part of the worldData. there should exist real TV

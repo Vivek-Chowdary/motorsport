@@ -88,9 +88,9 @@ int DataEngine::loadSystemData ( void )
     systemData->graphicsData.enableStatistics();
     systemData->graphicsData.anisotropic = 1;
     systemData->graphicsData.filtering = Ogre::TFO_BILINEAR;
-    systemData->graphicsData.width = 640;
+    systemData->graphicsData.width = 1024;
     log.format ( LOG_INFO, "w%i", systemData->graphicsData.width );
-    systemData->graphicsData.height = 480;
+    systemData->graphicsData.height = 768;
     log.format ( LOG_INFO, "h%i", systemData->graphicsData.height );
     systemData->graphicsData.bpp = 0;
     log.format ( LOG_INFO, "b%i", systemData->graphicsData.bpp );

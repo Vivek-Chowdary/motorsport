@@ -45,7 +45,6 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/ode \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
-	$(BASE_INCLUDE_DIR)/paragui \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)
 
@@ -59,13 +58,11 @@ LIBRARIES := \
 	ode \
 	pthread \
 	freetype \
-	paragui \
 	OgreMain
 
 SOURCES := \
 	log/logEngine.cpp \
 	data/dataEngine.cpp \
-        graphics/simulation.cpp \
 	graphics/graphicsEngine.cpp \
 	gui/guiEngine.cpp \
 	physics/physicsEngine.cpp \
