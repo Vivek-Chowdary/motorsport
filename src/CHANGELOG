@@ -2,7 +2,13 @@
 Motorsport - Changelog
 ----------------------
 
-2004-02-09
+2004-02-11 Bruno González  <stenyak@users.sourceforge.net>
+    * main program: physics engine loop bugfix, mainLoop-stats loop bugfix
+    * added 3pp directory for Windows developers, thanks to Heson
+    * makefile: now divided in common.mk + makefile for portability issues, thanks to Heson
+    * log: new enum type for log levels, improved .format function, Char* type bugfix, thanks to Heson
+
+2004-02-09 Bruno González  <stenyak@users.sourceforge.net>
     * physics: rectangles movement added; ode test working!
     * graphics: disabled per-render screen blanking
     * world data: physics related additions

@@ -25,8 +25,8 @@
 *
 ******************************************************************************/
 
-#include "../system.hpp"
-#include "../world.hpp"
+#include "system.hpp"
+#include "world.hpp"
 #include "physicsEngine.hpp"
 #include "test_ode.cpp"
 #include <math.h>
@@ -40,19 +40,19 @@
 int PhysicsEngine::start (WorldData *wrlData, SystemData *sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start(2, "logPhysics.txt");
+    log.start(LOG_INFO, "logPhysics.txt");
     
     //get the direction of the graphics data
-    log.put(2, "Setting up data pointers...");
+    log.put(LOG_INFO, "Setting up data pointers...");
     physicsData = &(sysData->physicsData);
     worldData = wrlData;
     systemData = sysData;
-    log.append (2, "Ok");
+    log.append(LOG_INFO, "Ok");
     
     //get the direction of the graphics data
-    log.put(2, "Testing ODE library...");
-    testOde ();
-    log.append (2, "Ok");
+    log.put(LOG_INFO, "Testing ODE library...");
+    testOde();
+    log.append(LOG_INFO, "Ok");
     
     return (0);
 }
@@ -62,7 +62,7 @@ int PhysicsEngine::step (void)
 //makes the graphics engine draw one frame
 {
     //mega-verbosity
-    log.put(4, "Doing an step: calculating a physics step");
+    log.put(LOG_TRACE, "Doing an step: calculating a physics step");
 
     for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)
     {

@@ -37,25 +37,25 @@
 * Classes
 *
 ******************************************************************************/
+enum LOG_LEVEL { LOG_ERROR = 0, LOG_WARNING = 1, LOG_INFO = 2, 
+		 LOG_VERBOSE = 3, LOG_TRACE = 4 };
+
 
 class LogEngine
 {
 	FILE *logFile;
-    signed char logLevel;
-	public:
+  LOG_LEVEL logLevel;
+public:
 		//starts the log process, specifying the level of verbosity
-		int start (signed char level, char *filePath, bool appendMode=false);
-		//writes textToLog to the .logFile (level 0=error; level 1=warning; level >1=info)
-		int put (signed char level, char *textToLog, bool useNewLine=true);
+  int start (LOG_LEVEL level, const char* filePath, bool appendMode=false);
+  //writes textToLog to the .logFile
+  int put (LOG_LEVEL level, const char* textToLog, bool useNewLine=true);
 		//writes text with the level + printf-like format string (appending line by default)
-        int format(signed char level, const char *textToLogFormat, ...);
+  int format (LOG_LEVEL level, const char *textToLogFormat, ...);
         //same as put - but appends the data to the same line
-		int append (signed char level, char *textToLog);
+  int append (LOG_LEVEL level, const char* textToLog);
 		//stops the log process
 		int stop (void);
 };
 
-
-#else
-//#error multiple include of logEngine.hpp // this isn't normally done, but I like it :) MF
 #endif

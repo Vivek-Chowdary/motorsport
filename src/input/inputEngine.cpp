@@ -25,9 +25,10 @@
 *
 ******************************************************************************/
 
-#include "../system.hpp"
-#include "../world.hpp"
+#include "system.hpp"
+#include "world.hpp"
 #include "inputEngine.hpp"
+
 #ifdef WIN32
 	#include "sdl.h"
 #else										
@@ -44,17 +45,17 @@
 int InputEngine::start (WorldData *wrlData, SystemData *sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start(3, "logInput.txt");
+    log.start(LOG_VERBOSE, "logInput.txt");
 
     //we store the pointers to the 'global' data, so that we access it easily.
     //we might have to change this and only allow changing data through
     // some dataEngine functions, which will act as an interface to the data
     // stored in memory with the IDF.
-    log.put(2, "Setting up data pointers...");
+    log.put(LOG_INFO, "Setting up data pointers...");
     inputData = &(sysData->inputData);
     systemData = sysData;
     worldData = wrlData;
-    log.append (2, "Ok");
+    log.append (LOG_INFO, "Ok");
 
 	return (0);
 }
@@ -63,7 +64,7 @@ int InputEngine::start (WorldData *wrlData, SystemData *sysData)
 int InputEngine::step (void)   //processes user input queue
 {
     //mega-verbosity
-    //log.put (3, "Doing an step: checking for input events...");
+    //log.put (LOG_VERBOSE, "Doing an step: checking for input events...");
     
     SDL_Event event; //used to store the current event in the queue
     
@@ -78,18 +79,18 @@ int InputEngine::step (void)   //processes user input queue
         {
             case SDL_KEYDOWN:
                 //this is the user pressing a key in the keyboard
-                log.put(3, "New SDL_KEYDOWN event: finding out what key's been pressed.");
+                log.put(LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed.");
                 processInput (event.key.keysym.sym);
                 break;
             case SDL_QUIT:
                 //this can be the user cliking to close the window
-                log.put(3, "New SDL_QUIT event: notifying to stop mainLoop...");
+                log.put(LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop...");
                 systemData->stopMainLoop ();
-                log.append (3, "Ok");
+                log.append (LOG_VERBOSE, "Ok");
                 break;
             default:
                 //this can be mouse movement, joystick input,...
-                //log.put (1, "Processing an unknown event: doing nothing");
+                //log.put (LOG_WARNING, "Processing an unknown event: doing nothing");
                 break;
         }
     }
@@ -129,9 +130,9 @@ void InputEngine::processInput (SDLKey keySymbol)
         // we indicate that the user wants to exit the simulation
         case SDLK_RETURN:
         case SDLK_ESCAPE:
-            log.put(3, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
             systemData->stopMainLoop ();
-            log.append (3, "Ok");
+            log.append (LOG_VERBOSE, "Ok");
             break;
         
         // the user wants to modify world data using the inputEngine. in this
@@ -145,38 +146,38 @@ void InputEngine::processInput (SDLKey keySymbol)
         // air+fuel in the cylinders, which would therefore accelerate the rpms,
         // therefore modifying.... etc...
         case SDLK_RIGHT:
-            log.put(3, "Processing a SDLK_RIGHT keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_RIGHT keypress...");
             worldData->rectangleList[0].setVisible(0);
-            log.append (3, "rectangle0 is now invisible.");
+            log.append (LOG_VERBOSE, "rectangle0 is now invisible.");
             break;
 
         case SDLK_LEFT:
-            log.put(3, "Processing a SDLK_LEFT keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_LEFT keypress...");
             worldData->rectangleList[0].setVisible(1);
-            log.append (3, "rectangle0 is now visible.");
+            log.append (LOG_VERBOSE, "rectangle0 is now visible.");
             break;
 
         case SDLK_UP:
-            log.put(3, "Processing a SDLK_UP keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_UP keypress...");
             worldData->rectangleList[1].setVisible(0);
-            log.append (3, "rectangle1 is now invisible.");
+            log.append (LOG_VERBOSE, "rectangle1 is now invisible.");
             break;
 
         case SDLK_DOWN:
-            log.put(3, "Processing a SDLK_DOWN keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_DOWN keypress...");
             worldData->rectangleList[1].setVisible(1);
-            log.append (3, "rectangle1 is now visible.");
+            log.append (LOG_VERBOSE, "rectangle1 is now visible.");
             break;
 
         case SDLK_SPACE:
-            log.put(3, "Processing a SDLK_SPACE keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_SPACE keypress...");
             worldData->rectangleList[0].colorSpeed = !(worldData->rectangleList[0].colorSpeed);
             worldData->rectangleList[1].colorSpeed = !(worldData->rectangleList[1].colorSpeed);
-            log.append (3, "rectangles colorSpeed are now reversed.");
+            log.append (LOG_VERBOSE, "rectangles colorSpeed are now reversed.");
             break;
 
         case SDLK_KP_MINUS:
-            log.put(3, "Processing a SDLK_KP_MINUS keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
             //modify the physics engine rate
             //if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
             if (systemData->physicsData.desiredStepsPerSecond < 37)
@@ -191,11 +192,11 @@ void InputEngine::processInput (SDLKey keySymbol)
                 systemData->physicsData.timeStep++;
                 systemData->physicsData.desiredStepsPerSecond = 1000 / systemData->physicsData.timeStep;
             }
-            log.append (3, "physics rate decreased.");
+            log.append (LOG_VERBOSE, "physics rate decreased.");
             break;
 
         case SDLK_KP_PLUS:
-            log.put(3, "Processing a SDLK_KP_PLUS keypress...");
+            log.put(LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
             //if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
     
             if (systemData->physicsData.desiredStepsPerSecond < 37)
@@ -210,26 +211,26 @@ void InputEngine::processInput (SDLKey keySymbol)
                 }
                 systemData->physicsData.desiredStepsPerSecond = 1000 / systemData->physicsData.timeStep;
             }
-            log.append (3, "physics rate increased.");
+            log.append (LOG_VERBOSE, "physics rate increased.");
             break;
 
         //this is left for non-assigned input events.
         case 'G':
-            log.put(3, "Processing a 'G' keypress: doing nothing...");
+            log.put(LOG_VERBOSE, "Processing a 'G' keypress: doing nothing...");
             // something
-            log.append (3, "Ok");
+            log.append (LOG_VERBOSE, "Ok");
             break;
 
         case 'S':
-            log.put(3, "Processing a 'S' keypress: doing nothing...");
+            log.put(LOG_VERBOSE, "Processing a 'S' keypress: doing nothing...");
             // something
-            log.append (3, "Ok");
+            log.append (LOG_VERBOSE, "Ok");
             break;
 
         default:
-            log.put(3, "Processing an unknown keypress: doing nothing...");
+            log.put(LOG_VERBOSE, "Processing an unknown keypress: doing nothing...");
             // something
-            log.append (3, "Ok");
+            log.append (LOG_VERBOSE, "Ok");
             break;
     }
 }

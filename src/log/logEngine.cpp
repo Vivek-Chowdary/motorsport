@@ -33,7 +33,7 @@
 *
 ******************************************************************************/
 
-int LogEngine::start (signed char level, char *filePath, bool appendMode)
+int LogEngine::start (LOG_LEVEL level, const char* filePath, bool appendMode)
 {
 	//check if we append (or rewrite the whole file)
 	logFile = fopen (filePath, (appendMode ? "a" : "w"));
@@ -42,44 +42,41 @@ int LogEngine::start (signed char level, char *filePath, bool appendMode)
     logLevel = level;
     
 	//we put some text at the start of the current log
-	put (2, "Start of LogFile");
+  put (LOG_INFO, "Start of LogFile");
 	
 	return (0);
 }
 
-
-int LogEngine::format(signed char level, const char *textToLogFormat, ...)
+int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
     char buffer[1024];
     va_list arglist;
 
     //convert parameters to a string
     va_start (arglist, textToLogFormat);
-    vsprintf (buffer, textToLogFormat, arglist);
+    vsnprintf (buffer, sizeof(buffer), textToLogFormat, arglist);
+    //vsprintf (buffer, textToLogFormat, arglist);
     va_end (arglist);
     
     //put the string with a new line
     return (put (level, buffer));
 }
 
-int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
+
+int LogEngine::put (LOG_LEVEL level, const char* textToLog, bool useNewLine)
 { 
     //check if we have been told to write this kind of log
-    if (level <= logLevel)
-    {
+  if (level <= logLevel) {
         //check if we should append or create a new line
-        if (!useNewLine)
-        {
+      if (!useNewLine) {
             // separate previous log with a blank space
             fputc (' ', logFile);
         } else {
             //write log level information
-            // (level 0=error; 1=warning; >1=info)
-            switch (level)
-            {
-                case 0: fputs ("\n(EE): ", logFile); break;
-                case 1: fputs ("\n(WW): ", logFile); break;
-                default:fputs ("\n(II): ", logFile); break;
+	switch (level) {
+	case LOG_ERROR:   fputs ("\n(EE): ", logFile); break;
+	case LOG_WARNING: fputs ("\n(WW): ", logFile); break;
+	default:          fputs ("\n(II): ", logFile); break;
             }
         }
         //write log text
@@ -89,14 +86,14 @@ int LogEngine::put (signed char level, char *textToLog, bool useNewLine)
 	return (-1);
 }
 
-int LogEngine::append (signed char level, char *textToLog)
+int LogEngine::append (LOG_LEVEL level, const char *textToLog)
 {
 	return put(level, textToLog, false /* don't useNewLine */);
 }
 
 int LogEngine::stop (void)
 {
-	put (2, "End of LogFile");
+  put (LOG_INFO, "End of LogFile");
 	fclose (logFile);
 	
 	return (0);
