@@ -83,52 +83,54 @@ void Cube::processXmlRootNode (DOMNode * n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            log->format (LOG_TRACE, "Name: %s", name);;
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            log->format (LOG_TRACE, "Name: %s", name.c_str());;
 
-            if (!strncmp (name, "cube", 5))
+            if (name == "cube")
             {
                 log->put (LOG_TRACE, "Found the cube main data config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "name", 5))
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "name")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_TRACE, "\tFound the name: %s", name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "\tFound the name: %s", attribute.c_str());
                         }
-                        if (!strncmp (name, "description", 13))
+                        if (attribute == "description")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_TRACE, "\tFound the description: %s", name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "\tFound the description: %s", attribute.c_str());
                         }
-                        if (!strncmp (name, "author", 7))
+                        if (attribute == "author")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_TRACE, "\tFound the author: %s", name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "\tFound the author: %s", attribute.c_str());
                         }
-                        if (!strncmp (name, "contact", 8))
+                        if (attribute == "contact")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "\tFound the contact information: %s", attribute.c_str());
                         }
-                        if (!strncmp (name, "license", 8))
+                        if (attribute == "license")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_TRACE, "\tFound the license: %s", name);
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "\tFound the license: %s", attribute.c_str());
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
                 for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
@@ -137,14 +139,15 @@ void Cube::processXmlRootNode (DOMNode * n)
                     {
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            char *name = XMLString::transcode (n->getNodeName ());
-                            log->format (LOG_TRACE, "Name: %s", name);;
-                            if (!strncmp (name, "graphics", 9))
+                            name.clear();
+                            assignXmlString (name, n->getNodeName());
+                            log->format (LOG_TRACE, "Name: %s", name.c_str());;
+                            if (name == "graphics")
                             {
                                 log->put (LOG_TRACE, "Found the cube graphics data element.");
                                 graphicsNode = n;
                             }
-                            if (!strncmp (name, "physics", 8))
+                            if (name == "physics")
                             {
                                 log->put (LOG_TRACE, "Found the cube physics data element.");
                                 physicsNode = n;
@@ -153,6 +156,7 @@ void Cube::processXmlRootNode (DOMNode * n)
                     }
                 }
             }
+            name.clear();
         }
     }
     startGraphics(graphicsNode);
