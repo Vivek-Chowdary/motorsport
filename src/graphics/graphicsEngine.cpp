@@ -498,7 +498,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     //light->setType(Ogre::Light::LT_SPOTLIGHT);
     //light->setType(Ogre::Light::LT_POINT);
     light->setType(Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(0,0,-1);
+    light->setDirection(0,0.2,-1);
     //light->setPosition(50, 50, 1);
     light->setDiffuseColour(1, 1, 1);
     light->setSpecularColour(1, 1, 1);
