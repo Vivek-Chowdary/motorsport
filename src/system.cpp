@@ -40,6 +40,12 @@ SystemData::SystemData ( )
         delete this;
     }else{
         systemDataPointer = this;
+        
+        //initialize main loop data
+        physicsSteps = 0;
+        physicsStepsPerSecond = 0;
+        graphicsSteps = 0;
+        graphicsStepsPerSecond = 0;
     }
 }
 
@@ -65,17 +71,17 @@ void SystemData::disableMainLoop ( void )   //allows the program to stop running
     mainLoopEnabled = false;
 }
 
-bool GraphicsData::getStatisticsEnabled (  )
+bool SystemData::getStatisticsEnabled (  )
 {
     return statisticsEnabled;
 }
 
-void GraphicsData::invertStatisticsEnabled (  )
+void SystemData::invertStatisticsEnabled (  )
 {
     statisticsEnabled = !statisticsEnabled;
 }
 
-void GraphicsData::enableStatistics (  )
+void SystemData::enableStatistics (  )
 {
     statisticsEnabled = true;
 }

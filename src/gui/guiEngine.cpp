@@ -31,6 +31,9 @@ GuiEngine::GuiEngine ( )
     log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
+
+    log->put ( LOG_INFO, "Enabling statistics");
+    systemData->enableStatistics (  );
 }
 
 int GuiEngine::step ( void )
@@ -52,9 +55,9 @@ int GuiEngine::step ( void )
     }
     
     overlay->hide (  );
-    if ( systemData->graphicsData.getStatisticsEnabled() )
+    if ( systemData->getStatisticsEnabled() )
     {
-    overlay->show (  );
+        overlay->show (  );
     }
 
 
@@ -69,15 +72,15 @@ void GuiEngine::updateStatistics ( void  )
     GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "gui/CurrFps" );
     GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "gui/BestFps" );
     GuiElement *guiPhysics = GuiManager::getSingleton (  ).getGuiElement ( "gui/PhysicsRate" );
-    const RenderTarget::FrameStats & stats = systemData->graphicsData.ogreWindow->getStatistics (  );
+    const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics (  );
     guiAvg->setCaption ( "Average FPS: " + StringConverter::toString ( stats.avgFPS ) );
     guiCurr->setCaption ( "Current FPS: " + StringConverter::toString ( systemData->graphicsStepsPerSecond ) );
     guiBest->setCaption ( "Best FPS: " + StringConverter::toString ( stats.bestFPS ) + "FPS " + StringConverter::toString ( stats.bestFrameTime ) + " ms" );
-    guiPhysics->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
+    guiPhysics->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsTimeStep ) + " ms" );
     GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "gui/NumTris" );
     guiTris->setCaption ( "Triangle Count: " + StringConverter::toString ( stats.triangleCount ) );
     GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "gui/DebugText" );
-    guiDbg->setCaption ( systemData->graphicsData.ogreWindow->getDebugText (  ) );
+    guiDbg->setCaption ( systemData->ogreWindow->getDebugText (  ) );
 }
 
 GuiEngine::~GuiEngine ( void )

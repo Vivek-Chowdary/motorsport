@@ -172,21 +172,21 @@ void InputEngine::processKeyboard ( )
         log->put ( LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress..." );
         //modify the physics engine rate
         //if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
-        if ( systemData->physicsData.desiredStepsPerSecond < 37 )
+        if ( systemData->physicsDesiredStepsPerSecond < 37 )
         {
             //don't let the rate fall below 1 frame per second (or don't allow more than 1000msecs. step)
-            if ( !--systemData->physicsData.desiredStepsPerSecond )
+            if ( !--systemData->physicsDesiredStepsPerSecond )
             {
-                systemData->physicsData.desiredStepsPerSecond++;
+                systemData->physicsDesiredStepsPerSecond++;
             }
-            systemData->physicsData.timeStep =
-                1000 / systemData->physicsData.desiredStepsPerSecond;
+            systemData->physicsTimeStep =
+                1000 / systemData->physicsDesiredStepsPerSecond;
         }
         else
         {                       //...otherwise, it's better to increase the timestep (msecs.)
-            systemData->physicsData.timeStep++;
-            systemData->physicsData.desiredStepsPerSecond =
-                1000 / systemData->physicsData.timeStep;
+            systemData->physicsTimeStep++;
+            systemData->physicsDesiredStepsPerSecond =
+                1000 / systemData->physicsTimeStep;
         }
     }
 
@@ -194,21 +194,21 @@ void InputEngine::processKeyboard ( )
     {
         log->put ( LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress..." );
         //if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
-        if ( systemData->physicsData.desiredStepsPerSecond < 37 )
+        if ( systemData->physicsDesiredStepsPerSecond < 37 )
         {
-            systemData->physicsData.desiredStepsPerSecond++;
-            systemData->physicsData.timeStep =
-                1000 / systemData->physicsData.desiredStepsPerSecond;
+            systemData->physicsDesiredStepsPerSecond++;
+            systemData->physicsTimeStep =
+                1000 / systemData->physicsDesiredStepsPerSecond;
         }
         else
         {                       //...otherwise, it's better to decrease the timestep (msecs.)
             //don't let the step time fall below 1 msec. (or don't allow more than 1000fps)
-            if ( !--systemData->physicsData.timeStep )
+            if ( !--systemData->physicsTimeStep )
             {
-                systemData->physicsData.timeStep++;
+                systemData->physicsTimeStep++;
             }
-            systemData->physicsData.desiredStepsPerSecond =
-                1000 / systemData->physicsData.timeStep;
+            systemData->physicsDesiredStepsPerSecond =
+                1000 / systemData->physicsTimeStep;
         }
     }
 
@@ -221,13 +221,13 @@ void InputEngine::processKeyboard ( )
     if ( keyState[SDLK_PRINT] )
     {
         log->put ( LOG_INFO, "Taking a screenshot to sshot.png" );
-        systemData->graphicsData.ogreWindow->writeContentsToFile ( "sshot.png" );
+        systemData->ogreWindow->writeContentsToFile ( "sshot.png" );
     }
 
     if ( keyState[SDLK_f] )
     {
         log->put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );
-        systemData->graphicsData.invertStatisticsEnabled (  );
+        systemData->invertStatisticsEnabled (  );
     }
     
     //Processing key releases...

@@ -41,7 +41,15 @@ class GraphicsEngine
     WorldData *worldData;
     /// Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
+    
   public:
+    int width;
+    int height;
+    int bpp;
+
+    Ogre::SceneManager * ogreSceneManager;
+    Ogre::Root * ogreRoot;
+    
     /// Creates a new graphics engine.
     /** Creates a new graphics engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of world data (meshes, textures...), and sets up the underlying rendering libray (Ogre).
     */

@@ -37,8 +37,6 @@ class DataEngine
     ~DataEngine ( void );          //stops the data engine
     int loadWorldData ( void );
     int unloadWorldData ( void );
-    int loadSystemData ( void );
-    int unloadSystemData ( void );
 
     /*here will probably go some new functions such as:
        int loadCarModel(carList*,FILE*carXmlFile);

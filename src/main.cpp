@@ -42,14 +42,10 @@ int main ( int argc, char **argv )
     //we declare the 'global' data and engines
     log->put(LOG_INFO, "Starting SDL subsystems");
     sdl_start ( log );
-    log->put(LOG_INFO, "Creating system data");
-    new SystemData();
     log->put(LOG_INFO, "Creating world data");
     new WorldData();
     log->put(LOG_INFO, "Creating data engine");
     DataEngine * data = new DataEngine();
-    log->put(LOG_INFO, "Loading initial system data");
-    data->loadSystemData (  );
     log->put(LOG_INFO, "Loading initial world data");
     data->loadWorldData (  );
     log->put(LOG_INFO, "Creating input engine");
@@ -84,9 +80,9 @@ int main ( int argc, char **argv )
         }
         //run the physics engine until the game time is in sync with the real time
         while ( ( systemData->currentMainLoopTime - systemData->currentPhysicsTime ) >=
-                systemData->physicsData.timeStep )
+                systemData->physicsTimeStep )
         {
-            systemData->currentPhysicsTime += systemData->physicsData.timeStep;
+            systemData->currentPhysicsTime += systemData->physicsTimeStep;
             systemData->physicsSteps++;
             //now run the physics engine
             physics->step (  );
@@ -114,8 +110,6 @@ int main ( int argc, char **argv )
     delete gui;
     log->put(LOG_INFO, "Unloading world data");
     data->unloadWorldData (  );
-    log->put(LOG_INFO, "Unloading system data");
-    data->unloadSystemData (  );
     log->put(LOG_INFO, "Deleting data engine");
     delete data;
     log->put(LOG_INFO, "Deleting log engine");

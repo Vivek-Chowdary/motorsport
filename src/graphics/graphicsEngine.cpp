@@ -35,7 +35,13 @@ GraphicsEngine::GraphicsEngine ( )
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
 
-    systemData->graphicsData.ogreRoot = new Root (  );
+    log->put ( LOG_INFO, "Setting screen properties..." );
+    width = 1027;
+    height = 768;
+    bpp = 0;
+    log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp );
+
+    ogreRoot = new Root (  );
     setupResources (  );
     // Initialise the system
     if ( !manualInitialize (  ) )
@@ -44,17 +50,17 @@ GraphicsEngine::GraphicsEngine ( )
     }
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
-    systemData->graphicsData.ogreWindow = systemData->graphicsData.ogreRoot->initialise ( true );
-    systemData->graphicsData.ogreSceneManager = systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
+    systemData->ogreWindow = ogreRoot->initialise ( true );
+    ogreSceneManager = ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
-    worldData->camera->ogreCamera = systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
+    worldData->camera->ogreCamera = ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
     worldData->camera->ogreCamera->setPosition ( Vector3 ( -2000, -2000, 500 ) );
     worldData->camera->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
     worldData->camera->ogreCamera->setNearClipDistance ( 5 );
     
     // Create one viewport, entire window
-    Viewport *vp = systemData->graphicsData.ogreWindow->addViewport ( worldData->camera->ogreCamera );
+    Viewport *vp = systemData->ogreWindow->addViewport ( worldData->camera->ogreCamera );
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     
     // Set default mipmap level (NB some APIs ignore this)
@@ -63,22 +69,22 @@ GraphicsEngine::GraphicsEngine ( )
     // Create the skybox
     Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix(Matrix3(1,0,0,0,0,-1,0,1,0));
-    systemData->graphicsData.ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
+    ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
                                                            
     //Create cubes
     for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
         char nombre[20];
         sprintf ( nombre, "Cubo%i", i );
-        worldData->cubeList[i].cubeEntity = systemData->graphicsData.ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
+        worldData->cubeList[i].cubeEntity = ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
         worldData->cubeList[i].cubeEntity->setMaterialName("cube");
-        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( systemData->graphicsData.ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
+        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
         worldData->cubeList[i].cubeNode->attachObject (worldData->cubeList[i].cubeEntity);
     }
 
     //Set some graphics settings
-    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->graphicsData.anisotropic );
-    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( systemData->graphicsData.filtering );
+    MaterialManager::getSingleton (  ).setDefaultAnisotropy (1 );
+    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( Ogre::TFO_BILINEAR );
 }
 
 bool GraphicsEngine::manualInitialize (  )
@@ -107,7 +113,7 @@ bool GraphicsEngine::manualInitialize (  )
 
     Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
-    sprintf ( resolution, "%i x %i", systemData->graphicsData.width, systemData->graphicsData.height );
+    sprintf ( resolution, "%i x %i", width, height );
 
     // Manually set configuration options. These are optional.
     renderSystem->setConfigOption ( "Video Mode", resolution );
@@ -141,15 +147,18 @@ int GraphicsEngine::step ( void )
         worldData->cubeList[currentCube].updateOgreOrientation();
     }
     //Let the listener frames be started and ended: they are needed for particle systems.
-    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
-    systemData->graphicsData.ogreWindow->update (  );
-    systemData->graphicsData.ogreRoot->_fireFrameEnded (  );
+    ogreRoot->_fireFrameStarted (  );
+    systemData->ogreWindow->update (  );
+    ogreRoot->_fireFrameEnded (  );
     
     return ( 0 );
 }
 
 GraphicsEngine::~GraphicsEngine ( void )
 {
+    log->put ( LOG_INFO, "Unloading ogre window data from memory..." );
+    delete ( systemData->ogreWindow );
+
     //finally stop the log engine
     delete log;
 }

@@ -54,6 +54,10 @@ PhysicsEngine::PhysicsEngine ( )
     log->put(LOG_INFO, "Testing ODE library...");
     testOde();
 */
+    log->put ( LOG_INFO, "Setting physics data" );
+    systemData->physicsDesiredStepsPerSecond = 30;
+    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
+    log->format ( LOG_INFO, "Physics rate set @ %i Hz (%i ms)",systemData->physicsDesiredStepsPerSecond, systemData->physicsTimeStep );
 
     log->put ( LOG_INFO, "Creating ODE world");
     worldData->worldID = dWorldCreate();
@@ -138,7 +142,7 @@ int PhysicsEngine::step ( void )
         dBodySetAngularVel (worldData->cubeList[i].cubeID,
             *(dReal*)(dBodyGetAngularVel(cubeID)+0),
             *(dReal*)(dBodyGetAngularVel(cubeID)+1),
-            *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*systemData->physicsData.timeStep
+            *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*systemData->physicsTimeStep
         );
         //////////////////////////////////////simplified air friction
         //applying user input [forces]
@@ -149,24 +153,24 @@ int PhysicsEngine::step ( void )
         moveToY -= currentCube->getMoveToYNegative();
         moveToX /= 500;
         moveToY /= 500;
-        dBodyAddForce (cubeID, moveToX * (systemData->physicsData.timeStep), moveToY * (systemData->physicsData.timeStep),0.0f );
+        dBodyAddForce (cubeID, moveToX * (systemData->physicsTimeStep), moveToY * (systemData->physicsTimeStep),0.0f );
     }
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
     //alternative (x*y), fastest and less accurate physics calculations:
-//    dWorldStepFast1(worldData->worldID, systemData->physicsData.timeStep, 100/*int maxiterations*/);
+//    dWorldStepFast1(worldData->worldID, systemData->physicsTimeStep, 100/*int maxiterations*/);
     //traditional (x^y), theorycally slowest, and most accurate physics calculations:
-    dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
+    dWorldStep (worldData->worldID, systemData->physicsTimeStep);
     dJointGroupEmpty (worldData->jointGroupID);
 
     //camera should be a physics object?
     {
     float x = 0, z = 0;
     //translation of the camera, advancing or strafing
-    x += ( worldData->camera->goRight ) ? systemData->physicsData.timeStep : 0;
-    x -= ( worldData->camera->goLeft ) ? systemData->physicsData.timeStep : 0;
-    z -= ( worldData->camera->goForward ) ? systemData->physicsData.timeStep : 0;
-    z += ( worldData->camera->goBack ) ? systemData->physicsData.timeStep : 0;
+    x += ( worldData->camera->goRight ) ? systemData->physicsTimeStep : 0;
+    x -= ( worldData->camera->goLeft ) ? systemData->physicsTimeStep : 0;
+    z -= ( worldData->camera->goForward ) ? systemData->physicsTimeStep : 0;
+    z += ( worldData->camera->goBack ) ? systemData->physicsTimeStep : 0;
     worldData->camera->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
     }
     {
@@ -177,8 +181,8 @@ int PhysicsEngine::step ( void )
     z -= worldData->camera->getRotateDown ();
     x /= 100;
     z /= 100;
-    worldData->camera->ogreCamera->yaw (x * (systemData->physicsData.timeStep));
-    worldData->camera->ogreCamera->pitch (z * (systemData->physicsData.timeStep));
+    worldData->camera->ogreCamera->yaw (x * (systemData->physicsTimeStep));
+    worldData->camera->ogreCamera->pitch (z * (systemData->physicsTimeStep));
     }
 
     return ( 0 );

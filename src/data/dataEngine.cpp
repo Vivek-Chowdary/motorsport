@@ -61,33 +61,6 @@ int DataEngine::loadWorldData ( void )
     return ( 0 );
 }
 
-int DataEngine::loadSystemData ( void )
-{
-    //initialize main loop data
-    systemData->physicsSteps = 0;
-    systemData->physicsStepsPerSecond = 0;
-    systemData->graphicsSteps = 0;
-    systemData->graphicsStepsPerSecond = 0;
-
-    //set screen properties
-    log->put ( LOG_INFO, "Setting screen properties..." );
-    systemData->graphicsData.enableStatistics (  );
-    systemData->graphicsData.anisotropic = 1;
-    systemData->graphicsData.filtering = Ogre::TFO_BILINEAR;
-    systemData->graphicsData.width = 1024;
-    systemData->graphicsData.height = 768;
-    systemData->graphicsData.bpp = 0;
-    log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", systemData->graphicsData.width, systemData->graphicsData.height, systemData->graphicsData.bpp );
-
-
-    log->put ( LOG_INFO, "Setting physics data" );
-    systemData->physicsData.desiredStepsPerSecond = 30;
-    systemData->physicsData.timeStep = 1000 / systemData->physicsData.desiredStepsPerSecond;
-    log->format ( LOG_INFO, "Physics rate set @ %i Hz (%i ms)",systemData->physicsData.desiredStepsPerSecond, systemData->physicsData.timeStep );
-
-    return ( 0 );
-}
-
 int DataEngine::unloadWorldData ( void )
 {
     //unload the cubes from memory
@@ -96,14 +69,6 @@ int DataEngine::unloadWorldData ( void )
     log->put ( LOG_INFO, "Unloading camera1 from memory..." );
     delete ( worldData->camera->ogreCamera );
     delete ( worldData->camera );
-
-    return ( 0 );
-}
-
-int DataEngine::unloadSystemData ( void )
-{
-    log->put ( LOG_INFO, "Unloading window data from memory..." );
-    delete ( systemData->graphicsData.ogreWindow );
 
     return ( 0 );
 }
