@@ -29,6 +29,7 @@ class Diff : public Drive
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
+    double getAngularVel();
 
     void setOutputPointer2(DriveJoint *output2) { outputJoint2 = output2; } ;
 };

@@ -90,4 +90,10 @@ void Engine::stepPhysics ()
 //    angularVel = prevAngularVel+rotationalAcceleration*SystemData::getSystemDataPointer()->physicsTimeStep/1000;
 
     log->format(LOG_TRACE, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, angularVel);
+    telemetryTorque = engineTorque;
+}
+
+double Engine::getTorque()
+{
+    return telemetryTorque;
 }

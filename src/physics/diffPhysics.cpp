@@ -121,4 +121,7 @@ void Diff::stepPhysics ()
     log->format(LOG_TRACE, "angVel=%f angAcc=%f torque=%f", angularVel, angularAcc, torqueTransfer);
 }
 
-
+double Diff::getAngularVel()
+{
+    return angularVel;
+}

@@ -16,12 +16,14 @@
 class Engine : public Drive
 {
   private:
-   double torqueLinearMultiplier;
-
+    // data
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
+    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
+    double torqueLinearMultiplier;
+    double telemetryTorque;
   public:
     // data
     Engine (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -29,5 +31,6 @@ class Engine : public Drive
 
     // physics
     void stepPhysics ();
+    double getTorque();
 };
 #endif
