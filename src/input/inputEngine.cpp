@@ -169,16 +169,16 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
         break;
 
     case 'o':
-        worldData->cubeList[0].moveToX(false);
+        worldData->cubeList[0].setMoveToX(-1);
         break;
     case 'p':
-        worldData->cubeList[0].moveToX(true);
+        worldData->cubeList[0].setMoveToX(+1);
         break;
     case 'i':
-        worldData->cubeList[0].moveToY(true);
+        worldData->cubeList[0].setMoveToY(+1);
         break;
     case 'k':
-        worldData->cubeList[0].moveToY(false);
+        worldData->cubeList[0].setMoveToY(-1);
         break;
         
     case SDLK_KP_MINUS:
@@ -312,6 +312,19 @@ void InputEngine::processInputKeyUp ( SDLKey keySymbol )
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
         break;
 
+    case 'o':
+        worldData->cubeList[0].setMoveToX(0);
+        break;
+    case 'p':
+        worldData->cubeList[0].setMoveToX(0);
+        break;
+    case 'i':
+        worldData->cubeList[0].setMoveToY(0);
+        break;
+    case 'k':
+        worldData->cubeList[0].setMoveToY(0);
+        break;
+        
         //this is left for non-assigned input events.
     default:
         log->put ( LOG_VERBOSE,

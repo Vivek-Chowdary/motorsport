@@ -55,14 +55,24 @@ void Cube::updateOgrePosition()
     cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
 }
 
-void Cube::moveToX (bool positive)
+void Cube::setMoveToX ( int multiplier)
 {
-    dBodyAddForce (cubeID, (positive?+1:-1)*0.01, 0, 0);
+    moveToX = multiplier;
 }
 
-void Cube::moveToY (bool positive)
+void Cube::setMoveToY ( int multiplier)
 {
-    dBodyAddForce (cubeID, 0, (positive?+1:-1)*0.01, 0);
+    moveToY = multiplier;
+}
+
+int Cube::getMoveToX ( )
+{
+    return moveToX;
+}
+
+int Cube::getMoveToY ( )
+{
+    return moveToY;
 }
 void Cube::updateOgreOrientation()
 {

@@ -29,50 +29,59 @@
 
 class Cube
 {
-  public:
-    Ogre::Entity * cubeEntity;
-    Ogre::SceneNode * cubeNode;
+    private:
+        int moveToX;
+        int moveToY;
+    public:
+        //should be private
+        Ogre::Entity * cubeEntity;
+        Ogre::SceneNode * cubeNode;
     
-    dBodyID cubeID;
-    dGeomID cubeGeomID;
-    void updateOgrePosition();
-    void updateOgreOrientation();
-    void moveToX ( bool positive );
-    void moveToY (bool positive );
+        dBodyID cubeID;
+        dGeomID cubeGeomID;
+    
+        //should be public or similar
+        void updateOgrePosition();
+        void updateOgreOrientation();
+        void setMoveToX ( int multiplier );
+        void setMoveToY ( int multiplier );
+        int getMoveToX ( );
+        int getMoveToY ( );
 };
 
 class MospCamera
 {
+    public:
+        //should be private
+        Ogre::Camera * ogreCamera;
 
-  public:
-    Ogre::Camera * ogreCamera;
-    bool goBack;
-    bool goForward;
-    bool goLeft;
-    bool goRight;
-    bool rotateUp;
-    bool rotateDown;
-    bool rotateLeft;
-    bool rotateRight;
+        //should be public
+        bool goBack;
+        bool goForward;
+        bool goLeft;
+        bool goRight;
+        bool rotateUp;
+        bool rotateDown;
+        bool rotateLeft;
+        bool rotateRight;
 };
 
 
 class WorldData
 {                               //this will contain everything related to the simulated/virtual world
-  private:
-    static WorldData * worldDataPointer;
-  public:
-    static WorldData * getWorldDataPointer ( );
-    WorldData  ( );
-    ~WorldData ( );
-    int numberOfCubes;
-    Cube *cubeList;             //for our example,the worlddata has a set of cubes.
-    MospCamera *camera1;
+    private:
+        static WorldData * worldDataPointer;
+    public:
+        static WorldData * getWorldDataPointer ( );
+        WorldData  ( );
+        ~WorldData ( );
+        int numberOfCubes;
+        Cube *cubeList;             //for our example,the worlddata has a set of cubes.
+        MospCamera *camera1;
 
-    dWorldID worldID;
-    dSpaceID spaceID;
-    dJointGroupID jointGroupID;
-                            
+        dWorldID worldID;
+        dSpaceID spaceID;
+        dJointGroupID jointGroupID;
 };
 
 #endif

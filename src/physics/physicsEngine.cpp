@@ -129,18 +129,21 @@ int PhysicsEngine::step ( void )
     //mega-verbosity
     log->put ( LOG_TRACE, "Doing an step: calculating a physics step" );
 
-    ////////////////simplified air friction (test) (time independent!!!->FIXME)
-    for ( int currentCube = 0;
-          currentCube < worldData->numberOfCubes; currentCube++ )
+    for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
-        dBodySetAngularVel (worldData->cubeList[currentCube].cubeID,
-            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+0),
-            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+1),
-            *(dReal*)(dBodyGetAngularVel(worldData->cubeList[currentCube].cubeID)+2)*(dReal)(0.95)
+        Cube * currentCube = worldData->cubeList+i;
+        dBodyID cubeID = currentCube->cubeID;
+        ////////////////simplified air friction (test) 
+        dBodySetAngularVel (worldData->cubeList[i].cubeID,
+            *(dReal*)(dBodyGetAngularVel(cubeID)+0),
+            *(dReal*)(dBodyGetAngularVel(cubeID)+1),
+            *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*systemData->physicsData.timeStep
         );
+        //////////////////////////////////////simplified air friction
+        //applying user input [forces]
+        dBodyAddForce (cubeID, currentCube->getMoveToX()*0.001*systemData->physicsData.timeStep, currentCube->getMoveToY()*0.001*systemData->physicsData.timeStep,0);
+        
     }
-    //////////////////////////////////////simplified air friction
-    dBodySetLinearVel  (worldData->cubeList[worldData->numberOfCubes-1].cubeID, 0,0,0);
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
     //alternative (x*y), fastest and less accurate physics calculations:
@@ -148,8 +151,8 @@ int PhysicsEngine::step ( void )
     //traditional (x^y), theorycally slowest, and most accurate physics calculations:
     dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
     dJointGroupEmpty (worldData->jointGroupID);
-                                                     
-    
+
+    //camera should be a physics object?
     float x = 0,
         z = 0;
 
@@ -173,15 +176,6 @@ int PhysicsEngine::step ( void )
     //FIXME this for the new x,y,z coords. system!
     worldData->camera1->ogreCamera->pitch ( z );
     worldData->camera1->ogreCamera->yaw ( x );
-
-    //rotate the cubes... this is still not handled by ODE
-    for ( int currentCube = 0;
-          currentCube < worldData->numberOfCubes; currentCube++ )
-    {
-/*        worldData->cubeList[currentCube].cubeNode->
-            pitch ( float ( physicsData->timeStep ) /
-                    ( ( currentCube % 2 ) ? 20.0f : -15.0f ) );
-  */  }
 
     return ( 0 );
 }
