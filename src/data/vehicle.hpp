@@ -41,12 +41,6 @@ class Vehicle : public WorldObject
     std::string author;
     std::string contact;
     std::string license;
-
-    double velocity;
-    bool upKeyReset;
-    bool downKeyReset;
-
-
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);

@@ -10,13 +10,13 @@
 #include "main.hpp"
 
 #include "SDL.h"
-#include "world.hpp"        // contains the IDF for the simulated/virtual world data
-#include "system.hpp"       // contains the IDF for the system data
+#include "world.hpp"            // contains the IDF for the simulated/virtual world data
+#include "system.hpp"           // contains the IDF for the system data
 #include "log/logEngine.hpp"    // allows to easily log actions
-#include "inputEngine.hpp"  // process the queue of input events
+#include "inputEngine.hpp"      // process the queue of input events
 #include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
 #include "physicsEngine.hpp"    // calculates the physics of the world data
-#include "guiEngine.hpp"    // displays all the user interface on screen
+#include "guiEngine.hpp"        // displays all the user interface on screen
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
@@ -38,8 +38,8 @@ int main (int argc, char **argv)
     std::cout << "===============================================================================" << std::endl;
 
     // We start the main log engine.
-    XmlFile * xmlFile = new XmlFile ("mainConfig.xml");
-    LogEngine * log = processXmlRootNode (xmlFile->getRootNode());
+    XmlFile *xmlFile = new XmlFile ("mainConfig.xml");
+    LogEngine *log = processXmlRootNode (xmlFile->getRootNode ());
     delete xmlFile;
 
     // We declare the 'global' data and engines.
@@ -64,7 +64,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->put (LOG_INFO, "( 2 ): Loading world data...");
     log->put (LOG_INFO, "Loading initial world data");
-    new World("default.xml");
+    new World ("default.xml");
 
     // We start the main loop.
     log->put (LOG_INFO, "( 3 ): Starting simulation...");
@@ -87,7 +87,7 @@ int main (int argc, char **argv)
             log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
         // Run the physics engine until the game time is in sync with the real loop time.
-        
+
         while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
         {
             systemData->simulationTime += systemData->physicsTimeStep;
@@ -97,16 +97,17 @@ int main (int argc, char **argv)
             {
                 systemData->physicsSteps++;
                 static int steps = 0;
-                if ( (systemData->pauseStep != 0 && steps < systemData->pauseStep) || (systemData->pauseStep == 0))
+                if ((systemData->pauseStep != 0 && steps < systemData->pauseStep) || (systemData->pauseStep == 0))
                 {
-                    physicsEngine->computeStep ();
-                    if (SystemData::getSystemDataPointer()->videoRecordTimestep > 0)
-                    {
-                        recordVideoFrames();
-                    }
+                    computeLogic (log);
+                    inputEngine->clearLogicEventAxis ();
                     inputEngine->computeStep ();
-                    computeLogic();
+                    physicsEngine->computeStep ();
                     steps++;
+                    if (SystemData::getSystemDataPointer ()->videoRecordTimestep > 0)
+                    {
+                        recordVideoFrames ();
+                    }
                 }
                 step = systemData->timeScale;
             }
@@ -117,14 +118,14 @@ int main (int argc, char **argv)
         graphicsEngine->computeStep ();
         systemData->graphicsSteps++;
         // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
-        inputEngine->clearEventAxis();
+        inputEngine->clearGraphicsEventAxis ();
     }
     log->put (LOG_INFO, "Main loop finished");
 
     // We unload the world data from memory.
     log->put (LOG_INFO, "( 4 ): Unloading world data...");
     log->put (LOG_INFO, "Unloading world data");
-    delete World::getWorldPointer();
+    delete World::getWorldPointer ();
 
     // We delete the 'global' data and engines.
     log->put (LOG_INFO, "( 5 ): Unloading engines and libraries...");
@@ -157,32 +158,84 @@ void stopSdl (void)
     SDL_Quit ();
 }
 
-void computeLogic ()
+void computeLogic (LogEngine * log)
 {
-
+    SystemData *systemData = SystemData::getSystemDataPointer ();
+    if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
+    {
+        log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+        systemData->disableMainLoop ();
+    }
+    if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
+    {
+        log->put (LOG_VERBOSE, "Processing a SDLK_HOME keypress...");
+        systemData->physicsDesiredFrequency = 30;
+        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+    }
+    if (systemData->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
+    {
+        log->put (LOG_VERBOSE, "Processing a SDLK_END keypress...");
+        systemData->physicsDesiredFrequency = 250;
+        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+    }
+    if (systemData->axisMap[getIDKeyboardKey (SDLK_q)]->getValue () == 1)
+    {
+        log->put (LOG_INFO, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
+        systemData->disableMainLoop ();
+    }
+    if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
+    {
+        log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
+        if (systemData->physicsDesiredFrequency < 37)
+        {
+            if (!--systemData->physicsDesiredFrequency)
+            {
+                systemData->physicsDesiredFrequency++;
+            }
+            systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+        } else {
+            systemData->physicsTimeStep++;
+            systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+        }
+    }
+    if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
+    {
+        log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
+        if (systemData->physicsDesiredFrequency < 37)
+        {
+            systemData->physicsDesiredFrequency++;
+            systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+        } else {
+            if (!--systemData->physicsTimeStep)
+            {
+                systemData->physicsTimeStep++;
+            }
+            systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+        }
+    }
 }
 
 void recordVideoFrames ()
 {
     static unsigned int time = 0;
     int takeShot = 0;
-    if ( (int)time >= SystemData::getSystemDataPointer()->videoRecordTimestep )
+    if ((int) time >= SystemData::getSystemDataPointer ()->videoRecordTimestep)
     {
         takeShot++;
-        time -= SystemData::getSystemDataPointer()->physicsTimeStep;
+        time -= SystemData::getSystemDataPointer ()->physicsTimeStep;
     }
-    if ( (takeShot > 0) && (SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 0))
+    if ((takeShot > 0) && (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->getValue () == 0))
     {
-        SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->setNewRawValue (1);
+        SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue (1);
         takeShot--;
     }
-    time += SystemData::getSystemDataPointer()->physicsTimeStep;
+    time += SystemData::getSystemDataPointer ()->physicsTimeStep;
 }
 
-LogEngine * processXmlRootNode (DOMNode * node)
+LogEngine *processXmlRootNode (DOMNode * node)
 {
-    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
-    log->put(LOG_INFO, "Assigning default values");
+    LogEngine *log = new LogEngine (LOG_TRACE, "XML");
+    log->put (LOG_INFO, "Assigning default values");
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "MAI";
     if (node)
@@ -204,11 +257,11 @@ LogEngine * processXmlRootNode (DOMNode * node)
                     {
                         DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
                         std::string name;
-                        name.assign( XMLString::transcode (pAttributeNode->getName ()) );
+                        name.assign (XMLString::transcode (pAttributeNode->getName ()));
                         if (name == "localLogLevel")
                         {
-                            name.erase();
-                            log->format (LOG_INFO, "Found the local log level: %s", name.c_str());
+                            name.erase ();
+                            log->format (LOG_INFO, "Found the local log level: %s", name.c_str ());
                             name = XMLString::transcode (pAttributeNode->getValue ());
                             if (name == "LOG_ERROR")
                                 localLogLevel = LOG_ERROR;
@@ -223,38 +276,38 @@ LogEngine * processXmlRootNode (DOMNode * node)
                         }
                         if (name == "localLogName")
                         {
-                            name.erase();
+                            name.erase ();
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found the log name: %s", name.c_str());
-                            localLogName.erase();
+                            log->format (LOG_INFO, "Found the log name: %s", name.c_str ());
+                            localLogName.erase ();
                             localLogName = name;
                         }
                         if (name == "videoRecordTimestep")
                         {
-                            name.erase();
+                            name.erase ();
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found video recording timestep value: %s", name.c_str());
-                            SystemData::getSystemDataPointer()->videoRecordTimestep = stoi (name);
+                            log->format (LOG_INFO, "Found video recording timestep value: %s", name.c_str ());
+                            SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (name);
                         }
                         if (name == "dataDir")
                         {
-                            name.erase();
+                            name.erase ();
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found the data directory: %s", name.c_str());
-                            SystemData::getSystemDataPointer()->dataDir.erase();
-                            SystemData::getSystemDataPointer()->dataDir = name;
+                            log->format (LOG_INFO, "Found the data directory: %s", name.c_str ());
+                            SystemData::getSystemDataPointer ()->dataDir.erase ();
+                            SystemData::getSystemDataPointer ()->dataDir = name;
                         }
-                        name.erase();
+                        name.erase ();
                     }
                 }
             }
             XMLString::release (&name);
         }
     }
-    LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str());
+    LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str ());
     delete log;
     returnLog->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
     returnLog->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    localLogName.erase();
+    localLogName.erase ();
     return returnLog;
 }

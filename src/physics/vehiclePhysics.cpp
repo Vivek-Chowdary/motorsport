@@ -23,7 +23,6 @@
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    velocity = 0.0;
     log->telemetry (LOG_TRACE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 }
 dBodyID Vehicle::getVehicleID()
@@ -126,26 +125,16 @@ void Vehicle::attachWheelsToBody()
 
 void Vehicle::stepPhysics ()
 {
-    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_t)]->getValue()>0)
+    // check the gearshift levers
+    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_t)]->getValue() == 1)
     {
-        if(upKeyReset) {
-                gearbox->gearUp();
-                upKeyReset = 0;
-        }
+        gearbox->gearUp();
     }
-    else {
-        upKeyReset=1;
-    }
-    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_b)]->getValue())
+    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
     {
-        if(downKeyReset) {
-                gearbox->gearDown();
-                downKeyReset = 0;
-        }
+        gearbox->gearDown();
     }
-    else {
-        downKeyReset=1;
-    }
+
     // step torque transfer components first
     clutch->stepPhysics();
     transfer->stepPhysics();
@@ -167,10 +156,10 @@ void Vehicle::stepPhysics ()
         wheelIter->second->stepPhysics();
     }
 
-    const dReal * bodyVel;
-    bodyVel = dBodyGetLinearVel(body->bodyID);
-    velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);
-    bodyVel= dBodyGetPosition(body->bodyID);
-    double distance = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);
+    // print telemetry data
+    const dReal * tmp = dBodyGetLinearVel(body->bodyID);
+    double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
+    tmp = dBodyGetPosition(body->bodyID);
+    double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
     log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
 }

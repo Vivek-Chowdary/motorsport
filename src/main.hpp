@@ -16,7 +16,7 @@ class LogEngine;
 
 void stopSdl (void);
 void startSdl (LogEngine * log);
-void computeLogic ();
+void computeLogic (LogEngine * log);
 void recordVideoFrames ();
 LogEngine * processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * node);
 

@@ -41,5 +41,6 @@ class InputEngine
     int computeStep (void);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void clearEventAxis ();
+    void clearLogicEventAxis ();
+    void clearGraphicsEventAxis ();
 };

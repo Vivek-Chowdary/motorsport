@@ -89,16 +89,22 @@ InputEngine::InputEngine ()
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
-void InputEngine::clearEventAxis ()
+void InputEngine::clearLogicEventAxis ()
 {
-    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_q)]->setNewRawValue(0);
-    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
-    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
-    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_v)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_HOME)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_END)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_q)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_t)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_b)]->setNewRawValue(0);
+}
+
+void InputEngine::clearGraphicsEventAxis ()
+{
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_v)]->setNewRawValue(0);
 }
 
 int InputEngine::computeStep (void)
