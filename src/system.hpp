@@ -34,9 +34,6 @@ class SystemData
 {                               // this contains all the data not related with the simulated/virtual world
     static SystemData *systemDataPointer;
     bool mainLoopEnabled;
-    bool takeScreenshot;
-    bool switchCamera;
-    bool invertShowStatistics;
     double cfmValue;     
     double erpValue;
   public:
@@ -65,14 +62,6 @@ class SystemData
     bool isMainLoopEnabled (void); // does the program have to keep running?
     void enableMainLoop (void); // allows the program to start running
     void disableMainLoop (void);    // allows the program to stop running
-
-    void setInvertShowStatistics ();
-    bool getInvertShowStatistics ();
-
-    void setTakeScreenshot ();
-    bool getTakeScreenshot ();
-    void setSwitchCamera ();
-    bool getSwitchCamera ();
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

@@ -48,9 +48,6 @@ SystemData::SystemData ()
         physicsFrequency = 0;
         graphicsSteps = 0;
         graphicsFrequency = 0;
-        takeScreenshot = false;
-        switchCamera = false;
-        invertShowStatistics = false;
     }
 }
 
@@ -73,45 +70,6 @@ void SystemData::disableMainLoop (void)
 {
     mainLoopEnabled = false;
 }
-
-void SystemData::setInvertShowStatistics ()
-{
-    invertShowStatistics = true;
-}
-
-bool SystemData::getInvertShowStatistics ()
-{
-    if (!invertShowStatistics)
-        return false;
-    invertShowStatistics = false;
-    return true;
-}
-
-void SystemData::setSwitchCamera ()
-{
-    switchCamera = true;
-}
-
-bool SystemData::getSwitchCamera ()
-{
-    if (!switchCamera)
-        return false;
-    switchCamera = false;
-    return true;
-}
-void SystemData::setTakeScreenshot ()
-{
-    takeScreenshot = true;
-}
-
-bool SystemData::getTakeScreenshot ()
-{
-    if (!takeScreenshot)
-        return false;
-    takeScreenshot = false;
-    return true;
-}
-
 double SystemData::getCfmValue()
 {
     return cfmValue;

@@ -36,6 +36,7 @@
 #include "OgreNoMemoryMacros.h"
 #include "log/logEngine.hpp"
 #include "world.hpp"
+#include "SDL/SDL_keysym.h"
 
 GraphicsEngine::GraphicsEngine ()
 {
@@ -108,15 +109,16 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 
 int GraphicsEngine::computeStep (void)
 {
-    // take a screenshot if needed
-    if (systemData->getTakeScreenshot ())
+    // take a screenshot if neededa
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
     {
         log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename.c_str());
         systemData->ogreWindow->writeContentsToFile (screenshotFilename);
+        systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
 
     // change camera if needed
-    if (systemData->getSwitchCamera ())
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
         int nextCam = World::getWorldPointer()->getActiveTrackCameraIndex()+1;
         int maxCams = World::getWorldPointer()->trackList[0]->cameraList.size();
@@ -125,6 +127,7 @@ int GraphicsEngine::computeStep (void)
             nextCam = 0;
         }
         World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
+        systemData->axisMap[getIDKeyboardKey(SDLK_c)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();

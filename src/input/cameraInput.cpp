@@ -23,7 +23,7 @@
 
 void Camera::startInput ()
 {
-    goBack = goForward = goLeft = goRight = false;
+
 }
 
 void Camera::stepInput ()

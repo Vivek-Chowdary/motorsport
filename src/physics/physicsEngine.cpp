@@ -105,18 +105,6 @@ int PhysicsEngine::computeStep (void)
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
 
-    // camera should be a physics object?
-    {
-        float x = 0, z = 0;
-        // translation of the camera, advancing or strafing
-        x += (World::getWorldPointer ()->getActiveCamera()->goRight) ? systemData->physicsTimeStep : 0;
-        x -= (World::getWorldPointer ()->getActiveCamera()->goLeft) ? systemData->physicsTimeStep : 0;
-        z -= (World::getWorldPointer ()->getActiveCamera()->goForward) ? systemData->physicsTimeStep : 0;
-        z += (World::getWorldPointer ()->getActiveCamera()->goBack) ? systemData->physicsTimeStep : 0;
-        x /= 100;
-        z /= 100;
-        World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
-    }
     return (0);
 }
 

@@ -29,8 +29,6 @@ Camera::Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY
     
     startGraphics (posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
     startInput ();
-//    rotateLeft = rotateRight = rotateUp = rotateDown = 0;
-    goBack = goForward = goLeft = goRight = false;
 }
 
 Camera::~Camera ()

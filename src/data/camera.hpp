@@ -46,10 +46,6 @@ class Camera
     void startInput ();
     void stepInput ();
     void stopInput ();
-    bool goBack;
-    bool goForward;
-    bool goLeft;
-    bool goRight;
 };
 
 #endif
