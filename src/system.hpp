@@ -46,6 +46,8 @@ class SystemData
     Uint32 physicsFrequency;
     int graphicsSteps;
     Uint32 graphicsFrequency;
+    int timeScale;
+    int pauseStep;
     int height;
     int width;
 

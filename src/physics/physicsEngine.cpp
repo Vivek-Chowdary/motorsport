@@ -120,6 +120,8 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "FSX" ;
     int frequency = 250;
+    int timeScale = 1;
+    int pauseStep = 0;
     SystemData::getSystemDataPointer()->setCfmValue (-1);
     SystemData::getSystemDataPointer()->setErpValue (-1);
     int stepType = 1;
@@ -166,6 +168,20 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             assignXmlString (attribute, attNode->getValue());
                             frequency = stoi (attribute);
                             tmpLog->format (LOG_INFO, "Found the frecuency: %s", attribute.c_str());
+                        }
+                        if (attribute == "timeScale")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            timeScale = stoi (attribute);
+                            tmpLog->format (LOG_INFO, "Found the time scale: %s", attribute.c_str());
+                        }
+                        if (attribute == "pauseStep")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            pauseStep = stoi (attribute);
+                            tmpLog->format (LOG_INFO, "Found the pause step: %s", attribute.c_str());
                         }
                         attribute.clear();
                     }
@@ -254,6 +270,8 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     log->put (LOG_INFO, "Setting physics data");
     systemData->physicsDesiredFrequency = frequency;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+    systemData->timeScale = timeScale;
+    systemData->pauseStep = pauseStep;
     log->format (LOG_INFO, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
 
     localLogName.clear();

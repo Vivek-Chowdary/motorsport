@@ -90,10 +90,19 @@ int main (int argc, char **argv)
         while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
         {
             systemData->simulationTime += systemData->physicsTimeStep;
-            systemData->physicsSteps++;
-            //static int steps = 0;if (!steps){
-            physicsEngine->computeStep ();
-            //steps++;}
+            static int step = systemData->timeScale;
+            step--;
+            if (!step)
+            {
+                systemData->physicsSteps++;
+                static int steps = 0;
+                if ( (systemData->pauseStep != 0 && steps < systemData->pauseStep) || (systemData->pauseStep == 0))
+                {
+                    physicsEngine->computeStep ();
+                    steps++;
+                }
+                step = systemData->timeScale;
+            }
             inputEngine->computeStep ();
         }
         // Run the gui engine.

@@ -3,6 +3,8 @@
     localLogLevel = "LOG_INFO"
     localLogName = "FSX"
     frequency = "150"
+    timeScale = "1"
+    pauseStep = "0"
     >
     <ode
         cfmValue = "default"
