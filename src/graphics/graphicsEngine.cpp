@@ -410,6 +410,8 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 
     log->put (LOG_INFO, "Setting up fullscreen/windowed mode");
     ogreRoot->getRenderSystem ()->setConfigOption ("Full Screen", fullScreen ? "Yes" : "No");
+    log->put (LOG_INFO, "Saving config file to removeme.cfg");
+    ogreRoot->saveConfig();
 #ifdef WIN32
     // Here we choose to let the user choose the rendering window settings
     log->put (LOG_WARNING, "Windows version: running Ogre setup window. FIXME");
