@@ -24,15 +24,36 @@
 #include "Ogre.h"
 #include "ode.h"
 
+/// Manages everything related to the simulated world data.
+/** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.
+*/
 class PhysicsEngine
 {
   private:
-    LogEngine *log;              //a log object for logging independently from other engines and main
-    PhysicsData *physicsData;
-    WorldData *worldData;
+    /// Log engine used by the physics engine.
+    /** This log engine allows the physics engine to write data in the log file, allowing to be differenciated from other engines.
+    */
+    LogEngine *log;
+    /// Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
+    /// Pointer to the world data, used by different engines in order to store the simulated world data.
+    WorldData *worldData;
   public:
-    PhysicsEngine( );//int start ( );    //starts the graphics engine
-    ~PhysicsEngine ( void );          //stops the graphics engine
-    int step ( void );          //makes the graphics engine draw one frame
+    /// Creates a new physics engine.
+    /** Creates a new physics engine, with its associated own log engine. It initializes all necessary related data, including the simulated world's physic entities.
+    */
+    PhysicsEngine( );
+    /// Deletes the physics engine.
+    /** Deletes the physics engine, as well as its associated log engine. It also removes all the simulated world's physic entities from memory.
+    */
+    ~PhysicsEngine ( void );
+    /// Updates all the simulated world state.
+    /** Updates all the simulated world state, including physic movements (collision detection and correction, physic forces...), world events, and other issues.
+    */
+    int step ( void );
 };
+
+/// Callback function for collisions detection.
+/** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
+*/
+static void nearCallback (void *data, dGeomID o1, dGeomID o2);

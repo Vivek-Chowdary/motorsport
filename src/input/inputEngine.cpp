@@ -34,7 +34,6 @@ InputEngine::InputEngine ( )
     log->put ( LOG_INFO, "Setting up data pointers..." );
     systemData = SystemData::getSystemDataPointer ();
     worldData = WorldData::getWorldDataPointer ();
-    inputData = &( systemData->inputData );
  
     log->put ( LOG_INFO, "Initializing keyboard data array" );
     keyState = SDL_GetKeyState ( NULL );  

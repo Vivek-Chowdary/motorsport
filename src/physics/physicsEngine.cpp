@@ -49,7 +49,6 @@ PhysicsEngine::PhysicsEngine ( )
     log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
-    physicsData = &(systemData->physicsData );
 
 /*    //get the direction of the graphics data
     log->put(LOG_INFO, "Testing ODE library...");
@@ -164,10 +163,10 @@ int PhysicsEngine::step ( void )
     {
     float x = 0, z = 0;
     //translation of the camera, advancing or strafing
-    x += ( worldData->camera->goRight ) ? physicsData->timeStep : 0;
-    x -= ( worldData->camera->goLeft ) ? physicsData->timeStep : 0;
-    z -= ( worldData->camera->goForward ) ? physicsData->timeStep : 0;
-    z += ( worldData->camera->goBack ) ? physicsData->timeStep : 0;
+    x += ( worldData->camera->goRight ) ? systemData->physicsData.timeStep : 0;
+    x -= ( worldData->camera->goLeft ) ? systemData->physicsData.timeStep : 0;
+    z -= ( worldData->camera->goForward ) ? systemData->physicsData.timeStep : 0;
+    z += ( worldData->camera->goBack ) ? systemData->physicsData.timeStep : 0;
     worldData->camera->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
     }
     {
