@@ -21,11 +21,10 @@
 
 #ifndef CAMERA_HPP
 #   define CAMERA_HPP
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
-class Camera;
-#   include "world.hpp"
+
+namespace Ogre { 
+  class Camera; 
+};
 
 class Camera
 {
@@ -44,6 +43,7 @@ class Camera
     void startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     void stepGraphics ();
     void stopGraphics ();
+
     Ogre::Camera * ogreCamera;
 
     // input

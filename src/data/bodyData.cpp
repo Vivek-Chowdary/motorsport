@@ -20,10 +20,14 @@
 ******************************************************************************/
 
 #include "body.hpp"
+#include "xmlParser.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "log/logEngine.hpp"
 
 int Body::instancesCount = 0;
 
-Body::Body (DOMNode * n)
+Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "BOD");
     log->put (LOG_INFO, "Starting to parse the body node");
@@ -55,7 +59,7 @@ void Body::updateOgreOrientation ()
     bodyNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
 
-void Body::processXmlRootNode (DOMNode * n)
+void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     DOMNode * graphicsNode = 0;
     DOMNode * physicsNode = 0;

@@ -21,16 +21,21 @@
 
 #ifndef TRACK_HPP
 #   define TRACK_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
+#   include "ode/objects.h"
 #   include "worldObject.hpp"
 #   include <map>
-#   include "cameraPosition.hpp"
-#   include "vehiclePosition.hpp"
-class Track;
-#   include "world.hpp"
+#   include <string>
+#   include <vector>
+
+//forward declatation
+namespace Ogre {
+  class Entity;
+  class SceneNode;
+};
+class CameraPosition;
+class Cube;
+class VehiclePosition;
+class Camera;
 
 class Track : public WorldObject
 {
@@ -44,13 +49,14 @@ class Track : public WorldObject
     // data
     Track (const std::string & xmlFilename);
     ~Track ();
-    void processXmlRootNode (DOMNode * n);
-    void processXmlVehiclePositionNode (DOMNode * n);
-    void processXmlCameraPositionNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlVehiclePositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     std::map <std::string, CameraPosition * > cameraPositionMap;
     std::map <std::string, VehiclePosition * > vehiclePositionMap;
+
     std::vector < Cube * > cubeList;
-    std::vector < Camera * >cameraList;
+    std::vector < Camera * > cameraList;
 
     // physics
 /*    void startPhysics (DOMNode * n);

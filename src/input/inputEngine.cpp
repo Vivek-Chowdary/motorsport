@@ -21,6 +21,15 @@
 ******************************************************************************/
 
 #include "inputEngine.hpp"
+#include "SDL/SDL.h"
+#include "xmlParser.hpp"
+#include "system.hpp"
+#include "world.hpp"
+#include "log/logEngine.hpp"
+#include "track.hpp"
+#include "camera.hpp"
+#include "cube.hpp"
+
 
 InputEngine::InputEngine ()
 {
@@ -323,7 +332,7 @@ InputEngine::~InputEngine (void)
     delete log;
 }
 
-void InputEngine::processXmlRootNode (DOMNode * n)
+void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "INP";

@@ -20,6 +20,12 @@
 ******************************************************************************/
 
 #include "cube.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "data/xmlParser.hpp"
+#include "log/logEngine.hpp"
+#include "system.hpp"
+
 
 void Cube::stepGraphics ()
 {

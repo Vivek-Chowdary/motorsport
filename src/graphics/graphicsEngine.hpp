@@ -20,20 +20,15 @@
 *
 ******************************************************************************/
 
-#include "logEngine.hpp"
-#include "SDL.h"
-#include "Ogre.h"
-#include "OgreConfigFile.h"
-#include "OgreNoMemoryMacros.h"
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
-#include "system.hpp"
-#include "world.hpp"
-#include "cube.hpp"
-#include "vehicle.hpp"
-#include "camera.hpp"
-#include "xmlParser.hpp"
+#include <string>
+#include "data/xercesc_fwd.hpp"
+
+//forward declarations
+class SystemData;
+class LogEngine;
+namespace Ogre {
+  class Root;
+}
 
 /// Manages everything related to the rendering process.
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, track, etc...).
@@ -77,5 +72,5 @@ class GraphicsEngine
     */
     void setupResources (const std::string & ogreConfigFile);
     // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };

@@ -20,15 +20,12 @@
 *
 ******************************************************************************/
 
-#include "system.hpp"
-#include "world.hpp"
-#include "logEngine.hpp"
-#include "SDL.h"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#include "xmlParser.hpp"
+#include "xercesc_fwd.hpp"
 
-using namespace Ogre;
+//forward declaration
+class SystemData;
+class LogEngine;
+
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
@@ -62,6 +59,6 @@ class GuiEngine
     */
     int computeStep (void);
     // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };
 

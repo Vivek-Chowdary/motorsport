@@ -21,6 +21,7 @@
 ******************************************************************************/
 
 #include "system.hpp"
+#include "SDL/begin_code.h"
 
 SystemData *SystemData::systemDataPointer = NULL;
 

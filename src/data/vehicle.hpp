@@ -21,15 +21,11 @@
 
 #ifndef VEHICLE_HPP
 #   define VEHICLE_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
 #   include <string>
-#   include "system.hpp"
 #   include "worldObject.hpp"
-class Vehicle;
-#   include "body.hpp"
-#   include "world.hpp"
+
+//forward declarations
+class Body;
 
 class Vehicle : public WorldObject
 {
@@ -45,18 +41,18 @@ class Vehicle : public WorldObject
     // data
     Vehicle (const std::string & xmlFilename);
     ~Vehicle ();
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Body * body;
 
     // physics
-    void startPhysics (DOMNode * n);
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
     void setPosition (double posX, double posY, double posZ);
     void setRotation (double rotX, double rotY, double rotZ);
 
     // graphics
-    void startGraphics (DOMNode * n);
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
 };

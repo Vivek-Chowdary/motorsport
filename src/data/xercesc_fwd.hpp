@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-* Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
+* Copyright (C) 2004 Mattias HellstrÃ¶m (heson @)
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -19,21 +19,13 @@
 *
 ******************************************************************************/
 
-#include "vehicle.hpp"
-#include "data/xercesc_fwd.hpp"
-#include "body.hpp"
+/*** Hack to permit forward declaration of DOMNode
+ *** without including megabytes of includefiles.
+ **/ 
 
-void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-}
+#include "xercesc/util/XercesVersion.hpp"
 
-void Vehicle::stepGraphics ()
-{
-    body->stepGraphics();
-}
-
-void Vehicle::stopGraphics ()
-{
-    body->stopGraphics();
-}
+namespace XERCES_CPP_NAMESPACE {
+  class DOMNode;
+};
 

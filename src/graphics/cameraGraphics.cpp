@@ -20,6 +20,10 @@
 ******************************************************************************/
 
 #include "camera.hpp"
+#include <cstdio>
+#include "system.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 
 void Camera::startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {

@@ -20,8 +20,10 @@
 ******************************************************************************/
 
 #include "vehicle.hpp"
+#include "data/xercesc_fwd.hpp"
+#include "body.hpp"
 
-void Vehicle::startPhysics (DOMNode * n)
+void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
 }
 

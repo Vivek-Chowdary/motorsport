@@ -21,6 +21,12 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
+#include <cstdio>
+#include <cstdarg>
+#include <cstdlib>
+#include <iostream>
+#include <xmlParser.hpp>
+
 //TODO use iostreams for file management/writing
 
 std::fstream LogEngine::logFile;
@@ -125,7 +131,7 @@ LogEngine::~LogEngine ()
 
 }
 
-void LogEngine::processXmlRootNode (DOMNode * n)
+void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string fileName = "motorsport-default.log";
     globalLevel = LOG_TRACE;

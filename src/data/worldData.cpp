@@ -21,6 +21,17 @@
 ******************************************************************************/
 
 #include "world.hpp"
+#include "vehicle.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "data/xmlParser.hpp"
+#include "track.hpp"
+#include "log/logEngine.hpp"
+#include "ode/ode.h"
+#include "system.hpp"
+#include "camera.hpp"
+#include "vector3d.hpp"
+#include "data/vehiclePosition.hpp"
 
 World *World::worldPointer = NULL;
 
@@ -83,7 +94,7 @@ World::~World ()
 }
 
 
-void World::processXmlRootNode (DOMNode * n)
+void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     name.assign ("None");
     description.assign ("None");

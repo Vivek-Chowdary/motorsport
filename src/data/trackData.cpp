@@ -19,7 +19,18 @@
 *
 ******************************************************************************/
 
-#include "track.hpp"
+#include "data/track.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "data/xmlParser.hpp"
+#include "log/logEngine.hpp"
+#include "system.hpp"
+#include "camera.hpp"
+#include "cube.hpp"
+#include "ode/ode.h"
+#include "vehiclePosition.hpp"
+#include "cameraPosition.hpp"
+#include "world.hpp"
 
 Track::Track (const std::string & xmlFilename)
 {

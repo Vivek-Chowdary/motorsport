@@ -20,8 +20,13 @@
 ******************************************************************************/
 
 #include "body.hpp"
+#include "world.hpp"
+#include "xmlParser.hpp"
+#include "ode.h"
+#include "log/logEngine.hpp"
 
-void Body::startPhysics (DOMNode * n)
+
+void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     double length = 1;
     double width = 1;

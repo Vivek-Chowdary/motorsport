@@ -21,9 +21,10 @@
 
 #ifndef WORLDOBJECT_HPP
 #   define WORLDOBJECT_HPP
-#   include "system.hpp"
-#   include "xmlParser.hpp"
-#   include "logEngine.hpp"
+#   include "data/xercesc_fwd.hpp"
+
+//forward declatations
+class LogEngine;
 
 class WorldObject
 {
@@ -33,20 +34,20 @@ class WorldObject
   public:
     // data
     virtual ~WorldObject (){};
-    virtual void processXmlRootNode (DOMNode * n) = 0;
+    virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
     
     // physics
-    virtual void startPhysics (DOMNode * n){};
+    virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepPhysics (){};
     virtual void stopPhysics (){};
 
     // graphics
-    virtual void startGraphics (DOMNode * n){};
+    virtual void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepGraphics (){};
     virtual void stopGraphics (){};
 
     // input
-    virtual void startInput (DOMNode * n){};
+    virtual void startInput (XERCES_CPP_NAMESPACE::DOMNode * n){};
     virtual void stepInput (){};
     virtual void stopInput (){};
 };

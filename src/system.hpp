@@ -21,9 +21,12 @@
 
 #ifndef SYSTEM_HPP
 #    define SYSTEM_HPP
-#    include "SDL.h"
-#    include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#    include "SDL/SDL_types.h"
+
+namespace Ogre {
+class RenderWindow;
+class SceneManager;
+}
 
 class SystemData
 {                               // this contains all the data not related with the simulated/virtual world

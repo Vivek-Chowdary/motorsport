@@ -20,6 +20,10 @@
 ******************************************************************************/
 
 #include "cube.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "xmlParser.hpp"
+#include "log/logEngine.hpp"
 
 int Cube::instancesCount = 0;
 
@@ -75,7 +79,7 @@ void Cube::updateOgreOrientation ()
     cubeNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
 
-void Cube::processXmlRootNode (DOMNode * n)
+void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     DOMNode * graphicsNode = 0;
     DOMNode * physicsNode = 0;

@@ -46,7 +46,7 @@ LD := g++
 CC := gcc
 CXX := g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
-CXXFLAGS := $(CFLAGS)
+CXXFLAGS := $(CFLAGS) -time 
 ###########################################
 
 
@@ -117,6 +117,13 @@ INCLUDE_DIRS := \
 	gui \
 	data \
 	log \
+	$(BASE_INCLUDE_DIR)/../local/include/ode \
+	$(BASE_INCLUDE_DIR)/freetype2 \
+	$(BASE_INCLUDE_DIR)/SDL \
+	$(BASE_INCLUDE_DIR)/OGRE \
+	$(BASE_INCLUDE_DIR)/xercesc \
+	$(BASE_INCLUDE_DIR)/../local/include/OGRE \
+	$(BASE_INCLUDE_DIR)/../local/include/SDL \
 	./
 ###########################################
 
@@ -135,6 +142,7 @@ endif
 ifeq ("$(PLATFORM)", "LINUX")
 PLATFORM_LIBRARY_DIRS := \
 	/usr/local/lib \
+        $(BASE_LIBRARY_DIR)/../local/lib/ode \
 	$(BASE_LIBRARY_DIR)/OGRE \
 	$(BASE_LIBRARY_DIR)/ode
 endif
@@ -214,6 +222,16 @@ SOURCES := \
 
 
 ###########################################
+#Hacks for space removal
+Pat_empty:=
+Pat_space:=$(Pat_empty) $(Pat_empty)
+###########################################
+
+
+
+
+
+###########################################
 #Targets
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
@@ -275,4 +293,17 @@ TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o log/logP
 .PHONY: test
 test:	$(TEST_EXE)
 	$(foreach test, $(TEST_EXE), ./$(test);)
+###########################################
+
+
+
+
+
+###########################################
+#Code checkers
+flawfinder.htm: $(SOURCES)
+	flawfinder --html $(SOURCES) > $@
+
+rats.htm: $(SOURCES)
+	rats --html  $(SOURCES) > $@ 
 ###########################################

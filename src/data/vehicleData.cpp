@@ -20,6 +20,9 @@
 ******************************************************************************/
 
 #include "vehicle.hpp"
+#include "xmlParser.hpp"
+#include "log/logEngine.hpp"
+#include "body.hpp"
 
 int Vehicle::instancesCount = 0;
 

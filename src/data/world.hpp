@@ -22,17 +22,16 @@
 
 #ifndef WORLD_HPP
 #   define WORLD_HPP
-#   include "SDL.h"
-#   include "ode.h"
+#   include "SDL/SDL_types.h"
+#   include "ode/objects.h"
 #   include <vector>
-#   include "logEngine.hpp"
+#   include <string>
 #   include "worldObject.hpp"
-#   include "system.hpp"
-class World;
-#   include "cube.hpp"
-#   include "vehicle.hpp"
-#   include "camera.hpp"
-#   include "track.hpp"
+
+//forward declaration
+class Camera;
+class Track;
+
 
 class World : public WorldObject
 {
@@ -44,7 +43,7 @@ class World : public WorldObject
     int activeTrackCameraIndex;
   public:
     static World *getWorldPointer ();
-    void processXmlRootNode(DOMNode * n);
+    void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
     World (char * xmlFilename);
     ~World ();
 
@@ -53,7 +52,7 @@ class World : public WorldObject
     dJointGroupID jointGroupID;
 
     std::vector < Track * > trackList;
-    std::vector < Vehicle * >vehicleList;
+    std::vector < WorldObject * > vehicleList;
 
     void setActiveCamera (Camera * camera);
     Camera * getActiveCamera (void);

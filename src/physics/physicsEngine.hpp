@@ -21,20 +21,15 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#include "ode.h"
-#include "math.h"
-#include "system.hpp"
-#include "world.hpp"
-#include "cube.hpp"
-#include "vehicle.hpp"
-#include "camera.hpp"
-#include "xmlParser.hpp"
+#include "ode/objects.h"
 
 /// Manages everything related to the simulated world data.
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.
 */
+
+
+class SystemData;
+
 class PhysicsEngine
 {
   private:
@@ -67,5 +62,5 @@ class PhysicsEngine
     int computeStep (void);
 
     // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };

@@ -20,8 +20,13 @@
 ******************************************************************************/
 
 #include "body.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "data/xmlParser.hpp"
+#include "log/logEngine.hpp"
+#include "system.hpp"
 
-void Body::startGraphics (DOMNode * n)
+void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string material = "None";
     std::string mesh = "None";

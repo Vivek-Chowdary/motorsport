@@ -22,6 +22,19 @@
 
 #include "physicsEngine.hpp"
 
+#include "math.h"
+#include "system.hpp"
+#include "world.hpp"
+#include "cube.hpp"
+#include "vehicle.hpp"
+#include "camera.hpp"
+#include "xmlParser.hpp"
+#include "track.hpp"
+#include "system.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+#include "ode/ode.h"
+
 PhysicsEngine::PhysicsEngine ()
 {
     XmlFile * xmlFile = new XmlFile ("physicsConfig.xml");
@@ -69,7 +82,7 @@ int PhysicsEngine::computeStep (void)
     int size = World::getWorldPointer ()->trackList[0]->cubeList.size ();
     for (int i = 0; i < size; i++)
     {
-        World::getWorldPointer ()->trackList[0]->cubeList[i]->stepPhysics ();
+        World::getWorldPointer()->trackList[0]->cubeList[i]->stepPhysics ();
     }
 
     size = World::getWorldPointer ()->vehicleList.size ();
@@ -127,7 +140,7 @@ PhysicsEngine::~PhysicsEngine (void)
     delete log;
 }
 
-void PhysicsEngine::processXmlRootNode (DOMNode * n)
+void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "FSX" ;
@@ -140,7 +153,7 @@ void PhysicsEngine::processXmlRootNode (DOMNode * n)
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        if (n->getNodeType () == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());

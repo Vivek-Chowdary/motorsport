@@ -20,6 +20,10 @@
 ******************************************************************************/
 
 #include "cube.hpp"
+#include "xmlParser.hpp"
+#include "ode.h"
+#include "log/logEngine.hpp"
+#include "world.hpp"
 
 void Cube::startPhysics (DOMNode * n)
 {

@@ -21,6 +21,13 @@
 ******************************************************************************/
 
 #include "guiEngine.hpp"
+#include "xmlParser.hpp"
+#include "SDL/SDL.h"
+#include "system.hpp"
+#include "logEngine.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
+using namespace Ogre;
 
 GuiEngine::GuiEngine ()
 {

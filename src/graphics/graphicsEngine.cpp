@@ -24,7 +24,18 @@
 #include <windows.h>
 #include "OgreWin32Window.h"
 #endif
+
 #include "graphicsEngine.hpp"
+#include "track.hpp"
+#include "camera.hpp"
+#include "cube.hpp"
+#include "system.hpp"
+#include "xmlParser.hpp"
+#include "Ogre.h"
+#include "OgreConfigFile.h"
+#include "OgreNoMemoryMacros.h"
+#include "log/logEngine.hpp"
+#include "world.hpp"
 
 GraphicsEngine::GraphicsEngine ()
 {

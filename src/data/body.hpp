@@ -21,13 +21,15 @@
 
 #ifndef BODY_HPP
 #   define BODY_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
+#   include "ode/objects.h"
 #   include "worldObject.hpp"
-class Body;
-#   include "world.hpp"
+#   include "data/xercesc_fwd.hpp"
+
+//forward declarations
+namespace Ogre {
+  class Entity;
+  class SceneNode;
+}
 
 class Body : public WorldObject
 {
@@ -35,15 +37,16 @@ class Body : public WorldObject
     static int instancesCount;
 
   public:
+
     // data
-    Body (DOMNode * n);
+    Body (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Body ();
     void updateOgrePosition ();
     void updateOgreOrientation ();
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
-    void startPhysics (DOMNode * n);
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
     dBodyID bodyID;
@@ -52,9 +55,13 @@ class Body : public WorldObject
     void setRotation (double rotX, double rotY, double rotZ);
 
     // graphics
-    void startGraphics (DOMNode * n);
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
+
+    class Ogre::Entity;
+    class Ogre::SceneNode;
+
     Ogre::Entity * bodyEntity;
     Ogre::SceneNode * bodyNode;
 };

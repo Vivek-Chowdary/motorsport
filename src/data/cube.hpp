@@ -21,13 +21,14 @@
 
 #ifndef CUBE_HPP
 #   define CUBE_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
+#   include "ode/objects.h"
 #   include "worldObject.hpp"
-class Cube;
-#   include "world.hpp"
+
+
+namespace Ogre {
+  class Entity;
+  class SceneNode;
+}
 
 class Cube : public WorldObject
 {
@@ -48,10 +49,10 @@ class Cube : public WorldObject
     float getMoveToXNegative ();
     float getMoveToYPositive ();
     float getMoveToYNegative ();
-    void processXmlRootNode (DOMNode * n);
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
-    void startPhysics (DOMNode * n);
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
     dBodyID cubeID;
@@ -59,9 +60,10 @@ class Cube : public WorldObject
     void setPosition (float posX, float posY, float posZ);
 
     // graphics
-    void startGraphics (DOMNode * n);
+    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
+
     Ogre::Entity * cubeEntity;
     Ogre::SceneNode * cubeNode;
 
