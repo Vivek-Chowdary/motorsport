@@ -69,7 +69,7 @@ void Cube::startPhysics (DOMNode * n)
     }
     log->put (LOG_TRACE, "Finished cube physics.");
     dMass mass;
-    dMassSetBox (&mass, 1000, size, size, size);
+    dMassSetBox (&mass, 1, size, size, size);
     cubeID = dBodyCreate (World::getWorldPointer ()->worldID);
     cubeGeomID = dCreateBox (World::getWorldPointer ()->spaceID, size, size, size);
     dGeomSetBody (cubeGeomID, cubeID);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<body
-    name = "Test Body"
-    description = "A fantasy car body."
+<cube
+    name = "Cube"
+    description = "A strange wooden cube"
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
@@ -10,19 +10,16 @@
         author = "Bruno Gonzalez Campo (STenyaK)"
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        material = "bodyMaterial"
-        mesh = "../data/body.mesh"
-        ogreName = "body%i"
+        material = "cubeMaterial"
+        mesh = "../data/parts/cube/cube.mesh"
+        ogreName = "cube%i"
         >
     </graphics>
     <physics
         author = "Bruno Gonzalez Campo (STenyaK)"
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        length = "4"
-        width = "2"
-        height = "1.25" 
-        mass = "1250"
+        size = "2"
         >
     </physics>
-</body>
+</cube>

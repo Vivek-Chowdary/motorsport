@@ -62,19 +62,16 @@ World::World ()
 
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, 0,0,-0.000098);
-    
-    log->put (LOG_INFO, "Creating the ode plane");
-    dCreatePlane (spaceID, 0, 0, 1, 0);
 
     // Create the bodies
-    int numberOfBodies = 2;
+    int numberOfBodies = 1;
     log->format (LOG_INFO, "Creating an array of %i bodies", numberOfBodies);
     for (int i = 0; i < numberOfBodies; i++)
     {
         log->format (LOG_VERBOSE, "Adding body number %i", i);
         const int separation = 5;
         Body *bodyPointer;
-        bodyPointer = new Body ("../data/body.xml");
+        bodyPointer = new Body ("../data/vehicles/testCar/body.xml");
         bodyPointer->setPosition (- separation - i / 10 % 10 * separation, - separation - i % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
         bodyList.push_back (bodyPointer);
     }
@@ -87,12 +84,12 @@ World::World ()
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
         const int separation = 4;
         Cube *cubePointer;
-        cubePointer = new Cube ("../data/cube.xml");
+        cubePointer = new Cube ("../data/parts/cube/cube.xml");
         cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
         cubeList.push_back (cubePointer);
     }
-
-    // create the camera and initialize it
+    
+/////// world-track>track-camera
     int numberOfCameras = 4;
     log->format (LOG_INFO, "Creating %i cameras", numberOfCameras);
     for (int i = 0; i < numberOfCameras; i++)
@@ -101,14 +98,28 @@ World::World ()
         cameraList.push_back (cameraPointer);
     }
     log->put (LOG_INFO, "Setting camera viewport");
+/////// world-track
     Ogre::Viewport * vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (cameraList[0]->ogreCamera);
+/////// world-skybox>skybox
     log->put (LOG_INFO, "Setting bg color");
     vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
-
-    // Create the skybox
+/////// world-skybox>skybox
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, "skyboxMaterial", 5000, true, rotationToZAxis);
+/////// world-track>track-ground
+    log->put (LOG_INFO, "Creating the ode plane");
+    dCreatePlane (spaceID, 0, 0, 1, 0);
+/////// world-track>track-ground
+    Ogre::Plane plane; 
+    plane.normal = Ogre::Vector3::UNIT_Z; 
+    plane.d = 0; 
+    Ogre::SceneManager* pOgreSceneManager = SystemData::getSystemDataPointer()->ogreSceneManager; 
+    Ogre::MeshManager::getSingleton().createPlane("Myplane",plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y); 
+    Ogre::Entity* pPlaneEnt = pOgreSceneManager->createEntity("plane", "Myplane"); 
+    pPlaneEnt->setMaterialName("groundMaterial"); 
+    pPlaneEnt->setCastShadows(true); 
+    pOgreSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(pPlaneEnt);
 }
 
 World::~World ()
