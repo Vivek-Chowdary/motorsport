@@ -1,4 +1,4 @@
-material rim/SOLID/
+material rim/SOLID/mosp1wheel.tga
 {
   receive_shadows on
   technique
@@ -9,6 +9,39 @@ material rim/SOLID/
       diffuse 0.800000 0.800000 0.800000
       specular 0.500000 0.500000 0.500000 50.000000
       emissive 0.000000 0.000000 0.000000
+    }
+  }
+}
+
+
+material rim/SOLID/
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+        // ambient 2.200000 2.200000 2.200000
+        ambient 5.2 5.2 5.2
+        //diffuse 0.800000 0.800000 0.800000
+        //specular 0.500000 0.500000 0.500000 50.000000
+        //emissive 0.000000 0.000000 0.000000
+        texture_unit
+        {
+                texture mosp1wheel1.tga
+        }
+        texture_unit
+        {
+                colour_op modulate
+                cubic_texture mospSky.jpg combinedUVW
+                env_map cubic_normal
+        }
+        texture_unit
+        {
+                texture mosp1wheel2.tga
+                colour_op alpha_blend
+                alpha_rejection less 255
+        }
     }
   }
 }
@@ -28,7 +61,7 @@ material suspension/SOLID/
   }
 }
 
-material wheel/SOLID/
+material wheel/SOLID/mosp1wheel.tga
 {
   receive_shadows on
   technique

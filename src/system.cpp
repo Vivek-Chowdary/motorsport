@@ -18,14 +18,14 @@ SystemData *SystemData::getSystemDataPointer ()
 }
 
 SystemData::SystemData ()
-  : physicsSteps(0),
+  : cfmValue(-1),
+    erpValue(-1),
+    physicsSteps(0),
     physicsFrequency(0),
     graphicsSteps(0),
     graphicsFrequency(0),
     timeScale(1),
     pauseStep(0),
-    cfmValue(-1),
-    erpValue(-1),
     height(1),
     width(1)
 {

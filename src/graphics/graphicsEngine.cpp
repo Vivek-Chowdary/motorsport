@@ -77,7 +77,6 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
     Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks","FileSystem");
     Ogre::ResourceManager::addCommonArchiveEx ("../data/parts/cube","FileSystem");
 //    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround","FileSystem");
-//    Ogre::ResourceManager::addCommonArchiveEx ("../data/vehicles/testCar","FileSystem");
 //    Ogre::ResourceManager::addCommonArchiveEx ("../data/tracks/testingGround/skybox.zip","Zip");
 //    Ogre::MaterialManager::getSingleton().parseAllSources();
 

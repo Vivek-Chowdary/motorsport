@@ -158,16 +158,35 @@ material mosp1bodyMaterial
   receive_shadows on
   technique
   {
-    pass
-    {
-      ambient 5.2 5.2 5.2
-      diffuse 0.800000 0.800000 0.800000
-      specular 0.500000 0.500000 0.500000 50.000000
-      emissive 0.000000 0.000000 0.000000
-      texture_unit
-      {
-        texture mosp1-blueBody.tga
-      }
-    }
+        pass
+        {
+                ambient 5.2 5.2 5.2
+                // diffuse 0 0 0
+                specular 0.2 0.2 0.2 1
+                // specular 0.500000 0.500000 0.500000 50.000000
+                // emissive 0.000000 0.000000 0.000000
+
+                texture_unit
+                {
+                        texture mosp1-blueBody.tga
+                }
+
+                texture_unit
+                {
+                        cubic_texture mospSky.jpg combinedUVW
+                        // cubic_normal gives the nicest reflections
+			// planar also works but reflections are "uglier"
+                        // env_map planar
+                        env_map cubic_normal
+                        colour_op modulate
+                }
+                texture_unit
+                {
+                        texture mosp1-bodyseams.tga
+                        colour_op alpha_blend
+                }
+
+
+        }
   }
 }
