@@ -27,7 +27,7 @@ GraphicsEngine::GraphicsEngine (  )
     //first of all start the logger (automatically logs the start of itself)
     GraphicsData * data = new GraphicsData;
     data->graphics = this;
-    processConfigFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)data);
+    processXmlFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)data);
 
     log = new LogEngine ( data->localLogLevel, data->localLogName );
     log->put( LOG_INFO, "Temporary parsing data already loaded into memory...");

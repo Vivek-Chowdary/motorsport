@@ -43,7 +43,7 @@ LogEngine::LogEngine ( LOG_LEVEL localLevel, const char *name ):logName ( name )
         LogData * data = new LogData;
         data->log = this;
         
-        processConfigFile ("logConfig.xml", &LogEngine::processLogConfigFile, data );
+        processXmlFile ("logConfig.xml", &LogEngine::processLogConfigFile, data );
         logFile.open ( data->fileName, std::fstream::out );
         if ( !logFile.good (  ) )
         {

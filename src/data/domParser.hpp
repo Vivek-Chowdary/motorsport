@@ -123,6 +123,6 @@ inline bool DOMCountErrorHandler::getSawErrors (  ) const
     return fSawErrors;
 }
 
-int processConfigFile ( char * configFileName, int (*processFunction)(DOMNode *, void * data), void * data);
+int processXmlFile ( char * configFileName, int (*processFunction)(DOMNode *, void * data), void * data);
 
 #endif

@@ -30,7 +30,7 @@ PhysicsEngine::PhysicsEngine ( )
     data->erpValue = -1;
     data->stepType = 1;
     data->dWorldStepFast1MaxIterations = 100;
-    processConfigFile ("physicsConfig.xml", &PhysicsEngine::processPhysicsConfigFile, (void*)data);
+    processXmlFile ("physicsConfig.xml", &PhysicsEngine::processPhysicsConfigFile, (void*)data);
     
     //first of all start the logger (automatically logs the start of itself)
     log = new LogEngine ( data->localLogLevel, data->localLogName );

@@ -28,7 +28,7 @@ GuiEngine::GuiEngine ( )
     GuiData * data = new GuiData;
     data->gui = this;
     data->showStatistics = 1;
-    processConfigFile ( "guiConfig.xml", &GuiEngine::processGuiConfigFile, (void*)data );
+    processXmlFile ( "guiConfig.xml", &GuiEngine::processGuiConfigFile, (void*)data );
     
     log = new LogEngine ( data->localLogLevel, data->localLogName );
     log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );

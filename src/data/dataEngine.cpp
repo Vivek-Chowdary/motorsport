@@ -27,7 +27,7 @@ DataEngine::DataEngine ( )
     //first of all start the logger (automatically logs the start of itself)
     DataData * data = new DataData;
     data->data = this;
-    processConfigFile ( "dataConfig.xml", &DataEngine::processDataConfigFile, (void*)data);
+    processXmlFile ( "dataConfig.xml", &DataEngine::processDataConfigFile, (void*)data);
     
     log = new LogEngine ( data->localLogLevel, data->localLogName );
     log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );

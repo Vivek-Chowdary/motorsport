@@ -27,7 +27,7 @@ InputEngine::InputEngine ( )
     //first of all start the logger (automatically logs the start of itself)
     InputData * data = new InputData;
     data->input = this;
-    processConfigFile ( "inputConfig.xml", &InputEngine::processInputConfigFile, (void*)data);
+    processXmlFile ( "inputConfig.xml", &InputEngine::processInputConfigFile, (void*)data);
     
     log = new LogEngine ( data->localLogLevel, data->localLogName );
     log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );

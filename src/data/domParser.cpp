@@ -2,7 +2,7 @@
 // ---------------------------------------------------------------------------
 //   main
 // ---------------------------------------------------------------------------
-int processConfigFile ( char * configFileName, int (*processFunction)(DOMNode *, void *data), void * data )
+int processXmlFile ( char * configFileName, int (*processFunction)(DOMNode *, void *data), void * data )
 {
     /////////////////////////////////////////////////////////////////////////////////////////////////
     AbstractDOMParser::ValSchemes valScheme = AbstractDOMParser::Val_Auto;

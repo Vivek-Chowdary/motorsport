@@ -25,7 +25,7 @@
 int main ( int argc, char **argv )
 {
     MainData * mainData = new MainData;
-    processConfigFile ( "mainConfig.xml", &processMainConfigFile, (void*)mainData );
+    processXmlFile ( "mainConfig.xml", &processMainConfigFile, (void*)mainData );
     
     LogEngine *log = new LogEngine ( mainData->localLogLevel, mainData->localLogName );
     log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
