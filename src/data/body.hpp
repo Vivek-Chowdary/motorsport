@@ -51,7 +51,7 @@ class Body : public WorldObject
     dGeomID geomSpace;
     dGeomID geomSpace2;
     void setPosition (Vector3d position);
-    void setRotation (Quaternion rotation);
+    void applyRotation (Quaternion rotation);
     Vector3d getPosition ();
     Quaternion getRotation ();
 

@@ -331,15 +331,12 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
                 }
                 vehicleList.push_back (tmpVehicle);
 
-                log->put (LOG_CCREATOR, "Attaching vehicle wheels to its body (via suspensions)");
-                tmpVehicle->attachWheelsToBody();
-                
+                log->put (LOG_CCREATOR, "Setting vehicle starting relative rotation");
+                tmpVehicle->setPosition (Vector3d(0, 0, 0));
+                //tmpVehicle->applyRotation ( trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
+
                 log->put (LOG_CCREATOR, "Setting vehicle starting position");
                 tmpVehicle->setPosition (trackList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
-
-                log->put (LOG_CCREATOR, "Setting vehicle starting rotation");
-                Quaternion rotation = trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation();
-                tmpVehicle->setRotation (rotation);
             }
         }
     }

@@ -26,7 +26,6 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     angularAcc = 0.0;
     inputTorqueTransfer = 0.0;
     outputTorqueTransfer = 0.0;
-    torque = 0.0;
     inertia = 1.0;
     friction = 0.1;
      
@@ -101,11 +100,14 @@ Vector3d Wheel::getPosition ()
     return Vector3d (temp[0], temp[1], temp[2]);
 }
 
-void Wheel::setRotation (Quaternion rotation)
+void Wheel::applyRotation (Quaternion rotation)
 {
     dMatrix3 rot;
-    rotation.getOdeMatrix (rot);
+    Quaternion tmp;
+    tmp = getRotation() * rotation;
+    tmp.getOdeMatrix (rot);
     dBodySetRotation (wheelID, rot);
+    setPosition ( tmp.rotateObject(getPosition()) );
 }
 
 Quaternion Wheel::getRotation ()
@@ -124,34 +126,29 @@ void Wheel::stepPhysics ()
 {
     prevAngularVel = inputAngularVel;
 
-    if(powered!=0){
-//        dJointGetHingeAxis (suspJointID, wheelAxisVector);
-//        dBodySetFiniteRotationAxis (wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
-//        log->format(LOG_DEVELOPER, "%s:FRAx=%f FRAy=%f FRAz=%f",index.c_str(), wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
-        torque = inputTorqueTransfer;
-    }
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-    inputAngularVel = dJointGetHinge2Angle2Rate (suspJointID)*-1;
-//    inputAngularVel = dJointGetHingeAngleRate (suspJointID);
+    inputAngularVel = dJointGetHinge2Angle2Rate (suspJointID)*powered*-1;
+    //inputAngularVel = dJointGetHingeAngleRate (suspJointID); // old kart suspension code
 
     // calculate angular acceleration      
     angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
     // tire rolling resistance
-    //torque -= 0.1*inputAngularVel;
+    //inputTorqueTransfer -= 0.1*inputAngularVel;
 
-    // FIXME prevent explosion from too high angular rates
- //   if ( inputAngularVel > 300 || inputAngularVel < -300 )
- //   {
- //       torque *= -1;
- //   }
+    // accumulate torques on wheel:
+    // first, get the axis of the suspension
+    dVector3 odeTAxis;
+    dJointGetHinge2Axis2 (suspJointID, odeTAxis);
+    Vector3d tAxis (odeTAxis);
+    // then, scale it by desired torque in the desired direction of the axis
+    tAxis.scalarMultiply (inputTorqueTransfer * powered);
+    // finally, apply it
+    dBodyAddTorque (wheelID, tAxis.x, tAxis.y, tAxis.z);
 
-    // accumulate torques on wheel
-    dBodyAddRelTorque (wheelID, 0, 0, powered*torque);
+    log->format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
     
-    log->format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), inputAngularVel, angularAcc, torque);
-
-    torque = 0;
+    // zero the accumulators
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
 }

@@ -79,55 +79,56 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
 {
-    Vector3d position = this->position; //getPosition();
-    Quaternion rotation = this->rotation; //getRotation();
-    log->format (LOG_DEVELOPER, "Attaching a wheel to this suspension (p=%f,%f,%f;r=%f,%f,%f,%f)", position.x, position.y, position.z, rotation.w, rotation.x, rotation.y, rotation.z);
-    wheel.setPosition (Vector3d (0, 0, 0));
-    wheel.setRotation (rotation);
-    wheel.setPosition (position);
     wheel.setSuspJoint (jointID);
     dJointAttach (jointID, vehicle.body->bodyID, wheel.wheelID);
 
     // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
 /*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
-    dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
-    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
+      dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
+      dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
 */
-//    dVector3 wheelAxisVector;
-//    dJointGetHinge2Axis2 (jointID, wheelAxisVector);
-//    dBodySetFiniteRotationAxis (wheel.wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
+    dBodySetFiniteRotationMode(wheel.wheelID, 1);
+    dBodySetFiniteRotationAxis(wheel.wheelID, 0, 0, 1);
 
     double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000.0 ;
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
-    setPosition(position);
-    setRotation(rotation);
-}
+    Vector3d wPosition = wheel.getPosition();
+    dJointSetHinge2Anchor (jointID, wPosition.x, wPosition.y, wPosition.z);
+    
+    Quaternion wRotation = wheel.getRotation();
+    Vector3d rAxis1 = wRotation.rotateObject(Vector3d(0, 1, 0));
+    dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
+    Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
+    dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
+    log->format (LOG_WARNING, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+    
+    // working old updown
+    //dJointSetHinge2Axis2 (jointID, 0, 1, 0);
 
-void Suspension::setPosition (Vector3d position)
-{
-    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
-//    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
-
+    /* /////////////////////
+    dVector3 odeTAxis;
+    dJointGetHinge2Axis2 (suspJointID, odeTAxis);
+    Vector3d tAxis;
+    tAxis.x = odeTAxis[0];
+    tAxis.y = odeTAxis[1];
+    tAxis.z = odeTAxis[2];
+    tAxis = getRotation().rotateObject(Vector3d(0,0,1));
+    log->format (LOG_WARNING, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+    ///////////////////// */
+    
+    // old kart suspension
+    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    //dJointSetHingeAxis (jointID, 0,1,0);
 }
-void Suspension::setRotation (Quaternion rotation)
+Vector3d Suspension::getInitialWheelPosition ()
 {
-    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
-    Vector3d tmp (rotation.w, rotation.x, rotation.y, rotation.z);
-    dJointSetHinge2Axis2 (jointID, tmp.x, tmp.y, tmp.z);
-    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
-//    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-//    dJointSetHingeAxis (jointID, 0,1,0);
+    return position;
 }
-Vector3d Suspension::getPosition ()
+Quaternion Suspension::getInitialWheelRotation ()
 {
-    const dReal *temp = dBodyGetRotation (dJointGetBody (jointID, 0));
-    return Vector3d (temp[0], temp[1], temp[2]);
-}
-Quaternion Suspension::getRotation ()
-{
-    const dReal *temp = dBodyGetQuaternion (dJointGetBody (jointID, 0));
-    return Quaternion (temp);
+    return rotation;
 }
 
 void Suspension::stopPhysics ()

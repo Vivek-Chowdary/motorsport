@@ -30,7 +30,6 @@ class Wheel : public DriveMass
     static int instancesCount;
     std::string index;
     double powered;
-    double torque;
     dBodyID bodyID;
     dJointID suspJointID;
     void updateOgrePosition ();
@@ -58,7 +57,7 @@ class Wheel : public DriveMass
     dGeomID wheelGeomID;
     void setPosition (Vector3d position);
     Vector3d getPosition ();
-    void setRotation (Quaternion rotation);
+    void applyRotation (Quaternion rotation);
     Quaternion getRotation ();
     double getInputAngularVel();
     

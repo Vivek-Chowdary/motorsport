@@ -33,6 +33,20 @@ Vector3d::Vector3d(double qw, double qx, double qy, double qz)
     z = -asin(-2.0 * (qx * qz - qy * qw));
 }
 
+Vector3d::Vector3d (const dReal * odeArray)
+{
+    x = odeArray[0];
+    y = odeArray[1];
+    z = odeArray[2];
+}
+const Vector3d & Vector3d::operator= (const dReal * & odeArray)
+{
+    //TODO: Check for this=this if the class becomes complicated.
+    x = odeArray[0];
+    y = odeArray[1];
+    z = odeArray[2];
+    return *this;
+}
 const Vector3d & Vector3d::operator= (const Vector3d & cpy)
 {
     //TODO: Check for this=this if the class becomes complicated.

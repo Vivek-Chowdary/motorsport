@@ -26,7 +26,7 @@ void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     if ( userDriver )
     {
-        log->telemetry (LOG_ENDUSER, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
+        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
     }
 }
 dBodyID Vehicle::getVehicleID()
@@ -36,29 +36,22 @@ dBodyID Vehicle::getVehicleID()
 
 void Vehicle::setPosition (Vector3d position)
 {
-    Vector3d posDiff = getPosition();
-    log->format (LOG_DEVELOPER, "Setting vehicle position (%f, %f, %f) to (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z, position.x, position.y, position.z);
-    posDiff = position - posDiff;
+    Vector3d posDiff = position - getPosition();
     log->format (LOG_DEVELOPER, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
     
-    body->setPosition (body->getPosition() + posDiff);
-
-    std::map < std::string, Suspension * >::const_iterator suspIter;
-    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
-    {
-        Vector3d newPos = suspIter->second->getPosition();
-        newPos += posDiff;
-        //log->format (LOG_DEVELOPER, "Setting suspension \"%s\" position to (%f, %f, %f)", suspIter->first.c_str(), newPos.x, newPos.y, newPos.z);
-        //suspIter->second->setPosition (newPos);
-    }
+    body->setPosition ( body->getPosition() + posDiff );
 
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        Vector3d newPos = wheelIter->second->getPosition();
-        newPos += posDiff;
-        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" position to (%f, %f, %f)", wheelIter->first.c_str(), newPos.x, newPos.y, newPos.z);
-        wheelIter->second->setPosition (newPos);
+        wheelIter->second->setPosition ( wheelIter->second->getPosition() + posDiff );
+    }
+
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
+    {
+        // suspension position needs not be re-set.
+        //suspIter->second->setPosition ( suspIter->second->getPosition() + posDiff );
     }
 }
 
@@ -67,39 +60,30 @@ Vector3d Vehicle::getPosition ()
     return body->getPosition();
 }
 
-void Vehicle::setRotation (Quaternion rotation)
+void Vehicle::applyRotation (Quaternion rotation)
 {
-    Vector3d initialPos = getPosition();
-    setPosition (Vector3d(0, 0, 0));
+    Quaternion rotDiff = rotation * (Quaternion(0, 0, 0, 0)-getRotation());
+    // apply rotation to body
+    rotation = body->getRotation();
+    body->applyRotation (rotation * rotDiff);
 
-    Quaternion rotDiff = getRotation();
-    log->format (LOG_DEVELOPER, "Setting vehicle rotation (%f, %f, %f, %f) to (%f, %f, %f, %f).", rotDiff.w, rotDiff.x, rotDiff.y, rotDiff.z, rotation.w, rotation.x, rotation.y, rotation.z);
-    rotDiff = rotation - rotDiff;
-    log->format (LOG_DEVELOPER, "Difference in vehicle rotation: (%f, %f, %f, %f).", rotDiff.w, rotDiff.x, rotDiff.y, rotDiff.z);
-    
-    body->setRotation (body->getRotation() + rotDiff);
-
-    std::map < std::string, Suspension * >::const_iterator suspIter;
-    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
-    {
-        Quaternion newRot = suspIter->second->getRotation();
-        newRot += rotDiff;
-        //log->format (LOG_DEVELOPER, "Setting suspension \"%s\" rotation to (%f, %f, %f)", suspIter->first.c_str(), newRot.x, newRot.y, newRot.z);
-        //suspIter->second->setRotation (newRot);
-    }
-
+    // apply rotation to wheels
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        Quaternion newRot = wheelIter->second->getRotation();
-        newRot += rotDiff;
-        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" rotation to (%f, %f, %f, %f)", wheelIter->first.c_str(), newRot.w, newRot.x, newRot.y, newRot.z);
-        wheelIter->second->setRotation (newRot);
-        Quaternion rot = wheelIter->second->getRotation();
-        log->format (LOG_DEVELOPER, "Wheel \"%s\" rotation set to (%f, %f, %f, %f)", wheelIter->first.c_str(), rot.w, rot.x, rot.y, rot.z);
+        rotation = wheelIter->second->getRotation();
+      //  wheelIter->second->applyRotation (rotDiff);
+      //  wheelIter->second->applyRotation (Quaternion(0,0,0,0));
     }
-
-    setPosition(initialPos);
+    // apply rotation to suspensions
+/*
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
+    {
+        // suspension position needs not be re-set.
+        //suspIter->second->applyRotation (rotation);
+    }
+*/
 }
 
 Quaternion Vehicle::getRotation ()
@@ -111,7 +95,24 @@ void Vehicle::stopPhysics ()
 {
 }
 
-void Vehicle::attachWheelsToBody()
+void Vehicle::placeWheelsOnSuspensions()
+{
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
+    {
+        std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
+        if (wheelIter == wheelMap.end())
+        {
+            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
+        }else{
+            log->format (LOG_DEVELOPER, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            wheelIter->second->applyRotation (suspIter->second->getInitialWheelRotation());
+            wheelIter->second->setPosition (suspIter->second->getInitialWheelPosition());
+        }
+    }
+}
+
+void Vehicle::boltWheelsToSuspensions()
 {
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
@@ -141,7 +142,10 @@ void Vehicle::stepPhysics ()
             gearbox->gearDown();
         }
     }
-
+/*  // Code for using a higher rate in tranny code, thus eliminating some lag from it. FIXME when double seconds are used instead of int milliseconds.
+    const int freq = 3;
+    SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep / freq;
+    for (int i = 0; i<freq; i++){*/
     // step torque transfer components first
     clutch->stepPhysics();
     transfer->stepPhysics();
@@ -155,14 +159,17 @@ void Vehicle::stepPhysics ()
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
+//        SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep * freq;
         suspIter->second->stepPhysics();
+//        SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep / freq;
     }
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
         wheelIter->second->stepPhysics();
     }
-
+//    }
+//    SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep * freq;
     // print telemetry data
     if ( userDriver )
     {
@@ -170,6 +177,6 @@ void Vehicle::stepPhysics ()
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         tmp = dBodyGetPosition(body->bodyID);
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        log->telemetry (LOG_ENDUSER, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
+        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
     }
 }

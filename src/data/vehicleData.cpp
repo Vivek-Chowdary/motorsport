@@ -232,8 +232,10 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     transfer->setInputPointer(gearbox);
     rearDiff->setInputPointer(finalDrive);
         
-    processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
+    processXmlWheelListNode(wheelListNode);
+    placeWheelsOnSuspensions();
+    boltWheelsToSuspensions();
 
     rearDiff->setOutputPointer(wheelMap["RearRight"]);
     rearDiff->setOutputPointer2(wheelMap["RearLeft"]);

@@ -2,7 +2,7 @@
 <world
     name = "Test World"
     description = "Drive the Mosp1 car in the testing grounds!"
-    useTrackCamera = "false"
+    useTrackCamera = "true"
     gravityX = "0.0"
     gravityY = "0.0"
     gravityZ = "-9.8"

@@ -52,9 +52,11 @@ class Suspension : public WorldObject
 
     // physics
     void stepPhysics ();
-    void setPosition (Vector3d position);
-    Vector3d getPosition ();
-    void setRotation (Quaternion rotation);
-    Quaternion getRotation ();
+//    void setPosition (Vector3d position);
+//    Vector3d getPosition ();
+    Vector3d getInitialWheelPosition ();
+//    void applyRotation (Quaternion rotation);
+//    Quaternion getRotation ();
+    Quaternion getInitialWheelRotation ();
 };
 #endif

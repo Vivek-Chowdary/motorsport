@@ -51,6 +51,8 @@ class Vehicle : public WorldObject
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
+    void placeWheelsOnSuspensions();
+    void boltWheelsToSuspensions();
 
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -74,10 +76,9 @@ class Vehicle : public WorldObject
     // physics
     void stepPhysics ();
     void setPosition (Vector3d position);
-    void setRotation (Quaternion rotation);
+    void applyRotation (Quaternion rotation);
     Vector3d getPosition ();
     Quaternion getRotation ();
-    void attachWheelsToBody();
     double getOutputTorque ();
     dBodyID getVehicleID();
 

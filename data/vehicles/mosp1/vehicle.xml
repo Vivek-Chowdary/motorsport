@@ -113,8 +113,8 @@
             springConstant =  "80500"
             dampingConstant = "2000"
             position = "+1.44 +0.857 -0.45"
-            rotation = "-90 0 0"
-            steeringAngle = "80"
+            rotation = "-95 0 0"
+            steeringAngle = "+80"
             >
         </unidimensional>
         <unidimensional
@@ -122,8 +122,8 @@
             springConstant =  "80500"
             dampingConstant = "2000"
             position = "+1.44 -0.857 -0.45"
-            rotation = "+90 0 0"
-            steeringAngle = "80"
+            rotation = "+95 0 0"
+            steeringAngle = "-80"
             >
         </unidimensional>
         <unidimensional
@@ -131,7 +131,7 @@
             springConstant =  "80900"
             dampingConstant = "2000"
             position = "-1.35 +0.88 -0.45"
-            rotation = "-90 0 0"
+            rotation = "-91 0 0"
             steeringAngle = "0"
             >
         </unidimensional>
@@ -140,7 +140,7 @@
             springConstant =  "80900"
             dampingConstant = "2000"
             position = "-1.35 -0.88 -0.45"
-            rotation = "+90 0 0"
+            rotation = "+91 0 0"
             steeringAngle = "0"
             >
         </unidimensional>
@@ -181,7 +181,7 @@
             mass = "15.0"
             radius = "0.34"
             width = "0.125"
-            powered = "1"
+            powered = "+1"
             mesh = "vehicles/mosp1/wheel_rear.mesh"
             renderMode="solid"
             >

@@ -11,6 +11,7 @@
 #   define VECTOR3D_HPP
 #   include <vector>
 #   include <cmath>
+#   include "ode.h"
 
 class Vector3d
 {
@@ -19,10 +20,12 @@ class Vector3d
     double y;
     double z;
     Vector3d ();
-    Vector3d (double x, double y, double z);
-    Vector3d(double qw, double qx, double qy, double qz); //quat to euler radians
+    Vector3d (double x, double y, double z);                // from separated components
+    Vector3d(double qw, double qx, double qy, double qz);   // from quaternion to euler radians
+    Vector3d (const dReal * odeArray);                      // from ode array
 //    Vector3d (const Vector3d & cpy); default copy constructor used.
     const Vector3d & operator= (const Vector3d & cpy);
+    const Vector3d & operator= (const dReal * & odeArray);  // from ode array
     bool operator== (const Vector3d & cpy) const;
     bool operator!= (const Vector3d & cpy) const;
     Vector3d operator+ (const Vector3d & k) const;
