@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..;..\..\data;..\..\graphics;..\..\gui;..\..\input;..\..\log;..\..\physics;..\..\tools;..\..\..\3pl\windows\vc2003\include;..\..\..\3pl\windows\vc2003\include\ode;..\..\..\3pl\windows\vc2003\include\ogre"
+				AdditionalIncludeDirectories="..\..;..\..\data;..\..\graphics;..\..\gui;..\..\input;..\..\log;..\..\physics;..\..\tools;..\..\..\3pl\windows\vc2003\include;..\..\..\3pl\windows\vc2003\include\ode;..\..\..\3pl\windows\vc2003\include\ogre;..\..\..\3pl\windows\vc2003\include\SDL"
 				PreprocessorDefinitions="_DEBUG;WIN32;_WIN32;_WINDOWS;PLATFORM_WIN32"
 				StringPooling="TRUE"
 				BasicRuntimeChecks="3"
@@ -38,7 +38,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="xerces-c_2D.lib ode.lib OgreMain.lib SDLMain.lib SDL.lib"
+				AdditionalDependencies="xerces-c_2D.lib ode.lib OgreMain_d.lib SDLMain.lib SDL.lib"
 				ShowProgress="0"
 				OutputFile="$(ProjectDir)bin\$(ConfigurationName)\motorsport.exe"
 				LinkIncremental="1"
@@ -95,7 +95,7 @@
 				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="TRUE"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..;..\..\data;..\..\graphics;..\..\gui;..\..\input;..\..\log;..\..\physics;..\..\tools;..\..\..\3pl\windows\vc2003\include;..\..\..\3pl\windows\vc2003\include\ode;..\..\..\3pl\windows\vc2003\include\ogre"
+				AdditionalIncludeDirectories="..\..;..\..\data;..\..\graphics;..\..\gui;..\..\input;..\..\log;..\..\physics;..\..\tools;..\..\..\3pl\windows\vc2003\include;..\..\..\3pl\windows\vc2003\include\ode;..\..\..\3pl\windows\vc2003\include\ogre;..\..\..\3pl\windows\vc2003\include\SDL"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -201,76 +201,33 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl">
-			<File
-				RelativePath="..\..\main.hpp">
-			</File>
-			<File
-				RelativePath="..\..\system.hpp">
-			</File>
-		</Filter>
-		<Filter
 			Name="data">
 			<File
-				RelativePath="..\..\data\body.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\bodyData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\camera.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\cameraData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\cube.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\cubeData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\driveJoint.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\driveJointData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\driveMass.hpp">
-			</File>
-			<File
-				RelativePath="..\..\data\engine.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\engineData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\finalDrive.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\finalDriveData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\gearbox.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\gearboxData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\suspension.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\suspensionData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\track.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\trackData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\vehicle.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\vehicleData.cpp">
@@ -279,16 +236,7 @@
 				RelativePath="..\..\data\vehiclePosition.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\vehiclePosition.hpp">
-			</File>
-			<File
-				RelativePath="..\..\data\wheel.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\wheelData.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\world.hpp">
 			</File>
 			<File
 				RelativePath="..\..\data\worldData.cpp">
@@ -297,16 +245,7 @@
 				RelativePath="..\..\data\worldObject.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\worldObject.hpp">
-			</File>
-			<File
-				RelativePath="..\..\data\xercesc_fwd.hpp">
-			</File>
-			<File
 				RelativePath="..\..\data\xmlParser.cpp">
-			</File>
-			<File
-				RelativePath="..\..\data\xmlParser.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -324,9 +263,6 @@
 				RelativePath="..\..\graphics\graphicsEngine.cpp">
 			</File>
 			<File
-				RelativePath="..\..\graphics\graphicsEngine.hpp">
-			</File>
-			<File
 				RelativePath="..\..\graphics\vehicleGraphics.cpp">
 			</File>
 			<File
@@ -338,17 +274,11 @@
 			<File
 				RelativePath="..\..\gui\guiEngine.cpp">
 			</File>
-			<File
-				RelativePath="..\..\gui\guiEngine.hpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="input">
 			<File
 				RelativePath="..\..\input\axis.cpp">
-			</File>
-			<File
-				RelativePath="..\..\input\axis.hpp">
 			</File>
 			<File
 				RelativePath="..\..\input\cameraInput.cpp">
@@ -359,17 +289,11 @@
 			<File
 				RelativePath="..\..\input\inputEngine.cpp">
 			</File>
-			<File
-				RelativePath="..\..\input\inputEngine.hpp">
-			</File>
 		</Filter>
 		<Filter
 			Name="log">
 			<File
 				RelativePath="..\..\log\logEngine.cpp">
-			</File>
-			<File
-				RelativePath="..\..\log\logEngine.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -399,9 +323,6 @@
 				RelativePath="..\..\physics\physicsEngine.cpp">
 			</File>
 			<File
-				RelativePath="..\..\physics\physicsEngine.hpp">
-			</File>
-			<File
 				RelativePath="..\..\physics\suspensionPhysics.cpp">
 			</File>
 			<File
@@ -410,10 +331,6 @@
 			<File
 				RelativePath="..\..\physics\wheelPhysics.cpp">
 			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 		<Filter
 			Name="tools"
@@ -425,13 +342,7 @@
 				RelativePath="..\..\tools\quaternion.cpp">
 			</File>
 			<File
-				RelativePath="..\..\tools\quaternion.hpp">
-			</File>
-			<File
 				RelativePath="..\..\tools\vector3d.cpp">
-			</File>
-			<File
-				RelativePath="..\..\tools\vector3d.hpp">
 			</File>
 		</Filter>
 	</Files>
