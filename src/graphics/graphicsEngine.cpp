@@ -358,6 +358,10 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 
     log->put (LOG_INFO, "Creating temporary ogre plugins config file (plugins.cfg)");
     FILE *ogrePluginsConfig = fopen("plugins.cfg", "w");
+    if (ogrePluginsConfig == NULL)
+    {
+        log->put(LOG_ERROR, "Error opening file!!");
+    }
     log->put (LOG_INFO, "Writing configuration to plugins.cfg");
     fprintf(ogrePluginsConfig, "# IMPORTANT NOTE #"
         "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. You can therefore safely delete this file.\n\n"
