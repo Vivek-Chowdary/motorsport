@@ -44,8 +44,8 @@ class GraphicsEngine
     void updateStatistics (  ); //updates data about framerates, etc..
     int stop ( void );          //stops the graphics engine
 
-    bool configure ( int resX, int resY );
-    bool manualInitialize(const String & desiredRenderer, int resX, int resY);
-    void setupResources ( void );
+    bool configure ( );
+    bool manualInitialize();
+    void setupResources ();
 
 };

@@ -39,8 +39,7 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
     systemData->graphicsData.ogreRoot = new Root (  );
     setupResources (  );
-    if ( !configure ( graphicsData->width, graphicsData->height ) )
-        return false ;
+    if ( !configure (  ) ) return false ;
     systemData->graphicsData.ogreSceneManager =
         systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
     // Create the camera
@@ -71,13 +70,13 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
 }
 
-bool GraphicsEngine::configure ( int resX, int resY )
+bool GraphicsEngine::configure (  )
 {
     // Show the configuration dialog and initialise the system
     // You can skip this and use root.restoreConfig() to load configuration
     // settings if you were sure there are valid ones saved in ogre.cfg
     //        if(mRoot->showConfigDialog())
-    if ( manualInitialize ( "OpenGL", resX, resY ) )
+    if ( manualInitialize () )
     {
     // If returned true, user clicked OK so initialise
     // Here we choose to let the system create a default rendering window
@@ -89,8 +88,7 @@ bool GraphicsEngine::configure ( int resX, int resY )
     return false;
 }
 
-bool GraphicsEngine::manualInitialize ( const String & desiredRenderer,
-                                        int resX, int resY )
+bool GraphicsEngine::manualInitialize ( )
 {
     RenderSystem *renderSystem;
     bool ok = false;
@@ -99,15 +97,12 @@ bool GraphicsEngine::manualInitialize ( const String & desiredRenderer,
     // See if the list is empty (no renderers available)
     if ( renderers->empty (  ) )
         return false;
-    printf ( "\n\nDesired renderer:[%s]", &( *desiredRenderer ) );
-    printf ( "\n\nAvailable renderers(until we find the desired one:" );
     for ( RenderSystemList::iterator it = renderers->begin (  );
           it != renderers->end (  ); it++ )
     {
         renderSystem = ( *it );
-        printf ( "\n\t[%s]", &( *renderSystem->getName (  ) ) );
         if ( strstr
-             ( &( *renderSystem->getName (  ) ), &( *desiredRenderer ) ) )
+             ( &( *renderSystem->getName (  ) ), "OpenGL") )
         {
             ok = true;
             break;
@@ -122,7 +117,7 @@ bool GraphicsEngine::manualInitialize ( const String & desiredRenderer,
     Root::getSingleton (  ).setRenderSystem ( renderSystem );
     char resolution[32];
 
-    sprintf ( resolution, "%i x %i", resX, resY );
+    sprintf ( resolution, "%i x %i", graphicsData->width, graphicsData->height );
 
     // Manually set configuration options. These are optional.
     renderSystem->setConfigOption ( "Video Mode", resolution );
@@ -154,7 +149,6 @@ void GraphicsEngine::setupResources ( void )
 int GraphicsEngine::step ( void )
     //makes the graphics engine draw one frame
 {
-
     systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
     showStatistics ( systemData->graphicsData.getStatisticsEnabled (  ) );
     systemData->graphicsData.ogreWindow->update (  );
@@ -175,12 +169,11 @@ void GraphicsEngine::showStatistics ( bool show )
     if ( show )
     {
         o->show (  );
-    }
-    else
-    {
+    }else{
         o->hide (  );
     }
 }
+
 void GraphicsEngine::updateStatistics (  )
 {
     static String currFps = "Current FPS: ";
