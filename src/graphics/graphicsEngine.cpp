@@ -47,36 +47,29 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     worldData->camera1->ogreCamera =
         systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    // Position it at 500 in Z direction
     worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 0 ) );
-    // Look back along -Z
     worldData->camera1->ogreCamera->lookAt ( Vector3 ( 10, 10, 0 ) );
-    Quaternion quato;
-    quato.FromRotationMatrix(Matrix3(   1,0,0,
-                                        0,0,-1,
-                                        0,1,0));
-/*    worldData->camera1->ogreCamera->setOrientation (quato);
-    */
-    //worldData->camera1->ogreCamera->setOrientation (Ogre::Quaternion (x,y,z));
-//    worldData->camera1->ogreCamera->setOrientation(Quaternion (-1.0,0.0,0.0,0.0));
-
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
+    
     // Create one viewport, entire window
     Viewport *vp =
         systemData->graphicsData.ogreWindow->addViewport ( worldData->camera1->
                                                            ogreCamera );
     vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
+    
     // Set default mipmap level (NB some APIs ignore this)
     TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
 
-    // Create the scene
+    // Create the skybox
+    Quaternion rotationToZAxis;
+    rotationToZAxis.FromRotationMatrix(Matrix3(1,0,0,0,0,-1,0,1,0));
     systemData->graphicsData.ogreSceneManager->setSkyBox ( true,
-                                                           "MotorsportSkyBox", 5000, true, quato );
-
+                                                           "MotorsportSkyBox", 5000, true, rotationToZAxis );
+                                                           
+    //Create cubes
     for ( int i = 0; i < worldData->numberOfCubes; i++ )
     {
         char nombre[20];
-
         sprintf ( nombre, "Cubo%i", i );
         worldData->cubeList[i].cubeEntity =
             systemData->graphicsData.ogreSceneManager->createEntity ( nombre,
@@ -90,6 +83,7 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
                                                         cubeEntity );
     }
 
+    //Set some graphics settings
     MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
                                                               graphicsData.
                                                               anisotropic );
@@ -102,13 +96,10 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 
 bool GraphicsEngine::configure (  )
 {
-    // Show the configuration dialog and initialise the system
-    // You can skip this and use root.restoreConfig() to load configuration
-    // settings if you were sure there are valid ones saved in ogre.cfg
-    //        if(mRoot->showConfigDialog())
+    // Initialise the system
     if ( manualInitialize (  ) )
     {
-        // If returned true, user clicked OK so initialise
+        // If returned true, everything's ok, we have a valid config.
         // Here we choose to let the system create a default rendering window
         // by passing 'true'
         systemData->graphicsData.ogreWindow =
@@ -159,15 +150,12 @@ void GraphicsEngine::setupResources ( void )
 {
     // Load resource paths from config file
     ConfigFile cf;
-
     cf.load ( "resources.cfg" );
 
     // Go through all settings in the file
     ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
-
     String typeName,
         archName;
-
     while ( i.hasMoreElements (  ) )
     {
         typeName = i.peekNextKey (  );
@@ -177,18 +165,23 @@ void GraphicsEngine::setupResources ( void )
 }
 
 int GraphicsEngine::step ( void )
-    //makes the graphics engine draw one frame
 {
-
+    //Update Ogre's cubes positions with Ode's positions.
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
         worldData->cubeList[currentCube].updateOgrePosition();
     }
-    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
+
+    //Update status of statistics overlays.
     showStatistics ( systemData->graphicsData.getStatisticsEnabled (  ) );
+    
+    //Let the listener frames be started and ended: they are needed for particle systems.
+    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
     systemData->graphicsData.ogreWindow->update (  );
     systemData->graphicsData.ogreRoot->_fireFrameEnded (  );
+    
+    //Update statistics.... this should be done inside the main loop.
     updateStatistics (  );
 
     return ( 0 );
@@ -202,65 +195,29 @@ void GraphicsEngine::showStatistics ( bool show )
         Except ( Exception::ERR_ITEM_NOT_FOUND,
                  "Could not find overlay Core/DebugOverlay",
                  "showDebugOverlay" );
+    o->hide (  );
     if ( show )
     {
         o->show (  );
-    }
-    else
-    {
-        o->hide (  );
     }
 }
 
 void GraphicsEngine::updateStatistics (  )
 {
-    static String currFps = "Current FPS: ";
-    static String avgFps = "Average FPS: ";
-    static String bestFps = "Best FPS: ";
-
-    //static String worstFps = "Worst FPS: ";
-    static String worstFps = "Physics Rate: ";
-    static String tris = "Triangle Count: ";
-
     // update stats when necessary
-    GuiElement *guiAvg =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/AverageFps" );
-    GuiElement *guiCurr =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/CurrFps" );
-    GuiElement *guiBest =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/BestFps" );
-    GuiElement *guiWorst =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/WorstFps" );
-    const RenderTarget::FrameStats & stats =
-        systemData->graphicsData.ogreWindow->getStatistics (  );
-    guiAvg->setCaption ( avgFps + StringConverter::toString ( stats.avgFPS ) );
-    guiCurr->setCaption ( currFps +
-                          StringConverter::toString ( stats.lastFPS ) );
-    guiBest->setCaption ( bestFps +
-                          StringConverter::toString ( stats.bestFPS ) + "FPS " +
-                          StringConverter::toString ( stats.bestFrameTime ) +
-                          " ms" );
-    guiWorst->setCaption ( worstFps +
-                           StringConverter::toString ( 1000.0f /
-                                                       float ( systemData->
-                                                               physicsData.
-                                                               timeStep ) ) +
-                           //StringConverter::toString ( stats.worstFPS ) +
-                           "Hz " +
-                           //StringConverter::toString ( stats.
-                           //                            worstFrameTime ) +
-                           StringConverter::toString ( systemData->physicsData.
-                                                       timeStep ) + " ms" );
-    //" ms" );
-    GuiElement *guiTris =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/NumTris" );
-    guiTris->setCaption ( tris +
-                          StringConverter::toString ( stats.triangleCount ) );
-    GuiElement *guiDbg =
-        GuiManager::getSingleton (  ).getGuiElement ( "Core/DebugText" );
-    guiDbg->setCaption ( systemData->graphicsData.ogreWindow->
-                         getDebugText (  ) );
-
+    GuiElement *guiAvg = GuiManager::getSingleton (  ).getGuiElement ( "Core/AverageFps" );
+    GuiElement *guiCurr = GuiManager::getSingleton (  ).getGuiElement ( "Core/CurrFps" );
+    GuiElement *guiBest = GuiManager::getSingleton (  ).getGuiElement ( "Core/BestFps" );
+    GuiElement *guiWorst = GuiManager::getSingleton (  ).getGuiElement ( "Core/WorstFps" );
+    const RenderTarget::FrameStats & stats = systemData->graphicsData.ogreWindow->getStatistics (  );
+    guiAvg->setCaption ( "Average FPS: " + StringConverter::toString ( stats.avgFPS ) );
+    guiCurr->setCaption ( "Current FPS: " + StringConverter::toString ( systemData->graphicsStepsPerSecond ) );
+    guiBest->setCaption ( "Best FPS: " + StringConverter::toString ( stats.bestFPS ) + "FPS " + StringConverter::toString ( stats.bestFrameTime ) + " ms" );
+    guiWorst->setCaption ( "Physics Rate: " + StringConverter::toString ( systemData->physicsStepsPerSecond ) + "Hz " + StringConverter::toString ( systemData->physicsData.timeStep ) + " ms" );
+    GuiElement *guiTris = GuiManager::getSingleton (  ).getGuiElement ( "Core/NumTris" );
+    guiTris->setCaption ( "Triangle Count: " + StringConverter::toString ( stats.triangleCount ) );
+    GuiElement *guiDbg = GuiManager::getSingleton (  ).getGuiElement ( "Core/DebugText" );
+    guiDbg->setCaption ( systemData->graphicsData.ogreWindow->getDebugText (  ) );
 }
 
 int GraphicsEngine::stop ( void )
