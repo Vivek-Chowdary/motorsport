@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <mainConfig
+    xmlns="http://motorsport-sim.org"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://motorsport-sim.org mainConfig.xsd"
+
     localLogLevel = "LOG_TRACE"
     localLogName = "MAI"
-    >
-</mainConfig>
+/>

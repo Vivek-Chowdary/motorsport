@@ -1,5 +1,7 @@
 #include "xmlParser.hpp"
 
+
+
 DOMCountErrorHandler::DOMCountErrorHandler ():
 
 fSawErrors (false)
@@ -13,13 +15,17 @@ DOMCountErrorHandler::~DOMCountErrorHandler ()
 bool DOMCountErrorHandler::handleError (const DOMError & domError)
 {
     fSawErrors = true;
-    if (domError.getSeverity () == DOMError::DOM_SEVERITY_WARNING)
-        XERCES_STD_QUALIFIER cerr << "\nWarning at file ";
-    else if (domError.getSeverity () == DOMError::DOM_SEVERITY_ERROR)
-        XERCES_STD_QUALIFIER cerr << "\nError at file ";
-    else
-        XERCES_STD_QUALIFIER cerr << "\nFatal Error at file ";
-    XERCES_STD_QUALIFIER cerr << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << "\n  Message: " << StrX (domError.getMessage ()) << XERCES_STD_QUALIFIER endl;
+    short errsev = domError.getSeverity ();
+
+    if (errsev == DOMError::DOM_SEVERITY_WARNING)
+        std::cout << "(XML Parser)" << "Warning at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_ERROR)
+        std::cout << "(XML Parser)" << "Error at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_FATAL_ERROR)
+        std::cout << "(XML Parser)" << "Fatal error at file: ";
+
+    std::cout << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << std::endl;
+    std::cout << "Message: " << StrX (domError.getMessage ()) << std::endl;
     return true;
 }
 
@@ -42,7 +48,7 @@ XmlFile::XmlFile (char *xmlFileName)
     }
     catch (const XMLException & toCatch)
     {
-        XERCES_STD_QUALIFIER cerr << "Error during initialization! :\n" << StrX (toCatch.getMessage ()) << XERCES_STD_QUALIFIER endl;
+        std::cout << "(XML Parser)" << "Error during initialization! : " << StrX (toCatch.getMessage ()) << std::endl;
         errorOccurred = true;
     }
 
@@ -52,9 +58,15 @@ XmlFile::XmlFile (char *xmlFileName)
     DOMCountErrorHandler errorHandler;
 
     parser->setErrorHandler (&errorHandler);
-    XERCES_STD_QUALIFIER ifstream fin;
+    std::ifstream fin;
     errorHandler.resetErrors ();
     doc = 0;
+
+    parser->setFeature (XMLUni::fgDOMNamespaces, true);
+    parser->setFeature (XMLUni::fgXercesSchema, true);
+    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, true);
+    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, true);
+    parser->setFeature (XMLUni::fgDOMValidateIfSchema, true);
 
     try
     {
@@ -62,29 +74,29 @@ XmlFile::XmlFile (char *xmlFileName)
         doc = parser->parseURI (xmlFileName);
     } catch (const XMLException & toCatch)
     {
-        XERCES_STD_QUALIFIER cerr << "\nError during parsing: '" << xmlFileName << "'\n" << "Exception message is:  \n" << StrX (toCatch.getMessage ()) << "\n" << XERCES_STD_QUALIFIER endl;
+        std::cout << "(XML Parser)" << "Error during parsing: " << xmlFileName << std::endl << "Exception message is: " << StrX (toCatch.getMessage ()) << std::endl;
         errorOccurred = true;
     } catch (const DOMException & toCatch)
     {
         const unsigned int maxChars = 2047;
         XMLCh errText[maxChars + 1];
-        XERCES_STD_QUALIFIER cerr << "\nDOM Error during parsing: '" << xmlFileName << "'\n" << "DOMException code is:  " << toCatch.code << XERCES_STD_QUALIFIER endl;
+        std::cout << "(XML Parser)" << "DOM Error during parsing: " << xmlFileName << std::endl << "DOMException code is: " << toCatch.code << std::endl;
         if (DOMImplementation::loadDOMExceptionMsg (toCatch.code, errText, maxChars))
         {
-            XERCES_STD_QUALIFIER cerr << "Message is: " << StrX (errText) << XERCES_STD_QUALIFIER endl;
+            std::cout << "(XML Parser)" << "Message is: " << StrX (errText) << std::endl;
         }
         errorOccurred = true;
     }
     catch (...)
     {
-        XERCES_STD_QUALIFIER cerr << "\nUnexpected exception during parsing: '" << xmlFileName << "'\n";
+        std::cout << "(XML Parser)" << "Unexpected exception during parsing: " << xmlFileName << std::endl;
         errorOccurred = true;
     }
     if (!errorOccurred)
     {
         if (errorHandler.getSawErrors ())
         {
-            XERCES_STD_QUALIFIER cout << "\nErrors occurred, no output available\n" << XERCES_STD_QUALIFIER endl;
+            std::cout << "(XML Parser)" << "Errors occurred, no output available" << std::endl;
             errorOccurred = true;
         }
     }
@@ -111,31 +123,29 @@ XmlFile::~XmlFile ()
 
 void assignXmlString (std::string & destString, const XMLCh * srcXmlString)
 {
-    char * tmpString = XMLString::transcode(srcXmlString);
-    destString.assign(tmpString);
+    char *tmpString = XMLString::transcode (srcXmlString);
+    destString.assign (tmpString);
     XMLString::release (&tmpString);
 }
 
-double stod (const std::string &srcString)
+double stod (const std::string & srcString)
 {
-    std::stringstream tmpString(srcString);
+    std::stringstream tmpString (srcString);
     double tmpInt;
     tmpString >> tmpInt;
     return tmpInt;
 }
 
-int stoi (const std::string &srcString)
+int stoi (const std::string & srcString)
 {
-    std::stringstream tmpString(srcString);
+    std::stringstream tmpString (srcString);
     int tmpInt;
     tmpString >> tmpInt;
     return tmpInt;
 }
 
-bool stob (const std::string &srcString)
+bool stob (const std::string & srcString)
 {
-    if (srcString == "true")
-        return true;
     if (srcString == "false" || srcString == "0")
         return false;
     return true;

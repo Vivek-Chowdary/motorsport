@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://motorsport-sim.org" targetNamespace="http://motorsport-sim.org" elementFormDefault="qualified">
+  <xs:element name="logConfig">
+    <xs:complexType>
+      <xs:attribute name="globalLevel" type="xs:string" default="LOG_TRACE"/>
+      <xs:attribute name="fileName" type="xs:string" default="motorsport.log"/>
+      <xs:attribute name="textBuffer" type="xs:integer" default="1024"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

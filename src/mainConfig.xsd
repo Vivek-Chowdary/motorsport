@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://motorsport-sim.org" targetNamespace="http://motorsport-sim.org" elementFormDefault="qualified">
+  <xs:element name="mainConfig">
+    <xs:complexType>
+      <xs:attribute name="localLogLevel" type="xs:string" default="LOG_TRACE"/>
+      <xs:attribute name="localLogName" type="xs:string" default="MAI"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
