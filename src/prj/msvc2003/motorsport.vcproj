@@ -199,25 +199,6 @@
 						UsePrecompiledHeader="0"/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="..\..\world.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -227,9 +208,6 @@
 			</File>
 			<File
 				RelativePath="..\..\system.hpp">
-			</File>
-			<File
-				RelativePath="..\..\world.hpp">
 			</File>
 		</Filter>
 		<Filter
@@ -285,26 +263,10 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\data\dataEngine.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						UsePrecompiledHeader="0"/>
-				</FileConfiguration>
+				RelativePath="..\..\data\world.hpp">
 			</File>
 			<File
-				RelativePath="..\..\data\dataEngine.hpp">
+				RelativePath="..\..\data\worldData.cpp">
 			</File>
 			<File
 				RelativePath="..\..\data\worldObject.cpp">
