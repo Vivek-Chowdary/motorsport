@@ -30,6 +30,7 @@ class PhysicsEngine
     /** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
     */
     static void nearCallback (void *data, dGeomID o1, dGeomID o2);
+    static bool checkpointPassed;
     // / Type of ODE step function: 1->dWorldStep. 2->dWorldStepFast1. 
     int stepType;               // "dWorldStep"=1 || "dWorldStepFast1"=2
     // / Max. number of iterations to be calculated with dWorldStepFast1.

@@ -8,6 +8,7 @@
 \*****************************************************************************/
 
 #include "xercesc_fwd.hpp"
+#include "SDL.h"
 #include <string>
 
 //forward declaration
@@ -37,6 +38,8 @@ class GuiEngine
     std::string tempLine;
     Ogre::Camera * tmpOgreCamera;
     int telemetryLines;
+    std::string time;
+    std::string lapTime;
   public:
     // / Creates a new gui engine.
     /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
@@ -59,6 +62,8 @@ class GuiEngine
     void hideLoadscreen ();
     void showLoadscreen ();
     void addLoadscreenLine (const std::string & line);
+    void updateLapTime (Uint32 time);
+    void updateTime (Uint32 time);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 

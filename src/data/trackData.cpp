@@ -72,6 +72,8 @@ void Track::processXmlRootNode (DOMNode * n)
     author = "Anonymous";
     contact = "None";
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
+    Vector3d checkpointPosition (0, 0, 0);
+    double checkpointRadius = 5;
     double groundHeight = 0.0;
     std::string mesh = "none";
     std::string groundMaterialName = "groundMaterial";
@@ -121,6 +123,18 @@ void Track::processXmlRootNode (DOMNode * n)
                         {
                             assignXmlString (license, attNode->getValue());
                             log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
+                        }
+                        if (attribute == "checkpointPosition")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the checkpoint position: %s", attribute.c_str());
+                            checkpointPosition = Vector3d (attribute);
+                        }
+                        if (attribute == "checkpointRadius")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the checkpoint radius: %s", attribute.c_str());
+                            checkpointRadius = stod (attribute);
                         }
                     }
                 }
@@ -259,7 +273,6 @@ void Track::processXmlRootNode (DOMNode * n)
             }
         }
     }
-
     //load cubes
     log->loadscreen (LOG_CCREATOR, "Creating an array of %i cubes", numberOfCubes);
     for (int i = 0; i < numberOfCubes; i++)
@@ -331,6 +344,12 @@ void Track::processXmlRootNode (DOMNode * n)
         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
         // dGeomTriMeshDataDestroy (ground);
     }
+
+    // create the checkpoint spherea
+    dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);
+    dGeomSetBody (checkpointID, 0);
+    dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
+    
 }
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)

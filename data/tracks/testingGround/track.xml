@@ -5,6 +5,8 @@
     author = "STenyaK"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
+    checkpointPosition = "0 0 10"
+    checkpointRadius = "5"
     >
     <ground
         height = "0.0"

@@ -9,9 +9,11 @@
 
 #include "physicsEngine.hpp"
 
+#include "SDL.h"
 #include "math.h"
 #include "system.hpp"
 #include "world.hpp"
+#include "guiEngine.hpp"
 #include "cube.hpp"
 #include "vehicle.hpp"
 #include "camera.hpp"
@@ -21,6 +23,8 @@
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "ode/ode.h"
+
+bool PhysicsEngine::checkpointPassed = false;
 
 PhysicsEngine::PhysicsEngine ()
   : stepType(0), dWorldStepFast1MaxIterations(0) 
@@ -39,7 +43,9 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
     dBodyID b1 = dGeomGetBody (o1);
     dBodyID b2 = dGeomGetBody (o2);
     if (b1 && b2 && dAreConnected (b1, b2))
+    {
         return;
+    }
 
     const int N = 10;
     dContact contact[N];
@@ -49,12 +55,16 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
         for (i = 0; i < n; i++)
         {
             contact[i].surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
+            if ( (dGeomGetClass (o1) == dSphereClass && dGeomGetClass (o2) == dCCylinderClass) ||
+                 (dGeomGetClass (o2) == dSphereClass && dGeomGetClass (o1) == dCCylinderClass))
+            {
+                checkpointPassed = true;
+            }
             if (dGeomGetClass (o1) == dSphereClass || dGeomGetClass (o2) == dSphereClass)
             {
-                contact[i].surface.mu = 20;
-            } else {
-                contact[i].surface.mu = 0.6;
+                return;
             }
+            contact[i].surface.mu = 0.6;
             contact[i].surface.slip1 = 0.0;
             contact[i].surface.slip2 = 0.0;
             // FIXME!!! check what kind of surfaces are colliding, setting the appropriate cfm and erp values!
@@ -97,6 +107,7 @@ int PhysicsEngine::computeStep (void)
     }
                         
 
+    checkpointPassed = false;
     dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);
     switch (stepType)
     {
@@ -110,7 +121,20 @@ int PhysicsEngine::computeStep (void)
         dWorldStepFast1 (World::getWorldPointer ()->worldID, (double)systemData->physicsTimeStep/1000, dWorldStepFast1MaxIterations);
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
-
+    
+    // check if a car has passed the checkpoint
+    static bool checkpointWasPassed = false;
+    static Uint32 time;
+    time = SDL_GetTicks();
+    static Uint32 lapTime = time;
+    if (checkpointWasPassed && (!checkpointPassed))
+    {
+        GuiEngine::getGuiEnginePointer()->updateLapTime (time - lapTime);
+        log->format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", (time-lapTime) / 1000.0);
+        lapTime = time;
+    }
+    checkpointWasPassed = checkpointPassed;
+    GuiEngine::getGuiEnginePointer()->updateTime (time - lapTime);
     return (0);
 }
 

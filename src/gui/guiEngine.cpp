@@ -41,6 +41,8 @@ GuiEngine::GuiEngine ()
         guiEnginePointer = this;
         tmpOgreCamera = 0;
         loadscreenText = "";
+        lapTime = "Lap Time: n/a";
+        time = "Time: n/a";
     }
 }
 
@@ -203,6 +205,20 @@ void GuiEngine::addLoadscreenLine (const std::string & line)
     }
     SystemData::getSystemDataPointer()->ogreWindow->update ();
 }
+void GuiEngine::updateLapTime (Uint32 time)
+{
+    OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/LapTime");
+    double tmpTime = time / 1000.0;
+    int minutes = int (tmpTime / 60);
+    tmpTime = tmpTime - (minutes * 60);
+    guiLapTime->setCaption ("Lap Time: " + StringConverter::toString(float(time)/1000.0f) + " s (" + StringConverter::toString(minutes) + "' " + StringConverter::toString(float(tmpTime)) + "\")");
+}
+void GuiEngine::updateTime (Uint32 time)
+{
+    OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/Time");
+    guiLapTime->setCaption ("Time: " + StringConverter::toString (float(time)/1000.0f) + " s");
+}
+
 
 GuiEngine::~GuiEngine (void)
 {

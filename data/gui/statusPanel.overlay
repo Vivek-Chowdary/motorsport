@@ -7,9 +7,9 @@ gui
 		metrics_mode pixels
 		vert_align bottom
 		left 5 
-		top -88
+		top -118
 		width 300
-		height 83
+		height 113
 		material gui/StatsBlockCenter
         	border_size 1 1 1 1
         	border_material gui/StatsBlockBorder
@@ -84,6 +84,32 @@ gui
 			font_name TrebuchetMSBold
 			char_height 16
 			caption Triangle Count:
+			colour_top 0.6 0.7 0.7
+			colour_bottom 0.7 0.7 0.7
+		}
+		element TextArea(gui/Time)
+		{
+			metrics_mode pixels
+			left 5
+			top 80
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption Time:
+			colour_top 0.6 0.7 0.7
+			colour_bottom 0.7 0.7 0.7
+		}
+		element TextArea(gui/LapTime)
+		{
+			metrics_mode pixels
+			left 5
+			top 95
+			width 90
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			caption Lap Time:
 			colour_top 0.6 0.7 0.7
 			colour_bottom 0.7 0.7 0.7
 		}
