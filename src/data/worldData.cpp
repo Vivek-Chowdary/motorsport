@@ -28,12 +28,12 @@ World *World::getWorldPointer ()
 {
     if (worldPointer == 0)
     {
-        worldPointer = new World();
+        worldPointer = new World(/*"../data/defaultWorld.xml"*/);
     }
     return (worldPointer);
 }
 
-void World::processXmlRootNode(xercesc_2_4::DOMNode*)
+void World::processXmlRootNode (DOMNode * n)
 {
     //empty for now
 }
