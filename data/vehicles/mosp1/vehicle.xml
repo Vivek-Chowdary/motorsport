@@ -151,7 +151,7 @@
             mass = "15.1"
             radius = "0.34"
             width = "0.125"
-            powered = "0"
+            powered = "-1"
             mesh = "vehicles/mosp1/wheel_front.mesh"
             renderMode="solid"
             >
@@ -161,7 +161,7 @@
             mass = "15.1"
             radius = "0.34"
             width = "0.125"
-            powered = "0"
+            powered = "+1"
             mesh = "vehicles/mosp1/wheel_front.mesh"
             renderMode="solid"
             >
