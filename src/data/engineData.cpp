@@ -13,8 +13,8 @@
 
 Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "ENG");
-    log->put (LOG_INFO, "Starting to parse an engine node");
+    log = new LogEngine (LOG_DEVELOPER, "ENG");
+    log->put (LOG_CCREATOR, "Starting to parse an engine node");
     processXmlRootNode (n);
 }
 

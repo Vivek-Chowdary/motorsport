@@ -37,25 +37,25 @@ void Cube::startPhysics (DOMNode * n)
             {
                 author.clear();
                 assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "Found the author: %s", author.c_str());
+                log->format (LOG_CCREATOR, "Found the author: %s", author.c_str());
             }
             if (attribute == "contact")
             {
                 contact.clear();
                 assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
+                log->format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
             }
             if (attribute == "license")
             {
                 license.clear();
                 assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "Found the license: %s", license.c_str());
+                log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
             }
             if (attribute == "size")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the cube physics size: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the cube physics size: %s", attribute.c_str() );
                 size = stoi (attribute);
             }
             attribute.clear();
@@ -106,7 +106,7 @@ void Cube::stepPhysics ()
     }
     const dReal * pos;
     pos = dBodyGetPosition(cubeID);
-    log->format(LOG_TRACE, "cube:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
+    log->format(LOG_DEVELOPER, "cube:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
 
 }
 

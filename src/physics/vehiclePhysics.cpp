@@ -23,7 +23,7 @@
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log->telemetry (LOG_TRACE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
+    log->telemetry (LOG_DEVELOPER, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -33,9 +33,9 @@ dBodyID Vehicle::getVehicleID()
 void Vehicle::setPosition (Vector3d position)
 {
     Vector3d posDiff = getPosition();
-    log->format (LOG_INFO, "Setting vehicle position (%f, %f, %f) to (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z, position.x, position.y, position.z);
+    log->format (LOG_DEVELOPER, "Setting vehicle position (%f, %f, %f) to (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z, position.x, position.y, position.z);
     posDiff = position - posDiff;
-    log->format (LOG_INFO, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
+    log->format (LOG_DEVELOPER, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
     
     body->setPosition (body->getPosition() + posDiff);
 
@@ -44,7 +44,7 @@ void Vehicle::setPosition (Vector3d position)
     {
         Vector3d newPos = suspIter->second->getPosition();
         newPos += posDiff;
-        //log->format (LOG_INFO, "Setting suspension \"%s\" position to (%f, %f, %f)", suspIter->first.c_str(), newPos.x, newPos.y, newPos.z);
+        //log->format (LOG_DEVELOPER, "Setting suspension \"%s\" position to (%f, %f, %f)", suspIter->first.c_str(), newPos.x, newPos.y, newPos.z);
         //suspIter->second->setPosition (newPos);
     }
 
@@ -53,7 +53,7 @@ void Vehicle::setPosition (Vector3d position)
     {
         Vector3d newPos = wheelIter->second->getPosition();
         newPos += posDiff;
-        log->format (LOG_INFO, "Setting wheel \"%s\" position to (%f, %f, %f)", wheelIter->first.c_str(), newPos.x, newPos.y, newPos.z);
+        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" position to (%f, %f, %f)", wheelIter->first.c_str(), newPos.x, newPos.y, newPos.z);
         wheelIter->second->setPosition (newPos);
     }
 }
@@ -69,9 +69,9 @@ void Vehicle::setRotation (Vector3d rotation)
     setPosition (Vector3d(0, 0, 0));
 
     Vector3d rotDiff = getRotation();
-    log->format (LOG_INFO, "Setting vehicle rotation (%f, %f, %f) to (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z, rotation.x, rotation.y, rotation.z);
+    log->format (LOG_DEVELOPER, "Setting vehicle rotation (%f, %f, %f) to (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z, rotation.x, rotation.y, rotation.z);
     rotDiff = rotation - rotDiff;
-    log->format (LOG_INFO, "Difference in vehicle rotation: (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z);
+    log->format (LOG_DEVELOPER, "Difference in vehicle rotation: (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z);
     
     body->setRotation (body->getRotation() + rotDiff);
 
@@ -80,7 +80,7 @@ void Vehicle::setRotation (Vector3d rotation)
     {
         Vector3d newRot = suspIter->second->getRotation();
         newRot += rotDiff;
-        //log->format (LOG_INFO, "Setting suspension \"%s\" rotation to (%f, %f, %f)", suspIter->first.c_str(), newRot.x, newRot.y, newRot.z);
+        //log->format (LOG_DEVELOPER, "Setting suspension \"%s\" rotation to (%f, %f, %f)", suspIter->first.c_str(), newRot.x, newRot.y, newRot.z);
         //suspIter->second->setRotation (newRot);
     }
 
@@ -89,10 +89,10 @@ void Vehicle::setRotation (Vector3d rotation)
     {
         Vector3d newRot = wheelIter->second->getRotation();
         newRot += rotDiff;
-        log->format (LOG_INFO, "Setting wheel \"%s\" rotation to (%f, %f, %f)", wheelIter->first.c_str(), newRot.x, newRot.y, newRot.z);
+        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" rotation to (%f, %f, %f)", wheelIter->first.c_str(), newRot.x, newRot.y, newRot.z);
         wheelIter->second->setRotation (newRot);
         Vector3d rot = wheelIter->second->getRotation();
-        log->format (LOG_INFO, "Wheel \"%s\" rotation set to (%f, %f, %f)", wheelIter->first.c_str(), rot.x, rot.y, rot.z);
+        log->format (LOG_DEVELOPER, "Wheel \"%s\" rotation set to (%f, %f, %f)", wheelIter->first.c_str(), rot.x, rot.y, rot.z);
     }
 
     setPosition(initialPos);
@@ -117,7 +117,7 @@ void Vehicle::attachWheelsToBody()
         {
             log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
-            log->format (LOG_INFO, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            log->format (LOG_DEVELOPER, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
             suspIter->second->attach(*(wheelIter->second), *this);
         }
     }
@@ -161,5 +161,5 @@ void Vehicle::stepPhysics ()
     double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
     tmp = dBodyGetPosition(body->bodyID);
     double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
+    log->telemetry (LOG_DEVELOPER, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
 }

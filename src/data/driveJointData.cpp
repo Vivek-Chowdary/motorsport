@@ -13,14 +13,14 @@
 
 Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "CLJ");
-    log->put (LOG_INFO, "Starting to parse a clutch node");
+    log = new LogEngine (LOG_DEVELOPER, "CLJ");
+    log->put (LOG_CCREATOR, "Starting to parse a clutch node");
     processXmlRootNode (n);
 }
 
 Clutch::Clutch ()
 {
-    log = new LogEngine (LOG_TRACE, "TFR");
+    log = new LogEngine (LOG_DEVELOPER, "TFR");
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     maxTorqueTransfer = 1000;
@@ -41,14 +41,14 @@ void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "GTJ");
-    log->put (LOG_INFO, "Starting to parse a gear joint node");
+    log = new LogEngine (LOG_DEVELOPER, "GTJ");
+    log->put (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
 Gear::Gear ()
 {
-    log = new LogEngine (LOG_TRACE, "TFJ");
+    log = new LogEngine (LOG_DEVELOPER, "TFJ");
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;
@@ -73,14 +73,14 @@ void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "LSJ");
-    log->put (LOG_INFO, "Starting to parse a gear joint node");
+    log = new LogEngine (LOG_DEVELOPER, "LSJ");
+    log->put (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
 LSD::LSD ()
 {
-    log = new LogEngine (LOG_TRACE, "LSJ");
+    log = new LogEngine (LOG_DEVELOPER, "LSJ");
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;

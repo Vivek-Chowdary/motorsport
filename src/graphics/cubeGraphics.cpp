@@ -46,37 +46,37 @@ void Cube::startGraphics (DOMNode * n)
             {
                 author.clear();
                 assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "Found the author: %s", author.c_str());
+                log->format (LOG_CCREATOR, "Found the author: %s", author.c_str());
             }
             if (attribute == "contact")
             {
                 contact.clear();
                 assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
+                log->format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
             }
             if (attribute == "license")
             {
                 license.clear();
                 assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "Found the license: %s", license.c_str());
+                log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
             }
             if (attribute == "material")
             {
                 material.clear();
                 assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "Found the cube graphics material: %s", material.c_str());
+                log->format (LOG_CCREATOR, "Found the cube graphics material: %s", material.c_str());
             }
             if (attribute == "mesh")
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "Found the cube graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_CCREATOR, "Found the cube graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "ogreName")
             {
                 ogreName.clear();
                 assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_TRACE, "Found the cube graphics ogre-identifier format: %s", ogreName.c_str());
+                log->format (LOG_CCREATOR, "Found the cube graphics ogre-identifier format: %s", ogreName.c_str());
             }
             attribute.clear();
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <graphicsConfig
-    localLogLevel = "LOG_VERBOSE"
+    localLogLevel = "LOG_DEVELOPER"
     localLogName = "GFX"
     _screenshotFile = "/dev/shm/screenframe%06i.jpg"
     screenshotFile = "screenframe%02i.jpg"

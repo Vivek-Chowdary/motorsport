@@ -42,21 +42,21 @@ void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the differential friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the differential friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             if (attribute == "diffInertia")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the differential inertia: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the differential inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
             if (attribute == "finalDriveRatio")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the final drive ratio: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the final drive ratio: %s", attribute.c_str() );
                 finalDriveRatio = stod (attribute);
             }
             attribute.clear();
@@ -104,7 +104,7 @@ void FinalDrive::stepPhysics ()
     angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
     outputAngularVel = inputAngularVel/finalDriveRatio;
 */
-    log->format(LOG_TRACE, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);
+    log->format(LOG_DEVELOPER, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
 }

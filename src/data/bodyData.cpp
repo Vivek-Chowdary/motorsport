@@ -17,7 +17,7 @@ int Body::instancesCount = 0;
 
 Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "BOD");
+    log = new LogEngine (LOG_DEVELOPER, "BOD");
     processXmlRootNode (n);
 
     instancesCount++;

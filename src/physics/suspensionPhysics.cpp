@@ -43,35 +43,35 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                 *position = stov3d (attribute);
             }
             if (attribute == "rotation")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the rotation: %s", attribute.c_str());
+                log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str());
                 *rotation = stov3d (attribute);
             }
             if (attribute == "springConstant")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the suspension spring constant: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the suspension spring constant: %s", attribute.c_str() );
                 springConstant = stod (attribute);
             }
             if (attribute == "dampingConstant")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the suspension damping constant: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the suspension damping constant: %s", attribute.c_str() );
                 dampingConstant = stod (attribute);
             }
             if (attribute == "steeringAngle")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the suspension max. steering angle: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the suspension max. steering angle: %s", attribute.c_str() );
                 steeringAngle = stod (attribute);
             }
             attribute.clear();
@@ -88,7 +88,7 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
 {
     Vector3d position = *(this->position); //getPosition();
     Vector3d rotation = *(this->rotation); //getRotation();
-    log->format (LOG_TRACE, "Attaching a wheel to this suspension (p=%f,%f,%f;r=%f,%f,%f)", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
+    log->format (LOG_DEVELOPER, "Attaching a wheel to this suspension (p=%f,%f,%f;r=%f,%f,%f)", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
     wheel.setPosition (Vector3d (0, 0, 0));
     wheel.setRotation (rotation);
     wheel.setPosition (position);
@@ -146,7 +146,6 @@ void Suspension::stepPhysics ()
     double angle = 0;
     double leftSteering = 0;
     leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
-    log->format (LOG_WARNING, "Value of leftSt. (axis0,0) = %f", leftSteering);
     if (leftSteering < 0.5)
     {
         leftSteering = 0.5 - leftSteering;
@@ -166,7 +165,6 @@ void Suspension::stepPhysics ()
     }   }   }   }   }   }
     double rightSteering = 0;
     rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
-    log->format (LOG_WARNING, "Value of rightSt. (axis0,0) = %f", rightSteering);
     if (rightSteering > 0.5)
     {
         rightSteering = rightSteering - 0.5;

@@ -60,7 +60,7 @@ void TestLogEngineConstructor_FileCreation ()
 
     // scope to construct+destruct the object.
     {
-        LogEngine logEngine (LOG_TRACE, "TST");
+        LogEngine logEngine (LOG_DEVELOPER, "TST");
     }
 
     std::fstream testFile;
@@ -106,9 +106,9 @@ void TestLogEngineConstructor_SeveralInstances ()
 
     // scope to construct+destruct the object.
     {
-        LogEngine logEngine (LOG_TRACE, "TS1");
+        LogEngine logEngine (LOG_DEVELOPER, "TS1");
         {
-            LogEngine logEngine2 (LOG_TRACE, "TS2");
+            LogEngine logEngine2 (LOG_DEVELOPER, "TS2");
         }
         std::fstream testFile;
         testFile.open (TestLogFile.c_str (), std::fstream::in);
@@ -158,7 +158,7 @@ void TestLogEngineConstructor_ComponentName ()
 
         // scope to construct+destruct the object.
         {
-            LogEngine logEngine (LOG_TRACE, componentNames[n]);
+            LogEngine logEngine (LOG_DEVELOPER, componentNames[n]);
         }
 
         std::fstream testFile;
@@ -215,7 +215,7 @@ void TestPut_filter_gt ()
 
     // scope to construct+destruct the object.
     {
-        LogEngine logEngine (LOG_INFO, "TST");
+        LogEngine logEngine (LOG_ENDUSER, "TST");
         MAssert (logEngine.format (LOG_WARNING, "logtext") == 0);
     }
 
@@ -241,7 +241,7 @@ void TestPut_filter_lt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.format (LOG_INFO, "logtext") == -1);
+        MAssert (logEngine.format (LOG_ENDUSER, "logtext") == -1);
     }
 
     std::fstream testFile;
@@ -273,7 +273,7 @@ void TestFormat_basics ()
 
     // scope to construct+destruct the object.
     {
-        LogEngine logEngine (LOG_TRACE, "TST");
+        LogEngine logEngine (LOG_DEVELOPER, "TST");
         MAssert (logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#') == 0);
     }
 
@@ -319,7 +319,7 @@ void TestFormat_filter_gt ()
 
     // scope to construct+destruct the object.
     {
-        LogEngine logEngine (LOG_INFO, "TST");
+        LogEngine logEngine (LOG_ENDUSER, "TST");
         MAssert (logEngine.format (LOG_WARNING, "s:%s d:%d %c", "a string", 42, '#') == 0);
     }
 
@@ -345,7 +345,7 @@ void TestFormat_filter_lt ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        MAssert (logEngine.format (LOG_INFO, "s:%s d:%d %c", "a string", 42, '#') == -1);
+        MAssert (logEngine.format (LOG_ENDUSER, "s:%s d:%d %c", "a string", 42, '#') == -1);
     }
 
     std::fstream testFile;
@@ -378,9 +378,9 @@ void TestGetLogLevelCode ()
     LogEngine l (LOG_WARNING, "TST");
     MAssert (std::string ("EE") == l.GetLogLevelCode (LOG_ERROR));
     MAssert (std::string ("WW") == l.GetLogLevelCode (LOG_WARNING));
-    MAssert (std::string ("II") == l.GetLogLevelCode (LOG_INFO));
-    MAssert (std::string ("VV") == l.GetLogLevelCode (LOG_VERBOSE));
-    MAssert (std::string ("TT") == l.GetLogLevelCode (LOG_TRACE));
+    MAssert (std::string ("UU") == l.GetLogLevelCode (LOG_ENDUSER));
+    MAssert (std::string ("CC") == l.GetLogLevelCode (LOG_CCREATOR));
+    MAssert (std::string ("DD") == l.GetLogLevelCode (LOG_DEVELOPER));
 }
 
 //////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <physicsConfig
-    localLogLevel = "LOG_INFO"
+    localLogLevel = "LOG_DEVELOPER"
     localLogName = "FSX"
     frequency = "300"
     timeScale = "1"

@@ -39,21 +39,21 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the engine torque linear multiplier: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the engine torque linear multiplier: %s", attribute.c_str() );
                 torqueLinearMultiplier = stod (attribute);
             }
             if (attribute == "engineInertia")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the engine inertia: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the engine inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
             if (attribute == "engineFriction")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the engine friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             attribute.clear();
@@ -125,7 +125,7 @@ void Engine::stepPhysics ()
     angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
     outputAngularVel = inputAngularVel;
 */
-    log->format(LOG_TRACE, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
+    log->format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;

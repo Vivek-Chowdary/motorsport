@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <guiConfig
-    localLogLevel = "LOG_INFO"
+    localLogLevel = "LOG_DEVELOPER"
     localLogName = "GUI"
     showStatistics = "1"
     telemetryLines = "5"

@@ -38,12 +38,12 @@ World::World (char * xmlFilename)
     {
         delete this;
     } else {
-        log = new LogEngine(LOG_TRACE, "WRL");
+        log = new LogEngine(LOG_DEVELOPER, "WRL");
         worldPointer = this;
         std::string file = SystemData::getSystemDataPointer()->dataDir;
         file.append("/worlds/");
         file.append(xmlFilename);
-        log->loadscreen(LOG_INFO,"Reading %s world file", file.c_str());
+        log->loadscreen(LOG_CCREATOR,"Reading %s world file", file.c_str());
         XmlFile* xmlFile = new XmlFile (file.c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
@@ -53,7 +53,7 @@ World::World (char * xmlFilename)
 World::~World ()
 {
     // unload the bodies from memory
-    log->put (LOG_INFO, "Unloading vehicles from memory...");
+    log->put (LOG_DEVELOPER, "Unloading vehicles from memory...");
     int size = vehicleList.size ();
     for (int i = 0; i < size; i++)
     {
@@ -61,7 +61,7 @@ World::~World ()
     }
     vehicleList.clear ();
     
-    log->put (LOG_INFO, "Unloading tracks from memory...");
+    log->put (LOG_DEVELOPER, "Unloading tracks from memory...");
     size = trackList.size ();
     for (int i = 0; i < size; i++)
     {
@@ -69,12 +69,12 @@ World::~World ()
     }
     trackList.clear ();
     
-    log->put (LOG_INFO, "Destroying ODE world");
+    log->put (LOG_DEVELOPER, "Destroying ODE world");
     dSpaceDestroy (spaceID);
-    log->put (LOG_INFO, "Destroying ODE main collision space");
+    log->put (LOG_DEVELOPER, "Destroying ODE main collision space");
     dWorldDestroy (worldID);
     dWorldDestroy (ghostWorldID);
-    log->put (LOG_INFO, "Destroying ODE joints group");
+    log->put (LOG_DEVELOPER, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
     
     worldPointer = NULL;
@@ -102,7 +102,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (name, n->getNodeName());
             if (name == "world")
             {
-                log->put (LOG_INFO, "Found a world.");
+                log->put (LOG_CCREATOR, "Found a world.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -116,41 +116,41 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->loadscreen (LOG_INFO, "Found the world name: %s", name.c_str());
+                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", name.c_str());
                         }
                         if (attribute == "description")
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->loadscreen (LOG_INFO, "Found the world description: %s", description.c_str());
+                            log->loadscreen (LOG_CCREATOR, "Found the world description: %s", description.c_str());
                         }
                         if (attribute == "useTrackCamera")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             useTrackCamera = stob (attribute);
-                            log->format (LOG_INFO, "Found the selected world camera: %s camera", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the selected world camera: %s camera", attribute.c_str());
                         }
                         if (attribute == "gravityX")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityX = stod (attribute);
-                            log->format (LOG_INFO, "Found the world gravity X module: %s m/s^2", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the world gravity X module: %s m/s^2", attribute.c_str());
                         }
                         if (attribute == "gravityY")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityY = stod (attribute);
-                            log->format (LOG_INFO, "Found the world gravity Y module: %s m/s^2", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the world gravity Y module: %s m/s^2", attribute.c_str());
                         }
                         if (attribute == "gravityZ")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             gravityZ = stod (attribute);
-                            log->format (LOG_INFO, "Found the world gravity Z module: %s m/s^2", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the world gravity Z module: %s m/s^2", attribute.c_str());
                         }
                         attribute.clear();
                     }
@@ -165,7 +165,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             assignXmlString (name, n->getNodeName());
                             if (name == "vehicle")
                             {
-                                log->put (LOG_INFO, "Found a vehicle");
+                                log->put (LOG_CCREATOR, "Found a vehicle");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -179,19 +179,19 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             vehicleDirectory.clear();
                                             assignXmlString (vehicleDirectory, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the vehicle directory: %s", vehicleDirectory.c_str());
+                                            log->format (LOG_CCREATOR, "Found the vehicle directory: %s", vehicleDirectory.c_str());
                                         }
                                         if (attribute == "driver")
                                         {
                                             driver.clear();
                                             assignXmlString (driver, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the vehicle driver: %s", driver.c_str());
+                                            log->format (LOG_CCREATOR, "Found the vehicle driver: %s", driver.c_str());
                                         }
                                         if (attribute == "startPosition")
                                         {
                                             vehicleStartPosition.clear();
                                             assignXmlString (vehicleStartPosition, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
+                                            log->format (LOG_CCREATOR, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
                                         }
                                         attribute.clear();
                                     }
@@ -199,7 +199,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             }
                             if (name == "track")
                             {
-                                log->put (LOG_INFO, "Found a track");
+                                log->put (LOG_CCREATOR, "Found a track");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -213,7 +213,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             trackDirectory.clear();
                                             assignXmlString (trackDirectory, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the track directory: %s", trackDirectory.c_str());
+                                            log->format (LOG_CCREATOR, "Found the track directory: %s", trackDirectory.c_str());
                                         }
                                         attribute.clear();
                                     }
@@ -226,13 +226,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             name.clear();
         }
     }
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+    log->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
 
 /* /////////////////////////////////// STILL THIS VAR TO BE USED TODO
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
 /////////////////////////////////// */
 
-    log->loadscreen (LOG_INFO, "Creating ODE world");
+    log->loadscreen (LOG_DEVELOPER, "Creating ODE world");
     dRandSetSeed(0);
     worldID = dWorldCreate ();
     ghostWorldID = dWorldCreate ();
@@ -241,37 +241,37 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     
     if (SystemData::getSystemDataPointer()->getCfmValue() != -1)
     {
-        log->format (LOG_INFO, "Setting ODE cfm value to %f", SystemData::getSystemDataPointer()->getCfmValue());
+        log->format (LOG_DEVELOPER, "Setting ODE cfm value to %f", SystemData::getSystemDataPointer()->getCfmValue());
         dWorldSetCFM (worldID, SystemData::getSystemDataPointer()->getCfmValue());
     }
     if (SystemData::getSystemDataPointer()->getErpValue() != -1)
     {
-        log->format (LOG_INFO, "Setting ODE erp value to %f", SystemData::getSystemDataPointer()->getErpValue());
+        log->format (LOG_DEVELOPER, "Setting ODE erp value to %f", SystemData::getSystemDataPointer()->getErpValue());
         dWorldSetERP (worldID, SystemData::getSystemDataPointer()->getErpValue());
     }
 
-    log->put ( LOG_INFO, "Setting ODE world gravity");
+    log->put ( LOG_DEVELOPER, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
     dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
     // load track (and its cameras)
-    log->loadscreen (LOG_INFO, "Creating a track");
+    log->loadscreen (LOG_CCREATOR, "Creating a track");
     Track * track = new Track (trackDirectory);
     //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     trackList.push_back (track);
 
     // load vehicle (and its cameras)
-    log->loadscreen (LOG_INFO, "Creating a vehicle");
+    log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
     Vehicle * vehicle = new Vehicle (vehicleDirectory);
     vehicleList.push_back (vehicle);
     
-    log->put (LOG_INFO, "Attaching vehicle wheels to its body (via suspensions)");
+    log->put (LOG_CCREATOR, "Attaching vehicle wheels to its body (via suspensions)");
     vehicle->attachWheelsToBody();
     
-    log->put (LOG_INFO, "Setting vehicle starting position");
+    log->put (LOG_CCREATOR, "Setting vehicle starting position");
     vehicle->setPosition (track->vehiclePositionMap[vehicleStartPosition]->getPosition());
     
-    log->put (LOG_INFO, "Setting vehicle starting rotation");
+    log->put (LOG_CCREATOR, "Setting vehicle starting rotation");
     Vector3d rotation = track->vehiclePositionMap[vehicleStartPosition]->getRotation();
     vehicle->setRotation (rotation);
 
@@ -287,7 +287,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 
     // set active camera
-    log->loadscreen (LOG_INFO, "Setting camera viewport");
+    log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
     if (useTrackCamera)
     {
         //err... use... track camera, i guess.
@@ -300,7 +300,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     activeVehicleCamera = vehicleList[0]->cameraList[0];
 
     // Clean up things, leave others in memory (world properties).
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    log->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
     vehicleDirectory.clear();
     driver.clear();
     trackDirectory.clear();
@@ -311,7 +311,7 @@ void World::setActiveCamera (Camera * camera)
     activeCamera = camera;
     SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
     SystemData::getSystemDataPointer()->ogreWindow->addViewport (activeCamera->ogreCamera);
-    log->put (LOG_VERBOSE, "Changed camera...");
+    log->put (LOG_ENDUSER, "Changed camera...");
 }
 
 Camera * World::getActiveCamera (void)

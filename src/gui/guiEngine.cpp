@@ -34,7 +34,7 @@ GuiEngine::GuiEngine ()
         delete xmlFile;
 
         // get the direction of the graphics data
-        log->put (LOG_INFO, "Setting up data pointers...");
+        log->put (LOG_DEVELOPER, "Setting up data pointers...");
         systemData = SystemData::getSystemDataPointer ();
 
         // updating singleton pointer
@@ -47,7 +47,7 @@ GuiEngine::GuiEngine ()
 int GuiEngine::computeStep (void)
 //makes the graphics engine draw one frame
 {
-    log->put (LOG_VERBOSE, "Doing an step...");
+    log->put (LOG_DEVELOPER, "Doing an step...");
     //update all statistics every second
     static Uint32 lastRefreshTime = 0;
     if (SDL_GetTicks () - lastRefreshTime >= 1000)
@@ -72,7 +72,7 @@ int GuiEngine::computeStep (void)
 
     if (systemData->axisMap[getIDKeyboardKey(SDLK_f)]->getValue() == 1)
     {
-        log->put (LOG_INFO, "Showing/hiding statistics on screen.");
+        log->put (LOG_ENDUSER, "Showing/hiding statistics on screen.");
         showStatistics = !showStatistics;
         systemData->axisMap[getIDKeyboardKey(SDLK_f)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
@@ -207,20 +207,20 @@ GuiEngine::~GuiEngine (void)
 
 void GuiEngine::processXmlRootNode (DOMNode * n)
 {
-    LOG_LEVEL localLogLevel = LOG_TRACE;
+    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "GUI";
     showStatistics = true;
-    LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
+    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
             if (name == "guiConfig")
             {
-                tmpLog->put (LOG_INFO, "Found the gui engine config element.");
+                tmpLog->put (LOG_DEVELOPER, "Found the gui engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -236,14 +236,14 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
+                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
 
                         if (attribute == "localLogName")
                         {
                             localLogName.clear();
                             assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
+                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
 
                         }
                         if (attribute == "showStatistics")
@@ -251,14 +251,14 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue ());
                             showStatistics = stob (attribute);
-                            tmpLog->format (LOG_INFO, "Found whether to show the statistics or not: %s", attribute.c_str());
+                            tmpLog->format (LOG_ENDUSER, "Found whether to show the statistics or not: %s", attribute.c_str());
                         }
                         if (attribute == "telemetryLines")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue ());
                             telemetryLines = stoi (attribute);
-                            tmpLog->format (LOG_INFO, "Found the number of telemetry lines: %s", attribute.c_str());
+                            tmpLog->format (LOG_ENDUSER, "Found the number of telemetry lines: %s", attribute.c_str());
                         }
                         attribute.clear();
                     }
@@ -271,5 +271,5 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
     localLogName.clear();
-    log->put (LOG_INFO, "All config has been parsed");
+    log->put (LOG_DEVELOPER, "All config has been parsed");
 }

@@ -45,28 +45,28 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel physics radius: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
                 radius = stod (attribute);
             }
             if (attribute == "width")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel physics width: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "mass")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel physics mass: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             if (attribute == "powered")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel power transmission: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the wheel power transmission: %s", attribute.c_str() );
                 powered = stod (attribute);
             }
             attribute.clear();
@@ -132,7 +132,7 @@ void Wheel::stepPhysics ()
     if(powered!=0){
 //        dJointGetHingeAxis (suspJointID, wheelAxisVector);
 //        dBodySetFiniteRotationAxis (wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
-//        log->format(LOG_TRACE, "%s:FRAx=%f FRAy=%f FRAz=%f",index.c_str(), wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+//        log->format(LOG_DEVELOPER, "%s:FRAx=%f FRAy=%f FRAz=%f",index.c_str(), wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
         torque = inputTorqueTransfer;
     }
     // use hinge's angular rate as angular velocity of wheel (rad/s)
@@ -154,7 +154,7 @@ void Wheel::stepPhysics ()
     // accumulate torques on wheel
     dBodyAddRelTorque (wheelID, 0, 0, powered*torque);
     
-    log->format(LOG_TRACE, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), inputAngularVel, angularAcc, torque);
+    log->format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), inputAngularVel, angularAcc, torque);
 
     torque = 0;
     inputTorqueTransfer = 0;

@@ -32,19 +32,19 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "Found the body graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "ogreName")
             {
                 ogreName.clear();
                 assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_TRACE, "Found the body graphics ogre-identifier format: %s", ogreName.c_str());
+                log->format (LOG_CCREATOR, "Found the body graphics ogre-identifier format: %s", ogreName.c_str());
             }
             if (attribute == "renderMode")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the body rendering mode: %s", attribute.c_str());
+                log->format (LOG_CCREATOR, "Found the body rendering mode: %s", attribute.c_str());
 
                 if(attribute == "points")
                     renderMode=Ogre::SDL_POINTS;
@@ -66,10 +66,10 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     bodyEntity->setRenderDetail(renderMode);
 
-    log->format (LOG_TRACE, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
+    log->format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
     for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
     {
-        log->format (LOG_TRACE, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
+        log->format (LOG_CCREATOR, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
     }
 
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());

@@ -36,21 +36,21 @@ void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
                 coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
                 coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
                 maxTorqueTransfer = stod (attribute);
             }
             attribute.clear();
@@ -80,7 +80,7 @@ void Clutch::stepPhysics ()
     }
     else {
         outputTorqueTransfer = lockedParam*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
-        log->format(LOG_TRACE, "torqueTransfer=%f", outputTorqueTransfer);
+        log->format(LOG_DEVELOPER, "torqueTransfer=%f", outputTorqueTransfer);
 
         if(outputTorqueTransfer > maxTorqueTransfer) {
                 outputTorqueTransfer = maxTorqueTransfer;
@@ -95,7 +95,7 @@ void Clutch::stepPhysics ()
     outputDrive->addInputTorque(outputTorqueTransfer);   
 
  //   rotationalVelocity = pOutTorque->getInputAngularVel();
-    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
+    log->format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
   }
 }
 
@@ -123,21 +123,21 @@ void Gear::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
 //                coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
 //                coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
 //                maxTorqueTransfer = stod (attribute);
             }
             attribute.clear();
@@ -171,7 +171,7 @@ void Gear::stepPhysics ()
     inputDrive->addOutputTorque(inputTorqueTransfer);
     outputDrive->addInputTorque(outputTorqueTransfer);   
              
-    log->format(LOG_TRACE, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    log->format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
   }
   else {
     relAngle = 0;
@@ -201,21 +201,21 @@ void LSD::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
 //                coeffStaticFriction = stod (attribute);
             }
             if (attribute == "coeffDynamicFriction")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
 //                coeffDynamicFriction = stod (attribute);
             }
             if (attribute == "maxTorqueTransfer")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
+                log->format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
 //                maxTorqueTransfer = stod (attribute);
             }
             attribute.clear();
@@ -250,7 +250,7 @@ void LSD::stepPhysics ()
     outputDrive->addInputTorque(outputTorqueTransfer/2);
     outputDrive2->addInputTorque(outputTorqueTransfer/2);   
              
-    log->format(LOG_TRACE, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    log->format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
   }
   else {
     relAngle = 0;

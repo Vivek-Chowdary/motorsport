@@ -21,7 +21,7 @@
 //TODO use iostreams for file management/writing
 
 std::fstream LogEngine::logFile;
-LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
+LOG_LEVEL LogEngine::globalLevel = LOG_ENDUSER;
 int LogEngine::numberOfLogEngines = 0;
 int LogEngine::textBuffer = 128;
 
@@ -40,7 +40,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logLevel (localLev
     }
     // increase logEngines counter
     numberOfLogEngines++;
-    format (LOG_TRACE, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
+    format (LOG_DEVELOPER, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
 
     return;
 }
@@ -100,12 +100,12 @@ const char *LogEngine::GetLogLevelCode (LOG_LEVEL level)
         return "EE";
     case LOG_WARNING:
         return "WW";
-    case LOG_INFO:
-        return "II";
-    case LOG_VERBOSE:
-        return "VV";
-    case LOG_TRACE:
-        return "TT";
+    case LOG_ENDUSER:
+        return "UU";
+    case LOG_CCREATOR:
+        return "CC";
+    case LOG_DEVELOPER:
+        return "DD";
     default:
         return "  ";
     }
@@ -166,11 +166,11 @@ LogEngine::~LogEngine ()
 {
     // decrease number of logEngines
     numberOfLogEngines--;
-    format (LOG_TRACE, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
+    format (LOG_DEVELOPER, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
 
     if (numberOfLogEngines == 0)
     {
-        put (LOG_INFO, "Closing logFile");
+        put (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
 
@@ -179,7 +179,7 @@ LogEngine::~LogEngine ()
 void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string fileName = "motorsport-default.log";
-    globalLevel = LOG_TRACE;
+    globalLevel = LOG_DEVELOPER;
     std::cout << "Reading LogEngine configuration..." << std::endl;
     if (n)
     {
@@ -232,7 +232,7 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         std::cerr << "ERROR: Logfile (" << fileName << ") could not be opened!\n";
         return;
     }
-    put (LOG_INFO, "LogFile created");
+    put (LOG_ENDUSER, "LogFile created");
     fileName.clear ();
 }
 
@@ -242,11 +242,11 @@ LOG_LEVEL stologlevel (const std::string & srcString)
         return LOG_ERROR;
     if (srcString == "LOG_WARNING")
         return LOG_WARNING;
-    if (srcString == "LOG_INFO")
-        return LOG_INFO;
-    if (srcString == "LOG_VERBOSE")
-        return LOG_VERBOSE;
-    if (srcString == "LOG_TRACE")
-        return LOG_TRACE;
-    return LOG_TRACE;
+    if (srcString == "LOG_ENDUSER")
+        return LOG_ENDUSER;
+    if (srcString == "LOG_CCREATOR")
+        return LOG_CCREATOR;
+    if (srcString == "LOG_DEVELOPER")
+        return LOG_DEVELOPER;
+    return LOG_DEVELOPER;
 }

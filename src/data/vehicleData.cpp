@@ -26,8 +26,8 @@ int Vehicle::instancesCount = 0;
 
 Vehicle::Vehicle (const std::string & xmlFilename)
 {
-    log = new LogEngine (LOG_TRACE, "VEH");
-    log->put (LOG_INFO, "Starting to parse the vehicle xml file");
+    log = new LogEngine (LOG_DEVELOPER, "VEH");
+    log->put (LOG_CCREATOR, "Starting to parse the vehicle xml file");
     SystemData::getSystemDataPointer()->tmpPath = xmlFilename;
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/vehicles/");
@@ -95,7 +95,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (nodeName, n->getNodeName());
             if (nodeName == "vehicle")
             {
-                log->put (LOG_TRACE, "Found a vehicle.");
+                log->put (LOG_CCREATOR, "Found a vehicle.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -109,7 +109,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                             Vector3d position;
                             position = stov3d (attribute);
                         }
@@ -117,38 +117,38 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->loadscreen (LOG_TRACE, "Found the name: %s", name.c_str());
+                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", name.c_str());
                         }
                         if (attribute == "revision")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the revision number: %s", attribute.c_str());
+                            log->format (LOG_CCREATOR, "Found the revision number: %s", attribute.c_str());
                             revision = stoi(attribute);
                         }
                         if (attribute == "description")
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->loadscreen (LOG_TRACE, "Found the description: %s", description.c_str());
+                            log->loadscreen (LOG_CCREATOR, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
                             author.clear();
                             assignXmlString (author, attNode->getValue());
-                            log->loadscreen (LOG_TRACE, "Found the author: %s", author.c_str());
+                            log->loadscreen (LOG_CCREATOR, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
                             contact.clear();
                             assignXmlString (contact, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the author contact information: %s", contact.c_str());
+                            log->format (LOG_CCREATOR, "Found the author contact information: %s", contact.c_str());
                         }
                         if (attribute == "license")
                         {
                             license.clear();
                             assignXmlString (license, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the license: %s", license.c_str());
+                            log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
                         }
                         attribute.clear();
                     }
@@ -163,42 +163,42 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             assignXmlString (nodeName, n->getNodeName());
                             if (nodeName == "body")
                             {
-                                log->put (LOG_TRACE, "Found a body.");
+                                log->put (LOG_CCREATOR, "Found a body.");
                                 bodyNode = n;
                             }
                             if (nodeName == "engine")
                             {
-                                log->put (LOG_TRACE, "Found an engine.");
+                                log->put (LOG_CCREATOR, "Found an engine.");
                                 engineNode = n;
                             }
                             if (nodeName == "clutch")
                             {
-                                log->put (LOG_TRACE, "Found a clutch.");
+                                log->put (LOG_CCREATOR, "Found a clutch.");
                                 clutchNode = n;
                             }
                             if (nodeName == "gearbox")
                             {
-                                log->put (LOG_TRACE, "Found a gearbox.");
+                                log->put (LOG_CCREATOR, "Found a gearbox.");
                                 gearboxNode = n;
                             }
                             if (nodeName == "diff")
                             {
-                                log->put (LOG_TRACE, "Found a diff.");
+                                log->put (LOG_CCREATOR, "Found a diff.");
                                 finalDriveNode = n;
                             }
                             if (nodeName == "wheelList")
                             {
-                                log->put (LOG_TRACE, "Found a wheel list.");
+                                log->put (LOG_CCREATOR, "Found a wheel list.");
                                 wheelListNode = n;
                             }
                             if (nodeName == "suspensionList")
                             {
-                                log->put (LOG_TRACE, "Found a suspension list.");
+                                log->put (LOG_CCREATOR, "Found a suspension list.");
                                 suspListNode = n;
                             }
                             if (nodeName == "cameraList")
                             {
-                                log->put (LOG_TRACE, "Found a camera list.");
+                                log->put (LOG_CCREATOR, "Found a camera list.");
                                 cameraListNode = n;
                             }
                         }
@@ -209,10 +209,10 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
 
-    log->loadscreen (LOG_TRACE, "Creating the vehicle cameras");
+    log->loadscreen (LOG_CCREATOR, "Creating the vehicle cameras");
     processXmlCameraListNode(cameraListNode);
 
-    log->loadscreen (LOG_TRACE, "Creating the vehicle components");
+    log->loadscreen (LOG_CCREATOR, "Creating the vehicle components");
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
     clutch = new Clutch (clutchNode);
@@ -221,7 +221,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     transfer = new Gear ();
     rearDiff = new LSD ();
     
-    log->loadscreen (LOG_TRACE, "Attaching the vehicle components together");
+    log->loadscreen (LOG_CCREATOR, "Attaching the vehicle components together");
     clutch->setOutputPointer(gearbox);
     transfer->setOutputPointer(finalDrive);
     
@@ -259,7 +259,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                 assignXmlString (nodeName, wheelNode->getNodeName());
                 if (nodeName == "wheel")
                 {
-                    log->put (LOG_TRACE, "Found a wheel.");
+                    log->put (LOG_CCREATOR, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (wheelNode);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
                     tmpWheel->setRefBody(body->bodyID);
@@ -283,7 +283,7 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                 assignXmlString (nodeName, suspNode->getNodeName());
                 if (nodeName == "unidimensional")
                 {
-                    log->put (LOG_TRACE, "Found a suspension.");
+                    log->put (LOG_CCREATOR, "Found a suspension.");
                     Suspension * tmpSusp = new Suspension (suspNode);
                     suspensionMap[tmpSusp->getIndex()]=tmpSusp;
                 }
@@ -306,7 +306,7 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
                 assignXmlString (nodeName, cameraNode->getNodeName());
                 if (nodeName == "camera")
                 {
-                    log->put (LOG_TRACE, "Found a camera.");
+                    log->put (LOG_CCREATOR, "Found a camera.");
                     Camera * tmpCam = new Camera (cameraNode);
                     cameraList.push_back (tmpCam);
                 }

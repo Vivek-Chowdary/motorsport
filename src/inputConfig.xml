@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <inputConfig
-    localLogLevel = "LOG_TRACE"
+    localLogLevel = "LOG_DEVELOPER"
     localLogName = "INP"
     >
 </inputConfig>

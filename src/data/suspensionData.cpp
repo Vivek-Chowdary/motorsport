@@ -17,8 +17,8 @@ int Suspension::instancesCount = 0;
 
 Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine (LOG_TRACE, "SUS");
-    log->put (LOG_INFO, "Starting to parse the suspension node");
+    log = new LogEngine (LOG_DEVELOPER, "SUS");
+    log->put (LOG_CCREATOR, "Starting to parse the suspension node");
     processXmlRootNode (n);
 
     instancesCount++;
@@ -51,7 +51,7 @@ void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (nodeName, n->getNodeName());
             if (nodeName == "unidimensional")
             {
-                log->put (LOG_TRACE, "Found an unidimensional suspension.");
+                log->put (LOG_CCREATOR, "Found an unidimensional suspension.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -65,7 +65,7 @@ void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             index.clear();
                             assignXmlString (index, attNode->getValue());
-                            log->format (LOG_TRACE, "Found the index: %s", index.c_str());
+                            log->format (LOG_CCREATOR, "Found the index: %s", index.c_str());
                         }
                         attribute.clear();
                     }

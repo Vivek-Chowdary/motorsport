@@ -31,13 +31,13 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_CCREATOR, "Found the wheel graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "renderMode")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the wheel rendering mode: %s", attribute.c_str());
+                log->format (LOG_CCREATOR, "Found the wheel rendering mode: %s", attribute.c_str());
 
                 if(attribute == "points")
                     renderMode=Ogre::SDL_POINTS;
@@ -59,10 +59,10 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
-    log->format (LOG_TRACE, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
+    log->format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
     for(unsigned int i = 0; i < wheelEntity->getNumSubEntities(); i++)
     {
-        log->format (LOG_TRACE, "Wheel submesh %i material: %s", i, wheelEntity->getSubEntity(i)->getMaterialName().c_str() );
+        log->format (LOG_CCREATOR, "Wheel submesh %i material: %s", i, wheelEntity->getSubEntity(i)->getMaterialName().c_str() );
     }
 
     wheelNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());

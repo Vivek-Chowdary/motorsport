@@ -43,40 +43,40 @@ int main (int argc, char **argv)
     delete xmlFile;
 
     // We declare the 'global' data and engines.
-    log->put (LOG_INFO, "( 1 ): Loading engines and libraries...");
-    log->put (LOG_INFO, "Creating system data");
+    log->put (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
+    log->put (LOG_DEVELOPER, "Creating system data");
     new SystemData ();
-    log->put (LOG_INFO, "Creating graphics engine");
+    log->put (LOG_DEVELOPER, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
-    log->put (LOG_INFO, "Creating gui engine");
+    log->put (LOG_DEVELOPER, "Creating gui engine");
     GuiEngine *guiEngine = new GuiEngine ();
-    log->loadscreen(LOG_INFO, "Showing load screen...");
+    log->loadscreen(LOG_ENDUSER, "Showing load screen...");
     guiEngine->showLoadscreen ();
-    log->loadscreen (LOG_INFO, "Creating physics engine...");
+    log->loadscreen (LOG_DEVELOPER, "Creating physics engine...");
     PhysicsEngine *physicsEngine = new PhysicsEngine ();
 
-    log->loadscreen (LOG_INFO, "Starting SDL subsystems...");
+    log->loadscreen (LOG_DEVELOPER, "Starting SDL subsystems...");
     startSdl (log);
-    log->loadscreen (LOG_INFO, "Creating input engine...");
+    log->loadscreen (LOG_DEVELOPER, "Creating input engine...");
     InputEngine *inputEngine = new InputEngine ();
 
-    log->loadscreen (LOG_INFO, "Getting system data pointer...");
+    log->loadscreen (LOG_DEVELOPER, "Getting system data pointer...");
     SystemData *systemData = SystemData::getSystemDataPointer ();
 
     // We load the world data from hdd into memory.
-    log->put (LOG_INFO, "( 2 ): Loading world data...");
-    log->loadscreen (LOG_INFO, "Loading initial world data...");
+    log->put (LOG_ENDUSER, "( 2 ): Loading world data...");
+    log->loadscreen (LOG_CCREATOR, "Loading initial world data...");
     new World ("default.xml");
 
     // We start the main loop.
-    log->put (LOG_INFO, "( 3 ): Starting simulation...");
-    log->loadscreen (LOG_INFO, "Initializating main loop");
+    log->put (LOG_ENDUSER, "( 3 ): Starting simulation...");
+    log->loadscreen (LOG_DEVELOPER, "Initializating main loop");
     systemData->statisticsTime = systemData->simulationTime = SDL_GetTicks ();
-    log->loadscreen (LOG_INFO, "Enabling main loop");
+    log->loadscreen (LOG_DEVELOPER, "Enabling main loop");
     systemData->enableMainLoop ();
-    log->loadscreen (LOG_INFO, "Hiding load screen");
+    log->loadscreen (LOG_ENDUSER, "Hiding load screen");
     guiEngine->hideLoadscreen();
-    log->put (LOG_INFO, "Starting main loop");
+    log->put (LOG_DEVELOPER, "Starting main loop");
     while (systemData->isMainLoopEnabled ())
     {
         // Update current real loop time.
@@ -88,7 +88,7 @@ int main (int argc, char **argv)
             systemData->physicsFrequency = systemData->physicsSteps;
             systemData->graphicsSteps = systemData->physicsSteps = 0;
             systemData->statisticsTime += 1000;
-            log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
+            log->format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
         // Run the physics engine until the game time is in sync with the real loop time.
         // Run the gui engine.
@@ -124,24 +124,24 @@ int main (int argc, char **argv)
             }
         }
     }
-    log->put (LOG_INFO, "Main loop finished");
+    log->put (LOG_DEVELOPER, "Main loop finished");
 
     // We unload the world data from memory.
-    log->put (LOG_INFO, "( 4 ): Unloading world data...");
-    log->put (LOG_INFO, "Unloading world data");
+    log->put (LOG_ENDUSER, "( 4 ): Unloading world data...");
+    log->put (LOG_CCREATOR, "Unloading world data");
     delete World::getWorldPointer ();
 
     // We delete the 'global' data and engines.
-    log->put (LOG_INFO, "( 5 ): Unloading engines and libraries...");
-    log->put (LOG_INFO, "Deleting graphics engine");
+    log->put (LOG_ENDUSER, "( 5 ): Unloading engines and libraries...");
+    log->put (LOG_DEVELOPER, "Deleting graphics engine");
     delete graphicsEngine;
-    log->put (LOG_INFO, "Deleting physics engine");
+    log->put (LOG_DEVELOPER, "Deleting physics engine");
     delete physicsEngine;
-    log->put (LOG_INFO, "Deleting input engine");
+    log->put (LOG_DEVELOPER, "Deleting input engine");
     delete inputEngine;
-    log->put (LOG_INFO, "Deleting gui engine");
+    log->put (LOG_DEVELOPER, "Deleting gui engine");
     delete guiEngine;
-    log->put (LOG_INFO, "Deleting log engine");
+    log->put (LOG_DEVELOPER, "Deleting log engine");
     delete log;
     stopSdl ();
 
@@ -167,29 +167,29 @@ void computeLogic (LogEngine * log)
     SystemData *systemData = SystemData::getSystemDataPointer ();
     if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
     {
-        log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
     {
-        log->put (LOG_VERBOSE, "Processing a SDLK_HOME keypress...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
         systemData->physicsDesiredFrequency = 30;
         systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
     {
-        log->put (LOG_VERBOSE, "Processing a SDLK_END keypress...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
         systemData->physicsDesiredFrequency = 250;
         systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_q)]->getValue () == 1)
     {
-        log->put (LOG_INFO, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
     {
-        log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
         if (systemData->physicsDesiredFrequency < 37)
         {
             if (!--systemData->physicsDesiredFrequency)
@@ -204,7 +204,7 @@ void computeLogic (LogEngine * log)
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
     {
-        log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
         if (systemData->physicsDesiredFrequency < 37)
         {
             systemData->physicsDesiredFrequency++;
@@ -236,82 +236,63 @@ void recordVideoFrames ()
     time += SystemData::getSystemDataPointer ()->physicsTimeStep;
 }
 
-LogEngine *processXmlRootNode (DOMNode * node)
+LogEngine *processXmlRootNode (DOMNode * n)
 {
-    LogEngine *log = new LogEngine (LOG_TRACE, "XML");
-    log->put (LOG_INFO, "Assigning default values");
-    LOG_LEVEL localLogLevel = LOG_TRACE;
+    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
+    tmpLog->put (LOG_DEVELOPER, "Assigning default values");
+    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "MAI";
-    if (node)
+    if (n)
     {
-        if (node->getNodeType () == DOMNode::ELEMENT_NODE)
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (node->getNodeName ());
-            log->format (LOG_INFO, "Name: %s", name);
-
-            if (!strncmp (name, "mainConfig", 11))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+            if (name == "mainConfig")
             {
-                log->put (LOG_INFO, "Found the main config element.");
-                if (node->hasAttributes ())
+                tmpLog->put (LOG_DEVELOPER, "Found the main config element.");
+                if (n->hasAttributes ())
                 {
-                    DOMNamedNodeMap *pAttributes = node->getAttributes ();
-                    int nodeSize = pAttributes->getLength ();
-
-                    for (int i = 0; i < nodeSize; ++i)
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        std::string name;
-                        name.assign (XMLString::transcode (pAttributeNode->getName ()));
-                        if (name == "localLogLevel")
+                        DOMAttr *attNode = (DOMAttr *) pAttributes->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "localLogLevel")
                         {
-                            name.erase ();
-                            log->format (LOG_INFO, "Found the local log level: %s", name.c_str ());
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            if (name == "LOG_ERROR")
-                                localLogLevel = LOG_ERROR;
-                            if (name == "LOG_WARNING")
-                                localLogLevel = LOG_WARNING;
-                            if (name == "LOG_INFO")
-                                localLogLevel = LOG_INFO;
-                            if (name == "LOG_VERBOSE")
-                                localLogLevel = LOG_VERBOSE;
-                            if (name == "LOG_TRACE")
-                                localLogLevel = LOG_TRACE;
+                            assignXmlString (attribute, attNode->getValue());
+                            localLogLevel = stologlevel (attribute);
+                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
-                        if (name == "localLogName")
+                        if (attribute == "localLogName")
                         {
-                            name.erase ();
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found the log name: %s", name.c_str ());
-                            localLogName.erase ();
-                            localLogName = name;
+                            assignXmlString (localLogName, attNode->getValue());
+                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
-                        if (name == "videoRecordTimestep")
+                        if (attribute == "videoRecordTimestep")
                         {
-                            name.erase ();
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found video recording timestep value: %s", name.c_str ());
-                            SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (name);
+                            assignXmlString (attribute, attNode->getValue());
+                            tmpLog->format (LOG_ENDUSER, "Found video recording timestep value: %s", attribute.c_str ());
+                            SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (attribute);
                         }
-                        if (name == "dataDir")
+                        if (attribute == "dataDir")
                         {
-                            name.erase ();
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "Found the data directory: %s", name.c_str ());
-                            SystemData::getSystemDataPointer ()->dataDir.erase ();
-                            SystemData::getSystemDataPointer ()->dataDir = name;
+                            assignXmlString (SystemData::getSystemDataPointer ()->dataDir, attNode->getValue());
+                            tmpLog->format (LOG_ENDUSER, "Found the data directory: %s", SystemData::getSystemDataPointer ()->dataDir.c_str());
                         }
-                        name.erase ();
+                        attribute.erase ();
                     }
                 }
             }
-            XMLString::release (&name);
         }
     }
     LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str ());
-    delete log;
-    returnLog->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-    returnLog->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete tmpLog;
+    returnLog->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
+    returnLog->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
     localLogName.erase ();
     return returnLog;
 }

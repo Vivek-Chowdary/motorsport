@@ -21,11 +21,11 @@ class GuiEngine;
 */
 enum LOG_LEVEL
 {
-    LOG_ERROR = 0,              // !< Message of a critical error.
-    LOG_WARNING = 1,            // !< Message of a non-critical error, a warning.
-    LOG_INFO = 2,               // !< Message with basic information.
-    LOG_VERBOSE = 3,            // !< Message with lots of information.
-    LOG_TRACE = 4               // !< Message with lots of information, aimed at debugging.
+    LOG_ERROR = 0,              // !< Can't continue, must be fixed.
+    LOG_WARNING = 1,            // !< Can continue, should be fixed.
+    LOG_ENDUSER = 2,            // !< Info for the end-user, for configuration and program (bin) debugging purporses
+    LOG_CCREATOR = 3,           // !< Info for the contents-creator, for contents (data) debugging purposes
+    LOG_DEVELOPER = 4           // !< Info for the developer, for code (src) debugging purposes
 };
 
 enum LOG_MASK
