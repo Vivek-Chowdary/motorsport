@@ -52,7 +52,7 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/xercesc \
 	$(BASE_INCLUDE_DIR)/../local/include/OGRE \
 	$(BASE_INCLUDE_DIR)/../local/include/SDL
-	
+
 LIBRARY_DIRS := \
 	$(BASE_LIBRARY_DIR) \
 	$(BASE_LIBRARY_DIR)/../local/lib \
@@ -93,11 +93,11 @@ SOURCES := \
 	system.cpp \
 	world.cpp \
 	main.cpp
-				
+
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 #compiling the unit test programs
-TestLogEngine: log/testLogEngine.o log/logEngine.o
+TestLogEngine: -lxerces-c log/testLogEngine.o log/logEngine.o log/logParser.o data/domParser.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
