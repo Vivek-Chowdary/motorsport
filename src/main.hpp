@@ -35,86 +35,101 @@
 #    include "physicsEngine.hpp"    //calculates the physics of the world data
 #    include "guiEngine.hpp"    //displays all the user interface on screen
 
-class TRunnable 
+class TRunnable
 {
-public:
-  virtual void Initialize() = 0;
-  virtual void Run() = 0;
-  virtual void Shutdown() = 0;
+  public:
+    virtual void Initialize (  ) = 0;
+    virtual void Run (  ) = 0;
+    virtual void Shutdown (  ) = 0;
 };
 
-class TGlobals {
-private:
-  TGlobals(){}; //forbidden
-protected:
-  SystemData      *systemData;
-  WorldData       *worldData;
-
-  LogEngine       *log;
-  DataEngine      *data;
-  InputEngine     *input;
-  GraphicsEngine  *graphics;
-  PhysicsEngine   *physics;
-  GuiEngine       *gui;
-
-public:
-  //never mind the _name its just a hack to overcome that we have no fixed nameing convention
-  TGlobals(WorldData & _worldData, SystemData & _systemData, LogEngine & _log, DataEngine & _data, InputEngine & _input, GraphicsEngine & _graphics, PhysicsEngine & _physics, GuiEngine & _gui)
-    : systemData(&_systemData),
-      worldData (&_worldData),
-      log       (&_log),
-      data      (&_data),
-      input     (&_input),
-      graphics  (&_graphics),
-      physics   (&_physics),
-      gui       (&_gui) {
-    //empty
-  };
-};
-
-
-class GuiLoop: public TRunnable, public TGlobals
+class TGlobals
 {
-public:
-  virtual void Initialize();
-  virtual void Run();
-  virtual void Shutdown();
+  private:
+    TGlobals (  )
+    {
+    };                          //forbidden
 
-  GuiLoop(WorldData & _worldData, SystemData & _systemData, LogEngine & _log, DataEngine & _data, InputEngine & _input, GraphicsEngine & _graphics, PhysicsEngine & _physics, GuiEngine & _gui)
-    : TGlobals(_worldData, _systemData, _log, _data, _input, _graphics, _physics, _gui)
-  {
-    //empty
-  };
+  protected:
+    SystemData * systemData;
+    WorldData *worldData;
+
+    LogEngine *log;
+    DataEngine *data;
+    InputEngine *input;
+    GraphicsEngine *graphics;
+    PhysicsEngine *physics;
+    GuiEngine *gui;
+
+  public:
+    //never mind the _name its just a hack to overcome that we have no fixed nameing convention
+  TGlobals ( WorldData & _worldData, SystemData & _systemData, LogEngine & _log, DataEngine & _data, InputEngine & _input, GraphicsEngine & _graphics, PhysicsEngine & _physics, GuiEngine & _gui ):systemData ( &_systemData ),
+        worldData ( &_worldData ),
+        log ( &_log ),
+        data ( &_data ),
+        input ( &_input ),
+        graphics ( &_graphics ), physics ( &_physics ), gui ( &_gui )
+    {
+        //empty
+    };
 };
 
-class SimLoop: public TRunnable, public TGlobals
+class GuiLoop:public TRunnable,
+      public TGlobals
 {
-public:
-  virtual void Initialize();
-  virtual void Run();
-  virtual void Shutdown();
+  public:
+    virtual void Initialize (  );
+    virtual void Run (  );
+    virtual void Shutdown (  );
 
-  SimLoop(WorldData & _worldData, SystemData & _systemData, LogEngine & _log, DataEngine & _data, InputEngine & _input, GraphicsEngine & _graphics, PhysicsEngine & _physics, GuiEngine & _gui)
-    : TGlobals(_worldData, _systemData, _log, _data, _input, _graphics, _physics, _gui)
-  {
-    //empty
-  };
+         GuiLoop ( WorldData & _worldData, SystemData & _systemData,
+                   LogEngine & _log, DataEngine & _data, InputEngine & _input,
+                   GraphicsEngine & _graphics, PhysicsEngine & _physics,
+                   GuiEngine & _gui ):TGlobals ( _worldData, _systemData, _log,
+                                                 _data, _input, _graphics,
+                                                 _physics, _gui )
+    {
+        //empty
+    };
 };
 
-class MainLoop: public TRunnable, public TGlobals
+class SimLoop:public TRunnable,
+      public TGlobals
 {
-public:
-  virtual void Initialize();
-  virtual void Run();
-  virtual void Shutdown();
+  public:
+    virtual void Initialize (  );
+    virtual void Run (  );
+    virtual void Shutdown (  );
 
-  MainLoop(WorldData & _worldData, SystemData & _systemData, LogEngine & _log, DataEngine & _data, InputEngine & _input, GraphicsEngine & _graphics, PhysicsEngine & _physics, GuiEngine & _gui)
-    : TGlobals(_worldData, _systemData, _log, _data, _input, _graphics, _physics, _gui)
-  {
-    //empty
-  };
-
+         SimLoop ( WorldData & _worldData, SystemData & _systemData,
+                   LogEngine & _log, DataEngine & _data, InputEngine & _input,
+                   GraphicsEngine & _graphics, PhysicsEngine & _physics,
+                   GuiEngine & _gui ):TGlobals ( _worldData, _systemData, _log,
+                                                 _data, _input, _graphics,
+                                                 _physics, _gui )
+    {
+        //empty
+    };
 };
 
+class MainLoop:public TRunnable,
+      public TGlobals
+{
+  public:
+    virtual void Initialize (  );
+    virtual void Run (  );
+    virtual void Shutdown (  );
+
+         MainLoop ( WorldData & _worldData, SystemData & _systemData,
+                    LogEngine & _log, DataEngine & _data, InputEngine & _input,
+                    GraphicsEngine & _graphics, PhysicsEngine & _physics,
+                    GuiEngine & _gui ):TGlobals ( _worldData, _systemData, _log,
+                                                  _data, _input, _graphics,
+                                                  _physics, _gui )
+    {
+        //empty
+    };
+
+};
 
 #endif
