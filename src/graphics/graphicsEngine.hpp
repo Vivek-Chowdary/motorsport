@@ -26,8 +26,12 @@
 #include "OgreConfigFile.h"
 #include "stdio.h"
 #include "string.h"
+#include "stdlib.h"
+#include "system.hpp"
+#include "world.hpp"
 #include "cube.hpp"
 #include "camera.hpp"
+#include "domParser.hpp"
 
 struct GraphicsData;
 

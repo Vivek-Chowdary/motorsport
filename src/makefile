@@ -82,6 +82,7 @@ SOURCES := \
 	gui/guiEngine.cpp \
         physics/cubePhysics.cpp \
 	physics/physicsEngine.cpp \
+        physics/physicsParser.cpp \
         input/cubeInput.cpp \
         input/cameraInput.cpp \
 	input/inputEngine.cpp \

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<physicsConfig
+    localLogLevel = "LOG_INFO"
+    localLogName = "FSX"
+    frequency = "30"
+    >
+    <ode
+        cfmValue = "default"
+        erpValue = "default"
+        stepType = "dWorldStep"
+        dWorldStepFast1MaxIterations = "100"
+        >
+    </ode>
+</physicsConfig>

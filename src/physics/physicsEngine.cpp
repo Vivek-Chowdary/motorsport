@@ -20,30 +20,21 @@
 *
 ******************************************************************************/
 
-#include "system.hpp"
-#include "world.hpp"
 #include "physicsEngine.hpp"
-#include "test_ode.cpp"
-#include <math.h>
-
-#ifdef WIN32
-#ifdef dDOUBLE
-#    pragma message ( "[BUILDMESG] ODE double precision library loaded")
-#    pragma comment( lib, "ode_double.lib" )
-#else
-#    ifdef dSINGLE
-#        pragma message ( "[BUILDMESG] ODE single precision library loaded")
-#        pragma comment( lib, "ode_single.lib" )
-#    else
-#        pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
-#    endif
-#endif
-#endif
 
 PhysicsEngine::PhysicsEngine ( )
 {
+    PhysicsData * data = new PhysicsData;
+    data->physics = this;
+    data->cfmValue = -1;
+    data->erpValue = -1;
+    data->stepType = 1;
+    data->dWorldStepFast1MaxIterations = 100;
+    processConfigFile ("physicsConfig.xml", &PhysicsEngine::processPhysicsConfigFile, (void*)data);
+    
     //first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine ( LOG_INFO, "FSX" );
+    log = new LogEngine ( data->localLogLevel, data->localLogName );
+    log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
 
     //get the direction of the graphics data
     log->put ( LOG_INFO, "Setting up data pointers..." );
@@ -51,7 +42,7 @@ PhysicsEngine::PhysicsEngine ( )
     systemData = SystemData::getSystemDataPointer();
 
     log->put ( LOG_INFO, "Setting physics data" );
-    systemData->physicsDesiredStepsPerSecond = 100;
+    systemData->physicsDesiredStepsPerSecond = data->frequency;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
     log->format ( LOG_INFO, "Physics rate set @ %i Hz (%i ms)",systemData->physicsDesiredStepsPerSecond, systemData->physicsTimeStep );
 
@@ -59,11 +50,30 @@ PhysicsEngine::PhysicsEngine ( )
     worldData->worldID = dWorldCreate();
     worldData->spaceID = dHashSpaceCreate(0);
     worldData->jointGroupID = dJointGroupCreate (0);
-    log->put ( LOG_INFO, "Setting ODE world gravity");
+    
+//    log->put ( LOG_INFO, "Setting ODE world gravity");
 //    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
-    //dWorldSetCFM (worldData->worldID, 1e-5);
-    //dWorldSetERP (worldData->worldID, 0.8);
 
+    if ( data->cfmValue != -1 )
+    {
+        log->put ( LOG_INFO, "Setting ODE cfm value" );
+        dWorldSetCFM (worldData->worldID, data->cfmValue);
+    }
+    if ( data->erpValue != -1 )
+    {
+        log->put ( LOG_INFO, "Setting ODE erp value" );
+        dWorldSetERP (worldData->worldID, data->erpValue);
+    }
+
+    log->put ( LOG_INFO, "Setting ODE step type" );
+    stepType = data->stepType;
+
+    log->put ( LOG_INFO, "Setting the max. number of iterations to be calculated with dWorldStepFast1" );
+    dWorldStepFast1MaxIterations = data->dWorldStepFast1MaxIterations;
+
+    log->put ( LOG_INFO, "Unloading temporary parsing data from memory..." );
+    delete [](data->localLogName);
+    delete data;
 }
 
 
@@ -108,10 +118,17 @@ int PhysicsEngine::step ( void )
     }
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
-    //alternative (x*y), fastest and less accurate physics calculations:
-//    dWorldStepFast1(worldData->worldID, systemData->physicsTimeStep, 100/*int maxiterations*/);
-    //traditional (x^y), theorycally slowest, and most accurate physics calculations:
-    dWorldStep (worldData->worldID, systemData->physicsTimeStep);
+    switch ( stepType )
+    {
+    default:
+    case 1:
+        //traditional (x^y), theorycally slowest, and most accurate physics calculations:
+        dWorldStep (worldData->worldID, systemData->physicsTimeStep);
+        break;
+    case 2:
+        //alternative (x*y), fastest and less accurate physics calculations:
+        dWorldStepFast1(worldData->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
+    }
     dJointGroupEmpty (worldData->jointGroupID);
 
     //camera should be a physics object?

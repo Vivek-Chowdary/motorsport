@@ -23,8 +23,28 @@
 #include "logEngine.hpp"
 #include "Ogre.h"
 #include "ode.h"
+#include "math.h"
+#include "system.hpp"
+#include "world.hpp"
 #include "cube.hpp"
 #include "camera.hpp"
+#include "domParser.hpp"
+
+#ifdef WIN32
+#ifdef dDOUBLE
+#    pragma message ( "[BUILDMESG] ODE double precision library loaded")
+#    pragma comment( lib, "ode_double.lib" )
+#else
+#    ifdef dSINGLE
+#        pragma message ( "[BUILDMESG] ODE single precision library loaded")
+#        pragma comment( lib, "ode_single.lib" )
+#    else
+#        pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
+#    endif
+#endif
+#endif
+
+struct PhysicsData;
 
 /// Manages everything related to the simulated world data.
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.
@@ -44,6 +64,10 @@ class PhysicsEngine
     /** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
     */
     static void nearCallback (void *data, dGeomID o1, dGeomID o2);
+    /// Type of ODE step function: 1->dWorldStep. 2->dWorldStepFast1. 
+    int stepType; //"dWorldStep"=1 || "dWorldStepFast1"=2
+    /// Max. number of iterations to be calculated with dWorldStepFast1.
+    int dWorldStepFast1MaxIterations;
   public:
     /// Creates a new physics engine.
     /** Creates a new physics engine, with its associated own log engine. It initializes all necessary related data, including the simulated world's physic entities.
@@ -57,4 +81,19 @@ class PhysicsEngine
     /** Updates all the simulated world state, including physic movements (collision detection and correction, physic forces...), world events, and other issues.
     */
     int step ( void );
+
+    /// Called by the generic XML parser; it loads configuration data from a file.
+    static int processPhysicsConfigFile ( DOMNode * n, void * data);
+};
+
+struct PhysicsData
+{
+    PhysicsEngine * physics;
+    LOG_LEVEL localLogLevel;
+    char * localLogName;
+    int frequency;
+    double cfmValue; //a double number, or "default"
+    double erpValue; //a double number, or "default"
+    int stepType; //"dWorldStep"=1 || "dWorldStepFast1"=2 || "default"=...
+    int dWorldStepFast1MaxIterations;
 };

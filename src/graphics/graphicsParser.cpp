@@ -20,10 +20,7 @@
 *
 ******************************************************************************/
 
-#include "system.hpp"
-#include "world.hpp"
 #include "graphicsEngine.hpp"
-#include <stdlib.h>
 
 int GraphicsEngine::processGraphicsConfigFile ( DOMNode * n, void * data)
 {
