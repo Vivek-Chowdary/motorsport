@@ -333,7 +333,7 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
 
                 log->put (LOG_CCREATOR, "Setting vehicle starting relative rotation");
                 tmpVehicle->setPosition (Vector3d(0, 0, 0));
-                //tmpVehicle->applyRotation ( trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
+                tmpVehicle->applyRotation ( trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
 
                 log->put (LOG_CCREATOR, "Setting vehicle starting position");
                 tmpVehicle->setPosition (trackList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());

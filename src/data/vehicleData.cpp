@@ -81,6 +81,7 @@ void Vehicle::setUserDriver ()
     {
         suspIter->second->setUserDriver();
     }
+    log->log (LOG_ENDUSER, LOG_TELEMETRY, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 }
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)

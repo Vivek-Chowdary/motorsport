@@ -102,12 +102,11 @@ Vector3d Wheel::getPosition ()
 
 void Wheel::applyRotation (Quaternion rotation)
 {
+    setPosition ( rotation.rotateObject(getPosition()) );
     dMatrix3 rot;
-    Quaternion tmp;
-    tmp = getRotation() * rotation;
-    tmp.getOdeMatrix (rot);
+    Quaternion finalRotation = rotation * getRotation();
+    finalRotation.getOdeMatrix (rot);
     dBodySetRotation (wheelID, rot);
-    setPosition ( tmp.rotateObject(getPosition()) );
 }
 
 Quaternion Wheel::getRotation ()

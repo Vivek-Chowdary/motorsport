@@ -102,21 +102,7 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
     Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
     dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
-    log->format (LOG_WARNING, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
-    
-    // working old updown
-    //dJointSetHinge2Axis2 (jointID, 0, 1, 0);
-
-    /* /////////////////////
-    dVector3 odeTAxis;
-    dJointGetHinge2Axis2 (suspJointID, odeTAxis);
-    Vector3d tAxis;
-    tAxis.x = odeTAxis[0];
-    tAxis.y = odeTAxis[1];
-    tAxis.z = odeTAxis[2];
-    tAxis = getRotation().rotateObject(Vector3d(0,0,1));
-    log->format (LOG_WARNING, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
-    ///////////////////// */
+    log->format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
     
     // old kart suspension
     //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);

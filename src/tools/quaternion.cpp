@@ -101,31 +101,6 @@ Quaternion Quaternion::operator* (const Quaternion & k) const
 }
 Quaternion Quaternion::operator- (const Quaternion & k) const
 {
-    /*
-    dQuaternion odeQuaternion;
-
-    odeQuaternion[0] = w;
-    odeQuaternion[1] = x;
-    odeQuaternion[2] = y;
-    odeQuaternion[3] = z;
-    dMatrix3 matrixA;
-    dQtoR (odeQuaternion, matrixA);
-
-    odeQuaternion[0] = k.w;
-    odeQuaternion[1] = k.x;
-    odeQuaternion[2] = k.y;
-    odeQuaternion[3] = k.z;
-    dMatrix3 matrixB;
-    dQtoR (odeQuaternion, matrixB);
-
-    dMatrix3 matrixC;
-    for (int i = 0; i<3; i++)
-        for (int j = 0; j<3; j++)
-            matrixC[i*j] = matrixA[i*j] - matrixB[i*j];
-
-    dRtoQ (matrixC, odeQuaternion);
-    return odeQuaternion;
-    */
     return Quaternion
     (
         w - k.w,
@@ -136,40 +111,10 @@ Quaternion Quaternion::operator- (const Quaternion & k) const
 }
 const Quaternion & Quaternion::operator-= (const Quaternion & k)
 {
-    w -= k.w;
-    x -= k.x;
-    y -= k.y;
-    z -= k.z;
-    return *this;
+    return (*this) = (*this) - k;
 }
 Quaternion Quaternion::operator+ (const Quaternion & k) const
 {
-    /*
-    dQuaternion odeQuaternion;
-
-    odeQuaternion[0] = w;
-    odeQuaternion[1] = x;
-    odeQuaternion[2] = y;
-    odeQuaternion[3] = z;
-    dMatrix3 matrixA;
-    dQtoR (odeQuaternion, matrixA);
-
-    odeQuaternion[0] = k.w;
-    odeQuaternion[1] = k.x;
-    odeQuaternion[2] = k.y;
-    odeQuaternion[3] = k.z;
-    dMatrix3 matrixB;
-    dQtoR (odeQuaternion, matrixB);
-
-    dMatrix3 matrixC;
-    for (int i = 0; i<3; i++)
-        for (int j = 0; j<3; j++)
-            matrixC[i*j] = matrixA[i*j] + matrixB[i*j];
-            //matrixC(i,j) = matrixA(i,j) + matrixB(i,j);
-
-    dRtoQ (matrixC, odeQuaternion);
-    return odeQuaternion;
-*/
     return Quaternion
     (
         w + k.w,
@@ -180,11 +125,7 @@ Quaternion Quaternion::operator+ (const Quaternion & k) const
 }
 const Quaternion & Quaternion::operator+= (const Quaternion & k)
 {
-    w += k.w;
-    x += k.x;
-    y += k.y;
-    z += k.z;
-    return *this;
+    return (*this) = (*this) + k;
 }
 
 Vector3d Quaternion::rotateObject (Vector3d objectPosition)

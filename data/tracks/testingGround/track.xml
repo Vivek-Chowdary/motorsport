@@ -24,8 +24,14 @@
     <vehiclePositionList        comment="Rotation values are euler angles!"
         >
         <vehicle
+            index = "paceCar"
+            position = "23 12.5 2"
+            rotation = "0 0 15"
+            >
+        </vehicle>
+        <vehicle
             index = "grid01"
-            position = "12 15 2"
+            position = "15 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
@@ -37,26 +43,32 @@
         </vehicle>
         <vehicle
             index = "grid03"
-            position = "6 15 2"
+            position = "5 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid03"
-            position = "4 10 2"
+            index = "grid04"
+            position = "0 10 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "paceCar"
-            position = "0 0 2"
+            index = "grid05"
+            position = "-5 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "skyCar"
-            position = "5 5 100"
+            index = "grid06"
+            position = "-10 10 2"
             rotation = "0 0 0"
+            >
+        </vehicle>
+        <vehicle
+            index = "parking01"
+            position = "-20 -10 2"
+            rotation = "0 0 90"
             >
         </vehicle>
     </vehiclePositionList>

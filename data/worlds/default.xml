@@ -8,14 +8,27 @@
     gravityZ = "-9.8"
     >
     <vehicleList>
+        <!-- explanation
+        <vehicle
+            directory = "mosp1"         vehicle dir, located in data/vehicles.
+            driver = "none"             type of driver. functional: "none" and "user". planned in the future: "ai", "net", "replay", maybe more.
+            startPosition = "grid01"    reference to a position, which must be defined in the current track xml file.
+            >
+        </vehicle>
+        -->
         <vehicle
             directory = "mosp1"
-            ___driver="ai, net, user, replay, ghostReplay, none... only 'none' and 'user' are usable atm"
             driver = "user"
-            ___startPosition="Reference to track position (starting grid positions, pits, important places...), indexed by string!"
+            startPosition = "paceCar"
+            >
+        </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
             startPosition = "grid01"
             >
         </vehicle>
+        <!--
         <vehicle
             directory = "mosp1"
             driver = "none"
@@ -28,6 +41,25 @@
             startPosition = "grid03"
             >
         </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
+            startPosition = "grid04"
+            >
+        </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
+            startPosition = "grid05"
+            >
+        </vehicle>
+        <vehicle
+            directory = "mosp1"
+            driver = "none"
+            startPosition = "grid06"
+            >
+        </vehicle>
+        -->
     </vehicleList>
     <track
         directory = "testingGround"

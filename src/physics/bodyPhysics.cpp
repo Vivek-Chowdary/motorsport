@@ -91,8 +91,11 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dBodySetMass (bodyID, &tmpMass);
 
     // make sure it's initialized with correct values.
-    setPosition(Vector3d(0, 0, 0));
-    applyRotation(Quaternion(1, 0, 0, 0));
+    Quaternion finalRotation = Quaternion(0,0,0,0);
+    dMatrix3 rot;
+    finalRotation.getOdeMatrix (rot);
+    dBodySetRotation (bodyID, rot);
+    dBodySetPosition (bodyID, 0, 0 ,0);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
@@ -109,10 +112,11 @@ Vector3d Body::getPosition ()
 
 void Body::applyRotation (Quaternion rotation)
 {
-    dMatrix3 rot;
-    rotation.getOdeMatrix (rot);
-    dBodySetRotation (bodyID, rot);
     setPosition ( rotation.rotateObject(getPosition()) );
+    dMatrix3 rot;
+    Quaternion finalRotation = rotation * getRotation();
+    finalRotation.getOdeMatrix (rot);
+    dBodySetRotation (bodyID, rot);
 }
 Quaternion Body::getRotation ()
 {

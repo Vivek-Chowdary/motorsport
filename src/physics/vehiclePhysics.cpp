@@ -24,10 +24,7 @@
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    if ( userDriver )
-    {
-        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
-    }
+    // empty
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -62,19 +59,16 @@ Vector3d Vehicle::getPosition ()
 
 void Vehicle::applyRotation (Quaternion rotation)
 {
-    Quaternion rotDiff = rotation * (Quaternion(0, 0, 0, 0)-getRotation());
-    // apply rotation to body
-    rotation = body->getRotation();
-    body->applyRotation (rotation * rotDiff);
-
     // apply rotation to wheels
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        rotation = wheelIter->second->getRotation();
-      //  wheelIter->second->applyRotation (rotDiff);
-      //  wheelIter->second->applyRotation (Quaternion(0,0,0,0));
+        wheelIter->second->applyRotation (rotation);
     }
+
+    // apply rotation to body
+    body->applyRotation (rotation);
+
     // apply rotation to suspensions
 /*
     std::map < std::string, Suspension * >::const_iterator suspIter;
@@ -105,7 +99,7 @@ void Vehicle::placeWheelsOnSuspensions()
         {
             log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
-            log->format (LOG_DEVELOPER, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            log->format (LOG_DEVELOPER, "Placing wheel on suspension \"%s\"", suspIter->first.c_str());
             wheelIter->second->applyRotation (suspIter->second->getInitialWheelRotation());
             wheelIter->second->setPosition (suspIter->second->getInitialWheelPosition());
         }
@@ -122,7 +116,7 @@ void Vehicle::boltWheelsToSuspensions()
         {
             log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
-            log->format (LOG_DEVELOPER, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            log->format (LOG_DEVELOPER, "Bolting wheel to suspension \"%s\"", suspIter->first.c_str());
             suspIter->second->attach(*(wheelIter->second), *this);
         }
     }
@@ -142,10 +136,13 @@ void Vehicle::stepPhysics ()
             gearbox->gearDown();
         }
     }
-/*  // Code for using a higher rate in tranny code, thus eliminating some lag from it. FIXME when double seconds are used instead of int milliseconds.
+
+/*
+    // Code for using a higher rate in tranny code, thus eliminating some lag from it. FIXME when double seconds are used instead of int milliseconds.
     const int freq = 3;
     SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep / freq;
-    for (int i = 0; i<freq; i++){*/
+    for (int i = 0; i<freq; i++){
+// higher rate code continues below... */
     // step torque transfer components first
     clutch->stepPhysics();
     transfer->stepPhysics();
@@ -170,6 +167,7 @@ void Vehicle::stepPhysics ()
     }
 //    }
 //    SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep * freq;
+
     // print telemetry data
     if ( userDriver )
     {
