@@ -25,12 +25,13 @@
 InputEngine::InputEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine ( LOG_INFO, "INP" );
+    InputData * data = new InputData;
+    data->input = this;
+    processConfigFile ( "inputConfig.xml", &InputEngine::processInputConfigFile, (void*)data);
+    
+    log = new LogEngine ( data->localLogLevel, data->localLogName );
+    log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
 
-    //we store the pointers to the 'global' data, so that we access it easily.
-    //we might have to change this and only allow changing data through
-    // some dataEngine functions, which will act as an interface to the data
-    // stored in memory with the IDF.
     log->put ( LOG_INFO, "Setting up data pointers..." );
     systemData = SystemData::getSystemDataPointer ();
     worldData = WorldData::getWorldDataPointer ();
@@ -41,8 +42,12 @@ InputEngine::InputEngine ( )
     mouseMovementX = mouseMovementY = 0;
 
     //Disable cursor on screen
-    SDL_ShowCursor(SDL_DISABLE);
-    SDL_WM_GrabInput(SDL_GRAB_ON);
+//    SDL_ShowCursor(SDL_DISABLE);
+//    SDL_WM_GrabInput(SDL_GRAB_ON);
+    
+    log->put ( LOG_INFO, "Unloading temporary parsing data from memory..." );
+    delete [](data->localLogName);
+    delete data;
 }
 
 int InputEngine::step ( void )

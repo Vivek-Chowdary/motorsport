@@ -87,6 +87,7 @@ SOURCES := \
         input/cubeInput.cpp \
         input/cameraInput.cpp \
 	input/inputEngine.cpp \
+        input/inputParser.cpp \
 	system.cpp \
 	world.cpp \
 	main.cpp
