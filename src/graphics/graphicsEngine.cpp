@@ -80,7 +80,7 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
                                                         cubeEntity );
         worldData->cubeList[i].cubeNode->translate ( i % 10 * 300,
                                                      i / 10 % 10 * 300,
-                                                     i / 100 % 10 * 300 );
+                                                     i / 100 % 10 * 300 * ((int(i/1000))+1));
     }
 
     MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
