@@ -91,6 +91,13 @@ int main (int argc, char **argv)
             log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
         // Run the physics engine until the game time is in sync with the real loop time.
+        // Run the gui engine.
+        guiEngine->computeStep ();
+        // Run the graphics engine.
+        graphicsEngine->computeStep ();
+        systemData->graphicsSteps++;
+        // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
+        inputEngine->clearGraphicsEventAxis ();
 
         while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
         {
@@ -116,13 +123,6 @@ int main (int argc, char **argv)
                 step = systemData->timeScale;
             }
         }
-        // Run the gui engine.
-        guiEngine->computeStep ();
-        // Run the graphics engine.
-        graphicsEngine->computeStep ();
-        systemData->graphicsSteps++;
-        // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
-        inputEngine->clearGraphicsEventAxis ();
     }
     log->put (LOG_INFO, "Main loop finished");
 

@@ -10,7 +10,7 @@
     <vehicle
         directory = "mosp1"
         driver = "user"         c="ai, net, user, replay, ghostReplay, none... still not used"
-        startPosition = "center"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
+        startPosition = "grid01"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
         >
     </vehicle>
     <track

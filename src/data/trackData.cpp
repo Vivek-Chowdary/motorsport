@@ -283,6 +283,7 @@ void Track::processXmlRootNode (DOMNode * n)
         cubePointer = new Cube ();
         cubePointer->setPosition (Vector3d (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation));
         cubeList.push_back (cubePointer);
+        cubePointer->stepGraphics();
         if ( i%4 && false) //snake mode. will slow down things. i%4 sets the number of cubes per snake.
         {
             if (0) //type of snake: universal joint vs. ball joint.

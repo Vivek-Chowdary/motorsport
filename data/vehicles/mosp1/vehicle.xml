@@ -112,7 +112,7 @@
             index = "FrontRight"
             springConstant =  "80500"
             dampingConstant = "2000"
-            position = "+1.44 +0.857 -0.4"
+            position = "+1.44 +0.857 -0.45"
             rotation = "-90 0 0"
             steeringAngle = "80"
             >
@@ -121,7 +121,7 @@
             index = "FrontLeft"
             springConstant =  "80500"
             dampingConstant = "2000"
-            position = "+1.44 -0.857 -0.4"
+            position = "+1.44 -0.857 -0.45"
             rotation = "+90 0 0"
             steeringAngle = "80"
             >
@@ -190,9 +190,15 @@
     <cameraList
         >
         <camera
-            index = "0"
-            position = "0 0 0.4"
-            target = "0.1 0 0.4"
+            index = "hood"
+            position = "0.2 0 0.5"
+            target = "1 0 0.5"
+            >
+        </camera>
+        <camera
+            index = "bumper"
+            position = "2.3 0 -0.2"
+            target = "3 0 -0.2"
             >
         </camera>
         <camera
@@ -202,15 +208,27 @@
             >
         </camera>
         <camera
-            index = "FRwheel"
+            index = "frontRightWheel"
             position = "0.2 -1.2 -0.25"
             target = "0.4 -1.2 -0.25"
             >
         </camera>
         <camera
-            index = "RRwheel"
+            index = "rightSide"
             position = "-3.0 -1.2 -0.25"
             target = "-2.8 -1.2 -0.25"
+            >
+        </camera>
+        <camera
+            index = "leftSide"
+            position = "0 6 0"
+            target = "0 0 0"
+            >
+        </camera>
+        <camera
+            index = "backTv"
+            position = "4 1.3 -0.3"
+            target = "0 -0.4 0.7"
             >
         </camera>
     </cameraList>

@@ -243,6 +243,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     gearbox->setGear(1);
 
     startPhysics(NULL);
+    stepGraphics();
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)

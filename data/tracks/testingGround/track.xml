@@ -25,20 +25,26 @@
     <vehiclePositionList        comment="Rotation values are euler angles!"
         >
         <vehicle
-            index = "center"
+            index = "grid01"
             position = "10 10 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "centerHigh"
-            position = "0 0 100"
+            index = "grid02"
+            position = "12 14 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "other"
-            position = "0 0 5"
+            index = "paceCar"
+            position = "0 0 2"
+            rotation = "0 0 0"
+            >
+        </vehicle>
+        <vehicle
+            index = "skyCar"
+            position = "5 5 100"
             rotation = "0 0 0"
             >
         </vehicle>
@@ -46,39 +52,33 @@
     <cameraList
         >
         <camera
-            index = "0"
-            position = "6 12 1"
-            target = "20 10 0.5"
+            index = "driver"
+            position = "30 10 1.7"
+            target = "0.1 0.5 0.4"
             >
         </camera>
         <camera
-            index = "low"
-            position = "-20 -25 2"
+            index = "wheel"
+            position = "20 -15 0.2"
+            target = "1.44 -0.86 -0.4"
+            >
+        </camera>
+        <camera
+            index = "bodyCenter"
+            position = "-10 -5 2"
             target = "0 0 0"
             >
         </camera>
         <camera
-            index = "high"
-            position = "-1 1 110"
+            index = "helicopter"
+            position = "0 0 70"
             target = "0 0 0"
             >
         </camera>
         <camera
-            index = "far"
-            position = "100 100 20"
-            target = "0 0 0"
-            >
-        </camera>
-        <camera
-            index = "lateral"
-            position = "10 10 2"
-            target = "10 -10 0"
-            >
-        </camera>
-        <camera
-            index = "walking"
-            position = "-2 2 1.7"
-            rotation = "0 1 1.7"
+            index = "frontGrill"
+            position = "20 0 0.1"
+            target = "2.23 0 -0.1"
             >
         </camera>
     </cameraList>

@@ -168,12 +168,31 @@ void GuiEngine::addTelemetryLine (char * line)
 
 void GuiEngine::addLoadscreenLine (char * line)
 {
+    static unsigned lines = 0;
+    const unsigned int nchars = 85;
+    const unsigned int nlines = 27;
     std::string tmp = loadscreenText;
-    loadscreenText.assign (line);
+    loadscreenText.clear();
+    std::string tmpline = line;
+    while (tmpline.size() > nchars)
+    {
+        loadscreenText.append (tmpline.substr(0, tmpline.rfind(' ', nchars)));
+        loadscreenText.append ("\n  ");
+        lines++;
+        tmpline = tmpline.substr(tmpline.rfind(' ', nchars));
+    }
+    loadscreenText.append (tmpline);
     loadscreenText.append ("\n");
+    lines++;
     loadscreenText.append (tmp);
     GuiElement *loadText = GuiManager::getSingleton ().getGuiElement ("loadscreen/text");
     loadText->setCaption (loadscreenText);
+    while (lines > nlines)
+    {
+        int lastline = loadscreenText.rfind ('\n');
+        loadscreenText = loadscreenText.substr(0, lastline);
+        lines--;
+    }
 }
 
 GuiEngine::~GuiEngine (void)
