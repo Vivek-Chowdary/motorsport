@@ -72,21 +72,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
-
-    sprintf (name, "light%i", instancesCount);
-    name[0] = no++ + '0';
-    Ogre::Light * light = SystemData::getSystemDataPointer ()->ogreSceneManager->createLight(name);
-//    light->setType(Ogre::Light::LT_SPOTLIGHT);
-    light->setType(Ogre::Light::LT_POINT);
-//    light->setType(Ogre::Light::LT_DIRECTIONAL);
-    light->setType(Ogre::Light::LT_POINT);
-    light->setDirection(0.2,0.1,-0.5);
-//    light->setPosition(5, 5, 1);
-    light->setDiffuseColour(1, 1, 1);
-    light->setSpecularColour(1, 1, 1);
-    
-    bodyNode->attachObject (light);
-
 }
 void Body::stepGraphics ()
 {

@@ -421,11 +421,12 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     }
 #endif
     log->put (LOG_DEVELOPER, "Getting ogre scene manager");
+    // Set shadowing system
     systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
-    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_NONE);    
-//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-//    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_NONE);    
+    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
+    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
     systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(5.0, 5.0, 5.0));
 
     // Set default mipmap level (NB some APIs ignore this)
@@ -436,6 +437,16 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     log->put (LOG_ENDUSER, "Setting up anisotropy and filtering parameters");
     Ogre::MaterialManager::getSingleton ().setDefaultAnisotropy (anisotropy);
     Ogre::MaterialManager::getSingleton ().setDefaultTextureFiltering (filtering);
+
+    Ogre::Light * light = SystemData::getSystemDataPointer ()->ogreSceneManager->createLight("Sun");
+    //light->setType(Ogre::Light::LT_SPOTLIGHT);
+    //light->setType(Ogre::Light::LT_POINT);
+    light->setType(Ogre::Light::LT_DIRECTIONAL);
+    light->setDirection(1,1,-1);
+    //light->setPosition(50, 50, 1);
+    light->setDiffuseColour(1, 1, 1);
+    light->setSpecularColour(1, 1, 1);
+    systemData->ogreSceneManager->getRootSceneNode()->attachObject (light);
 
     log->put (LOG_DEVELOPER, "Removing temporary ogre plugins config file (plugins.cfg)");
     remove("plugins.cfg");
