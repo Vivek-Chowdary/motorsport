@@ -93,6 +93,59 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 
 int GraphicsEngine::computeStep (void)
 {
+    // Sun controller. FIXME the sun should be a class, physically behaved. */
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_o)]->getValue() == 1)
+    {
+        // Increase degree by degree, in Y axis.
+        Quaternion rotation (0, 1, 0);
+
+        // Calculate and set the new direction of the sun light rays.
+        Ogre::Light * light = SystemData::getSystemDataPointer ()->ogreSceneManager->getLight("Sun");
+        Vector3d direction (light->getDirection().x, light->getDirection().y, light->getDirection().z);
+        direction = rotation.rotateObject(direction);
+        light->setDirection(direction.x, direction.y, direction.z);
+        
+        // Predefined values for ambient light, depending on height of sun (max, med, min height)
+        Vector3d maxa (0.87, 0.97, 1.00);
+        Vector3d meda (0.23, 0.27, 0.61);
+        Vector3d mina (0.20, 0.24, 0.38);
+        
+        // Predefined values for sun light, depending on height of sun (max, med, min height)
+        Vector3d maxl (0.98, 1.00, 0.76);
+        Vector3d medl (0.88, 0.58, 0.40);
+        Vector3d minl (0.20, 0.24, 0.38);
+
+        // Cache some values
+        double zm = -direction.z;
+        Vector3d z (zm, zm, zm);
+        const double zx = 1, zd = 0.005, zn = 0;
+        const Vector3d max(zx,zx,zx), med(zd,zd,zd), min(zn,zn,zn);
+        Vector3d r;
+
+        // Check if the sun is low (sunset)
+        if (zm>=zn && zm<zd)
+        {
+            // Linearly interpolate light values.
+            r = mina - ( ( ( z        - min ) / ( med - min ) ) * (mina - meda) );
+            systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
+
+            r = minl - ( ( ( z        - min ) / ( med - min ) ) * (minl - medl) );
+            light->setDiffuseColour (r.x, r.y, r.z);
+            light->setSpecularColour(r.x, r.y, r.z);
+        }
+        // Check if the sun is high (midday)
+        if (zm>=zd && zm<zx)
+        {
+            // Linearly interpolate light values.
+            r = meda - ( ( ( z        - med ) / ( max - med ) ) * (meda - maxa) );
+            systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
+
+            r = medl - ( ( ( z        - med ) / ( max - med ) ) * (medl - maxl) );
+            light->setDiffuseColour (r.x, r.y, r.z);
+            light->setSpecularColour(r.x, r.y, r.z);
+        }
+    }
+
     // take a screenshot if neededa
     if (systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
     {
@@ -427,7 +480,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
     //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
-    systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(5.0, 5.0, 5.0));
+    systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
 
     // Set default mipmap level (NB some APIs ignore this)
     log->put (LOG_ENDUSER, "Setting up default number of mipmap levels");
@@ -442,7 +495,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     //light->setType(Ogre::Light::LT_SPOTLIGHT);
     //light->setType(Ogre::Light::LT_POINT);
     light->setType(Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(1,1,-1);
+    light->setDirection(0,0,-1);
     //light->setPosition(50, 50, 1);
     light->setDiffuseColour(1, 1, 1);
     light->setSpecularColour(1, 1, 1);

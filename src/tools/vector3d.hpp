@@ -30,6 +30,8 @@ class Vector3d
     bool operator!= (const Vector3d & cpy) const;
     Vector3d operator+ (const Vector3d & k) const;
     Vector3d operator- (const Vector3d & k) const;
+    Vector3d operator/ (const Vector3d & k) const;
+    Vector3d operator* (const Vector3d & k) const;
     const Vector3d & operator+= (const Vector3d & k);
     const Vector3d & operator-= (const Vector3d & k);
     double distance () const;

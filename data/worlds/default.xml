@@ -22,13 +22,13 @@
             startPosition = "paceCar"
             >
         </vehicle>
+        <!--
         <vehicle
             directory = "mosp1"
             driver = "none"
             startPosition = "grid01"
             >
         </vehicle>
-        <!--
         <vehicle
             directory = "mosp1"
             driver = "none"

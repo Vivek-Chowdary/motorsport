@@ -77,6 +77,22 @@ Vector3d Vector3d::operator+ (const Vector3d & k) const
     tmp += k;
     return tmp;
 }
+Vector3d Vector3d::operator* (const Vector3d & k) const
+{
+    Vector3d tmp (*this);
+    tmp.x *= k.x;
+    tmp.y *= k.y;
+    tmp.z *= k.z;
+    return tmp;
+}
+Vector3d Vector3d::operator/ (const Vector3d & k) const
+{
+    Vector3d tmp (*this);
+    tmp.x /= k.x;
+    tmp.y /= k.y;
+    tmp.z /= k.z;
+    return tmp;
+}
 const Vector3d & Vector3d::operator+= (const Vector3d & k)
 {
     x += k.x;
