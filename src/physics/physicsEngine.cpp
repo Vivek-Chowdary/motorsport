@@ -51,7 +51,7 @@ PhysicsEngine::PhysicsEngine ( )
     systemData = SystemData::getSystemDataPointer();
 
     log->put ( LOG_INFO, "Setting physics data" );
-    systemData->physicsDesiredStepsPerSecond = 30;
+    systemData->physicsDesiredStepsPerSecond = 100;
     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredStepsPerSecond;
     log->format ( LOG_INFO, "Physics rate set @ %i Hz (%i ms)",systemData->physicsDesiredStepsPerSecond, systemData->physicsTimeStep );
 

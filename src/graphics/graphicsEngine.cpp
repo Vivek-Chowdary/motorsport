@@ -36,10 +36,10 @@ GraphicsEngine::GraphicsEngine ( )
     systemData = SystemData::getSystemDataPointer();
 
     log->put ( LOG_INFO, "Setting screen properties..." );
-    width = 1024;
-    height = 768;
+    width = 800;
+    height = 600;
     bpp = 0;
-    fullScreen = true;
+    fullScreen = false;
     log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp );
 
     ogreRoot = new Ogre::Root (  );
