@@ -39,6 +39,8 @@ class World : public WorldObject
     static World *worldPointer;
     std::string name;
     std::string description;
+    Camera * activeCamera;
+    int activeTrackCameraIndex;
   public:
     static World *getWorldPointer ();
     void processXmlRootNode(DOMNode * n);
@@ -52,6 +54,10 @@ class World : public WorldObject
     std::vector < Track * > trackList;
     std::vector < Body * >bodyList;
     //std::vector < Vehicle * >vehicleList;
+
+    void setActiveCamera (Camera * camera);
+    Camera * getActiveCamera (void);
+    int getActiveTrackCameraIndex();
 };
 
 #endif

@@ -30,6 +30,7 @@ class SystemData
     static SystemData *systemDataPointer;
     bool mainLoopEnabled;
     bool takeScreenshot;
+    bool switchCamera;
     bool invertShowStatistics;
     double cfmValue;     
     double erpValue;
@@ -65,6 +66,8 @@ class SystemData
 
     void setTakeScreenshot ();
     bool getTakeScreenshot ();
+    void setSwitchCamera ();
+    bool getSwitchCamera ();
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

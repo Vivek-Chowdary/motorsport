@@ -255,6 +255,7 @@ void World::processXmlRootNode (DOMNode * n)
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
 
+    // load track (and its cameras)
     std::string tmpPath = ("../data/tracks/");
     tmpPath.append (trackDirectory);
     tmpPath.append ("/track.xml");
@@ -262,6 +263,7 @@ void World::processXmlRootNode (DOMNode * n)
     //tmpTrack->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     trackList.push_back (tmpTrack);
 
+    // load vehicle (and its cameras)
     tmpPath = ("../data/vehicles/");
     tmpPath.append (carDirectory);
     tmpPath.append ("/body.xml");
@@ -272,18 +274,17 @@ void World::processXmlRootNode (DOMNode * n)
     tmpBody->setRotation (tmpPos.x, tmpPos.y, tmpPos.z);
     bodyList.push_back (tmpBody);
 
-    Ogre::Viewport * vp;
+    // set active camera
     log->put (LOG_INFO, "Setting camera viewport");
     if (useTrackCamera)
     {
-        vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (trackList[0]->cameraList[0]->ogreCamera);
+        //err... use... track camera, i guess.
+        setActiveCamera (trackList[0]->cameraList[0]);
     } else {
-        //don't use track camera; use vehicle camera. until there's vehicles, let's use 2nd track camera instead.
-        vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (trackList[0]->cameraList[1]->ogreCamera);
+        //don't use track camera: use vehicle camera
+        //until there's vehicles, let's use 2nd track camera instead (be careful, it might not exist! FIXME :).
+        setActiveCamera (trackList[0]->cameraList[1]);
     }
-    log->put (LOG_INFO, "Setting bg color");
-    vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
-
 //////// OLD CODE, WILL BE REUSED FOR SEVERAL CARS
 //    for (int i = 0; i < 10; i++)
 //    {
@@ -300,4 +301,27 @@ void World::processXmlRootNode (DOMNode * n)
     carDirectory.clear();
     driver.clear();
     trackDirectory.clear();
+}
+
+void World::setActiveCamera (Camera * camera)
+{
+    activeCamera = camera;
+    SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
+    SystemData::getSystemDataPointer()->ogreWindow->addViewport (activeCamera->ogreCamera);
+    log->put (LOG_VERBOSE, "Changed camera...");
+}
+
+Camera * World::getActiveCamera (void)
+{
+    return activeCamera;
+}
+
+int World::getActiveTrackCameraIndex()
+{
+    int camNumber = 0;
+    while ( activeCamera != trackList[0]->cameraList[camNumber] )
+    {
+        camNumber++;
+    };
+    return camNumber;
 }

@@ -48,6 +48,7 @@ SystemData::SystemData ()
         graphicsSteps = 0;
         graphicsFrequency = 0;
         takeScreenshot = false;
+        switchCamera = false;
         invertShowStatistics = false;
     }
 }
@@ -85,6 +86,18 @@ bool SystemData::getInvertShowStatistics ()
     return true;
 }
 
+void SystemData::setSwitchCamera ()
+{
+    switchCamera = true;
+}
+
+bool SystemData::getSwitchCamera ()
+{
+    if (!switchCamera)
+        return false;
+    switchCamera = false;
+    return true;
+}
 void SystemData::setTakeScreenshot ()
 {
     takeScreenshot = true;

@@ -53,6 +53,10 @@ int InputEngine::computeStep (void)
             log->put (LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed.");
             switch (event.key.keysym.sym)
             {
+            case SDLK_c:
+                log->put (LOG_INFO, "User wants to change camera.");
+                systemData->setSwitchCamera ();
+                break;
             case SDLK_PRINT:
                 log->put (LOG_INFO, "User wants to take a screenshot.");
                 systemData->setTakeScreenshot ();
@@ -84,11 +88,11 @@ void InputEngine::processMouseMovement ()
 {
     if (mouseMovementX)
     {
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateRight (mouseMovementX);
+        World::getWorldPointer ()->getActiveCamera()->setRotateRight (mouseMovementX);
     }
     if (mouseMovementY)
     {
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateUp (mouseMovementY);
+        World::getWorldPointer ()->getActiveCamera()->setRotateUp (mouseMovementY);
     }
 }
 
@@ -104,56 +108,56 @@ void InputEngine::processKeyboard ()
     if (keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateRight (20);
+        World::getWorldPointer ()->getActiveCamera()->setRotateRight (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the right.");
     }
 
     if (keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateLeft (20);
+        World::getWorldPointer ()->getActiveCamera()->setRotateLeft (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the left.");
     }
 
     if (keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateUp (20);
+        World::getWorldPointer ()->getActiveCamera()->setRotateUp (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the top.");
     }
 
     if (keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateDown (20);
+        World::getWorldPointer ()->getActiveCamera()->setRotateDown (20);
         log->put (LOG_VERBOSE, "Camera1 rotated to the bottom.");
     }
 
     if (keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goForward = true;
+        World::getWorldPointer ()->getActiveCamera()->goForward = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goBack = true;
+        World::getWorldPointer ()->getActiveCamera()->goBack = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goLeft = true;
+        World::getWorldPointer ()->getActiveCamera()->goLeft = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
     if (keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keypress...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goRight = true;
+        World::getWorldPointer ()->getActiveCamera()->goRight = true;
         log->put (LOG_VERBOSE, "Camera moved.");
     }
 
@@ -239,56 +243,56 @@ void InputEngine::processKeyboard ()
     if (!keyState[SDLK_RIGHT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateRight (0);
+        World::getWorldPointer ()->getActiveCamera()->setRotateRight (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_LEFT])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateLeft (0);
+        World::getWorldPointer ()->getActiveCamera()->setRotateLeft (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_UP])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_UP keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateUp (0);
+        World::getWorldPointer ()->getActiveCamera()->setRotateUp (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_DOWN])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->setRotateDown (0);
+        World::getWorldPointer ()->getActiveCamera()->setRotateDown (0);
         log->put (LOG_VERBOSE, "Camera1 stopped rotating.");
     }
 
     if (!keyState[SDLK_w])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goForward = false;
+        World::getWorldPointer ()->getActiveCamera()->goForward = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_s])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goBack = false;
+        World::getWorldPointer ()->getActiveCamera()->goBack = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_a])
     {
         log->put (LOG_VERBOSE, "Processing a w keyrelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goLeft = false;
+        World::getWorldPointer ()->getActiveCamera()->goLeft = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 
     if (!keyState[SDLK_d])
     {
         log->put (LOG_VERBOSE, "Processing a w keyprelease...");
-        World::getWorldPointer ()->trackList[0]->cameraList[0]->goRight = false;
+        World::getWorldPointer ()->getActiveCamera()->goRight = false;
         log->put (LOG_VERBOSE, "Camera stopped moving.");
     }
 

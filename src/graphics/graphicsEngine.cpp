@@ -101,7 +101,17 @@ int GraphicsEngine::computeStep (void)
     if (systemData->getTakeScreenshot ())
     {
         log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename.c_str());
-        systemData->ogreWindow->writeContentsToFile (screenshotFilename.c_str());
+    }
+    // change camera if needed
+    if (systemData->getSwitchCamera ())
+    {
+        int nextCam = World::getWorldPointer()->getActiveTrackCameraIndex()+1;
+        int maxCams = World::getWorldPointer()->trackList[0]->cameraList.size();
+        if (nextCam >= maxCams )
+        {
+            nextCam = 0;
+        }
+        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfBodies = World::getWorldPointer ()->bodyList.size ();

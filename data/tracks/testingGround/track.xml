@@ -76,5 +76,45 @@
             destZ = "3.0"
             >
         </camera>
+        <camera
+            index = "high"
+            posX = "-1.0"
+            posY = "1.0"
+            posZ = "110.0"
+            destX = "0.0"
+            destY = "0.0"
+            destZ = "0.0"
+            >
+        </camera>
+        <camera
+            index = "far"
+            posX = "100.0"
+            posY = "100.0"
+            posZ = "20.0"
+            destX = "0.0"
+            destY = "0.0"
+            destZ = "0.0"
+            >
+        </camera>
+        <camera
+            index = "lateral"
+            posX = "10.0"
+            posY = "10.0"
+            posZ = "2.0"
+            destX = "10.0"
+            destY = "-10.0"
+            destZ = "0.0"
+            >
+        </camera>
+        <camera
+            index = "walking"
+            posX = "-2.0"
+            posY = "2.0"
+            posZ = "1.70"
+            destX = "0.0"
+            destY = "1.0"
+            destZ = "1.70"
+            >
+        </camera>
     </cameraList>
 </track>
