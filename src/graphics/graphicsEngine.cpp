@@ -112,7 +112,9 @@ int GraphicsEngine::computeStep (void)
     if (systemData->getTakeScreenshot ())
     {
         log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename.c_str());
+        systemData->ogreWindow->writeContentsToFile (screenshotFilename);
     }
+
     // change camera if needed
     if (systemData->getSwitchCamera ())
     {
