@@ -8,6 +8,7 @@ int main (int argc, char **argv)
 {
 	//we declare the engines
 	//(more engines will be declared here when available)
+	//How now brown cow - this is a test of Kirk's mediocre CVS skills
 	logEngine log;
 	dataEngine data;
 	
