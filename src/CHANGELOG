@@ -6,7 +6,7 @@ Motorsport - Changelog
     * changelog: added change log file
     * physics: added basic sample physics engine
     * graphics:  engine actual and desired rates now displayed in window title
-    * input: two new keys NumPad+ and NumPad-, increase and decrease physics running rate
+    * input: three new keys NumPad+ and NumPad-, increase and decrease physics running rate; space bar reverses the rectangles color-changing speed
     * main program: improved main loop
     * system data: main loop related additions
 
