@@ -20,12 +20,13 @@
 #include "wheel.hpp"
 #include "suspension.hpp"
 #include "SDL/SDL_keysym.h"
+#include "quaternion.hpp"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     if ( userDriver )
     {
-        log->telemetry (LOG_DEVELOPER, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
+        log->telemetry (LOG_ENDUSER, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
     }
 }
 dBodyID Vehicle::getVehicleID()
@@ -66,22 +67,22 @@ Vector3d Vehicle::getPosition ()
     return body->getPosition();
 }
 
-void Vehicle::setRotation (Vector3d rotation)
+void Vehicle::setRotation (Quaternion rotation)
 {
     Vector3d initialPos = getPosition();
     setPosition (Vector3d(0, 0, 0));
 
-    Vector3d rotDiff = getRotation();
-    log->format (LOG_DEVELOPER, "Setting vehicle rotation (%f, %f, %f) to (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z, rotation.x, rotation.y, rotation.z);
+    Quaternion rotDiff = getRotation();
+    log->format (LOG_DEVELOPER, "Setting vehicle rotation (%f, %f, %f, %f) to (%f, %f, %f, %f).", rotDiff.w, rotDiff.x, rotDiff.y, rotDiff.z, rotation.w, rotation.x, rotation.y, rotation.z);
     rotDiff = rotation - rotDiff;
-    log->format (LOG_DEVELOPER, "Difference in vehicle rotation: (%f, %f, %f).", rotDiff.x, rotDiff.y, rotDiff.z);
+    log->format (LOG_DEVELOPER, "Difference in vehicle rotation: (%f, %f, %f, %f).", rotDiff.w, rotDiff.x, rotDiff.y, rotDiff.z);
     
     body->setRotation (body->getRotation() + rotDiff);
 
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); ++suspIter)
     {
-        Vector3d newRot = suspIter->second->getRotation();
+        Quaternion newRot = suspIter->second->getRotation();
         newRot += rotDiff;
         //log->format (LOG_DEVELOPER, "Setting suspension \"%s\" rotation to (%f, %f, %f)", suspIter->first.c_str(), newRot.x, newRot.y, newRot.z);
         //suspIter->second->setRotation (newRot);
@@ -90,18 +91,18 @@ void Vehicle::setRotation (Vector3d rotation)
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        Vector3d newRot = wheelIter->second->getRotation();
+        Quaternion newRot = wheelIter->second->getRotation();
         newRot += rotDiff;
-        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" rotation to (%f, %f, %f)", wheelIter->first.c_str(), newRot.x, newRot.y, newRot.z);
+        log->format (LOG_DEVELOPER, "Setting wheel \"%s\" rotation to (%f, %f, %f, %f)", wheelIter->first.c_str(), newRot.w, newRot.x, newRot.y, newRot.z);
         wheelIter->second->setRotation (newRot);
-        Vector3d rot = wheelIter->second->getRotation();
-        log->format (LOG_DEVELOPER, "Wheel \"%s\" rotation set to (%f, %f, %f)", wheelIter->first.c_str(), rot.x, rot.y, rot.z);
+        Quaternion rot = wheelIter->second->getRotation();
+        log->format (LOG_DEVELOPER, "Wheel \"%s\" rotation set to (%f, %f, %f, %f)", wheelIter->first.c_str(), rot.w, rot.x, rot.y, rot.z);
     }
 
     setPosition(initialPos);
 }
 
-Vector3d Vehicle::getRotation ()
+Quaternion Vehicle::getRotation ()
 {
     return body->getRotation();
 }
@@ -169,6 +170,6 @@ void Vehicle::stepPhysics ()
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         tmp = dBodyGetPosition(body->bodyID);
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        log->telemetry (LOG_DEVELOPER, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
+        log->telemetry (LOG_ENDUSER, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
     }
 }

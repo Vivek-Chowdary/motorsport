@@ -13,6 +13,8 @@
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
 #   include <string>
+#   include "quaternion.hpp"
+#   include "vector3d.hpp"
 
 //forward declarations
 namespace Ogre {
@@ -21,7 +23,6 @@ namespace Ogre {
 }
 class Vehicle;
 class Wheel;
-class Vector3d;
 
 class Suspension : public WorldObject
 {
@@ -30,8 +31,8 @@ class Suspension : public WorldObject
     static int instancesCount;
     std::string index;
     dJointID jointID;
-    Vector3d * rotation;
-    Vector3d * position;
+    Quaternion rotation;
+    Vector3d position;
     double springConstant;
     double dampingConstant;
     double steeringAngle;
@@ -53,7 +54,7 @@ class Suspension : public WorldObject
     void stepPhysics ();
     void setPosition (Vector3d position);
     Vector3d getPosition ();
-    void setRotation (Vector3d rotation);
-    Vector3d getRotation ();
+    void setRotation (Quaternion rotation);
+    Quaternion getRotation ();
 };
 #endif

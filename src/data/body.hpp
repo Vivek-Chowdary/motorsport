@@ -20,6 +20,8 @@ namespace Ogre {
   class SceneNode;
 }
 
+class Quaternion;
+
 class Body : public WorldObject
 {
   private:
@@ -49,9 +51,9 @@ class Body : public WorldObject
     dGeomID geomSpace;
     dGeomID geomSpace2;
     void setPosition (Vector3d position);
-    void setRotation (Vector3d rotation);
+    void setRotation (Quaternion rotation);
     Vector3d getPosition ();
-    Vector3d getRotation ();
+    Quaternion getRotation ();
 
     // graphics
     void stepGraphics ();

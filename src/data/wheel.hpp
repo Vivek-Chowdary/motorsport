@@ -17,6 +17,7 @@
 
 //forward declarations
 class Vector3d;
+class Quaternion;
 namespace Ogre {
   class Entity;
   class SceneNode;
@@ -57,8 +58,8 @@ class Wheel : public DriveMass
     dGeomID wheelGeomID;
     void setPosition (Vector3d position);
     Vector3d getPosition ();
-    void setRotation (Vector3d rotation);
-    Vector3d getRotation ();
+    void setRotation (Quaternion rotation);
+    Quaternion getRotation ();
     double getInputAngularVel();
     
     // graphics

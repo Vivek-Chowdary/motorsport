@@ -27,6 +27,7 @@ class LSD;
 class Wheel;
 class Suspension;
 class Vector3d;
+class Quaternion;
 class Camera;
 class CameraPosition;
 
@@ -73,9 +74,9 @@ class Vehicle : public WorldObject
     // physics
     void stepPhysics ();
     void setPosition (Vector3d position);
-    void setRotation (Vector3d rotation);
+    void setRotation (Quaternion rotation);
     Vector3d getPosition ();
-    Vector3d getRotation ();
+    Quaternion getRotation ();
     void attachWheelsToBody();
     double getOutputTorque ();
     dBodyID getVehicleID();

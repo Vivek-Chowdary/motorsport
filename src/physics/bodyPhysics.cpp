@@ -92,7 +92,7 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // make sure it's initialized with correct values.
     setPosition(Vector3d(0, 0, 0));
-    setRotation(Vector3d(0, 0, 0));
+    setRotation(Quaternion(1, 0, 0, 0));
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
@@ -107,16 +107,16 @@ Vector3d Body::getPosition ()
     return Vector3d (temp[0], temp[1], temp[2]);
 }
 
-void Body::setRotation (Vector3d rotation)
+void Body::setRotation (Quaternion rotation)
 {
     dMatrix3 rot;
-    dRFromEulerAngles (rot, rotation.x, rotation.y, rotation.z);
+    rotation.getOdeMatrix (rot);
     dBodySetRotation (bodyID, rot);
 }
-Vector3d Body::getRotation ()
+Quaternion Body::getRotation ()
 {
     const dReal *temp = dBodyGetQuaternion (bodyID);
-    return Vector3d (temp[0], temp[1], temp[2], temp[3]);
+    return Quaternion (temp);
 }
 
 void Body::stopPhysics ()

@@ -12,18 +12,19 @@
 #   include "data/xercesc_fwd.hpp"
 #   include "vector3d.hpp"
 #   include <string>
+#   include "quaternion.hpp"
 
 class VehiclePosition
 {
   private:
     Vector3d position;
-    Vector3d rotation;
+    Quaternion rotation;
     std::string index;
   public:
     VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~VehiclePosition ();
     Vector3d getPosition();
-    Vector3d getRotation();
+    Quaternion getRotation();
     std::string getIndex();
 };
 

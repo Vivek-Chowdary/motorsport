@@ -101,17 +101,17 @@ Vector3d Wheel::getPosition ()
     return Vector3d (temp[0], temp[1], temp[2]);
 }
 
-void Wheel::setRotation (Vector3d rotation)
+void Wheel::setRotation (Quaternion rotation)
 {
     dMatrix3 rot;
-    dRFromEulerAngles (rot, rotation.x, rotation.y, rotation.z);
+    rotation.getOdeMatrix (rot);
     dBodySetRotation (wheelID, rot);
 }
 
-Vector3d Wheel::getRotation ()
+Quaternion Wheel::getRotation ()
 {
     const dReal *temp = dBodyGetQuaternion (wheelID);
-    return Vector3d (temp[0], temp[1], temp[2], temp[3]);
+    return Quaternion (temp);
 }
 
 void Wheel::stopPhysics ()

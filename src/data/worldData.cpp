@@ -335,7 +335,7 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
                 tmpVehicle->setPosition (trackList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
 
                 log->put (LOG_CCREATOR, "Setting vehicle starting rotation");
-                Vector3d rotation = trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation();
+                Quaternion rotation = trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation();
                 tmpVehicle->setRotation (rotation);
             }
         }
