@@ -186,10 +186,15 @@ void GuiEngine::addLoadscreenLine (const std::string & line)
     std::string tmpline = line;
     while (tmpline.size() > nchars)
     {
-        loadscreenText.append (tmpline.substr(0, tmpline.rfind(' ', nchars)));
+        int cutPosition = tmpline.rfind(' ', nchars);
+        if ( cutPosition < 1)
+        {
+            cutPosition = nchars;
+        }
+        loadscreenText.append (tmpline.substr(0, cutPosition));
         loadscreenText.append ("\n  ");
         lines++;
-        tmpline = tmpline.substr(tmpline.rfind(' ', nchars));
+        tmpline = tmpline.substr(cutPosition);
     }
     loadscreenText.append (tmpline);
     loadscreenText.append ("\n");
