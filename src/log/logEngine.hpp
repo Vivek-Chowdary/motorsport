@@ -26,6 +26,7 @@
 #    include <cstdio>
 #    include <cstdarg>
 #    include <cstdlib>
+#    include <string>
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
@@ -59,7 +60,7 @@ class LogEngine
     /// Indicates a short name, prefixed to every log line.
     /** Indicates a short name or initials for instance of the log engine. It allows to know which "engine" this log is associated with.
     */
-    char logName [LOG_NAME_LENGTH+1];
+    std::string logName;
     /// Indicates the file where logs will be writen.
     /** Indicates a plain-text file where log messages can be writen.
     */

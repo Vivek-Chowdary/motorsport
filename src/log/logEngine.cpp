@@ -27,7 +27,8 @@ FILE * LogEngine::logFile = NULL;
 LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
 int LogEngine::numberOfLogEngines = 0;
 
-LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name )
+LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name ) :
+    logName(name)
 {
     //check if the level is correct
     if ( localLevel < 0 || localLevel > MAX_LOG_LEVEL ) return;
@@ -35,12 +36,8 @@ LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name )
     //we set the local level of verbosity
     logLevel = localLevel;
 
-    //we set the log name (3 chars)
-    for (int i=0; i<LOG_NAME_LENGTH; i++)
-    {
-        logName[i] = name[i];
-    }
-    logName[LOG_NAME_LENGTH] = '\0';
+    //we set the log name (3 chars, extended with space if needed)
+    logName.resize(3, ' ');
 
     //open the file for writing in rewrite mode if necessary.
     if (!numberOfLogEngines || !logFile)
@@ -89,7 +86,7 @@ int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
     if ( level > globalLevel || level > logLevel ) return ( -1 );
     
     fputc ('(', logFile );
-    fputs (logName, logFile );
+    fputs (logName.c_str(), logFile );
     
     //write log level information
     switch ( level )
@@ -129,7 +126,9 @@ LogEngine::~LogEngine ( )
     if (!numberOfLogEngines)
     {
         put ( LOG_INFO, "Closing logFile" );
-        if ( fclose ( logFile ) != 0 ); // return ( -2 );
+        if ( fclose ( logFile ) != 0 ){
+	  //failed, what do we do now?
+	}
     }
 }
 
