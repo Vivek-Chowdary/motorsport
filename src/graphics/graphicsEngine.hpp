@@ -30,6 +30,7 @@
 #include "system.hpp"
 #include "world.hpp"
 #include "cube.hpp"
+#include "body.hpp"
 #include "camera.hpp"
 #include "domParser.hpp"
 #include "dataEngine.hpp"

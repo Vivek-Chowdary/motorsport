@@ -119,6 +119,12 @@ int PhysicsEngine::computeStep (void)
         Cube::cubeList[i]->stepPhysics ();
     }
 
+    size = Body::bodyList.size ();
+    for (int i = 0; i < size; i++)
+    {
+        Body::bodyList[i]->stepPhysics ();
+    }
+
     dSpaceCollide (worldData->spaceID, 0, &nearCallback);
     switch (stepType)
     {

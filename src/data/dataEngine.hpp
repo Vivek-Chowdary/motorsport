@@ -27,6 +27,7 @@
 #include <string.h>
 #include "Ogre.h"
 #include "cube.hpp"
+#include "body.hpp"
 #include "camera.hpp"
 #include "domParser.hpp"
 

@@ -67,6 +67,18 @@ int DataEngine::loadWorldData (void)
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     systemData->ogreSceneManager->setSkyBox (true, "skyboxMaterial", 5000, true, rotationToZAxis);
 
+    // Create the bodies
+    int numberOfBodies = 2;
+    log->format (LOG_INFO, "Creating an array of %i bodies", numberOfBodies);
+    for (int i = 0; i < numberOfBodies; i++)
+    {
+        log->format (LOG_VERBOSE, "Adding body number %i", i);
+        const int separation = 5;
+        Body *bodyPointer;
+        bodyPointer = new Body (i,- separation - i / 10 % 10 * separation, - separation - i % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
+        Body::bodyList.push_back (bodyPointer);
+    }
+
     // Create the cubes
     int numberOfCubes = 20;
     log->format (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
@@ -84,6 +96,9 @@ int DataEngine::loadWorldData (void)
 
 int DataEngine::unloadWorldData (void)
 {
+    // unload the bodies from memory
+    log->put (LOG_INFO, "Unloading bodies from memory...");
+    Body::bodyList.clear ();
     // unload the cubes from memory
     log->put (LOG_INFO, "Unloading cubes from memory...");
     Cube::cubeList.clear ();

@@ -194,16 +194,20 @@ SOURCES := \
 	data/mainParser.cpp \
 	data/logParser.cpp \
 	data/dataParser.cpp \
-	data/cubeDataParser.cpp \
 	data/graphicsParser.cpp \
+	data/cubeDataParser.cpp \
+	data/bodyDataParser.cpp \
 	data/physicsParser.cpp \
 	data/inputParser.cpp \
 	data/guiParser.cpp \
 	data/cubeData.cpp \
+	data/bodyData.cpp \
 	data/cameraData.cpp \
 	physics/cubePhysics.cpp \
-	graphics/cubeGraphics.cpp \
+	physics/bodyPhysics.cpp \
 	graphics/cameraGraphics.cpp \
+	graphics/cubeGraphics.cpp \
+	graphics/bodyGraphics.cpp \
 	input/cubeInput.cpp \
 	input/cameraInput.cpp
 ###########################################

@@ -164,13 +164,20 @@ int GraphicsEngine::computeStep (void)
         log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename);
         systemData->ogreWindow->writeContentsToFile (screenshotFilename);
     }
+    // Update Ogre's bodies positions with Ode's positions.
+    int numberOfBodies = Body::bodyList.size ();
+    for (int currentBody = 0; currentBody < numberOfBodies; currentBody++)
+    {
+        Body::bodyList[currentBody]->stepGraphics ();
+    }
+
     // Update Ogre's cubes positions with Ode's positions.
     int numberOfCubes = Cube::cubeList.size ();
-
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
         Cube::cubeList[currentCube]->stepGraphics ();
     }
+
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
     systemData->ogreWindow->update ();
