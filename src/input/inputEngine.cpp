@@ -36,9 +36,6 @@ InputEngine::InputEngine ()
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (-systemData->height);
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (0);
     
-    log->put (LOG_INFO, "Initializing keyboard data array");
-    keyState = SDL_GetKeyState (NULL);
-    
     log->put (LOG_INFO, "Initializing keyboard axis");
     for (int i=SDLK_FIRST; i<SDLK_LAST; i++)
     {
@@ -92,6 +89,18 @@ InputEngine::InputEngine ()
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
+void InputEngine::clearEventAxis ()
+{
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_q)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_v)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_HOME)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_END)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->setNewRawValue(0);
+}
+
 int InputEngine::computeStep (void)
 {
     std::string tmpString;
@@ -102,7 +111,6 @@ int InputEngine::computeStep (void)
         switch (event.type)
         {
         case SDL_QUIT:
-            // this can be the user cliking to close the window
             log->put (LOG_INFO, "New SDL_QUIT event: User wants to exit. Notifying to stop mainLoop...");
             systemData->disableMainLoop ();
             break;
@@ -115,8 +123,27 @@ int InputEngine::computeStep (void)
             axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
             log->format (LOG_VERBOSE, "New SDL_KEYDOWN event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
-            if (event.key.keysym.sym == SDLK_KP_MINUS)
+            switch (event.key.keysym.sym)
             {
+            case SDLK_ESCAPE:
+                log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+                systemData->disableMainLoop ();
+                break;
+            case SDLK_HOME:
+                log->put (LOG_VERBOSE, "Processing a SDLK_HOME keypress...");
+                systemData->physicsDesiredFrequency = 30;
+                systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                break;
+            case SDLK_END:
+                log->put (LOG_VERBOSE, "Processing a SDLK_END keypress...");
+                systemData->physicsDesiredFrequency = 250;
+                systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                break;
+            case SDLK_q:
+                log->put (LOG_INFO, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
+                systemData->disableMainLoop ();
+                break;
+            case SDLK_KP_MINUS:
                 log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
                 if (systemData->physicsDesiredFrequency < 37)
                 {
@@ -125,14 +152,12 @@ int InputEngine::computeStep (void)
                         systemData->physicsDesiredFrequency++;
                     }
                     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-                } else
-                {
+                } else {
                     systemData->physicsTimeStep++;
                     systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
                 }
-            }
-            if (event.key.keysym.sym == SDLK_KP_PLUS)
-            {
+                break;
+            case SDLK_KP_PLUS:
                 log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
                 if (systemData->physicsDesiredFrequency < 37)
                 {
@@ -145,6 +170,9 @@ int InputEngine::computeStep (void)
                     }
                     systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
                 }
+                break;
+            default:
+                break;
             }
             break;
         case SDL_MOUSEMOTION:
@@ -179,14 +207,12 @@ int InputEngine::computeStep (void)
             break;
         }
     }
-    processKeyboard ();
 
     int numTrackCams = World::getWorldPointer()->trackList[0]->cameraList.size();
     for (int i=0; i < numTrackCams; i++)
     {
         World::getWorldPointer()->trackList[0]->cameraList[i]->stepInput();
     }
-    
     
 /*    log->telemetry (LOG_TRACE, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue(),
@@ -201,39 +227,9 @@ int InputEngine::computeStep (void)
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,3)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,4)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,5)]->getValue());
-    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
-*/
+    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5"); */
+
     return (0);
-}
-
-void InputEngine::processKeyboard ()
-{
-    // Processing key presses...
-    if (keyState[SDLK_ESCAPE])
-    {
-        log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
-        systemData->disableMainLoop ();
-    }
-    if (keyState[SDLK_HOME])
-    {
-        log->put (LOG_VERBOSE, "Processing a SDLK_HOME keypress...");
-        systemData->physicsDesiredFrequency = 30;
-        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-    }
-
-    if (keyState[SDLK_END])
-    {
-        log->put (LOG_VERBOSE, "Processing a SDLK_END keypress...");
-        systemData->physicsDesiredFrequency = 250;
-        systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-    }
-
-    if (keyState[SDLK_q])
-    {
-        log->put (LOG_INFO, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
-        systemData->disableMainLoop ();
-    }
-    // Processing key releases...
 }
 
 InputEngine::~InputEngine (void)

@@ -101,7 +101,6 @@ int GraphicsEngine::computeStep (void)
         sprintf (tmpName, screenshotFilename.c_str(), count++);
         log->format (LOG_TRACE, "Taking a screenshot in %s.", tmpName);
         systemData->ogreWindow->writeContentsToFile (tmpName);
-        systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
 
     // change camera if needed
@@ -116,7 +115,6 @@ int GraphicsEngine::computeStep (void)
         }
         World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
         World::getWorldPointer()->activeTrackCamera = World::getWorldPointer()->trackList[0]->cameraList[nextCam];
-        systemData->axisMap[getIDKeyboardKey(SDLK_c)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
@@ -128,7 +126,6 @@ int GraphicsEngine::computeStep (void)
         }
         World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->vehicleList[0]->cameraList[nextCam]);
         World::getWorldPointer()->activeVehicleCamera = World::getWorldPointer()->vehicleList[0]->cameraList[nextCam];
-        systemData->axisMap[getIDKeyboardKey(SDLK_v)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();

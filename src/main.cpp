@@ -105,6 +105,7 @@ int main (int argc, char **argv)
                         recordVideoFrames();
                     }
                     inputEngine->computeStep ();
+                    computeLogic();
                     steps++;
                 }
                 step = systemData->timeScale;
@@ -115,6 +116,8 @@ int main (int argc, char **argv)
         // Run the graphics engine.
         graphicsEngine->computeStep ();
         systemData->graphicsSteps++;
+        // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
+        inputEngine->clearEventAxis();
     }
     log->put (LOG_INFO, "Main loop finished");
 
@@ -152,6 +155,11 @@ void startSdl (LogEngine * log)
 void stopSdl (void)
 {
     SDL_Quit ();
+}
+
+void computeLogic ()
+{
+
 }
 
 void recordVideoFrames ()

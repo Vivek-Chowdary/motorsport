@@ -26,14 +26,6 @@ class InputEngine
     LogEngine * log;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-
-    // / Keyboard keys state array.
-    /** This is a pointer to SDL's internal keyboard keys state array. It allows to check whether a key is pressed or not, instead of having to go through the whole events queue, storing data by ourselves.
-    */
-    Uint8 *keyState;
-
-    // / Finds out keyboard keys state, and modifies the world data according to it.
-    void processKeyboard ();
   public:
     // / Creates a new input engine.
     /** Creates a new input engine, with its associated own log engine. It initializes all necessary related data.
@@ -49,5 +41,5 @@ class InputEngine
     int computeStep (void);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
+    void clearEventAxis ();
 };
