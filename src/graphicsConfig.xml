@@ -10,7 +10,7 @@
         windowsPluginsDir = "plugins"
         sceneManager = "ST_GENERIC"
         anisotropy = "1"
-        filtering = "TFO_NONE"
+        filtering = "TFO_BILINEAR"
         width = "1024"
         height = "768"
         bpp = "0" 

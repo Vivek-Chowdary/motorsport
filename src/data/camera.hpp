@@ -21,22 +21,38 @@
 
 #ifndef CAMERA_HPP
 #   define CAMERA_HPP
+#   include "ode/objects.h"
 
 namespace Ogre { 
   class Camera; 
 };
 
+class Vector3d;
+
 class Camera
 {
   private:
     static int instancesCount;
+    dBodyID positionID;
+    Vector3d * positionOffset;
+    dBodyID targetID;
+    Vector3d * targetOffset;
 
   public:
     Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     ~Camera ();
+    void updateOgrePosition ();
+    void updateOgreTarget ();
+    void setPositionID (dBodyID positionID);
+    void setTargetID (dBodyID targetID);
+
+    // physics
+    void startPhysics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    void stepPhysics();
+    void stopPhysics();
 
     // graphics
-    void startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    void startGraphics ();
     void stepGraphics ();
     void stopGraphics ();
 

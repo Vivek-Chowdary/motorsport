@@ -31,6 +31,10 @@
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
 }
+dBodyID Vehicle::getVehicleID()
+{
+    return body->bodyID;
+}
 
 void Vehicle::setPosition (Vector3d position)
 {

@@ -289,7 +289,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     log->put (LOG_INFO, "Setting vehicle starting rotation");
     Vector3d rotation = track->vehiclePositionMap[vehicleStartPosition]->getRotation();
     vehicle->setRotation (rotation);
-    
+
+    for (unsigned int i=0; i< trackList[0]->cameraList.size(); i++)
+    {
+        trackList[0]->cameraList[i]->setPositionID( vehicleList[0]->getVehicleID() );
+        trackList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
+    }
+
     // set active camera
     log->put (LOG_INFO, "Setting camera viewport");
     if (useTrackCamera)

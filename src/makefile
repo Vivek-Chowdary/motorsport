@@ -223,6 +223,7 @@ SOURCES := \
 	graphics/wheelGraphics.cpp \
 	data/suspensionData.cpp \
 	physics/suspensionPhysics.cpp \
+	physics/cameraPhysics.cpp \
 	main.cpp
 ###########################################
 

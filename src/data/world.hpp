@@ -27,11 +27,11 @@
 #   include <vector>
 #   include <string>
 #   include "worldObject.hpp"
+#   include "vehicle.hpp"
 
 //forward declaration
 class Camera;
 class Track;
-
 
 class World : public WorldObject
 {
@@ -52,7 +52,8 @@ class World : public WorldObject
     dJointGroupID jointGroupID;
 
     std::vector < Track * > trackList;
-    std::vector < WorldObject * > vehicleList;
+    //std::vector < WorldObject * > vehicleList;
+    std::vector < Vehicle * > vehicleList;
 
     void setActiveCamera (Camera * camera);
     Camera * getActiveCamera (void);

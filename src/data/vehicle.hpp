@@ -24,6 +24,7 @@
 #   include <string>
 #   include <map>
 #   include "worldObject.hpp"
+#   include "ode/objects.h"
 
 //forward declarations
 class Body;
@@ -65,6 +66,7 @@ class Vehicle : public WorldObject
     Vector3d getRotation ();
     void attachWheelsToBody();
     double getTorque ();
+    dBodyID getVehicleID();
 
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
