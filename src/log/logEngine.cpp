@@ -68,12 +68,12 @@ int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
     //TODO check returning values
     //convert parameters to a string
     va_start ( arglist, textToLogFormat );
-#if defined( _STLPORT_VERSION ) || !defined(WIN32)
-    vsnprintf ( buffer, sizeof ( buffer ), textToLogFormat, arglist );
-#else
-#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
-    vsprintf ( buffer, textToLogFormat, arglist );
-#endif
+#   if defined( _STLPORT_VERSION ) || !defined(WIN32)
+        vsnprintf ( buffer, sizeof ( buffer ), textToLogFormat, arglist );
+#   else
+#       pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
+        vsprintf ( buffer, textToLogFormat, arglist );
+#   endif
     va_end ( arglist );
 
     //put the string with a new line
@@ -95,20 +95,28 @@ int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
     switch ( level )
     {
     case LOG_ERROR:
-        if ( fputs ( ")(EE): ", logFile ) == EOF ) return ( -3 );
+        fputs ( ")(EE): ", logFile );
         break;
     case LOG_WARNING:
-        if ( fputs ( ")(WW): ", logFile ) == EOF ) return ( -3 );
+        fputs ( ")(WW): ", logFile );
         break;
+    case LOG_INFO:
+        fputs ( ")(II): ", logFile );
+        break;
+    case LOG_VERBOSE:
+        fputs ( ")(VV): ", logFile );
+        break;
+    case LOG_TRACE:
+        fputs ( ")(TT): ", logFile );
     default:
-        if ( fputs ( ")(II): ", logFile ) == EOF ) return ( -3 );
         break;
     }
     
     //write log text
-    if ( fputs ( textToLog, logFile ) == EOF ) return ( -3 );
+    fputs ( textToLog, logFile );
     fputc ('\n', logFile );
-    if ( fflush ( logFile ) != 0) return ( -3 );
+    fflush ( logFile );
+    if ( level == LOG_ERROR ) exit ( 1 );
     return ( 0 );
 }
 
