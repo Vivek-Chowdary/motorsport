@@ -20,20 +20,21 @@
 ******************************************************************************/
 
 #ifndef MAIN_HPP
-#    define MAIN_HPP
-#    include "SDL.h"
-#    include "world.hpp"        // contains the IDF for the simulated/virtual world data
-#    include "system.hpp"       // contains the IDF for the system data
-#    include "logEngine.hpp"    // allows to easily log actions
-#    include "dataEngine.hpp"   // loads/saves data from memory into the virtual world
-#    include "inputEngine.hpp"  // process the queue of input events
-#    include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
-#    include "physicsEngine.hpp"    // calculates the physics of the world data
-#    include "guiEngine.hpp"    // displays all the user interface on screen
+#   define MAIN_HPP
+#   include "SDL.h"
+#   include "world.hpp"        // contains the IDF for the simulated/virtual world data
+#   include "system.hpp"       // contains the IDF for the system data
+#   include "logEngine.hpp"    // allows to easily log actions
+#   include "dataEngine.hpp"   // loads/saves data from memory into the virtual world
+#   include "inputEngine.hpp"  // process the queue of input events
+#   include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
+#   include "physicsEngine.hpp"    // calculates the physics of the world data
+#   include "guiEngine.hpp"    // displays all the user interface on screen
 #ifdef WIN32
 #define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
 #endif
+#   include <string>
 
 struct ParsingMainData;
 void stopSdl (void);

@@ -35,6 +35,7 @@ struct CubeGraphicsData;
 class Cube : public WorldObject
 {
   private:
+    static int instancesCount;
     float moveToXPositive;
     float moveToXNegative;
     float moveToYPositive;

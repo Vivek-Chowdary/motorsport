@@ -108,3 +108,27 @@ XmlFile::~XmlFile ()
     parser->release ();
     XMLPlatformUtils::Terminate ();
 }
+
+void assignXmlString (std::string & destString, const XMLCh * srcXmlString)
+{
+    char * tmpString = XMLString::transcode(srcXmlString);
+    destString.assign(tmpString);
+    XMLString::release (&tmpString);
+}
+
+int stoi (const std::string &srcString)
+{
+    std::stringstream tmpString(srcString);
+    int tmpInt;
+    tmpString >> tmpInt;
+    return tmpInt;
+}
+
+bool stob (const std::string &srcString)
+{
+    if (srcString == "true")
+        return true;
+    if (srcString == "false" || srcString == "0")
+        return false;
+    return true;
+}

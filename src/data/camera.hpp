@@ -30,6 +30,7 @@ class Camera;
 class Camera
 {
   private:
+    static int instancesCount;
     int rotateLeft;
     int rotateRight;
     int rotateUp;

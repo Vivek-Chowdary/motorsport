@@ -21,10 +21,11 @@
 
 #include "body.hpp"
 
+int Body::instancesCount = 0;
+
 Body::Body (char * xmlFilename)
 {
     log = new LogEngine (LOG_TRACE, "BOD");
-    
     log->put (LOG_INFO, "Starting to parse the body xml file");
     XmlFile * xmlFile = new XmlFile (xmlFilename);
     processXmlRootNode (xmlFile->getRootNode());
@@ -40,6 +41,8 @@ Body::~Body ()
     stopPhysics ();
     stopGraphics ();
     stopInput ();
+
+    delete log;
 }
 
 

@@ -21,6 +21,8 @@
 
 #include "cube.hpp"
 
+int Cube::instancesCount = 0;
+
 Cube::Cube (char * xmlFilename)
 {
     log = new LogEngine (LOG_TRACE, "CUB");
@@ -38,6 +40,10 @@ Cube::~Cube ()
 
     stopPhysics ();
     stopGraphics ();
+    stopInput ();
+    
+    log->format(LOG_TRACE, "Removed a cube. %i left.", instancesCount);
+    delete log;
 }
 
 

@@ -19,4 +19,3 @@
 *
 ******************************************************************************/
 #include "worldObject.hpp"
-int WorldObject::instancesCount = 0;

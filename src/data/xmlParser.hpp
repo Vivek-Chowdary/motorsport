@@ -28,6 +28,8 @@
 #else
 #    include <iostream.h>
 #endif
+#include <sstream>
+#include <string>
 
 XERCES_CPP_NAMESPACE_USE
 class DOMCountErrorHandler:public DOMErrorHandler
@@ -84,5 +86,9 @@ class XmlFile
         ~XmlFile ();
         DOMNode * getRootNode();
 };
+
+void assignXmlString (std::string & destString, const XMLCh * srcXmlString);
+int stoi (const std::string &srcString);
+bool stob (const std::string &srcString);
 
 #endif

@@ -35,7 +35,7 @@ struct BodyGraphicsData;
 class Body : public WorldObject
 {
   private:
-    //empty
+    static int instancesCount;
 
   public:
     // data

@@ -28,6 +28,10 @@ GuiEngine::GuiEngine ()
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
     
+    // get the direction of the graphics data
+    log->put (LOG_INFO, "Setting up data pointers...");
+    worldData = WorldData::getWorldDataPointer ();
+    systemData = SystemData::getSystemDataPointer ();
 }
 
 int GuiEngine::computeStep (void)
@@ -87,18 +91,19 @@ GuiEngine::~GuiEngine (void)
 
 void GuiEngine::processXmlRootNode (DOMNode * n)
 {
-    GuiData *data = new GuiData;
-    data->showStatistics = 1;
+    LOG_LEVEL localLogLevel = LOG_TRACE;
+    std::string localLogName = "GUI";
+    showStatistics = true;
 
     LogEngine * tmpLog = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            tmpLog->format (LOG_INFO, "Name: %s", name);
-
-            if (!strncmp (name, "guiConfig", 10))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            tmpLog->format (LOG_INFO, "Name: %s", name.c_str());
+            if (name == "guiConfig")
             {
                 tmpLog->put (LOG_INFO, "Found the gui engine config element.");
                 if (n->hasAttributes ())
@@ -108,62 +113,59 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                     int nSize = pAttributes->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "localLogLevel", 14))
+                        DOMAttr *attNode = (DOMAttr *) pAttributes->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "localLogLevel")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found the local log level: %s", name);
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(GuiData *) data).localLogLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(GuiData *) data).localLogLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(GuiData *) data).localLogLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(GuiData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
-                                (*(GuiData *) data).localLogLevel = LOG_TRACE;
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            name = XMLString::transcode (attNode->getValue ());
+
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
+                            localLogLevel = stologlevel (attribute);
                         }
 
-                        if (!strncmp (name, "localLogName", 13))
+                        if (attribute == "localLogName")
                         {
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found the log name: %s", name);
-                            (*(GuiData *) data).localLogName = new char[strlen (name) + 1];
-                            strncpy ((*(GuiData *) data).localLogName, name, strlen (name) + 1);
+                            localLogName.clear();
+                            assignXmlString (localLogName, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the log name: %s", localLogName.c_str());
+
                         }
-                        if (!strncmp (name, "showStatistics", 15))
+                        if (name == "showStatistics")
                         {
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            tmpLog->format (LOG_INFO, "Found whether to show the statistics or not: %s", name);
-                            if (!strncmp (name, "0", 2))
-                                (*(GuiData *) data).showStatistics = false;
-                            if (!strncmp (name, "1", 2))
-                                (*(GuiData *) data).showStatistics = true;
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue ());
+                            showStatistics = stob (attribute);
+                            tmpLog->format (LOG_INFO, "Found whether to show the statistics or not: %s", attribute.c_str());
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
             }
+            name.clear();
         }
     }
     delete tmpLog;
 
-    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log = new LogEngine (localLogLevel, localLogName.c_str());
     log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-
-    // get the direction of the graphics data
-    log->put (LOG_INFO, "Setting up data pointers...");
-    worldData = WorldData::getWorldDataPointer ();
-    systemData = SystemData::getSystemDataPointer ();
-
-    log->put (LOG_INFO, "Setting showStatistics ");
-    showStatistics = data->showStatistics;
-
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete data;
+    localLogName.clear();
 }
+
+LOG_LEVEL stologlevel (const std::string &srcString)
+{
+    if (srcString == "LOG_ERROR")
+        return LOG_ERROR;
+    if (srcString == "LOG_WARNING")
+        return LOG_WARNING;
+    if (srcString == "LOG_INFO")
+        return LOG_INFO;
+    if (srcString == "LOG_VERBOSE")
+        return LOG_VERBOSE;
+    if (srcString == "LOG_TRACE")
+        return LOG_TRACE;
+    return LOG_TRACE;
+}                                                                

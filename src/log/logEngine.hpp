@@ -52,9 +52,6 @@ enum LOG_LEVEL
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
 */
-
-struct LogData;
-
 class LogEngine
 {
 
@@ -128,12 +125,5 @@ class LogEngine
     friend void TestGetLogLevelCode ();
 };
 
-struct LogData
-{
-    LogEngine *log;
-    LOG_LEVEL globalLevel;
-    char *fileName;
-    int textBuffer;
-};
-
+LOG_LEVEL stologlevel (const std::string &srcString);
 #endif

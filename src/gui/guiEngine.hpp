@@ -69,10 +69,3 @@ class GuiEngine
     void processXmlRootNode (DOMNode * n);
 };
 
-struct GuiData
-{
-    GuiEngine *gui;
-    LOG_LEVEL localLogLevel;
-    char *localLogName;
-    bool showStatistics;        // 1->yes.  0->no.
-};

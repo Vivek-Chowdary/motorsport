@@ -52,8 +52,8 @@ int DataEngine::loadWorldData (void)
         WorldData::getWorldDataPointer()->cameraList.push_back (cameraPointer);
     }
     log->put (LOG_INFO, "Setting camera viewport");
-
-    Ogre::Viewport * vp = systemData->ogreWindow->addViewport (worldData->cameraList[0]->ogreCamera);
+    Ogre::Viewport * vp = systemData->ogreWindow->addViewport (WorldData::getWorldDataPointer()->cameraList[0]->ogreCamera);
+    log->put (LOG_INFO, "Setting bg color");
     vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
 
     // Create the skybox
@@ -94,11 +94,29 @@ int DataEngine::unloadWorldData (void)
 {
     // unload the bodies from memory
     log->put (LOG_INFO, "Unloading bodies from memory...");
+    int size = worldData->bodyList.size ();
+    for (int i = 0; i < size; i++)
+    {
+        delete worldData->bodyList[i];
+    }
     WorldData::getWorldDataPointer()->bodyList.clear ();
+    
     // unload the cubes from memory
     log->put (LOG_INFO, "Unloading cubes from memory...");
+    size = worldData->cubeList.size ();
+    for (int i = 0; i < size; i++)
+    {
+        delete worldData->cubeList[i];
+    }
     WorldData::getWorldDataPointer()->cubeList.clear ();
+    
+    // unload the cameras from memory
     log->put (LOG_INFO, "Unloading cameras from memory...");
+    size = worldData->cameraList.size ();
+    for (int i = 0; i < size; i++)
+    {
+        delete worldData->cameraList[i];
+    }
     WorldData::getWorldDataPointer()->cameraList.clear ();
 
     return (0);

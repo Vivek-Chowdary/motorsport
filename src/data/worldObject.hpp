@@ -29,7 +29,6 @@ class WorldObject
 {
   protected:
     LogEngine * log;
-    static int instancesCount;
 
   public:
     // data

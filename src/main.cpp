@@ -131,8 +131,11 @@ void stopSdl (void)
 
 LogEngine * processXmlRootNode (DOMNode * node)
 {
-    ParsingMainData * data = new ParsingMainData;
     LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    log->put(LOG_INFO, "Assigning default values");
+    LOG_LEVEL localLogLevel = LOG_TRACE;
+    std::string localLogName = "MAI";
+    
     if (node)
     {
         if (node->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -152,45 +155,44 @@ LogEngine * processXmlRootNode (DOMNode * node)
                     for (int i = 0; i < nodeSize; ++i)
                     {
                         DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "localLogLevel", 14))
+                        std::string name;
+                        name.assign( XMLString::transcode (pAttributeNode->getName ()) );
+                        if (name == "localLogLevel")
                         {
-                            XMLString::release (&name);
-                            log->format (LOG_INFO, "\tFound the local log level:", name);
+                            name.erase();
+                            log->format (LOG_INFO, "\tFound the local log level: %s", name.c_str());
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(ParsingMainData *) data).localLogLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(ParsingMainData *) data).localLogLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(ParsingMainData *) data).localLogLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(ParsingMainData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
-                                (*(ParsingMainData *) data).localLogLevel = LOG_TRACE;
+                            if (name == "LOG_ERROR")
+                                localLogLevel = LOG_ERROR;
+                            if (name == "LOG_WARNING")
+                                localLogLevel = LOG_WARNING;
+                            if (name == "LOG_INFO")
+                                localLogLevel = LOG_INFO;
+                            if (name == "LOG_VERBOSE")
+                                localLogLevel = LOG_VERBOSE;
+                            if (name == "LOG_TRACE")
+                                localLogLevel = LOG_TRACE;
                         }
-                        if (!strncmp (name, "localLogName", 13))
+                        if (name == "localLogName")
                         {
-                            XMLString::release (&name);
+                            name.erase();
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "\tFound the log name:", name);
+                            log->format (LOG_INFO, "\tFound the log name: %s", name.c_str());
 
-                            (*(ParsingMainData *) data).localLogName = new char[strlen (name) + 1];
-                            strncpy ((*(ParsingMainData *) data).localLogName, name, strlen (name) + 1);
+                            localLogName.erase();
+                            localLogName = name;
                         }
-                        XMLString::release (&name);
+                        name.erase();
                     }
                 }
             }
             XMLString::release (&name);
         }
     }
+    LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str());
     delete log;
-
-    LogEngine *returnLog = new LogEngine (data->localLogLevel, data->localLogName);
     returnLog->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
     returnLog->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete[](data->localLogName);
-    delete data;
+    localLogName.erase();
     return returnLog;
 }

@@ -37,8 +37,9 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     logName.resize (3, ' ');
 
     // open the file for writing in rewrite mode if necessary.
-    if ((!numberOfLogEngines) || (!logFile.is_open ()))
+    if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
     {
+        std::cout << "Creating first LogEngine instance:" << name << std::endl;
         XmlFile * xmlFile = new XmlFile ("logConfig.xml");
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
@@ -126,17 +127,17 @@ LogEngine::~LogEngine ()
 
 void LogEngine::processXmlRootNode (DOMNode * n)
 {
-    LogData * data = new LogData;
+    std::string fileName = "motorsport-default.log";
+    globalLevel = LOG_TRACE;
+    std::cout << "Reading LogEngine configuration..." << std::endl;
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode (n->getNodeName ());
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
-
-            if (!strncmp (name, "logConfig", 10))
+            std::string name;
+            assignXmlString (name, n->getNodeName());
+            if (name == "logConfig")
             {
-                XERCES_STD_QUALIFIER cout << "Found the log engine config element." << XERCES_STD_QUALIFIER endl;
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -145,66 +146,56 @@ void LogEngine::processXmlRootNode (DOMNode * n)
                     for (int i = 0; i < nSize; ++i)
                     {
                         DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
-                        char *name = XMLString::transcode (pAttributeNode->getName ());
-                        if (!strncmp (name, "globalLevel", 12))
+                        std::string attribute;
+                        assignXmlString (attribute, pAttributeNode->getName());
+                        if (attribute == "globalLevel")
                         {
-                            XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the global log level:";
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            attribute.clear();
+                            assignXmlString (attribute, pAttributeNode->getValue());
 
-                            if (!strncmp (name, "LOG_ERROR", 10))
-                                (*(LogData *) data).globalLevel = LOG_ERROR;
-                            if (!strncmp (name, "LOG_WARNING", 13))
-                                (*(LogData *) data).globalLevel = LOG_WARNING;
-                            if (!strncmp (name, "LOG_INFO", 9))
-                                (*(LogData *) data).globalLevel = LOG_INFO;
-                            if (!strncmp (name, "LOG_VERBOSE", 12))
-                                (*(LogData *) data).globalLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
-                                (*(LogData *) data).globalLevel = LOG_TRACE;
+                            if (attribute == "LOG_ERROR")
+                                globalLevel = LOG_ERROR;
+                            if (attribute == "LOG_WARNING")
+                                globalLevel = LOG_WARNING;
+                            if (attribute == "LOG_INFO")
+                                globalLevel = LOG_INFO;
+                            if (attribute == "LOG_VERBOSE")
+                                globalLevel = LOG_VERBOSE;
+                            if (attribute == "LOG_TRACE")
+                                globalLevel = LOG_TRACE;
                         }
-                        if (!strncmp (name, "fileName", 9))
+                        if (attribute == "fileName")
                         {
-                            XERCES_STD_QUALIFIER cout << "\tFound the log filename:";
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-
-                            (*(LogData *) data).fileName = new char[strlen (name) + 1];
-                            strncpy ((*(LogData *) data).fileName, name, strlen (name) + 1);
+                            attribute.clear();
+                            assignXmlString (attribute, pAttributeNode->getValue());
+                            
+                            fileName.clear();
+                            fileName.assign (attribute);
                         }
-                        if (!strncmp (name, "textBuffer", 11))
+                        if (attribute == "textBuffer")
                         {
-                            XERCES_STD_QUALIFIER cout << "\tFound the buffer length:";
-                            XMLString::release (&name);
-                            name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-
-                            (*(LogData *) data).textBuffer = atoi (name);
+                            attribute.clear();
+                            assignXmlString (attribute, pAttributeNode->getValue());
+                            textBuffer = stoi (attribute);
                         }
-                        XMLString::release (&name);
+                        attribute.clear();
                     }
                 }
             }
+            name.clear();
         }
+    } else {
+        std::cerr << "ERROR: could not read LogEngine configuration values! Using default values." << std::endl;
     }
-    logFile.open (data->fileName, std::fstream::out);
+    std::cout << "Log messages will all be recorded in: " << fileName << std::endl;
+    logFile.open (fileName.c_str(), std::fstream::out);
     if (!logFile.good ())
     {
-        std::cerr << "Error: Logfile could not be opened.\n";
+        std::cerr << "Error: Logfile (" << fileName << ") could not be opened.\n";
         return;
     }
-    put (LOG_INFO, "Temporary parsing data already loaded into memory...");
     put (LOG_INFO, "LogFile created");
-    put (LOG_INFO, "Setting global log level...");
-    globalLevel = data->globalLevel;
-    
-    put (LOG_INFO, "Setting log format() method text buffer length...");
-    textBuffer = data->textBuffer;
     
     put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    
-    delete[](data->fileName);
-    delete data;
+    fileName.clear();
 }

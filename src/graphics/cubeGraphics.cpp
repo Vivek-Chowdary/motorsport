@@ -24,7 +24,6 @@
 void Cube::startGraphics (DOMNode * n)
 {
     CubeGraphicsData * graphics = new CubeGraphicsData;
-    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
