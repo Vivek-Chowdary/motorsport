@@ -22,15 +22,13 @@
 
 #include "main.hpp"
 
-int sdl_start ( LogEngine * log )
+void sdl_start ( LogEngine * log )
 {                               //initialization functions for SDL
     //returns -2 on warning, -1 on error, 0 on success
     if (SDL_Init( SDL_INIT_TIMER /* | SDL_INIT_JOYSTICK */ ) < 0)
     {
         log->format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError());
-        return (-1);
     }
-    return (0);
 }
 
 void sdl_stop ( void )
@@ -85,8 +83,7 @@ int main ( int argc, char **argv )
                           systemData->physicsStepsPerSecond );
         }
         //run the physics engine until the game time is in sync with the real time
-        while ( ( systemData->currentMainLoopTime -
-                  systemData->currentPhysicsTime ) >=
+        while ( ( systemData->currentMainLoopTime - systemData->currentPhysicsTime ) >=
                 systemData->physicsData.timeStep )
         {
             systemData->currentPhysicsTime += systemData->physicsData.timeStep;

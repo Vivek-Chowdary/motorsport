@@ -30,8 +30,10 @@
 class Cube
 {
     private:
-        int moveToX;
-        int moveToY;
+        float moveToXPositive;
+        float moveToXNegative;
+        float moveToYPositive;
+        float moveToYNegative;
     public:
         //should be private
         Ogre::Entity * cubeEntity;
@@ -43,10 +45,14 @@ class Cube
         //should be public or similar
         void updateOgrePosition();
         void updateOgreOrientation();
-        void setMoveToX ( int multiplier );
-        void setMoveToY ( int multiplier );
-        int getMoveToX ( );
-        int getMoveToY ( );
+        void setMoveToXPositive ( float multiplier );
+        void setMoveToXNegative ( float multiplier );
+        void setMoveToYPositive ( float multiplier );
+        void setMoveToYNegative ( float multiplier );
+        float getMoveToXPositive ( );
+        float getMoveToXNegative ( );
+        float getMoveToYPositive ( );
+        float getMoveToYNegative ( );
 };
 
 class Camera
@@ -66,8 +72,10 @@ class Camera
         void setRotateDown ( int multiplier );
         void setRotateLeft ( int multiplier );
         void setRotateRight ( int multiplier );
-        int getRotateVertical ( );
-        int getRotateHorizontal ( );
+        int getRotateUp ( );
+        int getRotateDown ( );
+        int getRotateLeft ( );
+        int getRotateRight ( );
 
         bool goBack;
         bool goForward;

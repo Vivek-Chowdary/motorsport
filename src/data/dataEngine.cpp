@@ -50,6 +50,13 @@ int DataEngine::loadWorldData ( void )
     worldData->numberOfCubes = 200;
     log->format ( LOG_INFO, "Creating an array of %i cubes...", worldData->numberOfCubes );
     worldData->cubeList = new Cube[worldData->numberOfCubes];
+    for (int i=0;i<worldData->numberOfCubes;i++)
+    {
+        worldData->cubeList[i].setMoveToXPositive(0);
+        worldData->cubeList[i].setMoveToXNegative(0);
+        worldData->cubeList[i].setMoveToYPositive(0);
+        worldData->cubeList[i].setMoveToYNegative(0);
+    }
 
     return ( 0 );
 }

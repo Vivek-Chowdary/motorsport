@@ -67,9 +67,8 @@ GraphicsEngine::GraphicsEngine ( )
         sprintf ( nombre, "Cubo%i", i );
         worldData->cubeList[i].cubeEntity = graphicsData->ogreSceneManager->createEntity ( nombre, "../data/cube.mesh" );
         worldData->cubeList[i].cubeEntity->setMaterialName("cube");
-        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( graphicsData->ogreSceneManager->
-               getRootSceneNode (  )->createChild (  ) );
-        worldData->cubeList[i].cubeNode->attachObject ( worldData->cubeList[i].cubeEntity );
+        worldData->cubeList[i].cubeNode = static_cast < SceneNode * >( graphicsData->ogreSceneManager->getRootSceneNode ( )->createChild ( ) );
+        worldData->cubeList[i].cubeNode->attachObject (worldData->cubeList[i].cubeEntity);
     }
 
     //Set some graphics settings

@@ -35,170 +35,157 @@ InputEngine::InputEngine ( )
     systemData = SystemData::getSystemDataPointer ();
     worldData = WorldData::getWorldDataPointer ();
     inputData = &( systemData->inputData );
+ 
+    log->put ( LOG_INFO, "Creating and zeroing keys state array" );
+    maxNumberOfKeys = 384;
+    keyState = new bool[maxNumberOfKeys];
+    for (int i = 0; i < maxNumberOfKeys; i++)
+    {
+        keyState [i] = false;
+    }
+
+    log->put ( LOG_INFO, "Initializing mouse data");
+    mouseMovementX = mouseMovementY = 0;
 }
 
-int InputEngine::step ( void )  //processes user input queue
+int InputEngine::step ( void )
 {
-    //mega-verbosity
-    //log->put (LOG_VERBOSE, "Doing an step: checking for input events...");
-    processMouseMovement ( );
-
-    SDL_Event event;            //used to store the current event in the queue
-
-    //sdl has a queue of events. this queue of events is processed as 'steps',
-    // called from the mainLoop. every step of the inputEngine will see what
-    // the user wants (what input events has he made), and act accordingly.
-    // there can be more than one event in each step, that's why there's a
-    // 'while' (after all, it's a queue ;)
+    SDL_Event event;
     while ( SDL_PollEvent ( &event ) )
     {
-        switch ( event.type )   //identify the kind of event
+        switch ( event.type )
         {
         case SDL_KEYDOWN:
-            //this is the user pressing a key in the keyboard
-            log->put ( LOG_VERBOSE,
-                      "New SDL_KEYDOWN event: finding out what key's been pressed." );
-            processInputKeyDown ( event.key.keysym.sym );
+            log->put ( LOG_VERBOSE, "New SDL_KEYDOWN event: finding out what key's been pressed." );
+            keyState[event.key.keysym.sym] = true;
             break;
 
         case SDL_KEYUP:
-            //this is the user pressing a key in the keyboard
-            log->put ( LOG_VERBOSE,
-                      "New SDL_KEYUP event: finding out what key's been released." );
-            processInputKeyUp ( event.key.keysym.sym );
+            log->put ( LOG_VERBOSE, "New SDL_KEYUP event: finding out what key's been released." );
+            keyState[event.key.keysym.sym] = false;
             break;
 
-/*        case SDL_MOUSEMOTION:
-            log->put ( LOG_VERBOSE, "New SDL_MOUSEMOTION event: processing movement data..." );
-            processMouseMovement ( event.motion );
-            break;
-*/                                                                                                        
         case SDL_QUIT:
             //this can be the user cliking to close the window
-            log->put ( LOG_VERBOSE,
-                      "New SDL_QUIT event: notifying to stop mainLoop..." );
+            log->put ( LOG_VERBOSE, "New SDL_QUIT event: notifying to stop mainLoop..." );
             systemData->disableMainLoop (  );
             break;
         default:
-            //this can be mouse movement, joystick input,...
-            //log->put (LOG_WARNING, "Processing an unknown event: doing nothing");
             break;
         }
     }
-    //finished processing the events queue
-
+    int x = 0, y = 0;
+    SDL_GetRelativeMouseState( &x, &y);
+    mouseMovementX = x;
+    mouseMovementY = - y;
+    
+    processKeyboard ();
+    //processMouseButtons ();
+    processMouseMovement ( );
+    
     return ( 0 );
 }
 
-void InputEngine::processMouseMovement ( /*SDL_MouseMotionEvent mouseMotion*/)
+void InputEngine::processMouseMovement ( )
 {
-    int x = 0, y = 0;
-    SDL_GetRelativeMouseState(&x, &y);
-    worldData->camera->setRotateRight (x);
-    worldData->camera->setRotateUp (y);
-/*    worldData->camera->setRotateUp (mouseMotion.xrel);
-    worldData->camera->setRotateRight (mouseMotion.yrel);
-*/
+    if (mouseMovementX)
+    {
+        worldData->camera->setRotateRight (mouseMovementX);
+    }
+    if (mouseMovementY)
+    {
+        worldData->camera->setRotateUp (mouseMovementY);
+    }
 }
 
-void InputEngine::processInputKeyDown ( SDLKey keySymbol )
+void InputEngine::processKeyboard ( )
 {
-    // in the future, the player will be able to assign, at least, *which* events
-    // (keypress, joystick axis modification....) do *what* in the virtual world
-    // data.
-    // if people want, we can also allow the user to assign *which* events do
-    // *what* in the system data. this means the user could be able to navigate
-    // through the menus with whatever they want. for example, instead of using
-    // the mouse to click gui buttons, the use the steering wheel to select the
-    // button and the gas pedal to 'click' the button.
-    switch ( keySymbol )
+    //Processing key presses...
+    if ( keyState[SDLK_RETURN] || keyState[SDLK_ESCAPE] )
     {
-        // the user wants to modify system data using the inputEngine. in this
-        // example, he notifies to the main program that he wants to exit the
-        // simulation, therefore exiting the program
-        // when we get the real gui (paragui?) working, it will notify that the
-        // user wants to go to X menu, or go to the replay system, or pause the
-        // simulation, save the game, etc...
-        // we indicate that the user wants to exit the simulation
-    case SDLK_RETURN:
-    case SDLK_ESCAPE:
         log->put ( LOG_VERBOSE,
                   "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop..." );
         systemData->disableMainLoop (  );
-        break;
+    }
 
-        // the user wants to modify world data using the inputEngine. in this
-        // example, the inputEngine moves the camera around.
-        // when we get ode working, the inputEngine will change some properties
-        // of the world objects, which in that case will be for example
-        // worldObjectList.gasPedal.modifyAngle (angle+10)
-        // the same goes for steering wheel, etc.
-        // the physics engine will *then* calculate the rest of reactions of
-        // other objects of te virtual world. in this case, it would put more
-        // air+fuel in the cylinders, which would therefore accelerate the rpms,
-        // therefore modifying.... etc...
-    case SDLK_RIGHT:
+    if ( keyState[SDLK_RIGHT] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keypress..." );
-        worldData->camera->setRotateRight (2);
+        worldData->camera->setRotateRight (20);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the right." );
-        break;
+    }
 
-    case SDLK_LEFT:
+    if ( keyState[SDLK_LEFT] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_LEFT keypress..." );
-        worldData->camera->setRotateLeft (2);
+        worldData->camera->setRotateLeft (20);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the left." );
-        break;
+    }
 
-    case SDLK_UP:
+    if ( keyState[SDLK_UP] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_UP keypress..." );
-        worldData->camera->setRotateUp (2);
+        worldData->camera->setRotateUp (20);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the top." );
-        break;
+    }
 
-    case SDLK_DOWN:
+    if ( keyState[SDLK_DOWN] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_DOWN keypress..." );
-        worldData->camera->setRotateDown (2);
+        worldData->camera->setRotateDown (20);
         log->put ( LOG_VERBOSE, "Camera1 rotated to the bottom." );
-        break;
+    }
 
-    case 'w':
+    if ( keyState[SDLK_w] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
         worldData->camera->goForward = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
-        break;
+    }
 
-    case 's':
+    if ( keyState[SDLK_s] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
         worldData->camera->goBack = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
-        break;
+    }
 
-    case 'a':
+    if ( keyState[SDLK_a] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
         worldData->camera->goLeft = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
-        break;
+    }
 
-    case 'd':
+    if ( keyState[SDLK_d] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keypress..." );
         worldData->camera->goRight = true;
         log->put ( LOG_VERBOSE, "Camera moved." );
-        break;
+    }
 
-    case 'o':
-        worldData->cubeList[0].setMoveToX(-1);
-        break;
-    case 'p':
-        worldData->cubeList[0].setMoveToX(+1);
-        break;
-    case 'i':
-        worldData->cubeList[0].setMoveToY(+1);
-        break;
-    case 'k':
-        worldData->cubeList[0].setMoveToY(-1);
-        break;
+    if ( keyState[SDLK_o] )
+    {
+        worldData->cubeList[0].setMoveToXNegative(1);
+    }
         
-    case SDLK_KP_MINUS:
+    if ( keyState[SDLK_p] )
+    {
+        worldData->cubeList[0].setMoveToXPositive(1);
+    }
+        
+    if ( keyState[SDLK_i] )
+    {
+        worldData->cubeList[0].setMoveToYPositive(1);
+    }
+        
+    if ( keyState[SDLK_k] )
+    {
+        worldData->cubeList[0].setMoveToYNegative(1);
+    }
+        
+    if ( keyState[SDLK_KP_MINUS] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress..." );
         //modify the physics engine rate
         //if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
@@ -218,12 +205,12 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
             systemData->physicsData.desiredStepsPerSecond =
                 1000 / systemData->physicsData.timeStep;
         }
-        break;
+    }
 
-    case SDLK_KP_PLUS:
+    if ( keyState[SDLK_KP_PLUS] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress..." );
         //if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
-
         if ( systemData->physicsData.desiredStepsPerSecond < 37 )
         {
             systemData->physicsData.desiredStepsPerSecond++;
@@ -240,114 +227,101 @@ void InputEngine::processInputKeyDown ( SDLKey keySymbol )
             systemData->physicsData.desiredStepsPerSecond =
                 1000 / systemData->physicsData.timeStep;
         }
-        break;
+    }
 
-    case 'q':
+    if ( keyState[SDLK_q] )
+    {
         log->put ( LOG_VERBOSE, "Processing a 'Q' keypress: exiting program" );
         systemData->disableMainLoop (  );
-        break;
-
-    case SDLK_PRINT:
-        log->put ( LOG_INFO, "Taking a screenshot to sshot.png" );
-        systemData->graphicsData.ogreWindow->
-            writeContentsToFile ( "sshot.png" );
-        break;
-
-    case 'f':
-        log->put ( LOG_VERBOSE,
-                  "Processing a 'F' keypress: turning on/off framerates display..." );
-        // something
-        systemData->graphicsData.invertStatisticsEnabled (  );
-        break;
-
-        //this is left for non-assigned input events.
-    default:
-        log->put ( LOG_VERBOSE,
-                  "Processing an unknown keypress: doing nothing..." );
-        // something
-        break;
     }
-}
-
-void InputEngine::processInputKeyUp ( SDLKey keySymbol )
-{
-    // in the future, the player will be able to assign, at least, *which* events
-    // (keypress, joystick axis modification....) do *what* in the virtual world
-    // data.
-    // if people want, we can also allow the user to assign *which* events do
-    // *what* in the system data. this means the user could be able to navigate
-    // through the menus with whatever they want. for example, instead of using
-    // the mouse to click gui buttons, the use the steering wheel to select the
-    // button and the gas pedal to 'click' the button.
-    switch ( keySymbol )
+        
+    if ( keyState[SDLK_PRINT] )
     {
-    case SDLK_RIGHT:
+        log->put ( LOG_INFO, "Taking a screenshot to sshot.png" );
+        systemData->graphicsData.ogreWindow->writeContentsToFile ( "sshot.png" );
+    }
+
+    if ( keyState[SDLK_f] )
+    {
+        log->put ( LOG_VERBOSE, "Processing a 'F' keypress: turning on/off framerates display..." );
+        systemData->graphicsData.invertStatisticsEnabled (  );
+    }
+    
+    //Processing key releases...
+    if ( !keyState[SDLK_RIGHT] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_RIGHT keyrelease..." );
         worldData->camera->setRotateRight (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
-        break;
+    }
 
-    case SDLK_LEFT:
+    if ( !keyState[SDLK_LEFT] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_LEFT keyrelease..." );
         worldData->camera->setRotateLeft (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
-        break;
+    }
 
-    case SDLK_UP:
+    if ( !keyState[SDLK_UP] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_UP keyrelease..." );
         worldData->camera->setRotateUp (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
-        break;
+    }
 
-    case SDLK_DOWN:
+    if ( !keyState[SDLK_DOWN] )
+    {
         log->put ( LOG_VERBOSE, "Processing a SDLK_DOWN keyprelease..." );
         worldData->camera->setRotateDown (0);
         log->put ( LOG_VERBOSE, "Camera1 stopped rotating." );
-        break;
+    }
 
-    case 'w':
+    if ( !keyState[SDLK_w] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
         worldData->camera->goForward = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
-        break;
+    }
 
-    case 's':
+    if ( !keyState[SDLK_s] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
         worldData->camera->goBack = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
-        break;
+    }
 
-    case 'a':
+    if ( !keyState[SDLK_a] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keyrelease..." );
         worldData->camera->goLeft = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
-        break;
+    }
 
-    case 'd':
+    if ( !keyState[SDLK_d] )
+    {
         log->put ( LOG_VERBOSE, "Processing a w keyprelease..." );
         worldData->camera->goRight = false;
         log->put ( LOG_VERBOSE, "Camera stopped moving." );
-        break;
+    }
 
-    case 'o':
-        worldData->cubeList[0].setMoveToX(0);
-        break;
-    case 'p':
-        worldData->cubeList[0].setMoveToX(0);
-        break;
-    case 'i':
-        worldData->cubeList[0].setMoveToY(0);
-        break;
-    case 'k':
-        worldData->cubeList[0].setMoveToY(0);
-        break;
+    if ( !keyState[SDLK_o] )
+    {
+        worldData->cubeList[0].setMoveToXNegative(0);
+    }
         
-        //this is left for non-assigned input events.
-    default:
-        log->put ( LOG_VERBOSE,
-                  "Processing an unknown keypress: doing nothing..." );
-        // something
-        break;
+    if ( !keyState[SDLK_p] )
+    {
+        worldData->cubeList[0].setMoveToXPositive(0);
+    }
+        
+    if ( !keyState[SDLK_i] )
+    {
+        worldData->cubeList[0].setMoveToYPositive(0);
+    }
+        
+    if ( !keyState[SDLK_k] )
+    {
+        worldData->cubeList[0].setMoveToYNegative(0);
     }
 }
 

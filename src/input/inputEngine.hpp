@@ -32,11 +32,14 @@ class InputEngine
     InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;
+    int maxNumberOfKeys;//see "/usr/include/SDL/SDL_keysym.h"
+    bool * keyState;
+    int mouseMovementX;
+    int mouseMovementY;
   public:
     InputEngine ( );    //starts the input engine
     ~InputEngine ( void );          //stops the input engine
     int step ( void );          //processes user input queue
-    void processInputKeyDown ( SDLKey keySymbol );
-    void processInputKeyUp ( SDLKey keySymbol );
-    void processMouseMovement ( /*SDL_MouseMotionEvent mouseMotion*/ );
+    void processKeyboard ( );
+    void processMouseMovement ( );
 };

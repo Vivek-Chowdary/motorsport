@@ -26,6 +26,7 @@
 #include "test_ode.cpp"
 #include <math.h>
 
+#ifdef WIN32
 #ifdef dDOUBLE
 #    pragma message ( "[BUILDMESG] ODE double precision library loaded")
 #    pragma comment( lib, "ode_double.lib" )
@@ -36,6 +37,7 @@
 #    else
 #        pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
 #    endif
+#endif
 #endif
 
 PhysicsEngine::PhysicsEngine ( )
@@ -141,8 +143,14 @@ int PhysicsEngine::step ( void )
         );
         //////////////////////////////////////simplified air friction
         //applying user input [forces]
-        dBodyAddForce (cubeID, currentCube->getMoveToX()*0.001*systemData->physicsData.timeStep, currentCube->getMoveToY()*0.001*systemData->physicsData.timeStep,0);
-        
+        float moveToX = 0, moveToY = 0;
+        moveToX += currentCube->getMoveToXPositive();
+        moveToX -= currentCube->getMoveToXNegative();
+        moveToY += currentCube->getMoveToYPositive();
+        moveToY -= currentCube->getMoveToYNegative();
+        moveToX /= 500;
+        moveToY /= 500;
+        dBodyAddForce (cubeID, moveToX * (systemData->physicsData.timeStep), moveToY * (systemData->physicsData.timeStep),0.0f );
     }
     
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
@@ -153,6 +161,7 @@ int PhysicsEngine::step ( void )
     dJointGroupEmpty (worldData->jointGroupID);
 
     //camera should be a physics object?
+    {
     float x = 0, z = 0;
     //translation of the camera, advancing or strafing
     x += ( worldData->camera->goRight ) ? physicsData->timeStep : 0;
@@ -160,8 +169,18 @@ int PhysicsEngine::step ( void )
     z -= ( worldData->camera->goForward ) ? physicsData->timeStep : 0;
     z += ( worldData->camera->goBack ) ? physicsData->timeStep : 0;
     worldData->camera->ogreCamera->moveRelative ( Ogre::Vector3 ( x, 0, z ) );
-    worldData->camera->ogreCamera->pitch (-(worldData->camera->getRotateVertical() * float(float(physicsData->timeStep) / 50.0)));
-    worldData->camera->ogreCamera->yaw (worldData->camera->getRotateHorizontal() * float(float(physicsData->timeStep)/50.0));
+    }
+    {
+    float x = 0, z = 0;
+    x -= worldData->camera->getRotateRight ();
+    x += worldData->camera->getRotateLeft ();
+    z += worldData->camera->getRotateUp ();
+    z -= worldData->camera->getRotateDown ();
+    x /= 100;
+    z /= 100;
+    worldData->camera->ogreCamera->yaw (x * (systemData->physicsData.timeStep));
+    worldData->camera->ogreCamera->pitch (z * (systemData->physicsData.timeStep));
+    }
 
     return ( 0 );
 }

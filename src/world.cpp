@@ -55,24 +55,40 @@ void Cube::updateOgrePosition()
     cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
 }
 
-void Cube::setMoveToX ( int multiplier)
+void Cube::setMoveToXPositive ( float multiplier)
 {
-    moveToX = multiplier;
+    moveToXPositive = multiplier;
+}
+void Cube::setMoveToXNegative ( float multiplier)
+{
+    moveToXNegative = multiplier;
 }
 
-void Cube::setMoveToY ( int multiplier)
+void Cube::setMoveToYPositive ( float multiplier)
 {
-    moveToY = multiplier;
+    moveToYPositive = multiplier;
+}
+void Cube::setMoveToYNegative ( float multiplier)
+{
+    moveToYNegative = multiplier;
 }
 
-int Cube::getMoveToX ( )
+float Cube::getMoveToXPositive ( )
 {
-    return moveToX;
+    return moveToXPositive;
+}
+float Cube::getMoveToXNegative ( )
+{
+    return moveToXNegative;
 }
 
-int Cube::getMoveToY ( )
+float Cube::getMoveToYPositive ( )
 {
-    return moveToY;
+    return moveToYPositive;
+}
+float Cube::getMoveToYNegative ( )
+{
+    return moveToYNegative;
 }
 void Cube::updateOgreOrientation()
 {
@@ -98,12 +114,20 @@ void Camera::setRotateDown ( int multiplier )
     rotateDown = multiplier;
 }
 
-int Camera::getRotateVertical (  )
+int Camera::getRotateUp (  )
 {
-    return rotateUp - rotateDown;
+    return rotateUp;
+}
+int Camera::getRotateDown (  )
+{
+    return rotateDown;
 }
 
-int Camera::getRotateHorizontal (  )
+int Camera::getRotateLeft (  )
 {
-    return rotateLeft - rotateRight;
+    return rotateLeft;
+}
+int Camera::getRotateRight (  )
+{
+    return rotateRight;
 }
