@@ -21,7 +21,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\log\,..\..\data\,..\..\graphics\,..\..\input\,,..\..\physics\"
+				AdditionalIncludeDirectories="..\..\log\,..\..\data\,..\..\graphics\,..\..\input\,..\..\physics\,..\.."
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;dDOUBLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
@@ -36,7 +36,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib ode_double.lib"
+				AdditionalDependencies="sdl.lib "
 				OutputFile="$(OutDir)/motorsport.exe"
 				LinkIncremental="2"
 				IgnoreDefaultLibraryNames=""
@@ -70,7 +70,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OmitFramePointers="TRUE"
-				AdditionalIncludeDirectories="..\..\log\,..\..\data\,..\..\graphics\,..\..\input\,,..\..\physics\"
+				AdditionalIncludeDirectories="..\..\log\,..\..\data\,..\..\graphics\,..\..\input\,..\..\physics\,..\.."
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;dDOUBLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
@@ -83,7 +83,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="sdl.lib ode_double.lib"
+				AdditionalDependencies="sdl.lib "
 				OutputFile="$(OutDir)/motorsport.exe"
 				LinkIncremental="1"
 				IgnoreAllDefaultLibraries="FALSE"

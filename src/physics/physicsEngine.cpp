@@ -31,6 +31,19 @@
 #include "test_ode.cpp"
 #include <math.h>
 
+#ifdef dDOUBLE
+	#pragma message ( "[BUILDMESG] ODE double precision library loaded")
+	#pragma comment( lib, "ode_double.lib" )
+#else
+	#ifdef dSINGLE
+		#pragma message ( "[BUILDMESG] ODE single precision library loaded")
+		#pragma comment( lib, "ode_single.lib" )
+	#else
+		#pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
+	#endif
+#endif
+
+
 /******************************************************************************
 *
 * Functions
