@@ -27,11 +27,14 @@ int main (int argc, char **argv)
 	
 	/*here will go either the 'game code', or a  "gui.start();" which will take
 	care of it all (gui, main loop, etc.)... we still need to decide that.
+	probably the best idea is to use a single piece of code for managing the
+	sim-mainLoop and the gui code (which would mean the gui isn't a separate
+	engine).
 	[...]
 	end of 'game' code
 	*/
-	
-	
+
+
 	//starting to stop the program: we stop all the engines that where loaded
 	log.put ("Stopping data engine");
 	data.stop ();
