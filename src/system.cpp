@@ -23,8 +23,8 @@
 #include "system.hpp"
 #include "SDL/begin_code.h"
 
+/*
 SystemData *SystemData::systemDataPointer = NULL;
-
 SystemData *SystemData::getSystemDataPointer ()
 {
     if (!systemDataPointer)
@@ -57,6 +57,30 @@ SystemData::~SystemData ()
 {
     delete systemDataPointer;
     systemDataPointer = NULL;
+}
+*/
+
+SystemData SystemData::systemDataObject = SystemData();
+
+SystemData *SystemData::getSystemDataPointer ()
+{
+    return (&systemDataObject);
+}
+
+SystemData::SystemData ()
+  : physicsSteps(0),
+    physicsFrequency(0),
+    graphicsSteps(0),
+    graphicsFrequency(0),
+    height(1),
+    width(1)
+{
+  //empty
+}
+
+SystemData::~SystemData ()
+{
+  //empty
 }
 
 bool SystemData::isMainLoopEnabled (void)

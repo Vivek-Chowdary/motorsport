@@ -22,7 +22,8 @@
 #ifndef AXIS_HPP
 #   define AXIS_HPP
 #   include <limits>
-//#   include <string> FIXME (read aidtostr below)
+#   include <string>  
+
 class Axis
 {
   private:
@@ -47,12 +48,12 @@ class Axis
     // etc...
 };
 
-//void aidtostr (int axisID, std::string destString); //FIXME!!
+void axisIDtoStr(int axisID, std::string& destString);
 
-int getIDJoyAxis (int joystickNumber, int axisNumber);
-int getIDJoyButton (int joystickNumber, int buttonNumber);
-int getIDMouseAxis (int axisNumber);
-int getIDMouseButton (int buttonNumber);
 int getIDKeyboardKey (int keyCode);
+int getIDMouseButton (int buttonNumber);
+int getIDMouseAxis (int axisNumber);
+int getIDJoyButton (int joystickNumber, int buttonNumber);
+int getIDJoyAxis (int joystickNumber, int axisNumber);
 
 #endif

@@ -29,10 +29,10 @@ namespace Ogre {
 class RenderWindow;
 class SceneManager;
 }
-
+class SystemData;
 class SystemData
 {                               // this contains all the data not related with the simulated/virtual world
-    static SystemData *systemDataPointer;
+    static SystemData systemDataObject;
     bool mainLoopEnabled;
     double cfmValue;     
     double erpValue;

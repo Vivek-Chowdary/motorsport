@@ -21,6 +21,7 @@
 
 #include "axis.hpp"
 #include <sstream>
+#include <algorithm>
 
 void Axis::setNewRawValue(int value)
 {
@@ -74,141 +75,118 @@ void inttostr (int number, std::string &destString)
 }
 
 
-/* gahh stupid switches and cases won't work!! FIXME
-void aidtostr (int axisID, std::string destString)
+void axisIDtoStr (int axisID, std::string& destString)
 {
-    int engineType = int (axisID / 100000000);
-    int rest = axisID % 100000000;
-    std::string tmpStr;
-//    switch (engineType)
-//    {
-    if (engineType == 0)
-    {
-//        case 0: //input player
-            int deviceType = int (rest / 1000000);
-            int deviceNumber = axisID % 1000000; //device number
-            switch (deviceType)
-            {
-                case 0: //kkey
-                    int key = axisID % 1000;
-                    destString.assign ("Keyboard #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", SDL key code #");
-                    inttostr (key, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 1: //mbut
-                    int button = axisID % 1000;
-                    destString.assign ("Mouse #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", button #");
-                    inttostr (button, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 2: //maxis
-                    int axis = axisID % 1000;
-                    destString.assign ("Mouse #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", axis #");
-                    inttostr (axis, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 3: //jbut
-                    int button = axisID % 1000;
-                    destString.assign ("Joystick #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", button #");
-                    inttostr (button, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 4: //jaxis
-                    int axis = axisID % 1000;
-                    destString.assign ("Joystick #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", axis #");
-                    inttostr (axis, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 5: //jhaxis
-                    int axis = axisID % 10;
-                    int hat = (axisID % 1000) - axis;
-                    destString.assign ("Joystick #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", hat #");
-                    inttostr (hat, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", axis #");
-                    inttostr (axis, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 6: //jtaxis
-                    int axis = axisID % 10;
-                    int trackball = (axisID % 1000) - axis;
-                    destString.assign ("Joystick #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", trackball #");
-                    inttostr (trackball, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", axis #");
-                    inttostr (axis, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                case 7: //tir
-                    int axis = axisID % 1000;
-                    destString.assign ("Track IR #");
-                    inttostr (deviceNumber, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (", axis #");
-                    inttostr (axis, tmpStr);
-                    destString.append (tmpStr);
-                    break;
-                default: //other
-                    destString.assign ("Local human player, unknown ID (#");
-                    inttostr (axisID, tmpStr);
-                    destString.append (tmpStr);
-                    destString.append (")");
-                    break;
-            }
-//            break;
-    } else if (engineType == 1) {
-//        case 1: //replay player
-            destString.assign ("Replay vehicle #");
-            int axis = axisID % 100000;
-            int driver = (axisID % 100000000) - axis;
-            inttostr (driver, tmpStr);
-            destString.append (tmpStr);
-            destString.append (", axis #");
-            inttostr (axis, tmpStr);
-            destString.append (tmpStr);
-//            break;
-    } else if (engineType == 2) {
-//        case 2: //ai player
-            destString.assign ("AI driver #");
-            int axis = axisID % 100000;
-            int driver = (axisID % 100000000) - axis;
-            inttostr (driver, tmpStr);
-            destString.append (tmpStr);
-            destString.append (", axis #");
-            inttostr (axis, tmpStr);
-            destString.append (tmpStr);
-//            break;
-    } else {
-//        default: //other
-            destString.assign ("Unknown ID (#");
-            inttostr (axisID, tmpStr);
-            destString.append (tmpStr);
-            destString.append (")");
-            break;
-    }
-}
+  std::ostringstream out;
+ 
+/*
+                DD  NNN                
+        DeviceType  DeviceNumber
+   EE            ^  ^               EEE
+   EngineType<-. |  |  ,->ElementNumber
+               | |  |  |
+               | |  |  |
+              EEDDNNNEEE        
 */
+      
+    int rest = axisID;
+    //.......................EEDDNNNEEE
+    int engineType   = rest / 100000000;
+    rest             = rest % 100000000;
+    int deviceType   = rest /   1000000;
+    rest             = rest %   1000000;
+    int deviceNumber = rest /      1000;
+    rest             = rest %      1000;
+    int elementNumber= rest; 
+
+    int subtype, axis, driver; 
+
+    const char* EngineName[] = { "HID", 
+				 "Replay vehicle #", 
+				 "AI driver #",
+				 "Unknown ID (#" };
+
+    const char* TypeName[] = {"Keyboard #",
+			    "Mouse #",
+			    "Mouse #",
+			    "Joystick #",
+			    "Joystick #",
+			    "Joystick #",
+			    "Joystick #",
+			    "Track IR #", 
+			    "Unknown HID #" };
+    
+    const char* ElementName[] = { ", SDL key code #",
+			   ", button #",
+			   ", axis #",
+			   ", button #",
+			   ", axis #",
+			    ", axis #",
+			    ", axis #",
+			    ", axis #",
+			    "unknown"};
+
+    const char* SubTypeName[] = { "","","","","", "", 
+			      "hat #", ", trackball #", 
+			      ""}; 
+    
+
+    // Any case fall through is intentional
+    switch (engineType) {
+    case 0: {
+      switch (deviceType)
+	{
+	case 0: //kkey
+	case 1: //mbut
+	case 2: //maxis
+	case 3: //jbut
+	case 4: //jaxis
+	case 7: //tir
+	  out << TypeName[deviceType];
+	  out << deviceNumber;
+	  out << ElementName[std::min(deviceType,7)];
+	  out << elementNumber;
+	  break;
+	case 6: //jtaxis
+	case 5: //jhaxis
+	  axis = axisID % 10;
+	  subtype = (axisID % 1000) - axis;
+	  out << TypeName[deviceType];
+	  out << deviceNumber;
+	  out << SubTypeName[std::min(deviceNumber, 7)];
+	  out << subtype;                   // hat/trackball
+	  out << ElementName[std::min(deviceType, 7)];
+	  out << axis;
+	  break;
+	default: //other
+	  out << TypeName[std::min(deviceType, 7)];
+	  out << axisID;
+	  out << ")";
+	  break;
+	}
+    }
+      break;
+
+    case 1: //replay vehicle
+    case 2: //ai player
+      out << EngineName[engineType];
+      axis = axisID % 100000;
+      driver = (axisID % 100000000) - axis;
+      out << driver;
+      out << ", axis #";
+      out << axis;
+      break;
+
+    default:
+      out << "Unknown ID (#";
+      out << axisID;
+      out << ")";
+      break;
+    }
+   
+    destString = out.str();
+}
+
 
 int getIDJoyAxis (int joystickNumber, int axisNumber)
 {
@@ -229,6 +207,7 @@ int getIDJoyAxis (int joystickNumber, int axisNumber)
 */
     return 4000000 + (joystickNumber * 1000) + axisNumber;
 }
+
 int getIDJoyButton (int joystickNumber, int buttonNumber)
 {
 /*

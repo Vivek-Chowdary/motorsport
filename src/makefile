@@ -46,7 +46,7 @@ LD := g++
 CC := gcc
 CXX := g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
-CXXFLAGS := $(CFLAGS) -time 
+CXXFLAGS := $(CFLAGS) -time
 ###########################################
 
 
@@ -55,7 +55,7 @@ CXXFLAGS := $(CFLAGS) -time
 
 ###########################################
 #Unit Test Programs (see also: RUN_TESTS)
-TEST_EXE := TestLogEngine
+TEST_EXE := TestLogEngine TestAxis
 ###########################################
 
 
@@ -117,6 +117,7 @@ INCLUDE_DIRS := \
 	gui \
 	data \
 	log \
+        tools \
 	$(BASE_INCLUDE_DIR)/../local/include/ode \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
@@ -170,7 +171,7 @@ endif
 ifeq ("$(PLATFORM)", "LINUX")
 PLATFORM_LIBRARIES := \
 	xerces-c \
-	pthread
+	pthread 
 endif
 #All libraries...	
 LIBRARIES := \
@@ -289,7 +290,11 @@ $(TARGET) :$(OBJECTS)
 	@echo    "----------------------------------------------"
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o log/logParser.o data/xmlParser.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o data/xmlParser.o
+	$(LD)  -o $@ $^
+	@chmod +x $@
+
+TestAxis: input/axis.o input/testAxis.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
