@@ -1,4 +1,3 @@
-// Ogre overlay scripts
 gui
 {
 	zorder 500
@@ -9,7 +8,7 @@ gui
 		vert_align bottom
 		left 5 
 		top -92
-		width 220
+		width 300
 		height 87
 		material gui/StatsBlockCenter
         	border_size 1 1 1 1
@@ -28,7 +27,7 @@ gui
 			metrics_mode pixels
 			left 5 
 			top 22
-			width 210
+			width 290
 			height 1
 			material gui/StatsBreak
 		}
@@ -72,7 +71,7 @@ gui
 			colour_top 0.6 0.7 0.7
 			colour_bottom 0.7 0.7 0.7
 		}
-		element TextArea(gui/BestFps)
+		element TextArea(gui/ScaledPhysicsRate)
 		{
 			metrics_mode pixels
 			left 5
@@ -98,32 +97,69 @@ gui
 			colour_top 0.6 0.7 0.7
 			colour_bottom 0.7 0.7 0.7
 		}
-		element TextArea(gui/DebugText)
-		{
-			metrics_mode pixels
-			left 230
-			top 70
-			width 200
-			height 30
-			font_name TrebuchetMSBold
-			char_height 16
-			colour_top 0.6 0.7 0.7
-			colour_bottom 0.7 0.7 0.7
-		}
 	}
 }
 
-// A silly example of how you would do a 3D cockpit
-//Examples/KnotCockpit
-//{
-//	zorder 100
-//	entity knot.mesh(hudKnot)
-//	{
-//		position 0 0 -50
-//		rotation 0 0 0 0
-//	}
-//
-//}
+telemetry
+{
+	zorder 500
+	// Stats block
+	container BorderPanel(telemetry/StatPanel)
+	{
+		metrics_mode pixels
+		vert_align top
+                horz_align middle
+		left -320 
+		top 5
+		width 630
+		height 63
+		material gui/StatsBlockCenter
+        	border_size 1 1 1 1
+        	border_material gui/StatsBlockBorder
+        	border_topleft_uv     0.0000 1.0000 0.0039 0.9961
+	    	border_top_uv         0.0039 1.0000 0.9961 0.9961
+	    	border_topright_uv    0.9961 1.0000 1.0000 0.9961
+	    	border_left_uv        0.0000 0.9961 0.0039 0.0039
+	    	border_right_uv       0.9961 0.9961 1.0000 0.0039
+	    	border_bottomleft_uv  0.0000 0.0039 0.0039 0.0000
+        	border_bottom_uv      0.0039 0.0039 0.9961 0.0000
+	    	border_bottomright_uv 0.9961 0.0039 1.0000 0.0000
 
-
-
+		element TextArea(telemetry/line1)
+		{
+			metrics_mode pixels
+			left 5
+			top 5
+			width 620
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			colour_top 0.5 0.4 0.4
+			colour_bottom 0.5 0.6 0.6
+		}
+		element TextArea(telemetry/line2)
+		{
+			metrics_mode pixels
+			left 5
+			top 25
+			width 620
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			colour_top 0.6 0.5 0.5
+			colour_bottom 0.6 0.7 0.7
+		}
+		element TextArea(telemetry/line3)
+		{
+			metrics_mode pixels
+			left 5
+			top 45
+			width 620
+			height 30
+			font_name TrebuchetMSBold
+			char_height 16
+			colour_top 0.7 0.6 0.6
+			colour_bottom 0.7 0.8 0.8
+		}
+	}
+}

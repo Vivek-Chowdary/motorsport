@@ -43,6 +43,11 @@ int GuiEngine::computeStep (void)
     {
         Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find gui overlay", "statusPanel");
     }
+    Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
+    if (!telemetryOverlay)
+    {
+        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
+    }
 
     if (systemData->axisMap[getIDKeyboardKey(SDLK_f)]->getValue() == 1)
     {
@@ -51,9 +56,13 @@ int GuiEngine::computeStep (void)
         systemData->axisMap[getIDKeyboardKey(SDLK_f)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     if (showStatistics)
+    {
         overlay->show ();
-    else
+        telemetryOverlay->show ();
+    } else {
         overlay->hide ();
+        telemetryOverlay->hide ();
+    }
 
     return (0);
 }
@@ -61,20 +70,23 @@ int GuiEngine::computeStep (void)
 
 void GuiEngine::updateStatistics (void)
 {
-    // update stats when necessary
     GuiElement *guiAvg = GuiManager::getSingleton ().getGuiElement ("gui/AverageFps");
     GuiElement *guiCurr = GuiManager::getSingleton ().getGuiElement ("gui/CurrFps");
-    GuiElement *guiBest = GuiManager::getSingleton ().getGuiElement ("gui/BestFps");
+    GuiElement *guiScaledPhysics = GuiManager::getSingleton ().getGuiElement ("gui/ScaledPhysicsRate");
     GuiElement *guiPhysics = GuiManager::getSingleton ().getGuiElement ("gui/PhysicsRate");
     const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics ();
-    guiAvg->setCaption ("Average FPS: " + StringConverter::toString (stats.avgFPS));
-    guiCurr->setCaption ("Current FPS: " + StringConverter::toString (systemData->graphicsFrequency));
-    guiBest->setCaption ("Best FPS: " + StringConverter::toString (stats.bestFPS) + "FPS " + StringConverter::toString (stats.bestFrameTime) + " ms");
-    guiPhysics->setCaption ("Physics Rate: " + StringConverter::toString (systemData->physicsFrequency) + "Hz " + StringConverter::toString (systemData->physicsTimeStep) + " ms");
+    guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
+    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString (systemData->graphicsFrequency) + " fps");
+    guiScaledPhysics->setCaption ("Scaled Physics Rate: " + StringConverter::toString (systemData->physicsFrequency) + " Hz (" + StringConverter::toString (1000 / float(systemData->physicsFrequency)) + " ms)");
+    guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (1000 / float(systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (systemData->physicsTimeStep) + " ms)" );
     GuiElement *guiTris = GuiManager::getSingleton ().getGuiElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
-    GuiElement *guiDbg = GuiManager::getSingleton ().getGuiElement ("gui/DebugText");
-    guiDbg->setCaption (systemData->ogreWindow->getDebugText ());
+    GuiElement *telLine1 = GuiManager::getSingleton ().getGuiElement ("telemetry/line1");
+    telLine1->setCaption (systemData->ogreWindow->getDebugText () + "1: Car speed=140kph, averageSuspHeight=0.1  , gear=4, tod=13:05.10");
+    GuiElement *telLine2 = GuiManager::getSingleton ().getGuiElement ("telemetry/line2");
+    telLine2->setCaption (systemData->ogreWindow->getDebugText () + "2: Car speed=150kph, averageSuspHeight=0.098, gear=4, tod=13.05.20");
+    GuiElement *telLine3 = GuiManager::getSingleton ().getGuiElement ("telemetry/line3");
+    telLine3->setCaption (systemData->ogreWindow->getDebugText () + "3: Car speed=157kph, averageSuspHeight=0.092, gear=4, tod=13.05.30");
 }
 
 GuiEngine::~GuiEngine (void)
