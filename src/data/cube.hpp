@@ -34,10 +34,6 @@ class Cube : public WorldObject
 {
   private:
     static int instancesCount;
-    float moveToXPositive;
-    float moveToXNegative;
-    float moveToYPositive;
-    float moveToYNegative;
 
   public:
     // data
@@ -45,10 +41,6 @@ class Cube : public WorldObject
     ~Cube ();
     void updateOgrePosition ();
     void updateOgreOrientation ();
-    float getMoveToXPositive ();
-    float getMoveToXNegative ();
-    float getMoveToYPositive ();
-    float getMoveToYNegative ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
@@ -71,9 +63,5 @@ class Cube : public WorldObject
     void startInput ();
     void stepInput ();
     void stopInput ();
-    void setMoveToXPositive (float multiplier);
-    void setMoveToXNegative (float multiplier);
-    void setMoveToYPositive (float multiplier);
-    void setMoveToYNegative (float multiplier);
 };
 #endif

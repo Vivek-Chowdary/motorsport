@@ -24,6 +24,9 @@
 #include "ode.h"
 #include "log/logEngine.hpp"
 #include "world.hpp"
+#include "system.hpp"
+#include "track.hpp"
+#include "SDL/SDL_keysym.h"
 
 void Cube::startPhysics (DOMNode * n)
 {
@@ -99,14 +102,18 @@ void Cube::stepPhysics ()
     dBodySetAngularVel (cubeID, (*(dReal *) (dBodyGetAngularVel (cubeID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (cubeID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (cubeID) + 2)) * (dReal) (0.999));
     // ////////////////////////////////////simplified air friction
     // applying user input [forces]
-    float moveToX = 0, moveToY = 0;
-
-    moveToX += getMoveToXPositive ();
-    moveToX -= getMoveToXNegative ();
-    moveToY += getMoveToYPositive ();
-    moveToY -= getMoveToYNegative ();
-    moveToX /= 10000;
-    moveToY /= 10000;
-    dBodyAddForce (cubeID, moveToX, moveToY, 0.0f);
+    if (this == World::getWorldPointer ()->trackList[0]->cubeList[0])
+    {
+        float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
+        float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
+        moveX /= 10000;
+        moveY /= 10000;
+        dBodyAddForce (cubeID, moveX, moveY, 0.0f);
+        moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_j)]->getValue();
+        moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_k)]->getValue();
+        moveX /= 10000;
+        moveY /= 10000;
+        dBodyAddForce (cubeID, moveX, moveY, 0.0f);
+    }
 }
 

@@ -56,23 +56,6 @@ void Cube::updateOgrePosition ()
     const dReal *temp = dBodyGetPosition (cubeID);  // need to allocate memory first??
     cubeNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
 }
-float Cube::getMoveToXPositive ()
-{
-    return moveToXPositive;
-}
-float Cube::getMoveToXNegative ()
-{
-    return moveToXNegative;
-}
-
-float Cube::getMoveToYPositive ()
-{
-    return moveToYPositive;
-}
-float Cube::getMoveToYNegative ()
-{
-    return moveToYNegative;
-}
 void Cube::updateOgreOrientation ()
 {
     const dReal *temp = dBodyGetQuaternion (cubeID);    // need to allocate memory first??

@@ -101,26 +101,6 @@ void InputEngine::processKeyboard ()
         log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
-    if (keyState[SDLK_o])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToXNegative (1);
-    }
-
-    if (keyState[SDLK_p])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToXPositive (1);
-    }
-
-    if (keyState[SDLK_i])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToYPositive (1);
-    }
-
-    if (keyState[SDLK_k])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToYNegative (1);
-    }
-
     if (keyState[SDLK_HOME])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_HOME keypress...");
@@ -180,25 +160,6 @@ void InputEngine::processKeyboard ()
         systemData->disableMainLoop ();
     }
     // Processing key releases...
-    if (!keyState[SDLK_o])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToXNegative (0);
-    }
-
-    if (!keyState[SDLK_p])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToXPositive (0);
-    }
-
-    if (!keyState[SDLK_i])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToYPositive (0);
-    }
-
-    if (!keyState[SDLK_k])
-    {
-        World::getWorldPointer ()->trackList[0]->cubeList[0]->setMoveToYNegative (0);
-    }
 }
 
 InputEngine::~InputEngine (void)
