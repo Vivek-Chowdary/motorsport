@@ -1,0 +1,15 @@
+----------------------
+Motorsport - Changelog
+----------------------
+
+2004-02-08 Bruno González  <stenyak@users.sourceforge.net>
+    * changelog: added change log file
+    * physics: added basic sample physics engine
+    * graphics:  engine actual and desired rates now displayed in window title
+    * input: two new keys NumPad+ and NumPad-, increase and decrease physics running rate
+    * main program: improved main loop
+    * system data: main loop related additions
+
+2004-02-06 Bruno González  <stenyak@users.sourceforge.net>
+    * log: updated, now supports printf-like format, thanks to Harle
+    * makefile: gcc flags related bugfix, thanks to ridcully
