@@ -52,48 +52,48 @@ struct PhysicsData;
 class PhysicsEngine
 {
   private:
-    /// Log engine used by the physics engine.
+    // / Log engine used by the physics engine.
     /** This log engine allows the physics engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine *log;
-    /// Pointer to the system data, used by different engines in order to store common data.
+    LogEngine * log;
+    // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-    /// Pointer to the world data, used by different engines in order to store the simulated world data.
+    // / Pointer to the world data, used by different engines in order to store the simulated world data.
     WorldData *worldData;
-    /// Callback function for collisions detection.
+    // / Callback function for collisions detection.
     /** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
     */
     static void nearCallback (void *data, dGeomID o1, dGeomID o2);
-    /// Type of ODE step function: 1->dWorldStep. 2->dWorldStepFast1. 
-    int stepType; //"dWorldStep"=1 || "dWorldStepFast1"=2
-    /// Max. number of iterations to be calculated with dWorldStepFast1.
+    // / Type of ODE step function: 1->dWorldStep. 2->dWorldStepFast1. 
+    int stepType;               // "dWorldStep"=1 || "dWorldStepFast1"=2
+    // / Max. number of iterations to be calculated with dWorldStepFast1.
     int dWorldStepFast1MaxIterations;
   public:
-    /// Creates a new physics engine.
+    // / Creates a new physics engine.
     /** Creates a new physics engine, with its associated own log engine. It initializes all necessary related data, including the simulated world's physic entities.
     */
-    PhysicsEngine( );
-    /// Deletes the physics engine.
+      PhysicsEngine ();
+    // / Deletes the physics engine.
     /** Deletes the physics engine, as well as its associated log engine. It also removes all the simulated world's physic entities from memory.
     */
-    ~PhysicsEngine ( void );
-    /// Updates all the simulated world state.
+     ~PhysicsEngine (void);
+    // / Updates all the simulated world state.
     /** Updates all the simulated world state, including physic movements (collision detection and correction, physic forces...), world events, and other issues.
     */
-    int step ( void );
+    int computeStep (void);
 
-    /// Called by the generic XML parser; it loads configuration data from a file.
-    static int processPhysicsConfigFile ( DOMNode * n, void * data);
+    // / Called by the generic XML parser; it loads configuration data from a file.
+    static void processPhysicsConfigFile (DOMNode * n, void *data);
 };
 
 struct PhysicsData
 {
-    PhysicsEngine * physics;
+    PhysicsEngine *physics;
     LOG_LEVEL localLogLevel;
-    char * localLogName;
+    char *localLogName;
     int frequency;
-    double cfmValue; //a double number, or "default"
-    double erpValue; //a double number, or "default"
-    int stepType; //"dWorldStep"=1 || "dWorldStepFast1"=2 || "default"=...
+    double cfmValue;            // a double number, or "default"
+    double erpValue;            // a double number, or "default"
+    int stepType;               // "dWorldStep"=1 || "dWorldStepFast1"=2 || "default"=...
     int dWorldStepFast1MaxIterations;
 };

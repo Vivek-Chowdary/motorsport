@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -22,47 +21,41 @@
 
 #ifndef SYSTEM_HPP
 #    define SYSTEM_HPP
-
 #    include "SDL.h"
 #    include "Ogre.h"
 
-
 class SystemData
-{                               //this contains all the data not related with the simulated/virtual world
-    static SystemData * systemDataPointer;
+{                               // this contains all the data not related with the simulated/virtual world
+    static SystemData *systemDataPointer;
     bool mainLoopEnabled;
     bool takeScreenshot;
     bool invertShowStatistics;
   public:
-    static SystemData * getSystemDataPointer ( );
-    SystemData ( );
-    ~SystemData ( );
-    
+    static SystemData *getSystemDataPointer ();
+      SystemData ();
+     ~SystemData ();
+
     Uint32 physicsTimeStep;
-    Uint32 physicsDesiredStepsPerSecond;
+    Uint32 physicsDesiredFrequency;
 
-    //main loop time control data
-    Uint32 currentMainLoopTime;
-    Uint32 currentPhysicsTime;
-    Uint32 lastStatTime;
+    // main loop time control data
+    Uint32 realTime;
+    Uint32 simulationTime;
+    Uint32 statisticsTime;
     int physicsSteps;
-    Uint32 physicsStepsPerSecond;
+    Uint32 physicsFrequency;
     int graphicsSteps;
-    Uint32 graphicsStepsPerSecond;
+    Uint32 graphicsFrequency;
 
-    bool canMainLoopRun ( void );   //does the program have to keep running?
-    void enableMainLoop ( void );   //allows the program to start running
-    void disableMainLoop ( void );  //allows the program to stop running
+    bool isMainLoopEnabled (void); // does the program have to keep running?
+    void enableMainLoop (void); // allows the program to start running
+    void disableMainLoop (void);    // allows the program to stop running
 
-/*    bool getStatisticsEnabled (  );
-    void invertStatisticsEnabled (  );
-    void enableStatistics (  );*/
-    
-    void setInvertShowStatistics(  );
-    bool getInvertShowStatistics(  );
+    void setInvertShowStatistics ();
+    bool getInvertShowStatistics ();
 
-    void setTakeScreenshot(  );
-    bool getTakeScreenshot(  );
+    void setTakeScreenshot ();
+    bool getTakeScreenshot ();
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

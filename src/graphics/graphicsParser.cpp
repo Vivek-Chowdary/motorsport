@@ -22,222 +22,195 @@
 
 #include "graphicsEngine.hpp"
 
-int GraphicsEngine::processGraphicsConfigFile ( DOMNode * n, void * data)
+void GraphicsEngine::processGraphicsConfigFile (DOMNode * n, void *data)
 {
-    if ( n )
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    if (n)
     {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+            char *name = XMLString::transcode (n->getNodeName ());
+            log->format (LOG_INFO, "Name: %s", name);
 
-            if ( !strncmp ( name, "graphicsConfig", 15 ) )
+            if (!strncmp (name, "graphicsConfig", 15))
             {
-                XERCES_STD_QUALIFIER cout << "Found the graphics engine config element." << XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
+                log->put (LOG_INFO, "Found the graphics engine config element.");
+                if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
-                    for ( int i = 0; i < nSize; ++i )
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode =
-                            ( DOMAttr * ) pAttributes->item ( i );
-                        char *name =
-                            XMLString::transcode ( pAttributeNode->
-                                                   getName (  ) );
-                        if ( !strncmp ( name, "localLogLevel", 14 ) )
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the local log level:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                (*(GraphicsData*)data).localLogLevel = LOG_ERROR;
-                            if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                (*(GraphicsData*)data).localLogLevel = LOG_WARNING;
-                            if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                (*(GraphicsData*)data).localLogLevel = LOG_INFO;
-                            if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                (*(GraphicsData*)data).localLogLevel = LOG_VERBOSE;
-                            if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                (*(GraphicsData*)data).localLogLevel = LOG_TRACE;
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the local log level: %s", name);
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(GraphicsData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(GraphicsData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(GraphicsData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(GraphicsData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(GraphicsData *) data).localLogLevel = LOG_TRACE;
                         }
 
-                        if ( !strncmp ( name, "localLogName", 13 ) )
+                        if (!strncmp (name, "localLogName", 13))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the log name:";
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                            
-                            (*(GraphicsData*)data).localLogName = new char[strlen(name)+1];
-                            strncpy ((*(GraphicsData*)data).localLogName, name, strlen(name)+1);
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the log name: %s", name);
+
+                            (*(GraphicsData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(GraphicsData *) data).localLogName, name, strlen (name) + 1);
                         }
-                        if ( !strncmp ( name, "screenshotFile", 15 ) )
+                        if (!strncmp (name, "screenshotFile", 15))
                         {
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the screenshot filename:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            
-                            (*(GraphicsData*)data).screenshotFile = new char[strlen(name)+1];
-                            strncpy ((*(GraphicsData*)data).screenshotFile, name, strlen(name)+1);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the screenshot filename: %s", name);
+
+                            (*(GraphicsData *) data).screenshotFile = new char[strlen (name) + 1];
+                            strncpy ((*(GraphicsData *) data).screenshotFile, name, strlen (name) + 1);
                         }
-                        XMLString::release ( &name );
+                        XMLString::release (&name);
                     }
                 }
-                for ( n = n->getFirstChild (  ); n != 0; n = n->getNextSibling (  ) )
+                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
                 {
-                    if ( n )
+                    if (n)
                     {
-                        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
-                            char *name = XMLString::transcode ( n->getNodeName (  ) );
-                            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "ogre", 5 ) )
+                            char *name = XMLString::transcode (n->getNodeName ());
+                            log->format (LOG_INFO, "Name: %s", name);
+                            if (!strncmp (name, "ogre", 5))
                             {
-                                XERCES_STD_QUALIFIER cout << "Found the ogre config element." << XERCES_STD_QUALIFIER endl;
-                                if ( n->hasAttributes (  ) )
+                                log->put (LOG_INFO, "Found the ogre config element.");
+                                if (n->hasAttributes ())
                                 {
                                     // get all the attributes of the node
-                                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                                    int nSize = pAttributes->getLength (  );
-                
-                                    for ( int i = 0; i < nSize; ++i )
+                                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                                    int nSize = pAttributes->getLength ();
+
+                                    for (int i = 0; i < nSize; ++i)
                                     {
-                                        DOMAttr *pAttributeNode =
-                                            ( DOMAttr * ) pAttributes->item ( i );
-                                        char *name =
-                                            XMLString::transcode ( pAttributeNode->
-                                                                   getName (  ) );
-                                        if ( !strncmp ( name, "configFile", 11 ) )
+                                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                                        if (!strncmp (name, "configFile", 11))
                                         {
-                                            XMLString::release ( &name );
-                                            XERCES_STD_QUALIFIER cout << "\tFound the ogre config filename:";
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                
-                                            (*(GraphicsData*)data).ogreConfigFile = new char[strlen(name)+1];
-                                            strncpy ((*(GraphicsData*)data).ogreConfigFile, name, strlen(name)+1);
-                                        }
-                                        if ( !strncmp ( name, "sceneManager", 13 ) )
-                                        {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the scene manager type:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the ogre config filename: %s", name);
 
-                                            if ( !strncmp ( name, "ST_GENERIC", 11 ) )
-                                                (*(GraphicsData*)data).sceneManager = Ogre::ST_GENERIC;
-                                            if ( !strncmp ( name, "ST_EXTERIOR_CLOSE", 18 ) )
-                                                (*(GraphicsData*)data).sceneManager = Ogre::ST_EXTERIOR_CLOSE;
-                                            if ( !strncmp ( name, "ST_EXTERIOR_FAR", 16 ) )
-                                                (*(GraphicsData*)data).sceneManager = Ogre::ST_EXTERIOR_FAR;
-                                            if ( !strncmp ( name, "ST_EXTERIOR_REAL_FAR", 21 ) )
-                                                (*(GraphicsData*)data).sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
-                                            if ( !strncmp ( name, "ST_INTERIOR", 12 ) )
-                                                (*(GraphicsData*)data).sceneManager = Ogre::ST_INTERIOR;
+                                            (*(GraphicsData *) data).ogreConfigFile = new char[strlen (name) + 1];
+                                            strncpy ((*(GraphicsData *) data).ogreConfigFile, name, strlen (name) + 1);
                                         }
-                                        if ( !strncmp ( name, "anisotropy", 11 ) )
+                                        if (!strncmp (name, "sceneManager", 13))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the anisotropy level:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
-                                            (*(GraphicsData*)data).anisotropy = atoi (name);
-                                        }
-                                        if ( !strncmp ( name, "filtering", 10 ) )
-                                        {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the texture filtering level:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the scene manager type: %s", name);
 
-                                            if ( !strncmp ( name, "TFO_NONE", 9 ) )
-                                                (*(GraphicsData*)data).filtering = Ogre::TFO_NONE;
-                                            if ( !strncmp ( name, "TFO_BILINEAR", 13 ) )
-                                                (*(GraphicsData*)data).filtering = Ogre::TFO_BILINEAR;
-                                            if ( !strncmp ( name, "TFO_TRILINEAR", 14 ) )
-                                                (*(GraphicsData*)data).filtering = Ogre::TFO_TRILINEAR;
-                                            if ( !strncmp ( name, "TFO_ANISOTROPIC", 16 ) )
-                                                (*(GraphicsData*)data).filtering = Ogre::TFO_ANISOTROPIC;
+                                            if (!strncmp (name, "ST_GENERIC", 11))
+                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_GENERIC;
+                                            if (!strncmp (name, "ST_EXTERIOR_CLOSE", 18))
+                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_CLOSE;
+                                            if (!strncmp (name, "ST_EXTERIOR_FAR", 16))
+                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_FAR;
+                                            if (!strncmp (name, "ST_EXTERIOR_REAL_FAR", 21))
+                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
+                                            if (!strncmp (name, "ST_INTERIOR", 12))
+                                                (*(GraphicsData *) data).sceneManager = Ogre::ST_INTERIOR;
                                         }
-                                        if ( !strncmp ( name, "width", 6 ) )
+                                        if (!strncmp (name, "anisotropy", 11))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the resolution width value:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
-                                            (*(GraphicsData*)data).width = atoi (name);
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the anisotropy level: %s", name);
+
+                                            (*(GraphicsData *) data).anisotropy = atoi (name);
                                         }
-                                        if ( !strncmp ( name, "height", 7 ) )
+                                        if (!strncmp (name, "filtering", 10))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the resolution height value:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
-                                            (*(GraphicsData*)data).height = atoi (name);
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the texture filtering level: %s", name);
+
+                                            if (!strncmp (name, "TFO_NONE", 9))
+                                                (*(GraphicsData *) data).filtering = Ogre::TFO_NONE;
+                                            if (!strncmp (name, "TFO_BILINEAR", 13))
+                                                (*(GraphicsData *) data).filtering = Ogre::TFO_BILINEAR;
+                                            if (!strncmp (name, "TFO_TRILINEAR", 14))
+                                                (*(GraphicsData *) data).filtering = Ogre::TFO_TRILINEAR;
+                                            if (!strncmp (name, "TFO_ANISOTROPIC", 16))
+                                                (*(GraphicsData *) data).filtering = Ogre::TFO_ANISOTROPIC;
                                         }
-                                        if ( !strncmp ( name, "bpp", 4 ) )
+                                        if (!strncmp (name, "width", 6))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the resolution bpp value:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
-                                            (*(GraphicsData*)data).bpp = atoi (name);
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the resolution width value: %s", name);
+
+                                            (*(GraphicsData *) data).width = atoi (name);
                                         }
-                                        if ( !strncmp ( name, "renderer", 9 ) )
+                                        if (!strncmp (name, "height", 7))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the renderer type:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                
-                                            (*(GraphicsData*)data).renderer = new char[strlen(name)+1];
-                                            strncpy ((*(GraphicsData*)data).renderer, name, strlen(name)+1);
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the resolution height value: %s", name);
+
+                                            (*(GraphicsData *) data).height = atoi (name);
                                         }
-                                        if ( !strncmp ( name, "defaultNumMipmaps", 18 ) )
+                                        if (!strncmp (name, "bpp", 4))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the default number of mip maps:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
-                                            (*(GraphicsData*)data).defaultNumMipMaps = atoi (name);
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the resolution bpp value: %s", name);
+
+                                            (*(GraphicsData *) data).bpp = atoi (name);
                                         }
-                                        if ( !strncmp ( name, "fullScreen", 11 ) )
+                                        if (!strncmp (name, "renderer", 9))
                                         {
-                                            XERCES_STD_QUALIFIER cout << "\tFound the fullscreen option:";
-                                            XMLString::release ( &name );
-                                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                                            
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the renderer type: %s", name);
+
+                                            (*(GraphicsData *) data).renderer = new char[strlen (name) + 1];
+                                            strncpy ((*(GraphicsData *) data).renderer, name, strlen (name) + 1);
+                                        }
+                                        if (!strncmp (name, "defaultNumMipmaps", 18))
+                                        {
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the default number of mipmaps: %s", name);
+
+                                            (*(GraphicsData *) data).defaultNumMipMaps = atoi (name);
+                                        }
+                                        if (!strncmp (name, "fullScreen", 11))
+                                        {
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the fullscreen option: %s", name);
+
                                             int tmpBool;
                                             tmpBool = atoi (name);
-                                            (*(GraphicsData*)data).fullScreen = tmpBool ? true : false;
+                                            (*(GraphicsData *) data).fullScreen = tmpBool ? true : false;
                                         }
-                                        XMLString::release ( &name );
+                                        XMLString::release (&name);
                                     }
                                 }
                             }
-                        } 
+                        }
                     }
                 }
             }
         }
     }
-    return 1;
+    delete log;
 }

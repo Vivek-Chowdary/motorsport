@@ -37,36 +37,36 @@ class DOMCountErrorHandler:public DOMErrorHandler
 {
   public:
     // -----------------------------------------------------------------------
-    //  Constructors and Destructor
+    // Constructors and Destructor
     // -----------------------------------------------------------------------
-    DOMCountErrorHandler (  );
-    ~DOMCountErrorHandler (  );
+    DOMCountErrorHandler ();
+    ~DOMCountErrorHandler ();
 
     // -----------------------------------------------------------------------
-    //  Getter methods
+    // Getter methods
     // -----------------------------------------------------------------------
-    bool getSawErrors (  ) const;
+    bool getSawErrors () const;
 
     // -----------------------------------------------------------------------
-    //  Implementation of the DOM ErrorHandler interface
+    // Implementation of the DOM ErrorHandler interface
     // -----------------------------------------------------------------------
-    bool handleError ( const DOMError & domError );
-    void resetErrors (  );
+    bool handleError (const DOMError & domError);
+    void resetErrors ();
 
   private:
     // -----------------------------------------------------------------------
-    //  Unimplemented constructors and operators
+    // Unimplemented constructors and operators
     // -----------------------------------------------------------------------
-    DOMCountErrorHandler ( const DOMCountErrorHandler & );
-    void operator= ( const DOMCountErrorHandler & );
+    DOMCountErrorHandler (const DOMCountErrorHandler &);
+    void operator= (const DOMCountErrorHandler &);
 
     // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fSawErrors
-    //      This is set if we get any errors, and is queryable via a getter
-    //      method. Its used by the main code to suppress output if there are
-    //      errors.
+    // Private data members
+    // 
+    // fSawErrors
+    // This is set if we get any errors, and is queryable via a getter
+    // method. Its used by the main code to suppress output if there are
+    // errors.
     // -----------------------------------------------------------------------
     bool fSawErrors;
 };
@@ -79,50 +79,48 @@ class StrX
 {
   public:
     // -----------------------------------------------------------------------
-    //  Constructors and Destructor
+    // Constructors and Destructor
     // -----------------------------------------------------------------------
-    StrX ( const XMLCh * const toTranscode )
+    StrX (const XMLCh * const toTranscode)
     {
         // Call the private transcoding method
-        fLocalForm = XMLString::transcode ( toTranscode );
+        fLocalForm = XMLString::transcode (toTranscode);
     }
 
-         ~StrX (  )
+     ~StrX ()
     {
-        XMLString::release ( &fLocalForm );
+        XMLString::release (&fLocalForm);
     }
 
     // -----------------------------------------------------------------------
-    //  Getter methods
+    // Getter methods
     // -----------------------------------------------------------------------
-    const char *localForm (  ) const
+    const char *localForm () const
     {
         return fLocalForm;
     }
 
   private:
     // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fLocalForm
-    //      This is the local code page form of the string.
+    // Private data members
+    // 
+    // fLocalForm
+    // This is the local code page form of the string.
     // -----------------------------------------------------------------------
     char *fLocalForm;
 };
 
-inline XERCES_STD_QUALIFIER ostream & operator<< ( XERCES_STD_QUALIFIER ostream
-                                                   & target,
-                                                   const StrX & toDump )
+inline XERCES_STD_QUALIFIER ostream & operator<< (XERCES_STD_QUALIFIER ostream & target, const StrX & toDump)
 {
-    target << toDump.localForm (  );
+    target << toDump.localForm ();
     return target;
 }
 
-inline bool DOMCountErrorHandler::getSawErrors (  ) const 
+inline bool DOMCountErrorHandler::getSawErrors () const
 {
     return fSawErrors;
 }
 
-int processXmlFile ( char * configFileName, int (*processFunction)(DOMNode *, void * data), void * data);
+int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, void *data), void *data);
 
 #endif

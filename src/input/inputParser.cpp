@@ -22,68 +22,59 @@
 
 #include "inputEngine.hpp"
 
-int InputEngine::processInputConfigFile ( DOMNode * n, void * data)
+void InputEngine::processInputConfigFile (DOMNode * n, void *data)
 {
-    if ( n )
+    if (n)
     {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
+            char *name = XMLString::transcode (n->getNodeName ());
             XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
 
-            if ( !strncmp ( name, "inputConfig", 12 ) )
+            if (!strncmp (name, "inputConfig", 12))
             {
                 XERCES_STD_QUALIFIER cout << "Found the input engine config element." << XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
+                if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
-                    for ( int i = 0; i < nSize; ++i )
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode =
-                            ( DOMAttr * ) pAttributes->item ( i );
-                        char *name =
-                            XMLString::transcode ( pAttributeNode->
-                                                   getName (  ) );
-                        if ( !strncmp ( name, "localLogLevel", 14 ) )
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the local log level:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                (*(InputData*)data).localLogLevel = LOG_ERROR;
-                            if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                (*(InputData*)data).localLogLevel = LOG_WARNING;
-                            if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                (*(InputData*)data).localLogLevel = LOG_INFO;
-                            if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                (*(InputData*)data).localLogLevel = LOG_VERBOSE;
-                            if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                (*(InputData*)data).localLogLevel = LOG_TRACE;
+                            XMLString::release (&name);
+                            XERCES_STD_QUALIFIER cout << "\tFound the local log level:";
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(InputData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(InputData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(InputData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(InputData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(InputData *) data).localLogLevel = LOG_TRACE;
                         }
 
-                        if ( !strncmp ( name, "localLogName", 13 ) )
+                        if (!strncmp (name, "localLogName", 13))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the log name:";
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
+                            XMLString::release (&name);
+                            XERCES_STD_QUALIFIER cout << "\tFound the log name:";
+                            name = XMLString::transcode (pAttributeNode->getValue ());
                             XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                            
-                            (*(InputData*)data).localLogName = new char[strlen(name)+1];
-                            strncpy ((*(InputData*)data).localLogName, name, strlen(name)+1);
+
+                            (*(InputData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(InputData *) data).localLogName, name, strlen (name) + 1);
                         }
-                        XMLString::release ( &name );
+                        XMLString::release (&name);
                     }
                 }
             }
         }
     }
-    return 1;
 }

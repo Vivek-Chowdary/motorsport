@@ -19,7 +19,8 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 ******************************************************************************/
-
+#ifndef DATA_ENGINE_HPP
+#define DATA_ENGINE_HPP
 #include "logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
@@ -38,24 +39,22 @@ class DataEngine
     WorldData *worldData;
     SystemData *systemData;
   public:
-    DataEngine ( );    //starts the data engine
-    ~DataEngine ( void );          //stops the data engine
-    int loadWorldData ( void );
-    int unloadWorldData ( void );
+      DataEngine ();            // starts the data engine
+     ~DataEngine (void);        // stops the data engine
+    int loadWorldData (void);
+    int unloadWorldData (void);
 
-    /*here will probably go some new functions such as:
-       int loadCarModel(carList*,FILE*carXmlFile);
-       int loadTrackModel(track*,FILE*trackXmlFile);
-       or maybe...
-       int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*);
-       etc... */
+    /* here will probably go some new functions such as: int loadCarModel(carList*,FILE*carXmlFile); int loadTrackModel(track*,FILE*trackXmlFile); or maybe... int loadStreamingTrack(track*,FILE*trackXmlFile,currentPosition*,distance*); etc... */
 
-    static int processDataConfigFile ( DOMNode * n, void * data );
+    static void processDataConfigFile (DOMNode * n, void *data);
+
+    static LogEngine * getLogPointer (void);
 };
 
 struct DataData
 {
-    DataEngine * data;
+    DataEngine *data;
     LOG_LEVEL localLogLevel;
-    char * localLogName;
+    char *localLogName;
 };
+#endif

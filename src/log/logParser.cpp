@@ -21,75 +21,70 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-int LogEngine::processLogConfigFile ( DOMNode * n, void * data )
+void LogEngine::processLogConfigFile (DOMNode * n, void *data)
 {
 //    DOMNode *child;
-    if ( n )
+    if (n)
     {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
+            char *name = XMLString::transcode (n->getNodeName ());
             XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
-            
-            if ( !strncmp ( name, "logConfig", 10 ) )
-            {   
+
+            if (!strncmp (name, "logConfig", 10))
+            {
                 XERCES_STD_QUALIFIER cout << "Found the log engine config element." << XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
+                if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
-                    for ( int i = 0; i < nSize; ++i )
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = ( DOMAttr * ) pAttributes->item ( i );
-                        char *name = XMLString::transcode ( pAttributeNode->getName (  ) );
-                        if ( !strncmp ( name, "globalLevel", 12 ) )
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "globalLevel", 12))
                         {
-                            XMLString::release ( &name );
+                            XMLString::release (&name);
                             XERCES_STD_QUALIFIER cout << "\tFound the global log level:";
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                            
-                            if ( !strncmp (name, "LOG_ERROR"  , 10) )
-                                (*(LogData*)data).globalLevel = LOG_ERROR;
-                            if ( !strncmp (name, "LOG_WARNING", 13) )
-                                (*(LogData*)data).globalLevel = LOG_WARNING;
-                            if ( !strncmp (name, "LOG_INFO"   , 9) )
-                                (*(LogData*)data).globalLevel = LOG_INFO;
-                            if ( !strncmp (name, "LOG_VERBOSE", 12) )
-                                (*(LogData*)data).globalLevel = LOG_VERBOSE;
-                            if ( !strncmp (name, "LOG_TRACE"  , 9) )
-                                (*(LogData*)data).globalLevel = LOG_TRACE;
-                        }
-                        if ( !strncmp ( name, "fileName", 9 ) )
-                        {
-                            XERCES_STD_QUALIFIER cout << "\tFound the log filename:";
-                            XMLString::release ( &name );
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
+                            name = XMLString::transcode (pAttributeNode->getValue ());
                             XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
 
-                            (*(LogData*)data).fileName = new char[strlen(name)+1];
-                            strncpy ((*(LogData*)data).fileName, name, strlen(name)+1);
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(LogData *) data).globalLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(LogData *) data).globalLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(LogData *) data).globalLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(LogData *) data).globalLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(LogData *) data).globalLevel = LOG_TRACE;
                         }
-                        if ( !strncmp ( name, "textBuffer", 11 ) )
+                        if (!strncmp (name, "fileName", 9))
+                        {
+                            XERCES_STD_QUALIFIER cout << "\tFound the log filename:";
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+
+                            (*(LogData *) data).fileName = new char[strlen (name) + 1];
+                            strncpy ((*(LogData *) data).fileName, name, strlen (name) + 1);
+                        }
+                        if (!strncmp (name, "textBuffer", 11))
                         {
                             XERCES_STD_QUALIFIER cout << "\tFound the buffer length:";
-                            XMLString::release ( &name );
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
                             XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                            
-                            (*(LogData*)data).textBuffer = atoi (name);
+
+                            (*(LogData *) data).textBuffer = atoi (name);
                         }
-                        XMLString::release ( &name );
+                        XMLString::release (&name);
                     }
 
                 }
             }
         }
-        /*        for ( child = n->getFirstChild (  ); child != 0; child = child->getNextSibling (  ) )
-           {
-           processLogConfigFile ( child );
-           } */
     }
-    return 1;
 }

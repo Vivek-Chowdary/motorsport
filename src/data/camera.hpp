@@ -27,41 +27,41 @@
 
 class Camera
 {
-    private:
-        int rotateLeft;
-        int rotateRight;
-        int rotateUp;
-        int rotateDown;
+  private:
+    int rotateLeft;
+    int rotateRight;
+    int rotateUp;
+    int rotateDown;
 
-    public:
-        Camera ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
-        ~Camera ( );
+  public:
+      Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+     ~Camera ();
 
-        //graphics
-        void startGraphics ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
-        void stepGraphics();
-        void stopGraphics();
-        Ogre::Camera * ogreCamera;
+    // graphics
+    void startGraphics (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    void stepGraphics ();
+    void stopGraphics ();
+      Ogre::Camera * ogreCamera;
 
-        //input
-        void startInput ();
-        void stepInput ();
-        void stopInput ();
-        void setRotateUp ( int multiplier );
-        void setRotateDown ( int multiplier );
-        void setRotateLeft ( int multiplier );
-        void setRotateRight ( int multiplier );
-        bool goBack;
-        bool goForward;
-        bool goLeft;
-        bool goRight;
-        
-        //data
-        static std::vector <Camera*> cameraList;
-        int getRotateUp ( );
-        int getRotateDown ( );
-        int getRotateLeft ( );
-        int getRotateRight ( );
+    // input
+    void startInput ();
+    void stepInput ();
+    void stopInput ();
+    void setRotateUp (int multiplier);
+    void setRotateDown (int multiplier);
+    void setRotateLeft (int multiplier);
+    void setRotateRight (int multiplier);
+    bool goBack;
+    bool goForward;
+    bool goLeft;
+    bool goRight;
+
+    // data
+    static std::vector < Camera * >cameraList;
+    int getRotateUp ();
+    int getRotateDown ();
+    int getRotateLeft ();
+    int getRotateRight ();
 };
 
 #endif

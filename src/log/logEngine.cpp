@@ -28,74 +28,71 @@ LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
 int LogEngine::numberOfLogEngines = 0;
 int LogEngine::textBuffer = 128;
 
-LogEngine::LogEngine ( LOG_LEVEL localLevel, const char *name ):logName ( name )
+LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
 {
-    //we set the local level of verbosity
+    // we set the local level of verbosity
     logLevel = localLevel;
 
-    //we set the log name (3 chars, extended with space if needed)
-    logName.resize ( 3, ' ' );
+    // we set the log name (3 chars, extended with space if needed)
+    logName.resize (3, ' ');
 
-    //open the file for writing in rewrite mode if necessary.
-    
-    if ( !numberOfLogEngines || !logFile.is_open (  ) )
+    // open the file for writing in rewrite mode if necessary.
+
+    if (!numberOfLogEngines || !logFile.is_open ())
     {
-        LogData * data = new LogData;
+        LogData *data = new LogData;
         data->log = this;
-        
-        processXmlFile ("logConfig.xml", &LogEngine::processLogConfigFile, data );
-        logFile.open ( data->fileName, std::fstream::out );
-        if ( !logFile.good (  ) )
+
+        processXmlFile ("logConfig.xml", &LogEngine::processLogConfigFile, data);
+        logFile.open (data->fileName, std::fstream::out);
+        if (!logFile.good ())
         {
             std::cerr << "Error: Logfile could not be opened.\n";
             return;
         }
-        put ( LOG_INFO, "Temporary parsing data already loaded into memory...");
-        put ( LOG_INFO, "LogFile created" );
-        put ( LOG_INFO, "Setting global log level..." );
+        put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+        put (LOG_INFO, "LogFile created");
+        put (LOG_INFO, "Setting global log level...");
         globalLevel = data->globalLevel;
 
-        put ( LOG_INFO, "Setting log format() method text buffer length..." );
+        put (LOG_INFO, "Setting log format() method text buffer length...");
         textBuffer = data->textBuffer;
 
-        put ( LOG_INFO, "Unloading temporary parsing data from memory...");
-        delete [](data->fileName);
+        put (LOG_INFO, "Unloading temporary parsing data from memory...");
+        delete[](data->fileName);
         delete data;
     }
-
-    //increase logEngines counter
+    // increase logEngines counter
     numberOfLogEngines++;
-    format ( LOG_INFO,
-             "Start of logging for this engine. There's %i log engine[s] now.",
-             numberOfLogEngines );
+    format (LOG_INFO, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
 
     return;
 }
 
-int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
+int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
-    //TODO use strings instead of simple char*
+    // TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
 
-    //TODO check returning values
-    //convert parameters to a string
-    va_start ( arglist, textToLogFormat );
+    // TODO check returning values
+    // convert parameters to a string
+    va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
-    vsnprintf ( buffer, sizeof ( buffer ), textToLogFormat, arglist );
+    vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
 #else
 #    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
-    vsprintf ( buffer, textToLogFormat, arglist );
+    vsprintf (buffer, textToLogFormat, arglist);
 #endif
-    va_end ( arglist );
+    va_end (arglist);
 
-    //put the string with a new line
-    return ( put ( level, buffer ) );
+    // put the string with a new line
+    return (put (level, buffer));
 }
 
-const char *LogEngine::GetLogLevelCode ( LOG_LEVEL level )
+const char *LogEngine::GetLogLevelCode (LOG_LEVEL level)
 {
-    switch ( level )
+    switch (level)
     {
     case LOG_ERROR:
         return "EE";
@@ -112,38 +109,36 @@ const char *LogEngine::GetLogLevelCode ( LOG_LEVEL level )
     }
 }
 
-int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
+int LogEngine::put (LOG_LEVEL level, const char *textToLog)
 {
-    //check if we have been told to write this kind of log
-    if ( level > globalLevel || level > logLevel )
-        return ( -1 );
+    // check if we have been told to write this kind of log
+    if (level > globalLevel || level > logLevel)
+        return (-1);
 
-    //write line header
-    logFile << '(' << logName << ")(" << GetLogLevelCode ( level ) << "): ";
+    // write line header
+    logFile << '(' << logName << ")(" << GetLogLevelCode (level) << "): ";
 
-    //write log text
+    // write log text
     logFile << textToLog << "\n";
-    logFile.flush (  );
+    logFile.flush ();
 
-    if ( level == LOG_ERROR )
+    if (level == LOG_ERROR)
     {
-        exit ( 1 );
+        exit (1);
     }
-    return ( 0 );
+    return (0);
 }
 
-LogEngine::~LogEngine (  )
+LogEngine::~LogEngine ()
 {
-    //decrease number of logEngines
+    // decrease number of logEngines
     numberOfLogEngines--;
-    format ( LOG_INFO,
-             "End of logging for this engine. There's %i log engine[s] left now.",
-             numberOfLogEngines );
+    format (LOG_INFO, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
 
-    if ( numberOfLogEngines == 0 )
+    if (numberOfLogEngines == 0)
     {
-        put ( LOG_INFO, "Closing logFile" );
-        logFile.close (  );
+        put (LOG_INFO, "Closing logFile");
+        logFile.close ();
     }
 
 }

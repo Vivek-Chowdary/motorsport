@@ -35,54 +35,54 @@ struct InputData;
 class InputEngine
 {
   private:
-    /// Log engine used by the input engine.
+    // / Log engine used by the input engine.
     /** This log engine allows the input engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine *log;
-    /// Pointer to the system data, used by different engines in order to store common data.
+    LogEngine * log;
+    // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-    /// Pointer to the world data, used by different engines in order to store the simulated world data.
+    // / Pointer to the world data, used by different engines in order to store the simulated world data.
     WorldData *worldData;
-    
-    /// Keyboard keys state array.
+
+    // / Keyboard keys state array.
     /** This is a pointer to SDL's internal keyboard keys state array. It allows to check whether a key is pressed or not, instead of having to go through the whole events queue, storing data by ourselves.
     */
-    Uint8 * keyState;
+    Uint8 *keyState;
 
-    /// Stores the latest horizontal mouse movement difference, in pixels.
+    // / Stores the latest horizontal mouse movement difference, in pixels.
     /** Stores the latest horizontal mouse movement difference, in pixels. A positive value equals a movement to the right.
     */
     int mouseMovementX;
-    /// Stores the latest horizontal mouse movement difference, in pixels.
+    // / Stores the latest horizontal mouse movement difference, in pixels.
     /** Stores the latest horizontal mouse movement difference, in pixels. A positive value equals a movement to the bottom.
     */
     int mouseMovementY;
 
-    /// Finds out keyboard keys state, and modifies the world data according to it.
-    void processKeyboard ( );
-    /// Finds out mouse movements, and modifies the world data according to them.
-    void processMouseMovement ( );
+    // / Finds out keyboard keys state, and modifies the world data according to it.
+    void processKeyboard ();
+    // / Finds out mouse movements, and modifies the world data according to them.
+    void processMouseMovement ();
   public:
-    /// Creates a new input engine.
+    // / Creates a new input engine.
     /** Creates a new input engine, with its associated own log engine. It initializes all necessary related data.
     */
-    InputEngine ( );
-    /// Deletes the input engine.
+      InputEngine ();
+    // / Deletes the input engine.
     /** Deletes the input engine, as well as its associated log engine.
     */
-    ~InputEngine ( void );
-    /// Processes all user input events since last call.
+     ~InputEngine (void);
+    // / Processes all user input events since last call.
     /** Processes all user input events since last call, transforming them into modifications to the world data.
     */
-    int step ( void );
-    /// Called by the generic XML parser; it loads configuration data from a file.
-    static int processInputConfigFile ( DOMNode * n, void * data );
-            
+    int computeStep (void);
+    // / Called by the generic XML parser; it loads configuration data from a file.
+    static void processInputConfigFile (DOMNode * n, void *data);
+
 };
 
 struct InputData
 {
-    InputEngine * input;
+    InputEngine *input;
     LOG_LEVEL localLogLevel;
-    char * localLogName;
+    char *localLogName;
 };

@@ -22,34 +22,34 @@
 #include "cube.hpp"
 
 
-void Cube::startInput()
+void Cube::startInput ()
 {
-    moveToXPositive = moveToXNegative = moveToYPositive = moveToYNegative = 0; 
+    moveToXPositive = moveToXNegative = moveToYPositive = moveToYNegative = 0;
 }
 
-void Cube::stopInput()
-{
-
-}
-void Cube::stepInput()
+void Cube::stopInput ()
 {
 
 }
+void Cube::stepInput ()
+{
 
-void Cube::setMoveToXPositive ( float multiplier)
+}
+
+void Cube::setMoveToXPositive (float multiplier)
 {
     moveToXPositive = multiplier;
 }
-void Cube::setMoveToXNegative ( float multiplier)
+void Cube::setMoveToXNegative (float multiplier)
 {
     moveToXNegative = multiplier;
 }
 
-void Cube::setMoveToYPositive ( float multiplier)
+void Cube::setMoveToYPositive (float multiplier)
 {
     moveToYPositive = multiplier;
 }
-void Cube::setMoveToYNegative ( float multiplier)
+void Cube::setMoveToYNegative (float multiplier)
 {
     moveToYNegative = multiplier;
 }

@@ -1,4 +1,3 @@
-
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -19,224 +18,173 @@
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 *
 ******************************************************************************/
-
 #include "main.hpp"
 
-int main ( int argc, char **argv )
+int main (int argc, char **argv)
 {
-    MainData * mainData = new MainData;
-    processXmlFile ( "mainConfig.xml", &processMainConfigFile, (void*)mainData );
-    
-    LogEngine *log = new LogEngine ( mainData->localLogLevel, mainData->localLogName );
-    log->put ( LOG_INFO, "Temporary parsing data already loaded into memory..." );
-    log->put ( LOG_INFO, "Unloading temporary parsing data from memory..." );
-    delete [](mainData->localLogName);
-    delete mainData;
+    // We start the main log engine.
+    ParsingMainData *parsingMainData = new ParsingMainData;
+    processXmlFile ("mainConfig.xml", &processMainConfigFile, (void *) parsingMainData);
+    LogEngine *log = new LogEngine (parsingMainData->localLogLevel, parsingMainData->localLogName);
+    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
+    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete[](parsingMainData->localLogName);
+    delete parsingMainData;
 
-    //we declare the 'global' data and engines
-    log->put ( LOG_INFO, "( 1 ): Loading engines and libraries..." );
-    log->put ( LOG_INFO, "Starting SDL subsystems" );
-    sdl_start ( log );
-    log->put ( LOG_INFO, "Creating world data" );
-    new WorldData (  );
+    // We declare the 'global' data and engines.
+    log->put (LOG_INFO, "( 1 ): Loading engines and libraries...");
+    log->put (LOG_INFO, "Starting SDL subsystems");
+    startSdl (log);
+    log->put (LOG_INFO, "Creating world data");
+    new WorldData ();
+    log->put (LOG_INFO, "Creating system data");
+    new SystemData ();
+    log->put (LOG_INFO, "Creating data engine");
+    DataEngine *dataEngine = new DataEngine ();
+    log->put (LOG_INFO, "Creating input engine");
+    InputEngine *inputEngine = new InputEngine ();
+    log->put (LOG_INFO, "Creating graphics engine");
+    GraphicsEngine *graphicsEngine = new GraphicsEngine ();
+    log->put (LOG_INFO, "Creating physics engine");
+    PhysicsEngine *physicsEngine = new PhysicsEngine ();
+    log->put (LOG_INFO, "Creating gui engine");
+    GuiEngine *guiEngine = new GuiEngine ();
+    log->put (LOG_INFO, "Getting system data pointer");
+    SystemData *systemData = SystemData::getSystemDataPointer ();
 
-    log->put ( LOG_INFO, "Creating system data" );
-    new SystemData (  );
+    // We load the world data from hdd into memory.
+    log->put (LOG_INFO, "( 2 ): Loading world data...");
+    log->put (LOG_INFO, "Loading initial world data");
+    dataEngine->loadWorldData ();
 
-    log->put ( LOG_INFO, "Creating data engine" );
-    DataEngine *data = new DataEngine (  );
-
-    log->put ( LOG_INFO, "Creating input engine" );
-    InputEngine *input = new InputEngine (  );
-
-    log->put ( LOG_INFO, "Creating graphics engine" );
-    GraphicsEngine *graphics = new GraphicsEngine (  );
-
-    log->put ( LOG_INFO, "Creating physics engine" );
-    PhysicsEngine *physics = new PhysicsEngine (  );
-
-    log->put ( LOG_INFO, "Creating gui engine" );
-    GuiEngine *gui = new GuiEngine (  );
-
-    log->put ( LOG_INFO, "Getting system data pointer" );
-    SystemData *systemData = SystemData::getSystemDataPointer (  );
-
-    log->put ( LOG_INFO, "( 2 ): Loading world data..." );
-    log->put ( LOG_INFO, "Loading initial world data" );
-    data->loadWorldData (  );
-
-    log->put ( LOG_INFO, "( 3 ): Starting simulation..." );
-    log->put ( LOG_INFO, "Initializating main loop" );
-    systemData->lastStatTime = systemData->currentPhysicsTime =
-        SDL_GetTicks (  );
-    log->put ( LOG_INFO, "Enabling main loop" );
-    systemData->enableMainLoop (  );
-    log->put ( LOG_INFO, "Starting main loop" );
-    while ( systemData->canMainLoopRun (  ) )
+    // We start the main loop.
+    log->put (LOG_INFO, "( 3 ): Starting simulation...");
+    log->put (LOG_INFO, "Initializating main loop");
+    systemData->statisticsTime = systemData->simulationTime = SDL_GetTicks ();
+    log->put (LOG_INFO, "Enabling main loop");
+    systemData->enableMainLoop ();
+    log->put (LOG_INFO, "Starting main loop");
+    while (systemData->isMainLoopEnabled ())
     {
-        systemData->currentMainLoopTime = SDL_GetTicks (  );
-        if ( systemData->currentMainLoopTime - systemData->lastStatTime >=
-             1000 )
+        // Update current real loop time.
+        systemData->realTime = SDL_GetTicks ();
+        // Update statistics data every second.
+        if (systemData->simulationTime - systemData->statisticsTime >= 1000)
         {
-            systemData->graphicsStepsPerSecond = systemData->graphicsSteps;
-            systemData->physicsStepsPerSecond = systemData->physicsSteps;
+            systemData->graphicsFrequency = systemData->graphicsSteps;
+            systemData->physicsFrequency = systemData->physicsSteps;
             systemData->graphicsSteps = systemData->physicsSteps = 0;
-            systemData->lastStatTime += 1000;
-            log->format ( LOG_VERBOSE,
-                          "Main Loop Stats: graphicsFps=%i - physicsFps=%i",
-                          systemData->graphicsStepsPerSecond,
-                          systemData->physicsStepsPerSecond );
+            systemData->statisticsTime += 1000;
+            log->format (LOG_VERBOSE, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
         }
-        //run the physics engine until the game time is in sync with the real time
-        while ( ( systemData->currentMainLoopTime -
-                  systemData->currentPhysicsTime ) >=
-                systemData->physicsTimeStep )
+        // Run the physics engine until the game time is in sync with the real loop time.
+        while ((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep)
         {
-            systemData->currentPhysicsTime += systemData->physicsTimeStep;
+            systemData->simulationTime += systemData->physicsTimeStep;
             systemData->physicsSteps++;
-            //now run the physics engine
-            physics->step (  );
-
-            static int inputSteps = 5;
-
-            if ( !--inputSteps )
-            {
-                inputSteps = 5;
-                input->step (  );
-            }
+            physicsEngine->computeStep ();
+            inputEngine->computeStep ();
         }
-        //sound.step ();
-        gui->step (  );
-        graphics->step (  );    //currently running at max. possible rate (1 time per loop)
-        systemData->graphicsSteps++;    //a graphics render is done in every loop
-        //data.step (); //if we use a streaming engine i guess...
-        input->step (  );       //currently running at max. possible rate (1 time per loop)
-        //net.step ();//this modifies some worldData directly (car positions...)
-        //ai.step (); //this works exactly like the input engine,
-        // except that it's the computer who creates the "input"
-        // for the car input parts (car pedals, car st.wheel,...)
+        // Run the gui engine.
+        guiEngine->computeStep ();
+        // Run the graphics engine.
+        graphicsEngine->computeStep ();
+        systemData->graphicsSteps++;
     }
-    log->put ( LOG_INFO, "Main loop finished" );
+    log->put (LOG_INFO, "Main loop finished");
 
-    log->put ( LOG_INFO, "( 4 ): Unloading world data..." );
-    log->put ( LOG_INFO, "Unloading world data" );
-    data->unloadWorldData (  );
+    // We unload the world data from memory.
+    log->put (LOG_INFO, "( 4 ): Unloading world data...");
+    log->put (LOG_INFO, "Unloading world data");
+    dataEngine->unloadWorldData ();
 
-    log->put ( LOG_INFO, "( 5 ): Unloading engines and libraries..." );
-    log->put ( LOG_INFO, "Deleting graphics engine" );
-    delete graphics;
-
-    log->put ( LOG_INFO, "Deleting physics engine" );
-    delete physics;
-
-    log->put ( LOG_INFO, "Deleting input engine" );
-    delete input;
-
-    log->put ( LOG_INFO, "Deleting gui engine" );
-    delete gui;
-
-    log->put ( LOG_INFO, "Deleting data engine" );
-    delete data;
-
-    log->put ( LOG_INFO, "Deleting log engine" );
+    // We delete the 'global' data and engines.
+    log->put (LOG_INFO, "( 5 ): Unloading engines and libraries...");
+    log->put (LOG_INFO, "Deleting graphics engine");
+    delete graphicsEngine;
+    log->put (LOG_INFO, "Deleting physics engine");
+    delete physicsEngine;
+    log->put (LOG_INFO, "Deleting input engine");
+    delete inputEngine;
+    log->put (LOG_INFO, "Deleting gui engine");
+    delete guiEngine;
+    log->put (LOG_INFO, "Deleting data engine");
+    delete dataEngine;
+    log->put (LOG_INFO, "Deleting log engine");
     delete log;
+    stopSdl ();
 
-    sdl_stop (  );
-
-    //and finally back to the OS
-    return ( 0 );
+    // We go back to the OS.
+    return (0);
 }
 
-void sdl_start ( LogEngine * log )
-{                               //initialization functions for SDL
-    //returns -2 on warning, -1 on error, 0 on success
-    if ( SDL_Init ( SDL_INIT_TIMER /* | SDL_INIT_JOYSTICK */  ) < 0 )
+void startSdl (LogEngine * log)
+{
+    if (SDL_Init (SDL_INIT_TIMER) < 0)
     {
-        log->format ( LOG_ERROR, "Couldn't initialize SDL: %s\n",
-                      SDL_GetError (  ) );
+        log->format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError ());
     }
 }
 
-void sdl_stop ( void )
-{                               //exit functions for SDL
-    SDL_Quit (  );
+void stopSdl (void)
+{
+    SDL_Quit ();
 }
 
-int processMainConfigFile ( DOMNode * n, void *data )
+void processMainConfigFile (DOMNode * node, void *data)
 {
-    if ( n )
+    if (node)
     {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+        if (node->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER
-                endl;
+            char *nodeName = XMLString::transcode (node->getNodeName ());
+            XERCES_STD_QUALIFIER cout << "Name:" << nodeName << XERCES_STD_QUALIFIER endl;
 
-            if ( !strncmp ( name, "mainConfig", 11 ) )
+            if (!strncmp (nodeName, "mainConfig", 11))
             {
-                XERCES_STD_QUALIFIER cout <<
-                    "Found the main config element." <<
-                    XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
+                XERCES_STD_QUALIFIER cout << "Found the main config element." << XERCES_STD_QUALIFIER endl;
+                if (node->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
+                    DOMNamedNodeMap *pAttributes = node->getAttributes ();
+                    int nodeSize = pAttributes->getLength ();
 
-                    for ( int i = 0; i < nSize; ++i )
+                    for (int i = 0; i < nodeSize; ++i)
                     {
-                        DOMAttr *pAttributeNode =
-                            ( DOMAttr * ) pAttributes->item ( i );
-                        char *name =
-                            XMLString::transcode ( pAttributeNode->
-                                                   getName (  ) );
-                        if ( !strncmp ( name, "localLogLevel", 14 ) )
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *subnodeName = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (subnodeName, "localLogLevel", 14))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the local log level:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                ( *( MainData * ) data ).localLogLevel =
-                                    LOG_ERROR;
-                            if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                ( *( MainData * ) data ).localLogLevel =
-                                    LOG_WARNING;
-                            if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                ( *( MainData * ) data ).localLogLevel =
-                                    LOG_INFO;
-                            if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                ( *( MainData * ) data ).localLogLevel =
-                                    LOG_VERBOSE;
-                            if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                ( *( MainData * ) data ).localLogLevel =
-                                    LOG_TRACE;
+                            XMLString::release (&subnodeName);
+                            XERCES_STD_QUALIFIER cout << "\tFound the local log level:";
+                            subnodeName = XMLString::transcode (pAttributeNode->getValue ());
+                            XERCES_STD_QUALIFIER cout << subnodeName << XERCES_STD_QUALIFIER endl;
+                            if (!strncmp (subnodeName, "LOG_ERROR", 10))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (subnodeName, "LOG_WARNING", 13))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (subnodeName, "LOG_INFO", 9))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (subnodeName, "LOG_VERBOSE", 12))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (subnodeName, "LOG_TRACE", 9))
+                                (*(ParsingMainData *) data).localLogLevel = LOG_TRACE;
                         }
-                        if ( !strncmp ( name, "localLogName", 13 ) )
+                        if (!strncmp (subnodeName, "localLogName", 13))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the log name:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
+                            XMLString::release (&subnodeName);
+                            XERCES_STD_QUALIFIER cout << "\tFound the log subnodeName:";
+                            subnodeName = XMLString::transcode (pAttributeNode->getValue ());
+                            XERCES_STD_QUALIFIER cout << subnodeName << XERCES_STD_QUALIFIER endl;
 
-                            ( *( MainData * ) data ).localLogName =
-                                new char[strlen ( name ) + 1];
-                            strncpy ( ( *( MainData * ) data ).localLogName,
-                                      name, strlen ( name ) + 1 );
+                            (*(ParsingMainData *) data).localLogName = new char[strlen (subnodeName) + 1];
+                            strncpy ((*(ParsingMainData *) data).localLogName, subnodeName, strlen (subnodeName) + 1);
                         }
-                        XMLString::release ( &name );
+                        XMLString::release (&subnodeName);
                     }
                 }
             }
+            XMLString::release (&nodeName);
         }
     }
-    return 1;
 }

@@ -21,8 +21,7 @@
 
 #include "cube.hpp"
 
-void Cube::startPhysics ( float posX, float posY, float posZ,
-                          CubePhysicsData * physics )
+void Cube::startPhysics (float posX, float posY, float posZ, CubePhysicsData * physics)
 {
 /*    dMass mass;
 
@@ -38,46 +37,32 @@ void Cube::startPhysics ( float posX, float posY, float posZ,
 
     dMass mass;
 
-    dMassSetBox ( &mass, 1, physics->size, physics->size,
-                  physics->size );
-    cubeID = dBodyCreate ( WorldData::getWorldDataPointer (  )->worldID );
-    dBodySetPosition ( cubeID, posX, posY, posZ );
-    cubeGeomID =
-        dCreateBox ( WorldData::getWorldDataPointer (  )->spaceID,
-                     physics->size, physics->size,
-                     physics->size );
-    dGeomSetBody ( cubeGeomID, cubeID );
+    dMassSetBox (&mass, 1, physics->size, physics->size, physics->size);
+    cubeID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
+    dBodySetPosition (cubeID, posX, posY, posZ);
+    cubeGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->size, physics->size, physics->size);
+    dGeomSetBody (cubeGeomID, cubeID);
 }
 
-void Cube::stopPhysics (  )
+void Cube::stopPhysics ()
 {
-    dGeomDestroy ( cubeGeomID );
-    dBodyDestroy ( cubeID );
+    dGeomDestroy (cubeGeomID);
+    dBodyDestroy (cubeID);
 }
 
-void Cube::stepPhysics (  )
+void Cube::stepPhysics ()
 {
-    ////////////////simplified air friction (test)(should be forces!)
-    dBodySetAngularVel ( cubeID,
-                         ( *( dReal * )
-                           ( dBodyGetAngularVel ( cubeID ) +
-                             0 ) ) * ( dReal ) ( 0.999 ),
-                         ( *( dReal * )
-                           ( dBodyGetAngularVel ( cubeID ) +
-                             1 ) ) * ( dReal ) ( 0.999 ),
-                         ( *( dReal * )
-                           ( dBodyGetAngularVel ( cubeID ) +
-                             2 ) ) * ( dReal ) ( 0.999 ) );
-    //////////////////////////////////////simplified air friction
-    //applying user input [forces]
-    float moveToX = 0,
-        moveToY = 0;
+    // //////////////simplified air friction (test)(should be forces!)
+    dBodySetAngularVel (cubeID, (*(dReal *) (dBodyGetAngularVel (cubeID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (cubeID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (cubeID) + 2)) * (dReal) (0.999));
+    // ////////////////////////////////////simplified air friction
+    // applying user input [forces]
+    float moveToX = 0, moveToY = 0;
 
-    moveToX += getMoveToXPositive (  );
-    moveToX -= getMoveToXNegative (  );
-    moveToY += getMoveToYPositive (  );
-    moveToY -= getMoveToYNegative (  );
+    moveToX += getMoveToXPositive ();
+    moveToX -= getMoveToXNegative ();
+    moveToY += getMoveToYPositive ();
+    moveToY -= getMoveToYNegative ();
     moveToX /= 200;
     moveToY /= 200;
-    dBodyAddForce ( cubeID, moveToX, moveToY, 0.0f );
+    dBodyAddForce (cubeID, moveToX, moveToY, 0.0f);
 }

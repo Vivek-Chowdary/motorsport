@@ -21,23 +21,23 @@
 
 #include "cube.hpp"
 
-void Cube::startGraphics ( int cubeNumber, CubeGraphicsData * graphics )
+void Cube::startGraphics (int cubeNumber, CubeGraphicsData * graphics)
 {
     char name[20];
-    sprintf ( name, graphics->ogreName, cubeNumber );
-    cubeEntity = SystemData::getSystemDataPointer()->ogreSceneManager->createEntity ( name, graphics->mesh );
-    cubeEntity->setMaterialName ( graphics->material );
-    cubeNode = static_cast < Ogre::SceneNode* > (SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild() );
+    sprintf (name, graphics->ogreName, cubeNumber);
+    cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, graphics->mesh);
+    cubeEntity->setMaterialName (graphics->material);
+    cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     cubeNode->attachObject (cubeEntity);
 }
 
-void Cube::stepGraphics()
+void Cube::stepGraphics ()
 {
-    updateOgrePosition();
-    updateOgreOrientation();
+    updateOgrePosition ();
+    updateOgreOrientation ();
 }
 
-void Cube::stopGraphics()
+void Cube::stopGraphics ()
 {
-    //empty
+    // empty
 }

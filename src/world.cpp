@@ -22,28 +22,29 @@
 
 #include "world.hpp"
 
-WorldData * WorldData::worldDataPointer = NULL;
+WorldData *WorldData::worldDataPointer = NULL;
 
-WorldData * WorldData::getWorldDataPointer ( )
+WorldData *WorldData::getWorldDataPointer ()
 {
     if (!worldDataPointer)
     {
         new WorldData ();
     }
-    return ( worldDataPointer );
+    return (worldDataPointer);
 }
 
-WorldData::WorldData ( )
+WorldData::WorldData ()
 {
     if (worldDataPointer)
     {
         delete this;
-    }else{
+    } else
+    {
         worldDataPointer = this;
     }
 }
 
-WorldData::~WorldData ( )
+WorldData::~WorldData ()
 {
     delete worldDataPointer;
     worldDataPointer = NULL;

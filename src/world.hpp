@@ -27,17 +27,17 @@
 #   include "ode.h"
 
 class WorldData
-{                               //this will contain everything related to the simulated/virtual world
-    private:
-        static WorldData * worldDataPointer;
-    public:
-        static WorldData * getWorldDataPointer ( );
-        WorldData  ( );
-        ~WorldData ( );
+{                               // this will contain everything related to the simulated/virtual world
+  private:
+    static WorldData *worldDataPointer;
+  public:
+    static WorldData *getWorldDataPointer ();
+      WorldData ();
+     ~WorldData ();
 
-        dWorldID worldID;
-        dSpaceID spaceID;
-        dJointGroupID jointGroupID;
+    dWorldID worldID;
+    dSpaceID spaceID;
+    dJointGroupID jointGroupID;
 };
 
 #endif

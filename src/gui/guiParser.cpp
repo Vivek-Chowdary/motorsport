@@ -22,83 +22,67 @@
 
 #include "guiEngine.hpp"
 
-int GuiEngine::processGuiConfigFile ( DOMNode * n, void * data)
+void GuiEngine::processGuiConfigFile (DOMNode * n, void *data)
 {
-    if ( n )
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    if (n)
     {
-        if ( n->getNodeType (  ) == DOMNode::ELEMENT_NODE )
+        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
-            char *name = XMLString::transcode ( n->getNodeName (  ) );
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+            char *name = XMLString::transcode (n->getNodeName ());
+            log->format (LOG_INFO, "Name: %s", name);
 
-            if ( !strncmp ( name, "guiConfig", 10 ) )
+            if (!strncmp (name, "guiConfig", 10))
             {
-                XERCES_STD_QUALIFIER cout << "Found the gui engine config element." << XERCES_STD_QUALIFIER endl;
-                if ( n->hasAttributes (  ) )
+                log->put (LOG_INFO, "Found the gui engine config element.");
+                if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes (  );
-                    int nSize = pAttributes->getLength (  );
-                    for ( int i = 0; i < nSize; ++i )
+                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
+                    int nSize = pAttributes->getLength ();
+                    for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode =
-                            ( DOMAttr * ) pAttributes->item ( i );
-                        char *name =
-                            XMLString::transcode ( pAttributeNode->
-                                                   getName (  ) );
-                        if ( !strncmp ( name, "localLogLevel", 14 ) )
+                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        char *name = XMLString::transcode (pAttributeNode->getName ());
+                        if (!strncmp (name, "localLogLevel", 14))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the local log level:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            if ( !strncmp ( name, "LOG_ERROR", 10 ) )
-                                (*(GuiData*)data).localLogLevel = LOG_ERROR;
-                            if ( !strncmp ( name, "LOG_WARNING", 13 ) )
-                                (*(GuiData*)data).localLogLevel = LOG_WARNING;
-                            if ( !strncmp ( name, "LOG_INFO", 9 ) )
-                                (*(GuiData*)data).localLogLevel = LOG_INFO;
-                            if ( !strncmp ( name, "LOG_VERBOSE", 12 ) )
-                                (*(GuiData*)data).localLogLevel = LOG_VERBOSE;
-                            if ( !strncmp ( name, "LOG_TRACE", 9 ) )
-                                (*(GuiData*)data).localLogLevel = LOG_TRACE;
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the local log level: %s", name);
+                            if (!strncmp (name, "LOG_ERROR", 10))
+                                (*(GuiData *) data).localLogLevel = LOG_ERROR;
+                            if (!strncmp (name, "LOG_WARNING", 13))
+                                (*(GuiData *) data).localLogLevel = LOG_WARNING;
+                            if (!strncmp (name, "LOG_INFO", 9))
+                                (*(GuiData *) data).localLogLevel = LOG_INFO;
+                            if (!strncmp (name, "LOG_VERBOSE", 12))
+                                (*(GuiData *) data).localLogLevel = LOG_VERBOSE;
+                            if (!strncmp (name, "LOG_TRACE", 9))
+                                (*(GuiData *) data).localLogLevel = LOG_TRACE;
                         }
 
-                        if ( !strncmp ( name, "localLogName", 13 ) )
+                        if (!strncmp (name, "localLogName", 13))
                         {
-                            XMLString::release ( &name );
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound the log name:";
-                            name = XMLString::transcode ( pAttributeNode->getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
-                            
-                            (*(GuiData*)data).localLogName = new char[strlen(name)+1];
-                            strncpy ((*(GuiData*)data).localLogName, name, strlen(name)+1);
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found the log name: %s", name);
+                            (*(GuiData *) data).localLogName = new char[strlen (name) + 1];
+                            strncpy ((*(GuiData *) data).localLogName, name, strlen (name) + 1);
                         }
-                        if ( !strncmp ( name, "showStatistics", 15 ) )
+                        if (!strncmp (name, "showStatistics", 15))
                         {
-                            XERCES_STD_QUALIFIER cout <<
-                                "\tFound whether to show the statistics or not:";
-                            name =
-                                XMLString::transcode ( pAttributeNode->
-                                                       getValue (  ) );
-                            XERCES_STD_QUALIFIER cout << name <<
-                                XERCES_STD_QUALIFIER endl;
-                            
-                            if ( !strncmp ( name, "0", 2 ) )
-                                (*(GuiData*)data).showStatistics = false;
-                            if ( !strncmp ( name, "1", 2 ) )
-                                (*(GuiData*)data).showStatistics = true;
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found whether to show the statistics or not: %s", name);
+                            if (!strncmp (name, "0", 2))
+                                (*(GuiData *) data).showStatistics = false;
+                            if (!strncmp (name, "1", 2))
+                                (*(GuiData *) data).showStatistics = true;
                         }
-                        XMLString::release ( &name );
+                        XMLString::release (&name);
                     }
                 }
             }
         }
     }
-    return 1;
+    delete log;
 }

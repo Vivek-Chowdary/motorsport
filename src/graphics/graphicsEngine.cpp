@@ -22,153 +22,145 @@
 
 #include "graphicsEngine.hpp"
 
-GraphicsEngine::GraphicsEngine (  )
+GraphicsEngine::GraphicsEngine ()
 {
-    //first of all start the logger (automatically logs the start of itself)
-    GraphicsData * data = new GraphicsData;
+    // first of all start the logger (automatically logs the start of itself)
+    GraphicsData *data = new GraphicsData;
     data->graphics = this;
-    processXmlFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void*)data);
+    processXmlFile ("graphicsConfig.xml", &GraphicsEngine::processGraphicsConfigFile, (void *) data);
 
-    log = new LogEngine ( data->localLogLevel, data->localLogName );
-    log->put( LOG_INFO, "Temporary parsing data already loaded into memory...");
+    log = new LogEngine (data->localLogLevel, data->localLogName);
+    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
 
-    //get the direction of the graphics data
-    log->put ( LOG_INFO, "Setting up data pointers..." );
-    worldData = WorldData::getWorldDataPointer (  );
-    systemData = SystemData::getSystemDataPointer (  );
+    // get the direction of the graphics data
+    log->put (LOG_INFO, "Setting up data pointers...");
+    worldData = WorldData::getWorldDataPointer ();
+    systemData = SystemData::getSystemDataPointer ();
 
-    log->put ( LOG_INFO, "Loading screenshot filename into memory...");
-    screenshotFilename = new char[strlen(data->screenshotFile)+1];
-    strncpy (screenshotFilename, data->screenshotFile, strlen(data->screenshotFile)+1);
+    log->put (LOG_INFO, "Loading screenshot filename into memory...");
+    screenshotFilename = new char[strlen (data->screenshotFile) + 1];
+    strncpy (screenshotFilename, data->screenshotFile, strlen (data->screenshotFile) + 1);
 
-    log->put ( LOG_INFO, "Setting screen properties..." );
+    log->put (LOG_INFO, "Setting screen properties...");
     width = data->width;
     height = data->height;
     bpp = data->bpp;
     fullScreen = data->fullScreen;
-    log->format ( LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width,
-                  height, bpp );
+    log->format (LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp);
 
-    ogreRoot = new Ogre::Root (  );
-    setupResources ( data );
+    ogreRoot = new Ogre::Root ();
+    setupResources (data);
     // Initialise the system
-    if ( !manualInitialize ( data ) )
+    if (!manualInitialize (data))
     {
 //        return false;
     }
     // Here we choose to let the system create a default rendering window
     // by passing 'true'
-    ogreRoot->getRenderSystem (  )->setConfigOption ( "Full Screen",
-                                                      fullScreen ? "Yes" :
-                                                      "No" );
-    systemData->ogreWindow = ogreRoot->initialise ( true );
-    systemData->ogreSceneManager =
-        ogreRoot->getSceneManager ( data->sceneManager );
+    ogreRoot->getRenderSystem ()->setConfigOption ("Full Screen", fullScreen ? "Yes" : "No");
+    systemData->ogreWindow = ogreRoot->initialise (true);
+    systemData->ogreSceneManager = ogreRoot->getSceneManager (data->sceneManager);
 
     // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( data->defaultNumMipMaps );
+    Ogre::TextureManager::getSingleton ().setDefaultNumMipMaps (data->defaultNumMipMaps);
 
-    //Set some graphics settings
-    Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy ( data->anisotropy );
-    Ogre::MaterialManager::getSingleton (  ).
-        setDefaultTextureFiltering ( data->filtering );
+    // Set some graphics settings
+    Ogre::MaterialManager::getSingleton ().setDefaultAnisotropy (data->anisotropy);
+    Ogre::MaterialManager::getSingleton ().setDefaultTextureFiltering (data->filtering);
 
-    log->put( LOG_INFO, "Unloading temporary parsing data from memory...");
-    delete [](data->localLogName);
-    delete [](data->screenshotFile);
-    delete [](data->ogreConfigFile);
-    delete [](data->renderer);
+    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
+    delete[](data->localLogName);
+    delete[](data->screenshotFile);
+    delete[](data->ogreConfigFile);
+    delete[](data->renderer);
     delete data;
 }
 
-bool GraphicsEngine::manualInitialize ( GraphicsData * data )
+bool GraphicsEngine::manualInitialize (GraphicsData * data)
 {
     Ogre::RenderSystem * renderSystem;
     bool ok = false;
 
-    Ogre::RenderSystemList * renderers =
-        Ogre::Root::getSingleton (  ).getAvailableRenderers (  );
+    Ogre::RenderSystemList * renderers = Ogre::Root::getSingleton ().getAvailableRenderers ();
     // See if the list is empty (no renderers available)
-    if ( renderers->empty (  ) )
+    if (renderers->empty ())
         return false;
-    for ( Ogre::RenderSystemList::iterator it = renderers->begin (  );
-          it != renderers->end (  ); it++ )
+    for (Ogre::RenderSystemList::iterator it = renderers->begin (); it != renderers->end (); it++)
     {
-        renderSystem = ( *it );
-        log->put ( LOG_INFO, "Loading ogre renderer name into memory...");
-        if ( strstr ( &( *renderSystem->getName (  ) ), data->renderer ) )
+        renderSystem = (*it);
+        log->put (LOG_INFO, "Loading ogre renderer name into memory...");
+        if (strstr (&(*renderSystem->getName ()), data->renderer))
         {
             ok = true;
             break;
         }
     }
-    if ( !ok )
+    if (!ok)
     {
         // We still don't have a renderer; pick up the first one from the list
-        renderSystem = ( *renderers->begin (  ) );
+        renderSystem = (*renderers->begin ());
     }
 
-    Ogre::Root::getSingleton (  ).setRenderSystem ( renderSystem );
+    Ogre::Root::getSingleton ().setRenderSystem (renderSystem);
     char resolution[32];
 
-    sprintf ( resolution, "%i x %i", width, height );
+    sprintf (resolution, "%i x %i", width, height);
 
     // Manually set configuration options. These are optional.
-    renderSystem->setConfigOption ( "Video Mode", resolution );
+    renderSystem->setConfigOption ("Video Mode", resolution);
 
     return true;
 }
 
-void GraphicsEngine::setupResources ( GraphicsData * data )
+void GraphicsEngine::setupResources (GraphicsData * data)
 {
     // Load resource paths from config file
     Ogre::ConfigFile cf;
-    log->put ( LOG_INFO, "Loading ogre config filename into memory...");
-    cf.load ( data->ogreConfigFile );
+    log->put (LOG_INFO, "Loading ogre config filename into memory...");
+    cf.load (data->ogreConfigFile);
 
     // Go through all settings in the file
-    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
+    Ogre::ConfigFile::SettingsIterator i = cf.getSettingsIterator ();
     Ogre::String typeName, archName;
-    while ( i.hasMoreElements (  ) )
+    while (i.hasMoreElements ())
     {
-        typeName = i.peekNextKey (  );
-        archName = i.getNext (  );
-        Ogre::ResourceManager::addCommonArchiveEx ( archName, typeName );
+        typeName = i.peekNextKey ();
+        archName = i.getNext ();
+        Ogre::ResourceManager::addCommonArchiveEx (archName, typeName);
     }
 }
 
-int GraphicsEngine::step ( void )
+int GraphicsEngine::computeStep (void)
 {
-    //take a screenshot if needed
-    if ( systemData->getTakeScreenshot (  ) )
+    // take a screenshot if needed
+    if (systemData->getTakeScreenshot ())
     {
-        log->format ( LOG_INFO, "Taking a screenshot in %s.", screenshotFilename );
-        systemData->ogreWindow->writeContentsToFile ( screenshotFilename );
+        log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename);
+        systemData->ogreWindow->writeContentsToFile (screenshotFilename);
     }
-    
-    //Update Ogre's cubes positions with Ode's positions.
-    int numberOfCubes = Cube::cubeList.size (  );
+    // Update Ogre's cubes positions with Ode's positions.
+    int numberOfCubes = Cube::cubeList.size ();
 
-    for ( int currentCube = 0; currentCube < numberOfCubes; currentCube++ )
+    for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        Cube::cubeList[currentCube]->stepGraphics (  );
+        Cube::cubeList[currentCube]->stepGraphics ();
     }
-    //Let the listener frames be started and ended: they are needed for particle systems.
-    ogreRoot->_fireFrameStarted (  );
-    systemData->ogreWindow->update (  );
-    ogreRoot->_fireFrameEnded (  );
+    // Let the listener frames be started and ended: they are needed for particle systems.
+    ogreRoot->_fireFrameStarted ();
+    systemData->ogreWindow->update ();
+    ogreRoot->_fireFrameEnded ();
 
-    return ( 0 );
+    return (0);
 }
 
-GraphicsEngine::~GraphicsEngine ( void )
+GraphicsEngine::~GraphicsEngine (void)
 {
-    log->put ( LOG_INFO, "Unloading ogre window data from memory..." );
-    delete ( systemData->ogreWindow );
-    
-    log->put ( LOG_INFO, "Unloading screenshot filename from memory...");
+    log->put (LOG_INFO, "Unloading ogre window data from memory...");
+    delete (systemData->ogreWindow);
+
+    log->put (LOG_INFO, "Unloading screenshot filename from memory...");
     delete screenshotFilename;
 
-    //finally stop the log engine
+    // finally stop the log engine
     delete log;
 }

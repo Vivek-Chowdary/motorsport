@@ -38,11 +38,11 @@
 */
 enum LOG_LEVEL
 {
-    LOG_ERROR = 0,              //!< Message of a critical error.
-    LOG_WARNING = 1,            //!< Message of a non-critical error, a warning.
-    LOG_INFO = 2,               //!< Message with basic information.
-    LOG_VERBOSE = 3,            //!< Message with lots of information.
-    LOG_TRACE = 4               //!< Message with lots of information, aimed at debugging.
+    LOG_ERROR = 0,              // !< Message of a critical error.
+    LOG_WARNING = 1,            // !< Message of a non-critical error, a warning.
+    LOG_INFO = 2,               // !< Message with basic information.
+    LOG_VERBOSE = 3,            // !< Message with lots of information.
+    LOG_TRACE = 4               // !< Message with lots of information, aimed at debugging.
 };
 
 /// Max. number that can be used as LOG_LEVEL.
@@ -61,51 +61,51 @@ struct LogData;
 class LogEngine
 {
 
-    /// Indicates how much information will be stored in this log instance.
+    // / Indicates how much information will be stored in this log instance.
     /** Indicates the level of verbosity of the log. All log messages with a number higher to this one will be discarded, and therefore not writen to the log file.
     */
     LOG_LEVEL logLevel;
-    /// Indicates a short name, prefixed to every log line.
+    // / Indicates a short name, prefixed to every log line.
     /** Indicates a short name or initials for instance of the log engine. It allows to know which "engine" this log is associated with.
     */
-    std::string logName;
-    /// Indicates the file where logs will be writen.
+      std::string logName;
+    // / Indicates the file where logs will be writen.
     /** Indicates a plain-text file where log messages can be writen.
     */
     static std::fstream logFile;
-    /// Indicates how much information will be stored in the log file.
+    // / Indicates how much information will be stored in the log file.
     /** Indiactes how much information will be stored in the log file, regardless of a higher level for current instance.
     */
     static LOG_LEVEL globalLevel;
-    /// Stores the number of log engine instances.
+    // / Stores the number of log engine instances.
     /** Stores the number of log engine instances that have been created. This number is increased or decreased everytime a log engine is created or deleted.
     */
     static int numberOfLogEngines;
-    /// Amount of chars allocated for log message conversion.
+    // / Amount of chars allocated for log message conversion.
     /** Indicates how many chars will be allocated for performing the conversion between the original printf-like format, to the final char* text.
     */
     static int textBuffer;
-    /// Helper function translating log level into a short code.
+    // / Helper function translating log level into a short code.
     /** Helper function translating log level into a short code. 
 	@param verbosity level to get code for.
 	@return code as a short c-string.
     */
-    const char* GetLogLevelCode(LOG_LEVEL level);
-    /// Called by the generic XML parser; it loads configuration data from a file.
-    static int processLogConfigFile ( DOMNode * n, void * data );
+    const char *GetLogLevelCode (LOG_LEVEL level);
+    // / Called by the generic XML parser; it loads configuration data from a file.
+    static void processLogConfigFile (DOMNode * n, void *data);
   public:
-    /// Creates a new log engine, creating the log file if needed.
+    // / Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.
         @param localLevel level of verbosity of this log.
         @param name 3 characters with an identifier for the log.
     */
-    LogEngine ( LOG_LEVEL localLevel, const char *name);
-    /// Deletes the log engine, closing the log file if needed.
+      LogEngine (LOG_LEVEL localLevel, const char *name);
+    // / Deletes the log engine, closing the log file if needed.
     /** Deletes the log engine and associated data. If there's no other log engines left, the log file will be closed.
     */
-    ~LogEngine ( void );
+     ~LogEngine (void);
 
-    /// Writes a log message to the log file.
+    // / Writes a log message to the log file.
     /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). It's possible to avoid writing a newline before the message.
         @param level level of the log message.
         @param textToLog message that is to be logged if its level is low enough.
@@ -113,9 +113,9 @@ class LogEngine
         @return -1 if the message level is too high to be logged.
         @return -2 if there was problem writing to the file. 
     */
-    int put ( LOG_LEVEL level, const char *textToLog );
+    int put (LOG_LEVEL level, const char *textToLog);
 
-    /// Writes a printf-like formated log message to the log file.
+    // / Writes a printf-like formated log message to the log file.
     /** Writes a printf-like formated log message to the log file, provided its level is low enough (compared to the level of the log engine). A newline is always writen before the message.
         @param level level of the log message.
         @param textToLogFormat first part of a printf-like formated log message.
@@ -125,18 +125,17 @@ class LogEngine
         @return -2 if the message level is incorrect.
         @return -3 if there was a problem writing to the file.
     */
-    int format ( LOG_LEVEL level, const char *textToLogFormat, ... );
+    int format (LOG_LEVEL level, const char *textToLogFormat, ...);
 
-    /// Friends, this test function is a friend and can use private methods.
-    friend void TestGetLogLevelCode();
-
+    // / Friends, this test function is a friend and can use private methods.
+    friend void TestGetLogLevelCode ();
 };
 
 struct LogData
 {
-    LogEngine * log;
+    LogEngine *log;
     LOG_LEVEL globalLevel;
-    char * fileName;
+    char *fileName;
     int textBuffer;
 };
 

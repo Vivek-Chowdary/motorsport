@@ -37,41 +37,41 @@ using namespace Ogre;
 class GuiEngine
 {
   private:
-    /// Log engine used by the gui engine.
+    // / Log engine used by the gui engine.
     /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine *log;
-    /// Pointer to the world data, used by different engines in order to store the simulated world data.
+    LogEngine * log;
+    // / Pointer to the world data, used by different engines in order to store the simulated world data.
     WorldData *worldData;
-    /// Pointer to the system data, used by different engines in order to store common data.
+    // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-    /// Allows or disallows to show statistics on screen
+    // / Allows or disallows to show statistics on screen
     bool showStatistics;
   public:
-    /// Creates a new gui engine.
+    // / Creates a new gui engine.
     /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
     */
-    GuiEngine ( );
-    /// Deletes the gui engine.
+      GuiEngine ();
+    // / Deletes the gui engine.
     /** Deletes de gui engine, as well as its associated log engine. It also removes all the related data from memory.
     */
-    ~GuiEngine ( );
-    /// Updates some statistics.
+     ~GuiEngine ();
+    // / Updates some statistics.
     /** Updates some statistics (framerates, etc...) in order to show them on screen if needed..
     */
-    void updateStatistics ( void  );
-    /// Renders all the gui on screen.
+    void updateStatistics (void);
+    // / Renders all the gui on screen.
     /** Renders on screen all the system data (gui) for this frame.
     */
-    int step ( void );
-    /// Called by the generic XML parser; it loads configuration data from a file.
-    static int processGuiConfigFile ( DOMNode * n, void * data);
+    int computeStep (void);
+    // / Called by the generic XML parser; it loads configuration data from a file.
+    static void processGuiConfigFile (DOMNode * n, void *data);
 };
 
 struct GuiData
 {
-    GuiEngine * gui;
+    GuiEngine *gui;
     LOG_LEVEL localLogLevel;
-    char * localLogName;
-    bool showStatistics; //1->yes.  0->no.
+    char *localLogName;
+    bool showStatistics;        // 1->yes.  0->no.
 };

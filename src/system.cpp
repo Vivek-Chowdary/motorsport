@@ -22,93 +22,78 @@
 
 #include "system.hpp"
 
-SystemData * SystemData::systemDataPointer = NULL;
+SystemData *SystemData::systemDataPointer = NULL;
 
-SystemData * SystemData::getSystemDataPointer ()
+SystemData *SystemData::getSystemDataPointer ()
 {
     if (!systemDataPointer)
     {
         new SystemData ();
     }
-    return ( systemDataPointer );
+    return (systemDataPointer);
 }
 
-SystemData::SystemData ( )
+SystemData::SystemData ()
 {
     if (systemDataPointer)
     {
         delete this;
-    }else{
+    } else
+    {
         systemDataPointer = this;
-        
-        //initialize main loop data
+
+        // initialize main loop data
         physicsSteps = 0;
-        physicsStepsPerSecond = 0;
+        physicsFrequency = 0;
         graphicsSteps = 0;
-        graphicsStepsPerSecond = 0;
+        graphicsFrequency = 0;
         takeScreenshot = false;
         invertShowStatistics = false;
     }
 }
 
-SystemData::~SystemData ( )
+SystemData::~SystemData ()
 {
     delete systemDataPointer;
     systemDataPointer = NULL;
 }
 
-bool mainLoopEnabled;
-
-bool SystemData::canMainLoopRun ( void )    //does the program have to keep running?
+bool SystemData::isMainLoopEnabled (void)
 {
     return mainLoopEnabled;
 }
 
-void SystemData::enableMainLoop ( void )    //allows the program to start running
+void SystemData::enableMainLoop (void)
 {
     mainLoopEnabled = true;
 }
-void SystemData::disableMainLoop ( void )   //allows the program to stop running
+void SystemData::disableMainLoop (void)
 {
     mainLoopEnabled = false;
 }
 
-/*
-bool SystemData::getStatisticsEnabled (  )
-{
-    return statisticsEnabled;
-}
-
-void SystemData::invertStatisticsEnabled (  )
-{
-    statisticsEnabled = !statisticsEnabled;
-}
-
-void SystemData::enableStatistics (  )
-{
-    statisticsEnabled = true;
-}
-*/
-void SystemData::setInvertShowStatistics (  )
+void SystemData::setInvertShowStatistics ()
 {
     invertShowStatistics = true;
 }
 
-bool SystemData::getInvertShowStatistics (  )
+bool SystemData::getInvertShowStatistics ()
 {
-    if (!invertShowStatistics) return false;
+    if (!invertShowStatistics)
+        return false;
     invertShowStatistics = false;
     return true;
 }
 
-void SystemData::setTakeScreenshot (  )
+void SystemData::setTakeScreenshot ()
 {
     takeScreenshot = true;
 }
 
-bool SystemData::getTakeScreenshot (  )
+bool SystemData::getTakeScreenshot ()
 {
-    if (!takeScreenshot) return false;
+    if (!takeScreenshot)
+        return false;
     takeScreenshot = false;
     return true;
 }

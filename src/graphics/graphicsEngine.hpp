@@ -32,6 +32,7 @@
 #include "cube.hpp"
 #include "camera.hpp"
 #include "domParser.hpp"
+#include "dataEngine.hpp"
 
 struct GraphicsData;
 
@@ -41,17 +42,17 @@ struct GraphicsData;
 class GraphicsEngine
 {
   private:
-    /// Log engine used by the graphics engine.
+    // / Log engine used by the graphics engine.
     /** This log engine allows the graphics engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine *log;
-    /// Pointer to the world data, used by different engines in order to store the simulated world data.          
+    LogEngine * log;
+    // / Pointer to the world data, used by different engines in order to store the simulated world data.  
     WorldData *worldData;
-    /// Pointer to the system data, used by different engines in order to store common data.
+    // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
-    
-    /// Name of the file were screenshots will be saved.
-    char * screenshotFilename;
+
+    // / Name of the file were screenshots will be saved.
+    char *screenshotFilename;
   public:
     int width;
     int height;
@@ -59,57 +60,49 @@ class GraphicsEngine
     bool fullScreen;
 
     Ogre::Root * ogreRoot;
-    
-    /// Creates a new graphics engine.
+
+    // / Creates a new graphics engine.
     /** Creates a new graphics engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of world data (meshes, textures...), and sets up the underlying rendering libray (Ogre).
     */
-    GraphicsEngine ( );
-    /// Deletes the graphics engine.
+    GraphicsEngine ();
+    // / Deletes the graphics engine.
     /** Deletes de graphics engine, as well as its associated log engine. It also removes all the related data from memory, and shuts down Ogre if necessary.
     */
-    ~GraphicsEngine ( void );
-    /// Renders all the world data on screen.
+    ~GraphicsEngine (void);
+    // / Renders all the world data on screen.
     /** Renders on screen all the world data for this frame.
     */
-    int step ( void );
+    int computeStep (void);
 
-    /// Selects a renderer and switches to the chosen resolution.
+    // / Selects a renderer and switches to the chosen resolution.
     /** Selects a renderer and switches to the chosen resolution. If the desired render (OpenGL) is not found, the first available one is then chosen.
     */
-    bool manualInitialize ( GraphicsData * data );
-    /// Tells Ogre where to find resources.
+    bool manualInitialize (GraphicsData * data);
+    // / Tells Ogre where to find resources.
     /** Tells Ogre where to find resources via the resources.cfg file. This allows Ogre to know where all the data (meshes, materials, textures...) can be found, not needing to explicitly indicate it.
     */
-    void setupResources ( GraphicsData * data );
+    void setupResources (GraphicsData * data);
 
-    /// Called by the generic XML parser; it loads configuration data from a file.
-    static int processGraphicsConfigFile ( DOMNode * n, void * data );
+    // / Called by the generic XML parser; it loads configuration data from a file.
+    static void processGraphicsConfigFile (DOMNode * n, void *data);
 };
 
 struct GraphicsData
 {
-    GraphicsEngine * graphics;
+    GraphicsEngine *graphics;
     LOG_LEVEL localLogLevel;
-    char * localLogName;
-    char * screenshotFile;
-    char * ogreConfigFile;
-    /*  ST_GENERIC
-        ST_EXTERIOR_CLOSE
-        ST_EXTERIOR_FAR
-        ST_EXTERIOR_REAL_FAR
-        ST_INTERIOR */
-    Ogre::SceneType sceneManager;
+    char *localLogName;
+    char *screenshotFile;
+    char *ogreConfigFile;
+    /* ST_GENERIC ST_EXTERIOR_CLOSE ST_EXTERIOR_FAR ST_EXTERIOR_REAL_FAR ST_INTERIOR */
+      Ogre::SceneType sceneManager;
     int anisotropy;
-    /*  TFO_NONE
-        TFO_BILINEAR
-        TFO_TRILINEAR
-        TFO_ANISOTROPIC */
-    Ogre::TextureFilterOptions filtering;
+    /* TFO_NONE TFO_BILINEAR TFO_TRILINEAR TFO_ANISOTROPIC */
+      Ogre::TextureFilterOptions filtering;
     int width;
     int height;
     int bpp;
-    char * renderer;
+    char *renderer;
     int defaultNumMipMaps;
-    bool fullScreen; //0, 1
+    bool fullScreen;            // 0, 1
 };
-

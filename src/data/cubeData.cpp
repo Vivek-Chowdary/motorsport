@@ -21,67 +21,66 @@
 
 #include "cube.hpp"
 
-std::vector <Cube *>Cube::cubeList;
+std::vector < Cube * >Cube::cubeList;
 
-Cube::Cube ( int cubeNumber, float posX, float posY, float posZ )
+Cube::Cube (int cubeNumber, float posX, float posY, float posZ)
 {
-    CubeData * cubeData = new CubeData;
+    CubeData *cubeData = new CubeData;
     cubeData->cube = this;
     cubeData->physics = new CubePhysicsData;
     cubeData->physics->size = 100;
     cubeData->graphics = new CubeGraphicsData;
-    processXmlFile ( "../data/cube.xml", &Cube::processCubeDataFile, (void*) cubeData);
+    processXmlFile ("../data/cube.xml", &Cube::processCubeDataFile, (void *) cubeData);
 
-    startPhysics ( posX, posY, posZ, cubeData->physics );
-    startInput ( );
-    startGraphics ( cubeNumber, cubeData->graphics );
+    startPhysics (posX, posY, posZ, cubeData->physics);
+    startInput ();
+    startGraphics (cubeNumber, cubeData->graphics);
 
-    //delete [](cubeData->name);
-    //delete [](cubeData->description);
-    //delete [](cubeData->physics->author);
-    //delete [](cubeData->physics->license);
+    // delete [](cubeData->name);
+    // delete [](cubeData->description);
+    // delete [](cubeData->physics->author);
+    // delete [](cubeData->physics->license);
     delete cubeData->physics;
-    //delete [](cubeData->graphics->author);
-    //delete [](cubeData->graphics->license);
-    delete [](cubeData->graphics->material);
-    delete [](cubeData->graphics->mesh);
-    delete [](cubeData->graphics->ogreName);
+    // delete [](cubeData->graphics->author);
+    // delete [](cubeData->graphics->license);
+    delete[](cubeData->graphics->material);
+    delete[](cubeData->graphics->mesh);
+    delete[](cubeData->graphics->ogreName);
     delete cubeData->graphics;
     delete cubeData;
 }
 
 Cube::~Cube ()
 {
-    stopPhysics();
+    stopPhysics ();
     stopGraphics ();
 }
 
 
-void Cube::updateOgrePosition()
+void Cube::updateOgrePosition ()
 {
-    const dReal * temp = dBodyGetPosition(cubeID);//need to allocate memory first??
-    cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
+    const dReal *temp = dBodyGetPosition (cubeID);  // need to allocate memory first??
+    cubeNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
 }
-float Cube::getMoveToXPositive ( )
+float Cube::getMoveToXPositive ()
 {
     return moveToXPositive;
 }
-float Cube::getMoveToXNegative ( )
+float Cube::getMoveToXNegative ()
 {
     return moveToXNegative;
 }
 
-float Cube::getMoveToYPositive ( )
+float Cube::getMoveToYPositive ()
 {
     return moveToYPositive;
 }
-float Cube::getMoveToYNegative ( )
+float Cube::getMoveToYNegative ()
 {
     return moveToYNegative;
 }
-void Cube::updateOgreOrientation()
+void Cube::updateOgreOrientation ()
 {
-    const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
-    cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
+    const dReal *temp = dBodyGetQuaternion (cubeID);    // need to allocate memory first??
+    cubeNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
-

@@ -21,36 +21,35 @@
 
 #include "camera.hpp"
 
-std::vector <Camera*>Camera::cameraList;
+std::vector < Camera * >Camera::cameraList;
 
-Camera::Camera ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ )
+Camera::Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {
 
-    startGraphics(cameraNumber, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
-    startInput();
+    startGraphics (cameraNumber, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+    startInput ();
     rotateLeft = rotateRight = rotateUp = rotateDown = 0;
     goBack = goForward = goLeft = goRight = false;
 }
 
-Camera::~Camera ( )
+Camera::~Camera ()
 {
-    
+
 }
 
-int Camera::getRotateUp (  )
+int Camera::getRotateUp ()
 {
     return rotateUp;
 }
-int Camera::getRotateDown (  )
+int Camera::getRotateDown ()
 {
     return rotateDown;
 }
-int Camera::getRotateLeft (  )
+int Camera::getRotateLeft ()
 {
     return rotateLeft;
 }
-int Camera::getRotateRight (  )
+int Camera::getRotateRight ()
 {
     return rotateRight;
 }
-

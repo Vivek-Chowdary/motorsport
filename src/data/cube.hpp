@@ -34,75 +34,75 @@ struct CubeGraphicsData;
 
 class Cube
 {
-    private:
-        float moveToXPositive;
-        float moveToXNegative;
-        float moveToYPositive;
-        float moveToYNegative;
+  private:
+    float moveToXPositive;
+    float moveToXNegative;
+    float moveToYPositive;
+    float moveToYNegative;
 
-    public:
-        Cube ( int cubeNumber , float posX, float posY, float posZ );
-        ~Cube ( );
+  public:
+      Cube (int cubeNumber, float posX, float posY, float posZ);
+     ~Cube ();
 
-        //physics
-        void startPhysics ( float posX, float posY, float posZ, CubePhysicsData * physics );
-        void stepPhysics();
-        void stopPhysics ( );
-        dBodyID cubeID;
-        dGeomID cubeGeomID;
-        int processCubePhysicsDataNode ( DOMNode * n, CubePhysicsData * physics );
+    // physics
+    void startPhysics (float posX, float posY, float posZ, CubePhysicsData * physics);
+    void stepPhysics ();
+    void stopPhysics ();
+    dBodyID cubeID;
+    dGeomID cubeGeomID;
+    void processCubePhysicsDataNode (DOMNode * n, CubePhysicsData * physics);
 
-        //graphics
-        void startGraphics (int cubeNumber, CubeGraphicsData * graphics);
-        void stepGraphics();
-        void stopGraphics ( );
-        Ogre::Entity * cubeEntity;
-        Ogre::SceneNode * cubeNode;
-        int processCubeGraphicsDataNode ( DOMNode * n, CubeGraphicsData * graphics );
+    // graphics
+    void startGraphics (int cubeNumber, CubeGraphicsData * graphics);
+    void stepGraphics ();
+    void stopGraphics ();
+      Ogre::Entity * cubeEntity;
+      Ogre::SceneNode * cubeNode;
+    void processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics);
 
-        //input
-        void startInput ( );
-        void stepInput();
-        void stopInput ( );
-        void setMoveToXPositive ( float multiplier );
-        void setMoveToXNegative ( float multiplier );
-        void setMoveToYPositive ( float multiplier );
-        void setMoveToYNegative ( float multiplier );
+    // input
+    void startInput ();
+    void stepInput ();
+    void stopInput ();
+    void setMoveToXPositive (float multiplier);
+    void setMoveToXNegative (float multiplier);
+    void setMoveToYPositive (float multiplier);
+    void setMoveToYNegative (float multiplier);
 
-        //data
-        static std::vector <Cube*> cubeList;
-        void updateOgrePosition();
-        void updateOgreOrientation();
-        float getMoveToXPositive ( );
-        float getMoveToXNegative ( );
-        float getMoveToYPositive ( );
-        float getMoveToYNegative ( );
-        static int processCubeDataFile ( DOMNode * n, void * data);
+    // data
+    static std::vector < Cube * >cubeList;
+    void updateOgrePosition ();
+    void updateOgreOrientation ();
+    float getMoveToXPositive ();
+    float getMoveToXNegative ();
+    float getMoveToYPositive ();
+    float getMoveToYNegative ();
+    static void processCubeDataFile (DOMNode * n, void *data);
 };
 
 struct CubeData
 {
-    Cube * cube;
-    char * name;
-    char * description;
-    CubePhysicsData * physics;
-    CubeGraphicsData * graphics;
+    Cube *cube;
+    char *name;
+    char *description;
+    CubePhysicsData *physics;
+    CubeGraphicsData *graphics;
 };
 
 struct CubePhysicsData
 {
-    char * author;
-    char * license;
+    char *author;
+    char *license;
     int size;
 };
 
 struct CubeGraphicsData
 {
-    char * author;
-    char * license;
-    char * material;
-    char * mesh;
-    char * ogreName;
+    char *author;
+    char *license;
+    char *material;
+    char *mesh;
+    char *ogreName;
 };
 
 #endif
