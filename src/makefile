@@ -49,10 +49,12 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
-	$(BASE_INCLUDE_DIR)
-
+	$(BASE_INCLUDE_DIR)/../local/include/OGRE \
+	$(BASE_INCLUDE_DIR)/../local/include/SDL
+	
 LIBRARY_DIRS := \
-	$(BASE_LIBRARY_DIR)
+	$(BASE_LIBRARY_DIR) \
+	$(BASE_LIBRARY_DIR)/../local/lib \
 #	$(BASE_LIBRARY_DIR)/OGRE \
 #       $(BASE_LIBRARY_DIR)/ode
 
