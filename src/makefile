@@ -213,6 +213,7 @@ SOURCES := \
 	graphics/cubeGraphics.cpp \
 	graphics/bodyGraphics.cpp \
 	graphics/vehicleGraphics.cpp \
+        input/axis.cpp \
 	input/cubeInput.cpp \
 	input/cameraInput.cpp
 ###########################################
