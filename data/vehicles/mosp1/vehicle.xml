@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<vehicle
+    name = "Mosp1"
+    description = "The first official Motorsport vehicle. Made by Habalux, it started it's life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car."
+    author = "Habalux, STenyaK"
+    contact = "habalux at rscforums, stenyak AT gmx DOT net"
+    license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
+    >
+    <body
+        >
+        <graphics
+            material = "mosp1bodyMaterial"
+            mesh = "../data/vehicles/mosp1/body.mesh"
+            ogreName = "mosp1Body"
+            >
+        </graphics>
+        <physics
+            length = "4.66"
+            width = "2.08"
+            height = "1.2" 
+            mass = "1250.0"
+            >
+        </physics>
+    </body>
+    <clutchPedal
+        inputAxis = "normalizedRelativeRotation"
+        >
+    </clutchPedal>
+    <gasPedal
+        inputAxis = "normalizedRelativeRotation"
+        >
+    </gasPedal>
+    <brakePedal
+        inputAxis = "normalizedRelativeRotation"
+        >
+    </brakePedal>
+    <engine
+        torqueLinearMultiplier = "20.0"
+        >
+    </engine>
+    <clutch
+        >
+    </clutch>
+    <shiftUpPaddle
+        inputAxis = "normalizedRelativeRotation"
+        >
+    </shiftUpPaddle>
+    <shiftDownPaddle
+        inputAxis = "normalizedRelativeRotation"
+        >
+    </shiftDownPaddle>
+    <gearbox
+        gear-1Ratio = "-4.0"
+        gear1Ratio = "3.5"
+        gear2Ratio = "2.0"
+        gear3Ratio = "1.4"
+        gear4Ratio = "1.0"
+        gear5Ratio = "0.8"
+        finalDrive = "0.12"
+        >
+    </gearbox>
+    <steeringWheel
+        inputAxis = "normalizedRelativeRotation"
+        wheelAngleMultiplier = "15.0"
+        >
+    </steeringWheel>
+    <suspensionList>
+        <suspension
+            name = "FrontRight"
+            springConstant = "1?"
+            damperConstant = "1?"
+            posX = "+1.6"
+            posY = "+0.9"
+            posZ = "-0.2"
+            >
+        </suspension>
+        <suspension
+            name = "FrontLeft"
+            springConstant = "1?"
+            damperConstant = "1?"
+            posX = "+1.6"
+            posY = "-0.9"
+            posZ = "-0.2"
+            >
+        </suspension>
+        <suspension
+            name = "RearRight"
+            springConstant = "1?"
+            damperConstant = "1?"
+            posX = "-1.7"
+            posY = "+0.92"
+            posZ = "-0.25"
+            >
+        </suspension>
+        <suspension
+            name = "RearLeft"
+            springConstant = "1?"
+            damperConstant = "1?"
+            posX = "-1.7"
+            posY = "-0.92"
+            posZ = "-0.25"
+            >
+        </suspension>
+    </suspensionList>
+    <wheelList>
+        <wheel
+            name = "FrontRight"
+            mass = "15.1"
+            radius = "0.33"
+            width = "0.125"
+            material = "rim/SOLID/"
+            mesh = "../data/vehicles/mosp1/wheel_front.mesh"
+            >
+        </wheel>
+        <wheel
+            name = "FrontLeft"
+            mass = "15.1"
+            radius = "0.33"
+            width = "0.125"
+            material = "rim/SOLID/"
+            mesh = "../data/vehicles/mosp1/wheel_front.mesh"
+            >
+        </wheel>
+        <wheel
+            name = "RearRight"
+            mass = "15.0"
+            radius = "0.33"
+            width = "0.125"
+            material = "rim/SOLID/"
+            mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
+            >
+        </wheel>
+        <wheel
+            name = "RearLeft"
+            mass = "15.0"
+            radius = "0.33"
+            width = "0.125"
+            material = "rim/SOLID/"
+            mesh = "../data/vehicles/mosp1/wheel_rear.mesh"
+            >
+        </wheel>
+    </wheelList>
+</vehicle>

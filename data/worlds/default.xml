@@ -8,9 +8,9 @@
     gravityZ = "-0.000098"      b="Must be fixed, should be -9.8"
     >
     <vehicle
-        directory = "testCar"
+        directory = "mosp1"
         driver = "user"         c="ai, net, user, replay, ghostReplay, none... still not used"
-        startPosition = "centerHigh"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
+        startPosition = "center"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
         >
     </vehicle>
     <track

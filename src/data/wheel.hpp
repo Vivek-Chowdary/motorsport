@@ -19,43 +19,41 @@
 *
 ******************************************************************************/
 
-#ifndef VEHICLE_HPP
-#   define VEHICLE_HPP
-#   include <string>
-//#   include <map>
-#   include <vector>
+#ifndef WHEEL_HPP
+#   define WHEEL_HPP
+#   include "ode/objects.h"
 #   include "worldObject.hpp"
+#   include "data/xercesc_fwd.hpp"
+#   include <string>
 
 //forward declarations
-class Body;
-class Engine;
-class Wheel;
+namespace Ogre {
+  class Entity;
+  class SceneNode;
+}
 
-class Vehicle : public WorldObject
+class Wheel : public WorldObject
 {
   private:
     static int instancesCount;
     std::string name;
-    std::string description;
-    std::string author;
-    std::string contact;
-    std::string license;
 
   public:
+
     // data
-    Vehicle (const std::string & xmlFilename);
-    ~Vehicle ();
+    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~Wheel ();
+    void updateOgrePosition ();
+    void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    Body * body;
-    Engine * engine;
-//    std::map < std::string, Wheel *> wheelMap;
-    std::vector < Wheel *> wheelMap;
-//    std::vector < Suspension * > suspensionList;
+    std::string getName();
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
+    dBodyID wheelID;
+    dGeomID wheelGeomID;
     void setPosition (double posX, double posY, double posZ);
     void setRotation (double rotX, double rotY, double rotZ);
 
@@ -63,5 +61,11 @@ class Vehicle : public WorldObject
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();
+
+    class Ogre::Entity;
+    class Ogre::SceneNode;
+
+    Ogre::Entity * wheelEntity;
+    Ogre::SceneNode * wheelNode;
 };
 #endif

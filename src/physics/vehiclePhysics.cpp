@@ -23,6 +23,7 @@
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
 #include "engine.hpp"
+#include "wheel.hpp"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -41,10 +42,19 @@ void Vehicle::setRotation (double rotX, double rotY, double rotZ)
 void Vehicle::stopPhysics ()
 {
     body->stopPhysics();
+    engine->stopPhysics();
+    for (int i=0; i<wheelMap.size(); i++)
+    {
+        wheelMap[i]->stopPhysics();
+    }
 }
 
 void Vehicle::stepPhysics ()
 {
     body->stepPhysics();
     engine->stepPhysics();
+    for (int i=0; i<wheelMap.size(); i++)
+    {
+        wheelMap[i]->stepPhysics();
+    }
 }

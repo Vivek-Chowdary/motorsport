@@ -19,11 +19,13 @@
 *
 ******************************************************************************/
 
+#include "world.hpp"
 #include "vehicle.hpp"
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "body.hpp"
 #include "engine.hpp"
+#include "wheel.hpp"
 
 int Vehicle::instancesCount = 0;
 
@@ -61,6 +63,8 @@ void Vehicle::processXmlRootNode (DOMNode * n)
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     DOMNode * bodyNode = 0;
     DOMNode * engineNode = 0;
+    DOMNode * wheelListNode = 0;
+    DOMNode * suspListNode = 0; //suspension
 
     if (n)
     {
@@ -134,6 +138,16 @@ void Vehicle::processXmlRootNode (DOMNode * n)
                                 log->put (LOG_TRACE, "Found the vehicle engine element.");
                                 engineNode = n;
                             }
+                            if (nodeName == "wheelList")
+                            {
+                                log->put (LOG_TRACE, "Found the vehicle wheel list.");
+                                wheelListNode = n;
+                            }
+                            if (nodeName == "suspensionList")
+                            {
+                                log->put (LOG_TRACE, "Found the vehicle suspension list.");
+                                suspListNode = n;
+                            }
                         }
                     }
                 }
@@ -143,4 +157,67 @@ void Vehicle::processXmlRootNode (DOMNode * n)
     }
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
+    if (suspListNode != 0)
+    {
+        DOMNode * suspNode;
+        for (suspNode = suspListNode->getFirstChild (); suspNode != 0; suspNode = suspNode->getNextSibling ())
+        {
+//            new Wheel (suspNode);
+        }
+    }
+    if (wheelListNode != 0)
+    {
+        DOMNode * wheelNode;
+        for (wheelNode = wheelListNode->getFirstChild (); wheelNode != 0; wheelNode = wheelNode->getNextSibling ())
+        {
+            if (wheelNode->getNodeType () == DOMNode::ELEMENT_NODE)
+            {
+                std::string nodeName;
+                assignXmlString (nodeName, wheelNode->getNodeName());
+                log->format (LOG_TRACE, "Name: %s", nodeName.c_str());
+                if (nodeName == "wheel")
+                {
+                    Wheel * tmpWheel = new Wheel (wheelNode);
+                    //wheelMap[tmpWheel->getName()]=tmpWheel;
+                    wheelMap.push_back(tmpWheel);
+                }
+                nodeName.clear();
+            }
+        }
+    }
+    double posX, posY, posZ;
+    body->getPosition(posX, posY, posZ);
+    wheelMap[0]->setPosition(posX+2,posY+1.2,posZ-0.6);
+    wheelMap[1]->setPosition(posX+2,posY-1.2,posZ-0.6);
+    wheelMap[2]->setPosition(posX-2,posY+1.2,posZ-0.6);
+    wheelMap[3]->setPosition(posX-2,posY-1.2,posZ-0.6);
+    wheelMap[0]->setRotation(90,0,0);
+    wheelMap[0]->setRotation(-90,0,0);
+    wheelMap[0]->setRotation(90,0,0);
+    wheelMap[0]->setRotation(-90,0,0);
+    int i=0;
+        dJointID jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetUniversalAnchor (jointID, posX+2, posY+0.7, posZ-1);
+        dJointSetUniversalAxis1 (jointID, 0,1,0);
+        dJointSetUniversalAxis2 (jointID, 0,0,1);
+    i=1;
+        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetUniversalAnchor (jointID, posX+2, posY-0.7, posZ-1);
+        dJointSetUniversalAxis1 (jointID, 0,1,0);
+        dJointSetUniversalAxis2 (jointID, 0,0,1);
+    i=2;
+        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetUniversalAnchor (jointID, posX-2, posY+0.7, posZ-1);
+        dJointSetUniversalAxis1 (jointID, 0,1,0);
+        dJointSetUniversalAxis2 (jointID, 0,0,1);
+    i=3;
+        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetUniversalAnchor (jointID, posX-2, posY-0.7, posZ-1);
+        dJointSetUniversalAxis1 (jointID, 0,1,0);
+        dJointSetUniversalAxis2 (jointID, 0,0,1);
 }
+

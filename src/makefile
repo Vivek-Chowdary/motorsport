@@ -190,7 +190,6 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
-	main.cpp \
 	system.cpp \
 	log/logEngine.cpp \
 	physics/physicsEngine.cpp \
@@ -216,9 +215,13 @@ SOURCES := \
 	graphics/vehicleGraphics.cpp \
         input/axis.cpp \
 	input/cubeInput.cpp \
+	input/cameraInput.cpp \
         data/engineData.cpp \
         physics/enginePhysics.cpp \
-	input/cameraInput.cpp
+	data/wheelData.cpp \
+	physics/wheelPhysics.cpp \
+	graphics/wheelGraphics.cpp \
+	main.cpp
 ###########################################
 
 

@@ -22,6 +22,7 @@
 #include "vehicle.hpp"
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
+#include "wheel.hpp"
 
 void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -30,10 +31,18 @@ void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 void Vehicle::stepGraphics ()
 {
     body->stepGraphics();
+    for (int i=0; i<wheelMap.size(); i++)
+    {
+        wheelMap[i]->stepGraphics();
+    }
 }
 
 void Vehicle::stopGraphics ()
 {
     body->stopGraphics();
+    for (int i=0; i<wheelMap.size(); i++)
+    {
+        wheelMap[i]->stopGraphics();
+    }
 }
 

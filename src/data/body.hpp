@@ -52,6 +52,7 @@ class Body : public WorldObject
     dBodyID bodyID;
     dGeomID bodyGeomID;
     void setPosition (double posX, double posY, double posZ);
+    void getPosition (double & posX, double & posY, double & posZ);
     void setRotation (double rotX, double rotY, double rotZ);
 
     // graphics

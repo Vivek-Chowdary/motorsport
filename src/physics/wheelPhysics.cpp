@@ -19,20 +19,19 @@
 *
 ******************************************************************************/
 
-#include "body.hpp"
+#include "wheel.hpp"
 #include "world.hpp"
 #include "xmlParser.hpp"
 #include "ode.h"
 #include "log/logEngine.hpp"
 
 
-void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
+void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    double length = 1;
-    double width = 1;
-    double height = 1;
-    double mass = 1;
-    log->put (LOG_TRACE, "Parsing body physics.");
+    double mass = 0.0;
+    double radius = 0.0;
+    double width = 0.0;
+    log->put (LOG_TRACE, "Parsing wheel physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -44,71 +43,57 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "length")
+            if (attribute == "radius")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics length: %s", attribute.c_str() );
-                length = stod (attribute);
+                log->format (LOG_TRACE, "\tFound the wheel physics radius: %s", attribute.c_str() );
+                radius = stod (attribute);
             }
             if (attribute == "width")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics width: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "\tFound the wheel physics width: %s", attribute.c_str() );
                 width = stod (attribute);
-            }
-            if (attribute == "height")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics height: %s", attribute.c_str() );
-                height = stod (attribute);
             }
             if (attribute == "mass")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics mass: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "\tFound the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished body physics.");
+    log->put (LOG_TRACE, "Finished wheel physics.");
     dMass tmpMass;
-    dMassSetBoxTotal (&tmpMass, mass, length, width, height);
-    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
-    bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
-    dGeomSetBody (bodyGeomID, bodyID);
+    dMassSetCylinderTotal (&tmpMass, mass, 3, radius, width);
+    wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
+    wheelGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, width);
+    dGeomSetBody (wheelGeomID, wheelID);
 }
 
-void Body::setPosition (double posX, double posY, double posZ)
+void Wheel::setPosition (double posX, double posY, double posZ)
 {               
-    dBodySetPosition (bodyID, posX, posY, posZ);
-}
-void Body::getPosition (double & posX, double & posY, double & posZ)
-{
-    const dReal *temp = dBodyGetPosition (bodyID);
-    posX = *(temp + 0);
-    posY = *(temp + 1);
-    posZ = *(temp + 2);
+    dBodySetPosition (wheelID, posX, posY, posZ);
 }
 
-void Body::setRotation (double rotX, double rotY, double rotZ)
+void Wheel::setRotation (double rotX, double rotY, double rotZ)
 {
     dMatrix3 rot;
     dRFromEulerAngles (rot, rotX, rotY, rotZ);
     //dRFromEulerAngles (rot, phi, theta, psi);
-    dBodySetRotation (bodyID, rot);
+    dBodySetRotation (wheelID, rot);
 }
 
-void Body::stopPhysics ()
+void Wheel::stopPhysics ()
 {
-    dGeomDestroy (bodyGeomID);
-    dBodyDestroy (bodyID);
+    dGeomDestroy (wheelGeomID);
+    dBodyDestroy (wheelID);
 }
 
-void Body::stepPhysics ()
+void Wheel::stepPhysics ()
 {
 }

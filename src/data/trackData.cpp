@@ -286,6 +286,21 @@ void Track::processXmlRootNode (DOMNode * n)
         cubePointer = new Cube ("../data/parts/cube/cube.xml");
         cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
         cubeList.push_back (cubePointer);
+        if ( i%4 && false) //snake mode. will slow down things. i%4 sets the number of cubes per snake.
+        {
+            if (0) //type of snake: universal joint vs. ball joint.
+            {
+                dJointID jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
+                dJointAttach (jointID, cubeList[i-1]->cubeID, cubeList[i]->cubeID);
+                dJointSetUniversalAnchor (jointID, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
+                dJointSetUniversalAxis1 (jointID, 1,0,0);
+                dJointSetUniversalAxis2 (jointID, 0,1,0);
+            }else{
+                dJointID jointID = dJointCreateBall (World::getWorldPointer()->worldID, 0);
+                dJointAttach (jointID, cubeList[i-1]->cubeID, cubeList[i]->cubeID);
+                dJointSetBallAnchor (jointID, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
+            } 
+        }
     }
 
     //load ground
