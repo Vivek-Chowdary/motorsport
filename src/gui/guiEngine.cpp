@@ -89,6 +89,9 @@ int GuiEngine::computeStep (void)
 
 void GuiEngine::showLoadscreen ()
 {
+    GuiElement *loadscreenHeader = GuiManager::getSingleton ().getGuiElement ("loadscreen/header");
+    loadscreenHeader->setCaption ("Loading contents and engines. Please wait...");
+        
     tmpOgreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera ("Loadscreen camera");
     tmpOgreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     tmpOgreCamera->setPosition (Ogre::Vector3 (30, 30, 10));
@@ -170,7 +173,7 @@ void GuiEngine::addLoadscreenLine (char * line)
 {
     static unsigned lines = 0;
     const unsigned int nchars = 85;
-    const unsigned int nlines = 27;
+    const unsigned int nlines = 26;
     std::string tmp = loadscreenText;
     loadscreenText.clear();
     std::string tmpline = line;
@@ -193,6 +196,7 @@ void GuiEngine::addLoadscreenLine (char * line)
         loadscreenText = loadscreenText.substr(0, lastline);
         lines--;
     }
+    SystemData::getSystemDataPointer()->ogreWindow->update ();
 }
 
 GuiEngine::~GuiEngine (void)

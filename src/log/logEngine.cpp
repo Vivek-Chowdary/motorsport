@@ -16,9 +16,6 @@
 #include <string>
 #include <xmlParser.hpp>
 #include "system.hpp"
-#include "Ogre.h"
-#include "OgreConfigFile.h"
-#include "OgreNoMemoryMacros.h"
 
 //TODO use iostreams for file management/writing
 
@@ -72,7 +69,6 @@ int LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
     va_end (arglist);
 
     GuiEngine::getGuiEnginePointer()->addLoadscreenLine (buffer);
-    SystemData::getSystemDataPointer()->ogreWindow->update ();
     // put the string with a new line
     return (put (level, buffer));
 }
