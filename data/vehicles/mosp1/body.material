@@ -38,7 +38,7 @@ material bodyblack/SOLID/mosp1-body.tga
 
 material glass/SOLID/mosp1-body.tga
 {
-  receive_shadows on
+  receive_shadows off
   technique
   {
     pass
@@ -66,7 +66,7 @@ material glass/SOLID/mosp1-body.tga
         // cubic_normal gives the nicest reflections
         // planar also works but reflections are "uglier"
         // env_map planar
-        env_map cubic_reflection
+        env_map cubic_normal
         colour_op modulate
       }
 
@@ -129,7 +129,7 @@ material bodycolor/SOLID/mosp1-body.tga
                         // cubic_normal gives the nicest reflections
 			// planar also works but reflections are "uglier"
                         // env_map planar
-                        env_map cubic_reflection
+                        env_map cubic_normal
 			// env_map spherical
                         colour_op modulate
                 }
