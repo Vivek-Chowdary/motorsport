@@ -1,0 +1,77 @@
+\section{Log\-Engine Class Reference}
+\label{classLogEngine}\index{LogEngine@{LogEngine}}
+{\tt \#include $<$log\-Engine.hpp$>$}
+
+Collaboration diagram for Log\-Engine:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=95pt]{classLogEngine__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+int {\bf start} ({\bf LOG\_\-LEVEL} level, const char $\ast$file\-Path, bool append\-Mode=false)
+\item 
+int {\bf put} ({\bf LOG\_\-LEVEL} level, const char $\ast$text\-To\-Log, bool use\-New\-Line=true)
+\item 
+int {\bf format} ({\bf LOG\_\-LEVEL} level, const char $\ast$text\-To\-Log\-Format,...)
+\item 
+int {\bf append} ({\bf LOG\_\-LEVEL} level, const char $\ast$text\-To\-Log)
+\item 
+int {\bf stop} (void)
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+FILE $\ast$ {\bf log\-File}
+\item 
+{\bf LOG\_\-LEVEL} {\bf log\-Level}
+\end{CompactItemize}
+
+
+\subsection{Member Function Documentation}
+\index{LogEngine@{Log\-Engine}!append@{append}}
+\index{append@{append}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Log\-Engine::append ({\bf LOG\_\-LEVEL} {\em level}, const char $\ast$ {\em text\-To\-Log})}\label{classLogEngine_a3}
+
+
+\index{LogEngine@{Log\-Engine}!format@{format}}
+\index{format@{format}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Log\-Engine::format ({\bf LOG\_\-LEVEL} {\em level}, const char $\ast$ {\em text\-To\-Log\-Format}, ...)}\label{classLogEngine_a2}
+
+
+\index{LogEngine@{Log\-Engine}!put@{put}}
+\index{put@{put}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Log\-Engine::put ({\bf LOG\_\-LEVEL} {\em level}, const char $\ast$ {\em text\-To\-Log}, bool {\em use\-New\-Line} = true)}\label{classLogEngine_a1}
+
+
+\index{LogEngine@{Log\-Engine}!start@{start}}
+\index{start@{start}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Log\-Engine::start ({\bf LOG\_\-LEVEL} {\em level}, const char $\ast$ {\em file\-Path}, bool {\em append\-Mode} = false)}\label{classLogEngine_a0}
+
+
+\index{LogEngine@{Log\-Engine}!stop@{stop}}
+\index{stop@{stop}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int Log\-Engine::stop (void)}\label{classLogEngine_a4}
+
+
+
+
+\subsection{Member Data Documentation}
+\index{LogEngine@{Log\-Engine}!logFile@{logFile}}
+\index{logFile@{logFile}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}FILE$\ast$ {\bf Log\-Engine::log\-File}\hspace{0.3cm}{\tt  [private]}}\label{classLogEngine_r0}
+
+
+\index{LogEngine@{Log\-Engine}!logLevel@{logLevel}}
+\index{logLevel@{logLevel}!LogEngine@{Log\-Engine}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LOG\_\-LEVEL} {\bf Log\-Engine::log\-Level}\hspace{0.3cm}{\tt  [private]}}\label{classLogEngine_r1}
+
+
+
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+src/log/{\bf log\-Engine.hpp}\item 
+src/log/{\bf log\-Engine.cpp}\end{CompactItemize}

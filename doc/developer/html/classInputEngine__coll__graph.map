@@ -1,0 +1,5 @@
+base referer
+rect $classSystemData.html 120,108 203,127
+rect $structInputData.html 47,17 111,36
+rect $classWorldData.html 240,108 312,127
+rect $classLogEngine.html 357,108 429,127

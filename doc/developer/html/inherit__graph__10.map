@@ -1,0 +1,4 @@
+base referer
+rect $classPG__EventObject.html 17,5 124,24
+rect $classTestWindow.html 172,26 255,45
+rect $classPG__Window.html 29,48 112,66

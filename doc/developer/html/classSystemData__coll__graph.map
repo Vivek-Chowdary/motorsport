@@ -1,0 +1,5 @@
+base referer
+rect $structGuiData.html 164,195 220,214
+rect $structGraphicsData.html 267,195 355,214
+rect $structPhysicsData.html 619,195 704,214
+rect $structInputData.html 832,195 896,214

@@ -1,0 +1,4 @@
+base referer
+rect $classSystemData.html 7,17 89,36
+rect $classWorldData.html 141,17 213,36
+rect $classLogEngine.html 259,17 331,36
