@@ -90,6 +90,13 @@ int main ( int argc, char **argv )
             systemData->physicsSteps++;
             //now run the physics engine
             physics->step (  );
+
+            static int inputSteps = 5;
+            if (!--inputSteps)
+            {
+                inputSteps = 5;
+                input->step (  );
+            }
         }
         //sound.step ();
         gui->step (  );

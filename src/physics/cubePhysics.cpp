@@ -45,7 +45,7 @@ void Cube::stepPhysics()
     dBodySetAngularVel (cubeID,
     *(dReal*)(dBodyGetAngularVel(cubeID)+0),
     *(dReal*)(dBodyGetAngularVel(cubeID)+1),
-    *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)*(SystemData::getSystemDataPointer()->physicsTimeStep) );
+    *(dReal*)(dBodyGetAngularVel(cubeID)+2)*(dReal)(0.01)/(SystemData::getSystemDataPointer()->physicsTimeStep * SystemData::getSystemDataPointer()->physicsTimeStep) );
     //////////////////////////////////////simplified air friction
     //applying user input [forces]
     float moveToX = 0, moveToY = 0;
@@ -53,7 +53,7 @@ void Cube::stepPhysics()
     moveToX -= getMoveToXNegative();
     moveToY += getMoveToYPositive();
     moveToY -= getMoveToYNegative();
-    moveToX /= 500;
-    moveToY /= 500;
-    dBodyAddForce (cubeID, moveToX * (SystemData::getSystemDataPointer()->physicsTimeStep), moveToY * (SystemData::getSystemDataPointer()->physicsTimeStep),0.0f );
+//    moveToX /= 100;
+//    moveToY /= 100;
+    dBodyAddForce (cubeID, moveToX / (SystemData::getSystemDataPointer()->physicsTimeStep * SystemData::getSystemDataPointer()->physicsTimeStep), moveToY / (SystemData::getSystemDataPointer()->physicsTimeStep * SystemData::getSystemDataPointer()->physicsTimeStep),0.0f );
 }

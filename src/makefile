@@ -30,6 +30,9 @@ CXX := g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH
 CXXFLAGS := $(CFLAGS)
 
+#Unit Test Programs (see also: RUN_TESTS)
+TEST_EXE := TestLogEngine
+
 #Paths to libs and header files
 LD_LIBRARY_PATH := $(BASE_LIB_DIR)
 INCDIRS := $(BASE_LIBRARY_DIR)
@@ -50,7 +53,8 @@ INCLUDE_DIRS := \
 
 LIBRARY_DIRS := \
 	$(BASE_LIBRARY_DIR)
-#	$(BASE_LIBRARY_DIR)/OGRE
+#	$(BASE_LIBRARY_DIR)/OGRE \
+#       $(BASE_LIBRARY_DIR)/ode
 
 LIBRARIES := \
 	SDLmain \
@@ -80,6 +84,10 @@ SOURCES := \
 				
 OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
+#compiling the unit test programs
+TestLogEngine: log/testLogEngine.o log/logEngine.o
+	$(LD)  -o $@ $^
+	@chmod +x $@
 
 
 #Compiling instructions
@@ -94,24 +102,27 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 .PHONY: all
 all: 	$(TARGET)
 
+.PHONY: test
+test:	$(TEST_EXE)
+	$(foreach test, $(TEST_EXE), ./$(test);)
+
 .PHONY: configure
 configure:
 	@echo    "---Configure...-------------------------------"
 	@ echo "there is no configure command at this point - just type 'make'"
 	@echo    "----------------------------------------------"
 
-
 .PHONY: clean
 clean:
 	@echo    "---Clean...-----------------------------------"
-	rm -f $(TARGET) $(OBJECTS)
+	rm -f $(TARGET) $(OBJECTS) $(TEST_EXE)
 	@echo    "----------------------------------------------"
 
 .PHONY: clobber
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
-	rm -f *.log
-	rm -f *~ */*~ .*swp */.*swp
+	rm -f Ogre.log motorsport.log
+	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp
 	@echo    "----------------------------------------------"
 
 .PHONY: run

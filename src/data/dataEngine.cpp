@@ -63,7 +63,7 @@ int DataEngine::loadWorldData ( void )
             char name[20];
             sprintf ( name, "Cube%i", i );
             float size = 100;
-            cubePointer = new Cube ( name, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation * ((int(i/1000))+1) );
+            cubePointer = new Cube ( name, size, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int(i/1000))+1) ));
             dBodySetAngularVel (cubePointer->cubeID, float(random()%10)/10000.0, float(random()%10)/10000.0, float(random()%10)/10000.0);
         }else{
             float size = 10000.0;
