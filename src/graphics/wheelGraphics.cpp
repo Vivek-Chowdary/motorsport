@@ -30,7 +30,6 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string material = "None";
     std::string mesh = "None";
-    log->put (LOG_TRACE, "Parsing wheel graphics");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -44,19 +43,17 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 material.clear();
                 assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the wheel graphics material: %s", material.c_str());
+                log->format (LOG_TRACE, "Found the wheel graphics material: %s", material.c_str());
             }
             if (attribute == "mesh")
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the wheel graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_TRACE, "Found the wheel graphics mesh filename: %s", mesh.c_str());
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished wheel graphics.");
-
     char name[256];
     std::string ogreName = name;
     ogreName.append ("%i");

@@ -31,7 +31,6 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     torqueLinearMultiplier = 0.0;
     torque = 0.0;
-    log->put (LOG_TRACE, "Parsing engine physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -47,13 +46,12 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the engine torque linear multiplier: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the engine torque linear multiplier: %s", attribute.c_str() );
                 torqueLinearMultiplier = stod (attribute);
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished engine physics.");
 }
 
 void Engine::stopPhysics ()

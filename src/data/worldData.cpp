@@ -99,9 +99,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     double gravityX = 0.0;
     double gravityY = 0.0;
     double gravityZ = 0.0;
-    bool useTrackCamera = true;    //if false, use car camera
-    std::string carDirectory = "testCar";
-    std::string carStartPosition = "0";   //first 'grid' position
+    bool useTrackCamera = true;    //if false, use vehicle camera
+    std::string vehicleDirectory = "testCar";
+    std::string vehicleStartPosition = "0";   //first 'grid' position
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
     std::string trackDirectory = "testingGround";
     if (n)
@@ -110,10 +110,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            log->format (LOG_INFO, "Name: %s", name.c_str());
             if (name == "world")
             {
-                log->put (LOG_INFO, "Found the world element.");
+                log->put (LOG_INFO, "Found a world.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -174,10 +173,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, n->getNodeName());
-                            log->format (LOG_INFO, "Name: %s", name.c_str());
                             if (name == "vehicle")
                             {
-                                log->put (LOG_INFO, "Found the vehicle");
+                                log->put (LOG_INFO, "Found a vehicle");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -189,21 +187,21 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "directory")
                                         {
-                                            carDirectory.clear();
-                                            assignXmlString (carDirectory, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the car directory: %s", carDirectory.c_str());
+                                            vehicleDirectory.clear();
+                                            assignXmlString (vehicleDirectory, attNode->getValue());
+                                            log->format (LOG_INFO, "Found the vehicle directory: %s", vehicleDirectory.c_str());
                                         }
                                         if (attribute == "driver")
                                         {
                                             driver.clear();
                                             assignXmlString (driver, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the car driver: %s", driver.c_str());
+                                            log->format (LOG_INFO, "Found the vehicle driver: %s", driver.c_str());
                                         }
                                         if (attribute == "startPosition")
                                         {
-                                            carStartPosition.clear();
-                                            assignXmlString (carStartPosition, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the car start position index: %s", carStartPosition.c_str());
+                                            vehicleStartPosition.clear();
+                                            assignXmlString (vehicleStartPosition, attNode->getValue());
+                                            log->format (LOG_INFO, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
                                         }
                                         attribute.clear();
                                     }
@@ -211,7 +209,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             }
                             if (name == "track")
                             {
-                                log->put (LOG_INFO, "Found the track");
+                                log->put (LOG_INFO, "Found a track");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -241,7 +239,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
 
 /* /////////////////////////////////// STILL THOSE 2 VARS TO USE TODO
-    bool useTrackCamera = true;    //if false, use car camera
+    bool useTrackCamera = true;    //if false, use vehicle camera
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
 /////////////////////////////////// */
 
@@ -275,15 +273,17 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // load vehicle (and its cameras)
     tmpPath = ("../data/vehicles/");
-    tmpPath.append (carDirectory);
+    tmpPath.append (vehicleDirectory);
     tmpPath.append ("/vehicle.xml");
+    log->put (LOG_INFO, "Creating a vehicle");
     Vehicle * tmpVehicle = new Vehicle (tmpPath);
-    Vector3d tmpPos = tmpTrack->vehiclePositionMap[carStartPosition]->getPosition();
-    tmpVehicle->setPosition (tmpPos.x, tmpPos.y, tmpPos.z);
-    Vector3d tmpRot = tmpTrack->vehiclePositionMap[carStartPosition]->getRotation();
-    tmpVehicle->setRotation (tmpPos.x, tmpPos.y, tmpPos.z);
+    log->put (LOG_INFO, "Setting vehicle position");
+    tmpVehicle->setPosition (tmpTrack->vehiclePositionMap[vehicleStartPosition]->getPosition());
+    log->put (LOG_INFO, "Setting vehicle rotation");
+    tmpVehicle->setRotation (tmpTrack->vehiclePositionMap[vehicleStartPosition]->getRotation());
+    log->put (LOG_INFO, "Adding vehicle to vehicles list");
     vehicleList.push_back (tmpVehicle);
-
+    
     // set active camera
     log->put (LOG_INFO, "Setting camera viewport");
     if (useTrackCamera)
@@ -295,20 +295,10 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         //until there's vehicles, let's use 2nd track camera instead (be careful, it might not exist! FIXME :).
         setActiveCamera (trackList[0]->cameraList[1]);
     }
-//////// OLD CODE, WILL BE REUSED FOR SEVERAL CARS
-//    for (int i = 0; i < 10; i++)
-//    {
-//        const int separation = 5;
-//        Body *bodyPointer;
-//        bodyPointer = new Body ("../data/vehicles/testCar/body.xml");
-//        bodyPointer->setPosition (- separation - i / 10 % 10 * separation, - separation - i % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
-//        bodyList.push_back (bodyPointer);
-//    }
-//////////////////////////////////////////////////
 
     // Clean up things, leave others in memory (world properties).
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    carDirectory.clear();
+    vehicleDirectory.clear();
     driver.clear();
     trackDirectory.clear();
 }

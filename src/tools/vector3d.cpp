@@ -135,6 +135,13 @@ inline const Vector3d GetAvgVector (const std::vector < Vector3d > &vec)
     ret.z = z / size;
     return ret;
 }
+inline void Vector3d::degreesToRadians()
+{
+    const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
+    x *= piK;
+    y *= piK;
+    z *= piK;
+}
 
 #endif  /*  */
     

@@ -28,7 +28,7 @@ int Engine::instancesCount = 0;
 Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "ENG");
-    log->put (LOG_INFO, "Starting to parse the engine node");
+    log->put (LOG_INFO, "Starting to parse an engine node");
     processXmlRootNode (n);
     instancesCount++;
 }

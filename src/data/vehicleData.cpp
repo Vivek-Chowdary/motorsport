@@ -26,6 +26,7 @@
 #include "body.hpp"
 #include "engine.hpp"
 #include "wheel.hpp"
+#include "suspension.hpp"
 
 int Vehicle::instancesCount = 0;
 
@@ -54,9 +55,10 @@ Vehicle::~Vehicle ()
 }
 
 
-void Vehicle::processXmlRootNode (DOMNode * n)
+void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     name = "None";
+    revision = 0;
     description = "None";
     author = "Anonymous";
     contact = "None";
@@ -72,13 +74,11 @@ void Vehicle::processXmlRootNode (DOMNode * n)
         {
             std::string nodeName;
             assignXmlString (nodeName, n->getNodeName());
-            log->format (LOG_TRACE, "Name: %s", nodeName.c_str());;
             if (nodeName == "vehicle")
             {
-                log->put (LOG_TRACE, "Found the vehicle main data config element.");
+                log->put (LOG_TRACE, "Found a vehicle.");
                 if (n->hasAttributes ())
                 {
-                    // get all the attributes of the node
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
@@ -86,35 +86,50 @@ void Vehicle::processXmlRootNode (DOMNode * n)
                         DOMAttr *attNode = (DOMAttr *) attList->item (i);
                         std::string attribute;
                         assignXmlString (attribute, attNode->getName());
+                        if (attribute == "position")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "Found the name: %s", attribute.c_str());
+                            Vector3d position;
+                            position = stov3d (attribute);
+                        }
                         if (attribute == "name")
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the name: %s", name.c_str());
+                            log->format (LOG_TRACE, "Found the name: %s", name.c_str());
+                        }
+                        if (attribute == "revision")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "Found the revision number: %s", attribute.c_str());
+                            revision = stoi(attribute);
                         }
                         if (attribute == "description")
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the description: %s", description.c_str());
+                            log->format (LOG_TRACE, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
                             author.clear();
                             assignXmlString (author, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
+                            log->format (LOG_TRACE, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
                             contact.clear();
                             assignXmlString (contact, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
+                            log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
                         }
                         if (attribute == "license")
                         {
                             license.clear();
                             assignXmlString (license, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
+                            log->format (LOG_TRACE, "Found the license: %s", license.c_str());
                         }
                         attribute.clear();
                     }
@@ -127,25 +142,24 @@ void Vehicle::processXmlRootNode (DOMNode * n)
                         {
                             nodeName.clear();
                             assignXmlString (nodeName, n->getNodeName());
-                            log->format (LOG_TRACE, "Name: %s", nodeName.c_str());
                             if (nodeName == "body")
                             {
-                                log->put (LOG_TRACE, "Found the vehicle body element.");
+                                log->put (LOG_TRACE, "Found a body.");
                                 bodyNode = n;
                             }
                             if (nodeName == "engine")
                             {
-                                log->put (LOG_TRACE, "Found the vehicle engine element.");
+                                log->put (LOG_TRACE, "Found an engine.");
                                 engineNode = n;
                             }
                             if (nodeName == "wheelList")
                             {
-                                log->put (LOG_TRACE, "Found the vehicle wheel list.");
+                                log->put (LOG_TRACE, "Found a wheel list.");
                                 wheelListNode = n;
                             }
                             if (nodeName == "suspensionList")
                             {
-                                log->put (LOG_TRACE, "Found the vehicle suspension list.");
+                                log->put (LOG_TRACE, "Found a suspension list.");
                                 suspListNode = n;
                             }
                         }
@@ -157,14 +171,25 @@ void Vehicle::processXmlRootNode (DOMNode * n)
     }
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
-    if (suspListNode != 0)
+    processXmlWheelListNode(wheelListNode);
+    processXmlSuspensionListNode(suspListNode);
+
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
-        DOMNode * suspNode;
-        for (suspNode = suspListNode->getFirstChild (); suspNode != 0; suspNode = suspNode->getNextSibling ())
+        std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
+        if (wheelIter == wheelMap.end())
         {
-//            new Wheel (suspNode);
+            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
+        }else{
+            log->format (LOG_INFO, "Attaching wheel and suspension \"%s\"", suspIter->first.c_str());
+            suspIter->second->attach(*(wheelIter->second), *this);
         }
     }
+}
+
+void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
+{
     if (wheelListNode != 0)
     {
         DOMNode * wheelNode;
@@ -174,12 +199,11 @@ void Vehicle::processXmlRootNode (DOMNode * n)
             {
                 std::string nodeName;
                 assignXmlString (nodeName, wheelNode->getNodeName());
-                log->format (LOG_TRACE, "Name: %s", nodeName.c_str());
                 if (nodeName == "wheel")
                 {
+                    log->put (LOG_TRACE, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (wheelNode);
-                    //wheelMap[tmpWheel->getName()]=tmpWheel;
-                    wheelMap.push_back(tmpWheel);
+                    wheelMap[tmpWheel->getIndex()]=tmpWheel;
                 }
                 nodeName.clear();
             }
@@ -187,3 +211,25 @@ void Vehicle::processXmlRootNode (DOMNode * n)
     }
 }
 
+void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
+{
+    if (suspListNode != 0)
+    {
+        DOMNode * suspNode;
+        for (suspNode = suspListNode->getFirstChild (); suspNode != 0; suspNode = suspNode->getNextSibling ())
+        {
+            if (suspNode->getNodeType () == DOMNode::ELEMENT_NODE)
+            {
+                std::string nodeName;
+                assignXmlString (nodeName, suspNode->getNodeName());
+                if (nodeName == "unidimensional")
+                {
+                    log->put (LOG_TRACE, "Found a suspension.");
+                    Suspension * tmpSusp = new Suspension (suspNode);
+                    suspensionMap[tmpSusp->getIndex()]=tmpSusp;
+                }
+                nodeName.clear();
+            }
+        }
+    }
+}

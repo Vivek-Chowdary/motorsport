@@ -152,7 +152,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_INFO, "\tFound the local log level: %s", attribute.c_str());
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                         }
 
                         if (attribute == "localLogName")
@@ -166,7 +166,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             frequency = stoi (attribute);
-                            tmpLog->format (LOG_INFO, "\tFound the frecuency: %s", attribute.c_str());
+                            tmpLog->format (LOG_INFO, "Found the frecuency: %s", attribute.c_str());
                         }
                         attribute.clear();
                     }
@@ -197,7 +197,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_INFO, "\tFound the constraint force mixing factor (CFM): %s", attribute.c_str());
+                                            tmpLog->format (LOG_INFO, "Found the constraint force mixing factor (CFM): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setCfmValue (stod (attribute));
@@ -207,7 +207,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_INFO, "\tFound the error reduction parameter (ERP): %s", attribute.c_str());
+                                            tmpLog->format (LOG_INFO, "Found the error reduction parameter (ERP): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setErpValue (stod (attribute));
@@ -217,7 +217,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_INFO, "\tFound the type of stepping to be used in ODE: %s", attribute.c_str());
+                                            tmpLog->format (LOG_INFO, "Found the type of stepping to be used in ODE: %s", attribute.c_str());
                                             if (attribute == "dWorldStep")
                                                 stepType = 1;
                                             if (attribute == "dWorldStepFast1")
@@ -227,7 +227,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_INFO, "\tFound the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
+                                            tmpLog->format (LOG_INFO, "Found the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
 
                                             dWorldStepFast1MaxIterations = stoi (attribute);
                                         }

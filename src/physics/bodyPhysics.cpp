@@ -32,13 +32,10 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double width = 1;
     double height = 1;
     double mass = 1;
-    log->put (LOG_TRACE, "Parsing body physics.");
     if (n->hasAttributes ())
     {
-        // get all the attributes of the node
         DOMNamedNodeMap *attList = n->getAttributes ();
         int nSize = attList->getLength ();
-
         for (int i = 0; i < nSize; ++i)
         {
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
@@ -48,34 +45,33 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics length: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the body physics length: %s", attribute.c_str() );
                 length = stod (attribute);
             }
             if (attribute == "width")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics width: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the body physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "height")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics height: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the body physics height: %s", attribute.c_str() );
                 height = stod (attribute);
             }
             if (attribute == "mass")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body physics mass: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the body physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished body physics.");
     dMass tmpMass;
     dMassSetBoxTotal (&tmpMass, mass, length, width, height);
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
@@ -83,24 +79,26 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dGeomSetBody (bodyGeomID, bodyID);
 }
 
-void Body::setPosition (double posX, double posY, double posZ)
+void Body::setPosition (Vector3d position)
 {               
-    dBodySetPosition (bodyID, posX, posY, posZ);
+    dBodySetPosition (bodyID, position.x, position.y, position.z);
 }
-void Body::getPosition (double & posX, double & posY, double & posZ)
+Vector3d Body::getPosition ()
 {
     const dReal *temp = dBodyGetPosition (bodyID);
-    posX = *(temp + 0);
-    posY = *(temp + 1);
-    posZ = *(temp + 2);
+    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
 }
 
-void Body::setRotation (double rotX, double rotY, double rotZ)
+void Body::setRotation (Vector3d rotation)
 {
     dMatrix3 rot;
-    dRFromEulerAngles (rot, rotX, rotY, rotZ);
-    //dRFromEulerAngles (rot, phi, theta, psi);
+    dRFromEulerAngles (rot, rotation.x, rotation.y, rotation.z);
     dBodySetRotation (bodyID, rot);
+}
+Vector3d Body::getRotation ()
+{
+    const dReal *temp = dBodyGetRotation (bodyID);
+    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
 }
 
 void Body::stopPhysics ()

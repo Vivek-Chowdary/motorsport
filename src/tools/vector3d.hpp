@@ -26,7 +26,8 @@
     
 class Vector3d 
 {
-  public:double x;
+  public:
+    double x;
     double y;
     double z;
     Vector3d ();
@@ -41,8 +42,8 @@ class Vector3d
     const Vector3d & operator-= (const Vector3d & k);
     double distance () const;
     double distance (const Vector3d & k) const;
+    void degreesToRadians();
 };
 
 #   include "vector3d.cpp"
-    
 #endif  /*  */

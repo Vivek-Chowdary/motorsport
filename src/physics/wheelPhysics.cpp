@@ -31,7 +31,6 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double mass = 0.0;
     double radius = 0.0;
     double width = 0.0;
-    log->put (LOG_TRACE, "Parsing wheel physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -47,27 +46,26 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the wheel physics radius: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the wheel physics radius: %s", attribute.c_str() );
                 radius = stod (attribute);
             }
             if (attribute == "width")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the wheel physics width: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the wheel physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "mass")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the wheel physics mass: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished wheel physics.");
     dMass tmpMass;
     dMassSetCylinderTotal (&tmpMass, mass, 3, radius, width);
     wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
@@ -75,16 +73,28 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dGeomSetBody (wheelGeomID, wheelID);
 }
 
-void Wheel::setPosition (double posX, double posY, double posZ)
+void Wheel::setPosition (Vector3d position)
 {               
-    dBodySetPosition (wheelID, posX, posY, posZ);
+    dBodySetPosition (wheelID, position.x, position.y, position.z);
 }
 
-void Wheel::setRotation (double rotX, double rotY, double rotZ)
+Vector3d Wheel::getPosition ()
+{
+    const dReal *temp = dBodyGetPosition (wheelID);  // need to allocate memory first??
+    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
+}
+
+void Wheel::setRotation (Vector3d rotation)
 {
     dMatrix3 rot;
-    dRFromEulerAngles (rot, rotX, rotY, rotZ);
+    dRFromEulerAngles (rot, rotation.x, rotation.y, rotation.z);
     dBodySetRotation (wheelID, rot);
+}
+
+Vector3d Wheel::getRotation ()
+{
+    const dReal *temp = dBodyGetRotation (wheelID);  // need to allocate memory first??
+    return Vector3d (*(temp + 0), *(temp + 1), *(temp + 2));
 }
 
 void Wheel::stopPhysics ()

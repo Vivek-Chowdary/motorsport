@@ -150,3 +150,11 @@ bool stob (const std::string & srcString)
         return false;
     return true;
 }
+
+Vector3d stov3d (const std::string &srcString)
+{
+    std::stringstream tmpString (srcString);
+    double tmpX, tmpY, tmpZ;
+    tmpString >> tmpX >> tmpY >> tmpZ;;
+    return Vector3d(tmpX, tmpY, tmpZ);
+}

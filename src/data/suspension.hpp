@@ -19,57 +19,46 @@
 *
 ******************************************************************************/
 
-#ifndef WHEEL_HPP
-#   define WHEEL_HPP
+#ifndef SUSPENSION_HPP
+#   define SUSPENSION_HPP
 #   include "ode/objects.h"
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
 #   include <string>
 
 //forward declarations
-class Vector3d;
 namespace Ogre {
   class Entity;
   class SceneNode;
 }
+class Vehicle;
+class Wheel;
+class Vector3d;
 
-class Wheel : public WorldObject
+class Suspension : public WorldObject
 {
   private:
     static int instancesCount;
     std::string index;
-
+    Vector3d * position;
+    Vector3d * rotation;
+    dJointID jointID;
   public:
 
     // data
-    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
-    ~Wheel ();
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
+    Suspension (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~Suspension ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     std::string getIndex();
+    void attach (Wheel & wheel, Vehicle & vehicle);
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
-    dBodyID wheelID;
-    dGeomID wheelGeomID;
     void setPosition (Vector3d position);
     Vector3d getPosition ();
     void setRotation (Vector3d rotation);
     Vector3d getRotation ();
-    void addTorque (double torque);
-
-    // graphics
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
-
-    class Ogre::Entity;
-    class Ogre::SceneNode;
-
-    Ogre::Entity * wheelEntity;
-    Ogre::SceneNode * wheelNode;
 };
 #endif

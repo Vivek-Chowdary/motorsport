@@ -72,14 +72,11 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            log->format (LOG_TRACE, "Name: %s", name.c_str());;
-
             if (name == "cube")
             {
-                log->put (LOG_TRACE, "Found the cube main data config element.");
+                log->put (LOG_TRACE, "Found a cube.");
                 if (n->hasAttributes ())
                 {
-                    // get all the attributes of the node
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
@@ -91,31 +88,37 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the name: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the name: %s", attribute.c_str());
+                        }
+                        if (attribute == "revision")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "Found the revision number: %s", attribute.c_str());
                         }
                         if (attribute == "description")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the description: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the description: %s", attribute.c_str());
                         }
                         if (attribute == "author")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the author: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the author: %s", attribute.c_str());
                         }
                         if (attribute == "contact")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the contact information: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the contact information: %s", attribute.c_str());
                         }
                         if (attribute == "license")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the license: %s", attribute.c_str());
+                            log->format (LOG_TRACE, "Found the license: %s", attribute.c_str());
                         }
                         attribute.clear();
                     }
@@ -128,15 +131,14 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, n->getNodeName());
-                            log->format (LOG_TRACE, "Name: %s", name.c_str());;
                             if (name == "graphics")
                             {
-                                log->put (LOG_TRACE, "Found the cube graphics data element.");
+                                log->put (LOG_TRACE, "Found the cube graphics.");
                                 graphicsNode = n;
                             }
                             if (name == "physics")
                             {
-                                log->put (LOG_TRACE, "Found the cube physics data element.");
+                                log->put (LOG_TRACE, "Found the cube physics.");
                                 physicsNode = n;
                             }
                         }

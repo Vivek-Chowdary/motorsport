@@ -41,6 +41,7 @@ class Track : public WorldObject
 {
   private:
     std::string name;
+    int revision;
     std::string description;
     std::string author;
     std::string contact;

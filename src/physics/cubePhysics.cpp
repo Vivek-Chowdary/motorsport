@@ -34,7 +34,6 @@ void Cube::startPhysics (DOMNode * n)
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
-    log->put (LOG_TRACE, "Parsing cube physics.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -50,31 +49,30 @@ void Cube::startPhysics (DOMNode * n)
             {
                 author.clear();
                 assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
+                log->format (LOG_TRACE, "Found the author: %s", author.c_str());
             }
             if (attribute == "contact")
             {
                 contact.clear();
                 assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
+                log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
             }
             if (attribute == "license")
             {
                 license.clear();
                 assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
+                log->format (LOG_TRACE, "Found the license: %s", license.c_str());
             }
             if (attribute == "size")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the cube physics size: %s", attribute.c_str() );
+                log->format (LOG_TRACE, "Found the cube physics size: %s", attribute.c_str() );
                 size = stoi (attribute);
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished cube physics.");
     dMass mass;
     dMassSetBox (&mass, 1, size, size, size);
     cubeID = dBodyCreate (World::getWorldPointer ()->worldID);

@@ -23,6 +23,7 @@
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
 #include "wheel.hpp"
+#include "suspension.hpp"
 
 void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -31,18 +32,29 @@ void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 void Vehicle::stepGraphics ()
 {
     body->stepGraphics();
-    for (int i=0; i<wheelMap.size(); i++)
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
-        wheelMap[i]->stepGraphics();
+        suspIter->second->stepGraphics();
+    }
+    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
+    {
+        wheelIter->second->stepGraphics();
     }
 }
 
 void Vehicle::stopGraphics ()
 {
     body->stopGraphics();
-    for (int i=0; i<wheelMap.size(); i++)
+    std::map < std::string, Suspension * >::const_iterator suspIter;
+    for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
-        wheelMap[i]->stopGraphics();
+        suspIter->second->stopGraphics();
+    }
+    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
+    {
+        wheelIter->second->stopGraphics();
     }
 }
-

@@ -22,20 +22,22 @@
 #ifndef VEHICLE_HPP
 #   define VEHICLE_HPP
 #   include <string>
-//#   include <map>
-#   include <vector>
+#   include <map>
 #   include "worldObject.hpp"
 
 //forward declarations
 class Body;
 class Engine;
 class Wheel;
+class Suspension;
+class Vector3d;
 
 class Vehicle : public WorldObject
 {
   private:
     static int instancesCount;
     std::string name;
+    int revision;
     std::string description;
     std::string author;
     std::string contact;
@@ -46,18 +48,21 @@ class Vehicle : public WorldObject
     Vehicle (const std::string & xmlFilename);
     ~Vehicle ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
+    void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     Body * body;
     Engine * engine;
-//    std::map < std::string, Wheel *> wheelMap;
-    std::vector < Wheel *> wheelMap;
-//    std::vector < Suspension * > suspensionList;
+    std::map < std::string, Wheel *> wheelMap;
+    std::map < std::string, Suspension * > suspensionMap;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
+    void setPosition (Vector3d position);
+    void setRotation (Vector3d rotation);
+    Vector3d getPosition ();
+    Vector3d getRotation ();
     double getTorque ();
 
     // graphics

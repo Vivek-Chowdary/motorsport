@@ -31,7 +31,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     std::string material = "None";
     std::string mesh = "None";
     std::string ogreName = "None";
-    log->put (LOG_TRACE, "Parsing body graphics");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -45,25 +44,23 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 material.clear();
                 assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body graphics material: %s", material.c_str());
+                log->format (LOG_TRACE, "Found the body graphics material: %s", material.c_str());
             }
             if (attribute == "mesh")
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_TRACE, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "ogreName")
             {
                 ogreName.clear();
                 assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the body graphics ogre-identifier format: %s", ogreName.c_str());
+                log->format (LOG_TRACE, "Found the body graphics ogre-identifier format: %s", ogreName.c_str());
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished body graphics.");
-
     char name[256];
     sprintf (name, ogreName.c_str(), instancesCount);
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());

@@ -30,7 +30,7 @@ int Wheel::instancesCount = 0;
 Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "WHE");
-    log->put (LOG_INFO, "Starting to parse the wheel node");
+    log->put (LOG_INFO, "Starting to parse a wheel node");
     processXmlRootNode (n);
 
     instancesCount++;
@@ -59,48 +59,32 @@ void Wheel::updateOgreOrientation ()
     wheelNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
 
-std::string Wheel::getName()
+std::string Wheel::getIndex()
 {
-    return name;
+    return index;
 }
 
 void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    name.assign ("Unknown");
-    if (n)
+    index.assign ("Unknown");
+    if (n->hasAttributes ())
     {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        for (int i = 0; i < nSize; ++i)
         {
-            std::string nodeName;
-            assignXmlString (nodeName, n->getNodeName());
-            log->format (LOG_TRACE, "Name: %s", name.c_str());;
-            if (nodeName == "wheel")
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "index")
             {
-                log->put (LOG_TRACE, "Found the wheel config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            name.clear();
-                            assignXmlString (name, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the name: %s", name.c_str());
-                        }
-                        attribute.clear();
-                    }
-                }
+                index.clear();
+                assignXmlString (index, attNode->getValue());
+                log->format (LOG_TRACE, "Found the index: %s", index.c_str());
             }
-            nodeName.clear();
+            attribute.clear();
         }
     }
-    log->format (LOG_TRACE, "wheelData node: %s", name.c_str());
     startPhysics (n);
     startGraphics (n);
 }

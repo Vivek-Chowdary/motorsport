@@ -61,6 +61,7 @@ InputEngine::InputEngine ()
 
 int InputEngine::computeStep (void)
 {
+    std::string tmpString;
     SDL_Event event;
     while (SDL_PollEvent (&event))
     {
@@ -72,28 +73,26 @@ int InputEngine::computeStep (void)
             systemData->disableMainLoop ();
             break;
         case SDL_KEYUP:
-            log->format (LOG_VERBOSE, "New SDL_KEYUP event; axis ID = %i", getIDKeyboardKey (event.key.keysym.sym));
+            axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
+            log->format (LOG_VERBOSE, "New SDL_KEYUP event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(0);
             break;
         case SDL_KEYDOWN:
-            log->format (LOG_VERBOSE, "New SDL_KEYDOWN event; axis ID = %i", getIDKeyboardKey (event.key.keysym.sym));
+            axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
+            log->format (LOG_VERBOSE, "New SDL_KEYDOWN event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
-            
             if (event.key.keysym.sym == SDLK_KP_MINUS)
             {
                 log->put (LOG_VERBOSE, "Processing a SDLK_KP_MINUS keypress...");
-                // modify the physics engine rate
-                // if current desired fps is below 37, it's better to decrease the fps (frames/sec.)...
                 if (systemData->physicsDesiredFrequency < 37)
                 {
-                    // don't let the rate fall below 1 frame per second (or don't allow more than 1000msecs. step)
                     if (!--systemData->physicsDesiredFrequency)
                     {
                         systemData->physicsDesiredFrequency++;
                     }
                     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
                 } else
-                {                       // ...otherwise, it's better to increase the timestep (msecs.)
+                {
                     systemData->physicsTimeStep++;
                     systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
                 }
@@ -101,14 +100,11 @@ int InputEngine::computeStep (void)
             if (event.key.keysym.sym == SDLK_KP_PLUS)
             {
                 log->put (LOG_VERBOSE, "Processing a SDLK_KP_PLUS keypress...");
-                // if current desired fps is below 37, it's better to increase the fps (frames/sec.)...
                 if (systemData->physicsDesiredFrequency < 37)
                 {
                     systemData->physicsDesiredFrequency++;
                     systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-                } else
-                {                       // ...otherwise, it's better to decrease the timestep (msecs.)
-                    // don't let the step time fall below 1 msec. (or don't allow more than 1000fps)
+                } else {
                     if (!--systemData->physicsTimeStep)
                     {
                         systemData->physicsTimeStep++;
@@ -118,7 +114,10 @@ int InputEngine::computeStep (void)
             }
             break;
         case SDL_MOUSEMOTION:
-            log->put (LOG_VERBOSE, "New SDL_MOUSEMOTION event: updating mouse axis.");
+            axisIDtoStr(getIDMouseAxis (0), tmpString);
+            log->format (LOG_VERBOSE, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
+            axisIDtoStr(getIDMouseAxis (1), tmpString);
+            log->format (LOG_VERBOSE, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (0)]->setNewRawValue (event.motion.x);
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (1)]->setNewRawValue (-event.motion.y);
             log->format (LOG_TRACE, "Mouse movement: (%i, %i)", event.motion.x, -event.motion.y);
@@ -162,7 +161,7 @@ void InputEngine::processKeyboard ()
 
     if (keyState[SDLK_q])
     {
-        log->put (LOG_INFO, "Processing a 'Q' keypress: User wants to exit. Notifying to stop mainLoop...");
+        log->put (LOG_INFO, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
     // Processing key releases...

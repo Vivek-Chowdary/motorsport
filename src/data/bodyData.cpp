@@ -30,7 +30,6 @@ int Body::instancesCount = 0;
 Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "BOD");
-    log->put (LOG_INFO, "Starting to parse the body node");
     processXmlRootNode (n);
 
     instancesCount++;
@@ -61,87 +60,6 @@ void Body::updateOgreOrientation ()
 
 void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    DOMNode * graphicsNode = 0;
-    DOMNode * physicsNode = 0;
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            log->format (LOG_TRACE, "Name: %s", name.c_str());;
-            if (name == "body")
-            {
-                log->put (LOG_TRACE, "Found the body main data config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the name: %s", attribute.c_str());
-                        }
-                        if (attribute == "description")
-                        {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the description: %s", attribute.c_str());
-                        }
-                        if (attribute == "author")
-                        {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the author: %s", attribute.c_str());
-                        }
-                        if (attribute == "contact")
-                        {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the contact information: %s", attribute.c_str());
-                        }
-                        if (attribute == "license")
-                        {
-                            attribute.clear();
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the license: %s", attribute.c_str());
-                        }
-                        attribute.clear();
-                    }
-                }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-                {
-                    if (n)
-                    {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            name.clear();
-                            assignXmlString (name, n->getNodeName());
-                            log->format (LOG_TRACE, "Name: %s", name.c_str());
-                            if (name == "graphics")
-                            {
-                                log->put (LOG_TRACE, "Found the body graphics data element.");
-                                graphicsNode = n;
-                            }
-                            if (name == "physics")
-                            {
-                                log->put (LOG_TRACE, "Found the body physics data element.");
-                                physicsNode = n;
-                            }
-                        }
-                    }
-                }
-            }
-            name.clear();
-        }
-    }
-    startPhysics (physicsNode);
-    startGraphics (graphicsNode);
+    startPhysics (n);
+    startGraphics (n);
 }

@@ -24,6 +24,7 @@
 #   include "ode/objects.h"
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
+#   include "vector3d.hpp"
 
 //forward declarations
 namespace Ogre {
@@ -51,9 +52,10 @@ class Body : public WorldObject
     void stopPhysics ();
     dBodyID bodyID;
     dGeomID bodyGeomID;
-    void setPosition (double posX, double posY, double posZ);
-    void getPosition (double & posX, double & posY, double & posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
+    void setPosition (Vector3d position);
+    void setRotation (Vector3d rotation);
+    Vector3d getPosition ();
+    Vector3d getRotation ();
 
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);

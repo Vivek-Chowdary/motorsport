@@ -46,8 +46,6 @@ void Cube::startGraphics (DOMNode * n)
     std::string material = "None";
     std::string mesh = "None";
     std::string ogreName = "None";
-
-    log->put (LOG_TRACE, "Parsing cube graphics");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -61,43 +59,41 @@ void Cube::startGraphics (DOMNode * n)
             {
                 author.clear();
                 assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
+                log->format (LOG_TRACE, "Found the author: %s", author.c_str());
             }
             if (attribute == "contact")
             {
                 contact.clear();
                 assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
+                log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
             }
             if (attribute == "license")
             {
                 license.clear();
                 assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
+                log->format (LOG_TRACE, "Found the license: %s", license.c_str());
             }
             if (attribute == "material")
             {
                 material.clear();
                 assignXmlString (material, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the cube graphics material: %s", material.c_str());
+                log->format (LOG_TRACE, "Found the cube graphics material: %s", material.c_str());
             }
             if (attribute == "mesh")
             {
                 mesh.clear();
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the cube graphics mesh filename: %s", mesh.c_str());
+                log->format (LOG_TRACE, "Found the cube graphics mesh filename: %s", mesh.c_str());
             }
             if (attribute == "ogreName")
             {
                 ogreName.clear();
                 assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the cube graphics ogre-identifier format: %s", ogreName.c_str());
+                log->format (LOG_TRACE, "Found the cube graphics ogre-identifier format: %s", ogreName.c_str());
             }
             attribute.clear();
         }
     }
-    log->put (LOG_TRACE, "Finished cube graphics.");
-
     char name[256];
     sprintf (name, ogreName.c_str(), instancesCount);
     cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());

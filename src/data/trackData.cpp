@@ -87,10 +87,9 @@ void Track::processXmlRootNode (DOMNode * n)
         {
             std::string nodeName;
             assignXmlString (nodeName, n->getNodeName());
-            log->format (LOG_TRACE, "Name: %s", name.c_str());;
             if (nodeName == "track")
             {
-                log->put (LOG_TRACE, "Found the track main data config element.");
+                log->put (LOG_TRACE, "Found a track.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -104,31 +103,38 @@ void Track::processXmlRootNode (DOMNode * n)
                         {
                             name.clear();
                             assignXmlString (name, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the name: %s", name.c_str());
+                            log->format (LOG_TRACE, "Found the name: %s", name.c_str());
+                        }
+                        if (attribute == "revision")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_TRACE, "Found the revision number: %s", attribute.c_str());
+                            revision = stoi (attribute);
                         }
                         if (attribute == "description")
                         {
                             description.clear();
                             assignXmlString (description, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the description: %s", description.c_str());
+                            log->format (LOG_TRACE, "Found the description: %s", description.c_str());
                         }
                         if (attribute == "author")
                         {
                             author.clear();
                             assignXmlString (author, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
+                            log->format (LOG_TRACE, "Found the author: %s", author.c_str());
                         }
                         if (attribute == "contact")
                         {
                             contact.clear();
                             assignXmlString (contact, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
+                            log->format (LOG_TRACE, "Found the contact information: %s", contact.c_str());
                         }
                         if (attribute == "license")
                         {
                             license.clear();
                             assignXmlString (license, attNode->getValue());
-                            log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
+                            log->format (LOG_TRACE, "Found the license: %s", license.c_str());
                         }
                         attribute.clear();
                     }
@@ -141,10 +147,9 @@ void Track::processXmlRootNode (DOMNode * n)
                         {
                             nodeName.clear();
                             assignXmlString (nodeName, n->getNodeName());
-                            log->format (LOG_TRACE, "Name: %s", nodeName.c_str());
                             if (nodeName == "ground")
                             {
-                                log->put (LOG_TRACE, "Found the track ground element.");
+                                log->put (LOG_TRACE, "Found a track ground.");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -158,14 +163,14 @@ void Track::processXmlRootNode (DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound the ground height: %s", attribute.c_str());
+                                            log->format (LOG_TRACE, "Found the ground height: %s", attribute.c_str());
                                             groundHeight = stod (attribute);
                                         }
                                         if (attribute == "materialName")
                                         {
                                             groundMaterialName.clear();
                                             assignXmlString (groundMaterialName, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound the ground material name: %s", groundMaterialName.c_str());
+                                            log->format (LOG_TRACE, "Found the ground material name: %s", groundMaterialName.c_str());
                                         }
                                         attribute.clear();
                                     }
@@ -173,7 +178,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "sky")
                             {
-                                log->put (LOG_TRACE, "Found the track sky element.");
+                                log->put (LOG_TRACE, "Found a track sky.");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -187,20 +192,20 @@ void Track::processXmlRootNode (DOMNode * n)
                                         {
                                             skyMaterialName.clear();
                                             assignXmlString (skyMaterialName, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound the sky material name: %s", skyMaterialName.c_str());
+                                            log->format (LOG_TRACE, "Found the sky material name: %s", skyMaterialName.c_str());
                                         }
                                         if (attribute == "distance")
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound the sky distance: %s", attribute.c_str());
+                                            log->format (LOG_TRACE, "Found the sky distance: %s", attribute.c_str());
                                             skyDistance = stod (attribute);
                                         }
                                         if (attribute == "drawFirst")
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound whether to draw the sky first: %s", attribute.c_str());
+                                            log->format (LOG_TRACE, "Found whether to draw the sky first: %s", attribute.c_str());
                                             skyDrawFirst = stob (attribute);
                                         }
                                         attribute.clear();
@@ -209,7 +214,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "parts")
                             {
-                                log->put (LOG_TRACE, "Found the track parts element.");
+                                log->put (LOG_TRACE, "Found a list of track parts.");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -223,7 +228,7 @@ void Track::processXmlRootNode (DOMNode * n)
                                         {
                                             attribute.clear();
                                             assignXmlString (attribute, attNode->getValue());
-                                            log->format (LOG_TRACE, "\tFound the number of cubes: %s", attribute.c_str());
+                                            log->format (LOG_TRACE, "Found the number of cubes: %s", attribute.c_str());
                                             numberOfCubes = stoi (attribute);
                                         }
                                         attribute.clear();
@@ -232,7 +237,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "vehiclePositionList")
                             {
-                                log->put (LOG_TRACE, "Found the list of vehicle positions.");
+                                log->put (LOG_TRACE, "Found a list of vehicle positions.");
                                 DOMNode * n2;
                                 for (n2 = n->getFirstChild (); n2 != 0; n2 = n2->getNextSibling ())
                                 {
@@ -240,9 +245,9 @@ void Track::processXmlRootNode (DOMNode * n)
                                     {
                                         std::string node2Name;
                                         assignXmlString (node2Name, n2->getNodeName());
-                                        log->format (LOG_TRACE, "Name: %s", node2Name.c_str());
                                         if (node2Name == "vehicle")
                                         {
+                                            log->put (LOG_TRACE, "Found a vehicle position.");
                                             processXmlVehiclePositionNode (n2);
                                         }
                                         node2Name.clear();
@@ -251,7 +256,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "cameraList")
                             {
-                                log->put (LOG_TRACE, "Found the list of cameras.");
+                                log->put (LOG_TRACE, "Found a list of cameras.");
                                 DOMNode* n2;
                                 for (n2 = n->getFirstChild (); n2 != 0; n2 = n2->getNextSibling ())
                                 {
@@ -259,9 +264,9 @@ void Track::processXmlRootNode (DOMNode * n)
                                     {
                                         std::string node2Name;
                                         assignXmlString (node2Name, n2->getNodeName());
-                                        log->format (LOG_TRACE, "Name: %s", node2Name.c_str());
                                         if (node2Name == "camera")
                                         {
+                                            log->put (LOG_TRACE, "Found a camera.");
                                             processXmlCameraPositionNode (n2);
                                         }
                                         node2Name.clear();
@@ -325,18 +330,13 @@ void Track::processXmlRootNode (DOMNode * n)
 
 void Track::processXmlVehiclePositionNode (DOMNode * n)
 {
-    log->put (LOG_TRACE, "Found the a vehicle position node.");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
         int nSize = attList->getLength ();
         std::string index = "0";
-        double posX = 0.0;
-        double posY = 0.0;
-        double posZ = 0.0;
-        double rotX = 0.0;
-        double rotY = 0.0;
-        double rotZ = 0.0;
+        Vector3d position (0, 0, 0);
+        Vector3d rotation (0, 0, 0);
         for (int i = 0; i < nSize; ++i)
         {
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
@@ -346,71 +346,38 @@ void Track::processXmlVehiclePositionNode (DOMNode * n)
             {
                 index.clear();
                 assignXmlString (index, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position index: %s", index.c_str());
+                log->format (LOG_TRACE, "Found the position index: %s", index.c_str());
             }
-            if (attribute == "posX")
+            if (attribute == "position")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position X: %s", attribute.c_str());
-                posX = stod (attribute);
+                log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                position = stov3d(attribute);
             }
-            if (attribute == "posY")
+            if (attribute == "rotation")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position Y: %s", attribute.c_str());
-                posY = stod (attribute);
-            }
-            if (attribute == "posZ")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position Z: %s", attribute.c_str());
-                posZ = stod (attribute);
-            }
-            if (attribute == "rotX")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the rotation X: %s", attribute.c_str());
-                rotX = stod (attribute);
-            }
-            if (attribute == "rotY")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the rotation Y: %s", attribute.c_str());
-                rotY = stod (attribute);
-            }
-            if (attribute == "rotZ")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the rotation Z: %s", attribute.c_str());
-                rotZ = stod (attribute);
+                log->format (LOG_TRACE, "Found the rotation: %s", attribute.c_str());
+                rotation = stov3d(attribute);
             }
             attribute.clear();
         }
-        VehiclePosition * tmpVehicle = new VehiclePosition (posX, posY, posZ, rotX, rotY, rotZ);
+        VehiclePosition * tmpVehicle = new VehiclePosition (position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
         vehiclePositionMap[index] = tmpVehicle;
     }
 }
 
 void Track::processXmlCameraPositionNode (DOMNode * n)
 {
-    log->put (LOG_TRACE, "Found the a camera node.");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
         int nSize = attList->getLength ();
         std::string index = "0";
-        double posX = 0.0;
-        double posY = 0.0;
-        double posZ = 0.0;
-        double destX = 0.0;
-        double destY = 0.0;
-        double destZ = 0.0;
+        Vector3d position (0, 0, 0);
+        Vector3d target (0, 0, 0);
         for (int i = 0; i < nSize; ++i)
         {
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
@@ -420,59 +387,30 @@ void Track::processXmlCameraPositionNode (DOMNode * n)
             {
                 index.clear();
                 assignXmlString (index, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position index: %s", index.c_str());
+                log->format (LOG_TRACE, "Found the position index: %s", index.c_str());
             }
-            if (attribute == "posX")
+            if (attribute == "position")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position X: %s", attribute.c_str());
-                posX = stod (attribute);
+                log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                position = stov3d(attribute);
             }
-            if (attribute == "posY")
+            if (attribute == "target")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position Y: %s", attribute.c_str());
-                posY = stod (attribute);
-            }
-            if (attribute == "posZ")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the position Z: %s", attribute.c_str());
-                posZ = stod (attribute);
-            }
-            if (attribute == "destX")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the destination X: %s", attribute.c_str());
-                destX = stod (attribute);
-            }
-            if (attribute == "destY")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the destination Y: %s", attribute.c_str());
-                destY = stod (attribute);
-            }
-            if (attribute == "destZ")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the destination Z: %s", attribute.c_str());
-                destZ = stod (attribute);
+                log->format (LOG_TRACE, "Found the target: %s", attribute.c_str());
+                target = stov3d(attribute);
             }
             attribute.clear();
         }
-        CameraPosition * tmpCam = new CameraPosition (posX, posY, posZ, destX, destY, destZ);
+        CameraPosition * tmpCam = new CameraPosition (position.x, position.y, position.z, target.x, target.y, target.z);
         cameraPositionMap[index]=tmpCam;
         
         //load some cameras FIXME should be taken from file config
         log->put (LOG_INFO, "Creating a camera");
-        Camera *cameraPointer = new Camera (posX, posY, posZ, destX, destY, destZ);
+        Camera *cameraPointer = new Camera (position.x, position.y, position.z, target.x, target.y, target.z);
         cameraList.push_back (cameraPointer);
-                                        
     }
 }

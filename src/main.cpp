@@ -172,7 +172,7 @@ LogEngine * processXmlRootNode (DOMNode * node)
                         if (name == "localLogLevel")
                         {
                             name.erase();
-                            log->format (LOG_INFO, "\tFound the local log level: %s", name.c_str());
+                            log->format (LOG_INFO, "Found the local log level: %s", name.c_str());
                             name = XMLString::transcode (pAttributeNode->getValue ());
                             if (name == "LOG_ERROR")
                                 localLogLevel = LOG_ERROR;
@@ -189,7 +189,7 @@ LogEngine * processXmlRootNode (DOMNode * node)
                         {
                             name.erase();
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "\tFound the log name: %s", name.c_str());
+                            log->format (LOG_INFO, "Found the log name: %s", name.c_str());
 
                             localLogName.erase();
                             localLogName = name;

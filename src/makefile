@@ -221,6 +221,8 @@ SOURCES := \
 	data/wheelData.cpp \
 	physics/wheelPhysics.cpp \
 	graphics/wheelGraphics.cpp \
+	data/suspensionData.cpp \
+	physics/suspensionPhysics.cpp \
 	main.cpp
 ###########################################
 
