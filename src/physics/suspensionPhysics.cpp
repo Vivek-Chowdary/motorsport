@@ -17,6 +17,8 @@
 #include "vehicle.hpp"
 #include "body.hpp"
 #include "wheel.hpp"
+#include "axis.hpp"
+#include "SDL/SDL_keysym.h"
 
 
 void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -68,8 +70,8 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     
-    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
-//    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
+//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
     dJointAttach (jointID, 0, 0);
     rotation->degreesToRadians();
 }
@@ -83,34 +85,37 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     wheel.setRotation (rotation);
     wheel.setPosition (position);
     wheel.setSuspJoint (jointID);
-//    dJointSetHinge2Param (jointID, dParamHiStop + dParamGroup * (1-1), 0.001);
-//    dJointSetHinge2Param (jointID, dParamLoStop, 0);
-    dJointAttach (jointID, wheel.wheelID, vehicle.body->bodyID);
- 
+    dJointAttach (jointID, vehicle.body->bodyID, wheel.wheelID);
+
+    // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
+/*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
+    dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
+    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
+*/
 //    dVector3 wheelAxisVector;
 //    dJointGetHinge2Axis2 (jointID, wheelAxisVector);
 //    dBodySetFiniteRotationAxis (wheel.wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
 
-//    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000 ;
-//    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
-//    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
+    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000.0 ;
+    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
+    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
     setPosition(position);
     setRotation(rotation);
 }
 
 void Suspension::setPosition (Vector3d position)
 {
-//    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
-    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
+    dJointSetHinge2Anchor (jointID, position.x, position.y, position.z);
+//    dJointSetHingeAnchor (jointID, position.x, position.y, position.z);
 
 }
 void Suspension::setRotation (Vector3d rotation)
 {
-//    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
-    //dJointSetHinge2Axis2 (jointID, rotation.x, rotation.y, rotation.z);
-//    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
-    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-    dJointSetHingeAxis (jointID, 0,1,0);
+    dJointSetHinge2Axis1 (jointID, 0, 0, 1);
+    dJointSetHinge2Axis2 (jointID, rotation.x, rotation.y, rotation.z);
+    dJointSetHinge2Axis2 (jointID, 0, 1, 0);
+//    dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+//    dJointSetHingeAxis (jointID, 0,1,0);
 }
 Vector3d Suspension::getPosition ()
 {
@@ -130,4 +135,14 @@ void Suspension::stopPhysics ()
 
 void Suspension::stepPhysics ()
 {
+    double angle = 0;
+    if (this == World::getWorldPointer ()->vehicleList[0]->suspensionMap["FrontRight"] || this == World::getWorldPointer ()->vehicleList[0]->suspensionMap["FrontLeft"])
+    {
+        angle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() / 2;
+        angle -= SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() / 2;
+    }
+        // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
+    dJointSetHinge2Param (jointID, dParamHiStop, angle);
+    dJointSetHinge2Param (jointID, dParamLoStop, angle-0.00001);
+    dJointSetHinge2Param (jointID, dParamHiStop, angle);
 }

@@ -9,10 +9,13 @@
 
 #include "body.hpp"
 #include "world.hpp"
+#include "system.hpp"
+#include "axis.hpp"
 #include "xmlParser.hpp"
 #include "ode.h"
 #include "log/logEngine.hpp"
-
+#include "SDL/SDL_keysym.h"
+#include "vehicle.hpp"
 
 void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -102,4 +105,9 @@ void Body::stopPhysics ()
 
 void Body::stepPhysics ()
 {
+    if (this == World::getWorldPointer ()->vehicleList[0]->body)
+    {
+        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 20000;
+        dBodyAddForce (bodyID, 0, 0, moveZ);
+    }
 }

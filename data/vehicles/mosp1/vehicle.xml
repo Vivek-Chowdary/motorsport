@@ -14,7 +14,7 @@
         length = "4.66"
         width = "2.08"
         height = "1.2" 
-        mass = "1250.0"
+        mass = "1224.0"
         >
     </body>
     <clutchPedal
@@ -30,8 +30,8 @@
         >
     </brakePedal>
     <engine
-        _torqueLinearMultiplier = "140"
-        torqueLinearMultiplier = "3440"
+        _torqueLinearMultiplier = "246"
+        torqueLinearMultiplier = "846"
         engineInertia = "0.2"
         engineFriction = "0.1"
         >
@@ -39,8 +39,8 @@
     <clutch
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
-        _maxTorqueTransfer = "160"
-        maxTorqueTransfer = "3460"
+        _maxTorqueTransfer = "260"
+        maxTorqueTransfer = "560"
         >
     </clutch>
     <shiftUpPaddle
@@ -55,12 +55,12 @@
         gearboxFriction = "0.01"
         gearboxInertia = "0.1"
         gear-1Ratio = "-4.0"
-        gear1Ratio = "3.5"
-        gear2Ratio = "2.0"
-        gear3Ratio = "1.4"
-        gear4Ratio = "1.0"
-        gear5Ratio = "0.8"
-        finalDrive = "0.12"
+        gear1Ratio = "3.71"
+        gear2Ratio = "2.24"
+        gear3Ratio = "1.5"
+        gear4Ratio = "1.145"
+        gear5Ratio = "0.94"
+        finalDrive = "0.18"
         >
     </gearbox>
     <diff
@@ -77,33 +77,33 @@
     <suspensionList>
         <unidimensional
             index = "FrontRight"
-            springConstant = "80000"
-            dampingConstant = "20000"
-            position = "+1.44 +0.857 -0.4"
+            springConstant =  "60500"
+            dampingConstant = "2000"
+            position = "+1.44 +0.857 -0.6"
             rotation = "-90 0 0"
             >
         </unidimensional>
         <unidimensional
             index = "FrontLeft"
-            springConstant = "80000"
-            dampingConstant = "20000"
-            position = "+1.44 -0.857 -0.4"
+            springConstant =  "60500"
+            dampingConstant = "2000"
+            position = "+1.44 -0.857 -0.6"
             rotation = "+90 0 0"
             >
         </unidimensional>
         <unidimensional
             index = "RearRight"
-            springConstant = "80000"
-            dampingConstant = "20000"
-            position = "-1.35 +0.88 -0.4"
+            springConstant =  "60900"
+            dampingConstant = "2000"
+            position = "-1.35 +0.88 -0.6"
             rotation = "-90 0 0"
             >
         </unidimensional>
         <unidimensional
             index = "RearLeft"
-            springConstant = "80000"
-            dampingConstant = "20000"
-            position = "-1.35 -0.88 -0.4"
+            springConstant =  "60900"
+            dampingConstant = "2000"
+            position = "-1.35 -0.88 -0.6"
             rotation = "+90 0 0"
             >
         </unidimensional>
@@ -165,9 +165,15 @@
             >
         </camera>
         <camera
-            index = "wheel"
-            position = "0.2 -1.2 -0.2"
-            target = "0.4 -1.2 -0.2"
+            index = "FRwheel"
+            position = "0.2 -1.2 -0.25"
+            target = "0.4 -1.2 -0.25"
+            >
+        </camera>
+        <camera
+            index = "RRwheel"
+            position = "-3.0 -1.2 -0.25"
+            target = "-2.8 -1.2 -0.25"
             >
         </camera>
     </cameraList>

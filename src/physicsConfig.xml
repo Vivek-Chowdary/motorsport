@@ -8,11 +8,11 @@
     >
     <ode
         _cfmValue = "default"
-        __cfmValue = "0.00000001"
-        cfmValue = "0.001"
+        cfmValue = "0.00000001"
+        __cfmValue = "0.001"
         _erpValue = "default"
-        __erpValue = "0.8"
-        erpValue = "0.5"
+        erpValue = "0.8"
+        __erpValue = "0.5"
         stepType = "dWorldStep"
         dWorldStepFast1MaxIterations = "100"
         >

@@ -22,7 +22,7 @@
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     velocity = 0.0;
-    log->telemetry (LOG_TRACE, "VehSpeed EngineTorque DiffAngularVel");
+    log->telemetry (LOG_TRACE, "VehSpeed EngineTorque DiffAngularVel RRWhAngulVel RLWhAngulVel");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -149,5 +149,5 @@ void Vehicle::stepPhysics ()
     const dReal * bodyVel;
     bodyVel = dBodyGetLinearVel(body->bodyID);
     velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
-    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f", velocity, engine->getTorque(), diff->getAngularVel());
+    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f", velocity, engine->getTorque(), diff->getAngularVel(), wheelMap["RearRight"]->getAngularVel(), wheelMap["RearLeft"]->getAngularVel());
 }

@@ -79,16 +79,15 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dBodySetLinearVel  (wheelID, 0, 0, 0);
     dBodySetAngularVel (wheelID, 0, 0, 0);
 
-    dBodySetMass (wheelID, &tmpMass);
     dGeomSetBody (wheelGeomID, wheelID);
     dBodySetMass (wheelID, &tmpMass);
-    setPosition (Vector3d (0, 0, 0) );
-    setRotation (Vector3d (0, 0, 0) );
+//    setPosition (Vector3d (0, 0, 0) );
+//    setRotation (Vector3d (0, 0, 0) );
     
 //    if(powered) {
 //        dBodySetFiniteRotationMode (wheelID, 1);
 //    }
-    dBodySetFiniteRotationMode (wheelID, 1);
+//    dBodySetFiniteRotationMode (wheelID, 1);
 }
 
 void Wheel::setPosition (Vector3d position)
@@ -132,14 +131,20 @@ void Wheel::stepPhysics ()
         torque = inputJoint->getTorque();
     }
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-//    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
-    angularVel = dJointGetHingeAngleRate (suspJointID);
+    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
+//    angularVel = dJointGetHingeAngleRate (suspJointID);
 
     // calculate angular acceleration      
     angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
     // tire rolling resistance
     torque -= 0.1*angularVel;
+
+    // FIXME prevent explosion from too high angular rates
+    if ( angularVel > 300 || angularVel < -300 )
+    {
+        torque *= -1;
+    }
 
     // accumulate torques on wheel
     dBodyAddRelTorque (wheelID, 0, 0, powered*torque);

@@ -127,7 +127,7 @@ int InputEngine::computeStep (void)
 void InputEngine::processKeyboard ()
 {
     // Processing key presses...
-    if (keyState[SDLK_RETURN] || keyState[SDLK_ESCAPE])
+    if (keyState[SDLK_ESCAPE])
     {
         log->put (LOG_VERBOSE, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
         systemData->disableMainLoop ();

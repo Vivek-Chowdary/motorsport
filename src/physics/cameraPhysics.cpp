@@ -60,7 +60,7 @@ void Camera::stepPhysics ()
         *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         //ogreCamera->yaw (rotX);
         //ogreCamera->pitch (rotY);
-
+/*
         rotX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue();
         rotY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue();
         rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
@@ -78,6 +78,7 @@ void Camera::stepPhysics ()
         *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         //ogreCamera->yaw (rotX);
         //ogreCamera->pitch (rotY);
+*/
     }
 }
 
