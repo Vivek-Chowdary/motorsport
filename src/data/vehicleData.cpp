@@ -27,6 +27,9 @@
 #include "engine.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
+#include "camera.hpp"
+#include "cameraPosition.hpp"
+
 
 int Vehicle::instancesCount = 0;
 
@@ -67,6 +70,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     DOMNode * engineNode = 0;
     DOMNode * wheelListNode = 0;
     DOMNode * suspListNode = 0; //suspension
+    DOMNode * cameraListNode = 0;
 
     if (n)
     {
@@ -162,6 +166,11 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                 log->put (LOG_TRACE, "Found a suspension list.");
                                 suspListNode = n;
                             }
+                            if (nodeName == "cameraList")
+                            {
+                                log->put (LOG_TRACE, "Found a camera list.");
+                                cameraListNode = n;
+                            }
                         }
                     }
                 }
@@ -173,6 +182,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     engine = new Engine (engineNode);
     processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
+    processXmlCameraListNode(cameraListNode);
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
@@ -218,5 +228,72 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                 nodeName.clear();
             }
         }
+    }
+}
+
+void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
+{
+    if (cameraListNode != 0)
+    {
+        DOMNode * cameraNode;
+        for (cameraNode = cameraListNode->getFirstChild (); cameraNode != 0; cameraNode = cameraNode->getNextSibling ())
+        {
+            if (cameraNode->getNodeType () == DOMNode::ELEMENT_NODE)
+            {
+                std::string nodeName;
+                assignXmlString (nodeName, cameraNode->getNodeName());
+                if (nodeName == "camera")
+                {
+                    log->put (LOG_TRACE, "Found a camera position.");
+                    processXmlCameraPositionNode (cameraNode);
+                }
+                nodeName.clear();
+            }
+        }
+    }
+}
+
+void Vehicle::processXmlCameraPositionNode (DOMNode * n)
+{
+    if (n->hasAttributes ())
+    {
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        std::string index = "0";
+        Vector3d position (0, 0, 0);
+        Vector3d target (0, 0, 0);
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "index")
+            {
+                index.clear();
+                assignXmlString (index, attNode->getValue());
+                log->format (LOG_TRACE, "Found the position index: %s", index.c_str());
+            }
+            if (attribute == "position")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue()); 
+                log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                position = stov3d(attribute);
+            }
+            if (attribute == "target")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the target: %s", attribute.c_str());
+                target = stov3d(attribute);
+            }
+            attribute.clear();
+        }
+        CameraPosition * tmpCam = new CameraPosition (position.x, position.y, position.z, target.x, target.y, target.z);
+        cameraPositionMap[index]=tmpCam;
+        //load some cameras FIXME should be taken from file config
+        log->put (LOG_INFO, "Creating a camera");
+        Camera *cameraPointer = new Camera (position.x, position.y, position.z, target.x, target.y, target.z);
+        cameraList.push_back (cameraPointer);
     }
 }

@@ -23,6 +23,7 @@
 #   define VEHICLE_HPP
 #   include <string>
 #   include <map>
+#   include <vector>
 #   include "worldObject.hpp"
 #   include "ode/objects.h"
 
@@ -32,6 +33,8 @@ class Engine;
 class Wheel;
 class Suspension;
 class Vector3d;
+class Camera;
+class CameraPosition;
 
 class Vehicle : public WorldObject
 {
@@ -51,10 +54,14 @@ class Vehicle : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
+    void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
+    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Body * body;
     Engine * engine;
     std::map < std::string, Wheel *> wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
+    std::map < std::string, CameraPosition * > cameraPositionMap;
+    std::vector < Camera * > cameraList;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);

@@ -2,7 +2,7 @@
 <world
     name = "Test World"
     description = "Drive the test car in the testing grounds! Or something :)"
-    useTrackCamera = "true"            a="vehicle, track. #0 by default"
+    useTrackCamera = "false"            a="vehicle, track. #0 by default"
     gravityX = "0.0"
     gravityY = "0.0"
     gravityZ = "-0.000098"      b="Must be fixed, should be -9.8"

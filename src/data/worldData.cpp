@@ -295,9 +295,13 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     for (unsigned int i=0; i< trackList[0]->cameraList.size(); i++)
     {
-        trackList[0]->cameraList[i]->setPositionID( vehicleList[0]->getVehicleID() );
         trackList[0]->cameraList[i]->setPositionID( trackList[0]->trackBodyID );
         trackList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
+    }
+    for (unsigned int i=0; i< vehicleList[0]->cameraList.size(); i++)
+    {
+        vehicleList[0]->cameraList[i]->setPositionID( vehicleList[0]->getVehicleID() );
+        vehicleList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
     }
 
     // set active camera
@@ -308,8 +312,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         setActiveCamera (trackList[0]->cameraList[0]);
     } else {
         //don't use track camera: use vehicle camera
-        //until there's vehicles, let's use 2nd track camera instead (be careful, it might not exist! FIXME :).
-        setActiveCamera (trackList[0]->cameraList[1]);
+        setActiveCamera (vehicleList[0]->cameraList[1]);
     }
 
     // Clean up things, leave others in memory (world properties).
@@ -335,9 +338,19 @@ Camera * World::getActiveCamera (void)
 int World::getActiveTrackCameraIndex()
 {
     int camNumber = 0;
-    while ( activeCamera != trackList[0]->cameraList[camNumber] )
+    while ( activeTrackCamera != trackList[0]->cameraList[camNumber] )
     {
         camNumber++;
-    };
+    }
+    return camNumber;
+}
+
+int World::getActiveVehicleCameraIndex()
+{
+    int camNumber = 0;
+    while ( activeVehicleCamera != vehicleList[0]->cameraList[camNumber] )
+    {
+        camNumber++;
+    }
     return camNumber;
 }

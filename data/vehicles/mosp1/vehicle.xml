@@ -135,4 +135,25 @@
             >
         </wheel>
     </wheelList>
+    <cameraList
+        >
+        <camera
+            index = "0"
+            position = "0 0 0.4"
+            target = "0.1 0 0.4"
+            >
+        </camera>
+        <camera
+            index = "chase"
+            position = "-10 0 2"
+            target = "2 0 0"
+            >
+        </camera>
+        <camera
+            index = "wheel"
+            position = "0.2 -1.2 -0.2"
+            target = "0.4 -1.2 -0.2"
+            >
+        </camera>
+    </cameraList>
 </vehicle>

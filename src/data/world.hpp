@@ -41,6 +41,7 @@ class World : public WorldObject
     std::string description;
     Camera * activeCamera;
     int activeTrackCameraIndex;
+    int activeVehicleCameraIndex;
   public:
     static World *getWorldPointer ();
     void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -53,12 +54,14 @@ class World : public WorldObject
     dJointGroupID jointGroupID;
 
     std::vector < Track * > trackList;
-    //std::vector < WorldObject * > vehicleList;
     std::vector < Vehicle * > vehicleList;
 
     void setActiveCamera (Camera * camera);
     Camera * getActiveCamera (void);
+    Camera * activeTrackCamera;
+    Camera * activeVehicleCamera;
     int getActiveTrackCameraIndex();
+    int getActiveVehicleCameraIndex();
 };
 
 #endif

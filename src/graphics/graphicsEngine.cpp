@@ -20,11 +20,10 @@
 *
 ******************************************************************************/
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include "OgreWin32Window.h"
+#   define WIN32_LEAN_AND_MEAN
+#   include <windows.h>
+#   include "OgreWin32Window.h"
 #endif
-
 #include "graphicsEngine.hpp"
 #include "track.hpp"
 #include "camera.hpp"
@@ -127,7 +126,20 @@ int GraphicsEngine::computeStep (void)
             nextCam = 0;
         }
         World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
+        World::getWorldPointer()->activeTrackCamera = World::getWorldPointer()->trackList[0]->cameraList[nextCam];
         systemData->axisMap[getIDKeyboardKey(SDLK_c)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
+    }
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
+    {
+        int nextCam = World::getWorldPointer()->getActiveVehicleCameraIndex()+1;
+        int maxCams = World::getWorldPointer()->vehicleList[0]->cameraList.size();
+        if (nextCam >= maxCams )
+        {
+            nextCam = 0;
+        }
+        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->vehicleList[0]->cameraList[nextCam]);
+        World::getWorldPointer()->activeVehicleCamera = World::getWorldPointer()->vehicleList[0]->cameraList[nextCam];
+        systemData->axisMap[getIDKeyboardKey(SDLK_v)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
@@ -148,6 +160,11 @@ int GraphicsEngine::computeStep (void)
     for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
     {
         World::getWorldPointer ()->trackList[0]->cameraList[currentCamera]->stepGraphics ();
+    }
+    numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
+    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    {
+        World::getWorldPointer ()->vehicleList[0]->cameraList[currentCamera]->stepGraphics ();
     }
 
     // Let the listener frames be started and ended: they are needed for particle systems.
