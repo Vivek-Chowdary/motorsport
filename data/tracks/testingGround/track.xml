@@ -21,7 +21,7 @@
         numberOfCubes = "20"    comment="KISS, so you can't use other parts or position them manually."
         >
     </parts>
-    <vehiclePositionList
+    <vehiclePositionList        comment="Rotation values are euler angles!"
         >
         <vehicle
             index = "center"
@@ -58,8 +58,8 @@
         >
         <camera
             index = "low"
-            posX = "10.0"
-            posY = "10.0"
+            posX = "-20.0"
+            posY = "-25.0"
             posZ = "2.0"
             destX = "0.0"
             destY = "0.0"

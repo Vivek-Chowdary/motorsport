@@ -109,11 +109,10 @@ void Body::setPosition (double posX, double posY, double posZ)
 
 void Body::setRotation (double rotX, double rotY, double rotZ)
 {
-    dReal newRot[3];
-    newRot[0] = rotX;
-    newRot[1] = rotY;
-    newRot[2] = rotZ;
-    dBodySetRotation (bodyID, newRot);
+    dMatrix3 rot;
+    dRFromEulerAngles (rot, rotX, rotY, rotZ);
+    //dRFromEulerAngles (rot, phi, theta, psi);
+    dBodySetRotation (bodyID, rot);
 }
 
 void Body::stopPhysics ()
