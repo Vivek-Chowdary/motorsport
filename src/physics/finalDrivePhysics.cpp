@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "diff.hpp"
+#include "finalDrive.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "ode.h"
@@ -16,12 +16,14 @@
 #include "SDL/SDL_keysym.h"
 
 
-void Diff::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
+void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    torqueTransfer = 0.0;
-    revTorqueTransfer = 0.0;
-    angularVel = 0.0;
-    revAngularVel = 0.0;
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
+    inputAngularVel = 0.0;
+    outputAngularVel = 0.0;
+    prevAngularVel = 0.0;
+    angularAcc = 0.0;
     inertia = 0.1;
     friction = 0.001;
     
@@ -60,68 +62,49 @@ void Diff::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             attribute.clear();
         }
     }
-    // create ODE rigid body
-    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
-
-    // initialize inertia
-    dMass tmpMass;
-    dMassSetParameters (&tmpMass, 0, 0, 0, 0, inertia, 1, 1, 0, 0, 0);
-    dBodySetMass (bodyID, &tmpMass);
-
-    // initialize position
-    dBodySetPosition (bodyID, 0, 0, 0);
-
-    // initialize rotation
-    dMatrix3 rot;
-    dRFromEulerAngles (rot, 0, 0, 0);
-    dBodySetRotation (bodyID, rot);
-
-    // set body for high speed rotation on x-axis 
-    dBodySetFiniteRotationMode (bodyID, 1);
-    dBodySetFiniteRotationAxis (bodyID, 1, 0, 0);
 }
 
-void Diff::stopPhysics ()
+void FinalDrive::stopPhysics ()
 {
-    dBodyDestroy (bodyID);
 }
 
-void Diff::stepPhysics ()
+void FinalDrive::stepPhysics ()
 {
-    double dtoverJe;
+    double dt;
+    double torqueSum;
+    
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
-    prevAngularVel = angularVel;
+    prevAngularVel = inputAngularVel;
+
+//    inputTorqueTransfer += inputJoint->getOutputTorque();
+//    outputTorqueTransfer += outputJoint->getInputTorque()/finalDriveRatio;
+
+    torqueSum = inputTorqueTransfer + outputTorqueTransfer/finalDriveRatio;
+    
+    angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
+    
+    // improved Euler ODE solve
+    inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
+
+    outputAngularVel = inputAngularVel/finalDriveRatio;
+
+/*    double dtoverJe;
+
+    prevAngularVel = inputAngularVel;
 
     dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
 
-    torqueTransfer = inputJoint->getTorque();
-    revTorqueTransfer = (outputJoint->getRevTorque() + outputJoint2->getRevTorque())/finalDriveRatio;
+    inputTorqueTransfer = inputJoint->getOutputTorque();
+    outputTorqueTransfer = (outputJoint->getInputTorque() + outputJoint2->getInputTorque())/finalDriveRatio;
 
-    angularVel = (dtoverJe*(torqueTransfer-revTorqueTransfer)+prevAngularVel)/(1+(dtoverJe*friction));
-
-
-
-    // get current angular velocity
-//    const dReal * angularVelVector;
-//    angularVelVector = dBodyGetAngularVel (bodyID);
-//    angularVel = angularVelVector[1];    
+    inputAngularVel = (dtoverJe*(outputTorqueTransfer+inputTorqueTransfer)+prevAngularVel)/(1+(dtoverJe*friction));
 
     // calculate angular acceleration (for reference)
-    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
-    revAngularVel = angularVel/finalDriveRatio;
-
-    // subtract friction torque
-//    double torque;
-//    torque = angularVel*friction;
-//    dBodyAddRelTorque (bodyID, 0, 0, inputDrive->getTorque()-torque);
-
-//        torqueTransfer = 0.001*(inputDrive->getAngularVel()-outputDrive->getAngularVel());
-//        revTorqueTransfer = 0.001*(inputDrive->getAngularVel()-outputDrive->getAngularVel());
-//        angularVel = outputDrive->getAngularVel();
-    log->format(LOG_TRACE, "angVel=%f angAcc=%f torque=%f", angularVel, angularAcc, torqueTransfer);
-}
-
-double Diff::getAngularVel()
-{
-    return angularVel;
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    outputAngularVel = inputAngularVel/finalDriveRatio;
+*/
+    log->format(LOG_TRACE, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);
+    inputTorqueTransfer = 0;
+    outputTorqueTransfer = 0;
 }

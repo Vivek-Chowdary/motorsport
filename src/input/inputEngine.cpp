@@ -89,7 +89,7 @@ InputEngine::InputEngine ()
     }
     log->format (LOG_INFO, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
 
-    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
+//    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
 int InputEngine::computeStep (void)
@@ -188,7 +188,7 @@ int InputEngine::computeStep (void)
     }
     
     
-    log->telemetry (LOG_TRACE, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
+/*    log->telemetry (LOG_TRACE, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue(),
@@ -201,8 +201,8 @@ int InputEngine::computeStep (void)
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,3)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,4)]->getValue(),
                                    SystemData::getSystemDataPointer()->axisMap[getIDJoyButton(0,5)]->getValue());
- //   log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
-
+    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
+*/
     return (0);
 }
 

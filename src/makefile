@@ -57,7 +57,7 @@ DEFINES := $(PLATFORM) $(TYPE)
 TARGET := motorsport$(EXE_EXT)
 LD := g++
 CC := gcc
-CXX := g++
+CXX := ccache g++
 CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
 CXXFLAGS := $(CFLAGS) -time
 ###########################################
@@ -94,6 +94,7 @@ PLATFORM_INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/PlatformManager_Win32 \
 	$(BASE_INCLUDE_DIR)/ReferenceApplication/Common \
 	$(BASE_INCLUDE_DIR)/ReferenceApplication/ReferenceAppLayer \
+	$(BASE_INCLUDE_DIR)/RenderSystems \
 	$(BASE_INCLUDE_DIR)/PlugIns/BSPSceneManager \
 	$(BASE_INCLUDE_DIR)/PlugIns/CgProgramManager \
 	$(BASE_INCLUDE_DIR)/PlugIns/FileSystem \
@@ -236,13 +237,13 @@ SOURCES := \
 	data/suspensionData.cpp \
 	physics/suspensionPhysics.cpp \
 	physics/cameraPhysics.cpp \
-        physics/clutchPhysics.cpp \
+        physics/driveJointPhysics.cpp \
         physics/gearboxPhysics.cpp \
-        data/clutchData.cpp \
+        data/driveJointData.cpp \
         data/gearboxData.cpp \
         tools/vector3d.cpp \
-        physics/diffPhysics.cpp \
-        data/diffData.cpp \
+        physics/finalDrivePhysics.cpp \
+        data/finalDriveData.cpp \
 	main.cpp
 ###########################################
 

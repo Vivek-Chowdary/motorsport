@@ -7,26 +7,27 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "diff.hpp"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
+#ifndef FINALDRIVE_HPP
+#   define FINALDRIVE_HPP
+#   include "driveMass.hpp"
+#   include "data/xercesc_fwd.hpp"
 
-Diff::Diff (XERCES_CPP_NAMESPACE::DOMNode * n)
+class FinalDrive : public DriveMass
 {
-    log = new LogEngine (LOG_TRACE, "DFF");
-    log->put (LOG_INFO, "Starting to parse a differential node");
-    processXmlRootNode (n);
-}
+  private:
+    double finalDriveRatio;
+    DriveJoint *outputJoint2; 
 
-Diff::~Diff ()
-{
-    stopPhysics ();
-    delete log;
-}
+  public:
 
+    // data
+    FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~FinalDrive ();
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
-void Diff::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-
+    // physics
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stepPhysics ();
+    void stopPhysics ();
+};
+#endif

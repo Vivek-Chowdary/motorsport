@@ -10,7 +10,7 @@
 #ifndef WHEEL_HPP
 #   define WHEEL_HPP
 #   include "ode/objects.h"
-#   include "drive.hpp"
+#   include "driveMass.hpp"
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
 #   include <string>
@@ -22,7 +22,7 @@ namespace Ogre {
   class SceneNode;
 }
 
-class Wheel : public Drive
+class Wheel : public DriveMass
 {
   private:
     // data
@@ -59,8 +59,7 @@ class Wheel : public Drive
     Vector3d getPosition ();
     void setRotation (Vector3d rotation);
     Vector3d getRotation ();
-    void addTorque (double torque);
-    double getAngularVel();
+    double getInputAngularVel();
     
     // graphics
     void stepGraphics ();

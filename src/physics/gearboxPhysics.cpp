@@ -18,12 +18,13 @@
 
 void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    torqueTransfer = 0.0;
-    revTorqueTransfer = 0.0;
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
     friction = 0.01;
     inertia = 1.0;
-    angularVel = 0.0;
-    revAngularVel = 0.0;
+    prevAngularVel = 0.0;
+    inputAngularVel = 0.0;
+    outputAngularVel = 0.0;
     angularAcc = 0.0;
     if (n->hasAttributes ())
     {
@@ -66,18 +67,39 @@ void Gearbox::stopPhysics ()
 
 void Gearbox::stepPhysics ()
 {
-    double dtOverJe;
-    prevAngularVel = angularVel;
+    double dt;
+    double torqueSum;
+    
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+
+    prevAngularVel = inputAngularVel;
+
+//    inputTorqueTransfer = inputJoint->getOutputTorque();
+//    outputTorqueTransfer = outputJoint->getInputTorque()/gearRatio;
+
+    torqueSum = inputTorqueTransfer + outputTorqueTransfer/gearRatio;
+    
+    angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
+    
+    // improved Euler ODE solve
+    inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
+
+    outputAngularVel = inputAngularVel/gearRatio;
+    
+/*    double dtOverJe;
+    prevAngularVel = inputAngularVel;
 
     dtOverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
 
-    torqueTransfer = inputJoint->getTorque();
-    revTorqueTransfer = outputJoint->getRevTorque()/gearRatio;
+    inputTorqueTransfer = inputJoint->getOutputTorque();
+    outputTorqueTransfer = outputJoint->getInputTorque()/gearRatio;
 
-    angularVel = (dtOverJe*(inputJoint->getTorque()-outputJoint->getRevTorque())+prevAngularVel)/(1+(dtOverJe*friction));
-    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
-    revAngularVel = angularVel/gearRatio;
-
-    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", torqueTransfer, revTorqueTransfer, angularVel, revAngularVel);
+    inputAngularVel = (dtOverJe*(inputTorqueTransfer+outputTorqueTransfer)+prevAngularVel)/(1+(dtOverJe*friction));
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    outputAngularVel = inputAngularVel/gearRatio;
+*/
+    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer, inputAngularVel, outputAngularVel);
+    inputTorqueTransfer = 0;
+    outputTorqueTransfer = 0;
 }
 

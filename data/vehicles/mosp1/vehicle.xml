@@ -30,17 +30,15 @@
         >
     </brakePedal>
     <engine
-        _torqueLinearMultiplier = "246"
-        torqueLinearMultiplier = "446"
-        engineInertia = "0.2"
+        torqueLinearMultiplier = "246"
+        engineInertia = "0.4"
         engineFriction = "0.1"
         >
     </engine>
     <clutch
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
-        _maxTorqueTransfer = "260"
-        maxTorqueTransfer = "460"
+        maxTorqueTransfer = "260"
         >
     </clutch>
     <shiftUpPaddle
@@ -53,7 +51,7 @@
     </shiftDownPaddle>
     <gearbox
         gearboxFriction = "0.01"
-        gearboxInertia = "0.1"
+        gearboxInertia = "0.2"
         gear-1Ratio = "-4.0"
         gear1Ratio = "3.71"
         gear2Ratio = "2.24"
@@ -64,7 +62,7 @@
         >
     </gearbox>
     <diff
-        diffInertia = "0.01"
+        diffInertia = "0.1"
         diffFriction = "0.001"
         finalDriveRatio = "3.6"
         >

@@ -20,9 +20,9 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     torqueLinearMultiplier = 0.0001;
     friction = 0.1;
     inertia = 1.0;
-    angularVel = 0.0;
+    inputAngularVel = 0.0;
     prevAngularVel = 0.0;
-    revAngularVel = 0.0;
+    outputAngularVel = 0.0;
     angularAcc = 0.0;
     if (n->hasAttributes ())
     {
@@ -67,11 +67,9 @@ void Engine::stopPhysics ()
 
 void Engine::stepPhysics ()
 {
-    double dtoverJe;
+//    double dtoverJe;
     double engineTorque;
     
-    prevAngularVel = angularVel;
-  
     double gas = 0;
     // TODO: move this value inversion to axis filters!
     gas = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue();
@@ -101,24 +99,39 @@ void Engine::stepPhysics ()
     engineTorque += torqueLinearMultiplier * gas;
     engineTorque -= torqueLinearMultiplier * brake;
     
-//    angularVel = (engineTorque - pOutTorque->getRevTorque() - engineInertia*rotationalAcceleration)/friction;        
-    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
+    double dt;
+    double torqueSum;
+    
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
-//    rotationalAcceleration = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000;
-//    torque = engineTorque - inertia*rotationalAcceleration - friction*angularVel;
-    angularVel = (dtoverJe*(engineTorque-outputJoint->getRevTorque())+prevAngularVel)/(1+(dtoverJe*friction));
-    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
-    revAngularVel = angularVel;
-//    torqueTransfer = engineTorque - inertia*angularAcc - friction*angularVel;
-//  rotationalAcceleration = (engineTorque-pOutTorque->getTorque()-(friction*angularVel))/inertia;
+    prevAngularVel = inputAngularVel;
 
-//    angularVel = prevAngularVel+rotationalAcceleration*SystemData::getSystemDataPointer()->physicsTimeStep/1000;
+//    inputTorqueTransfer = inputJoint->getOutputTorque();
+//    outputTorqueTransfer += outputJoint->getInputTorque();
 
-    log->format(LOG_TRACE, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, angularVel);
+    torqueSum = outputTorqueTransfer + engineTorque;
+    
+    angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
+    
+    // improved Euler ODE solve
+    inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
+
+    outputAngularVel = inputAngularVel;
+
+
+/*    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
+
+    inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    outputAngularVel = inputAngularVel;
+*/
+    log->format(LOG_TRACE, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
+    inputTorqueTransfer = 0;
+    outputTorqueTransfer = 0;
 }
 
-double Engine::getTorque()
+double Engine::getOutputTorque()
 {
     return telemetryTorque;
 }

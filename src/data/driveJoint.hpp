@@ -10,24 +10,29 @@
 #ifndef DRIVEJOINT_HPP
 #   define DRIVEJOINT_HPP
 #   include "ode/objects.h"
-#   include "drive.hpp"
+#   include "driveMass.hpp"
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
 
-class Drive;
+class DriveMass;
 
 class DriveJoint : public WorldObject
 {
   protected:
     // data
 //    static int instancesCount;
-    double angularVel;
-    double revAngularVel;
+    double inputAngularVel;
+    double outputAngularVel;
     double ratio;
-    double torqueTransfer;
-    double revTorqueTransfer;
-    Drive *inputDrive;
-    Drive *outputDrive;
+    double outputTorqueTransfer;
+    double inputTorqueTransfer;
+    double relAngle;       // delta angle (radians) between the connected masses
+                           //     accounting for the gear ratio 
+    double prevRelAngle;
+    double relAngularVel;
+    double prevRelAngularVel;
+    DriveMass *inputDrive;
+    DriveMass *outputDrive;
     
     // physics
     virtual void stopPhysics () = 0;
@@ -40,10 +45,91 @@ class DriveJoint : public WorldObject
     // physics
     virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
     virtual void stepPhysics () = 0;
-    double getTorque ()                     { return torqueTransfer; } ;
-    double getRevTorque ()                  { return revTorqueTransfer; } ;
-    void setOutputPointer (Drive *output)   { outputDrive = output; } ;
-    void setInputPointer (Drive *input)     { inputDrive = input; } ;
+    double getOutputTorque ()               { return outputTorqueTransfer; } ;
+    double getInputTorque ()                { return inputTorqueTransfer; } ;
+    double getRelAngle ()                   { return relAngle; } ;
+    void setOutputPointer (DriveMass *output)   { outputDrive = output; } ;
+    void setInputPointer (DriveMass *input)     { inputDrive = input; } ;
+};
+
+class Clutch : public DriveJoint
+{
+  private:
+    // data
+    static int instancesCount;
+
+    // physics
+    double coeffStaticFriction;
+    double coeffDynamicFriction;
+    double maxTorqueTransfer;
+    double lockedParam;
+    bool locked;
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
+  public:
+    // data
+    Clutch (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Clutch ();
+    ~Clutch ();
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    // physics
+    void stepPhysics ();
+};
+
+class Gear : public DriveJoint
+{
+  private:
+    // data
+    static int instancesCount;
+
+    // physics
+    double ratio;
+    double springConstant;
+    double dampConstant;
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
+
+  public:
+    // data
+    Gear (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Gear ();
+    ~Gear ();
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    // physics
+    void stepPhysics ();
+};
+
+class LSD : public DriveJoint
+{
+  private:
+    // data
+    static int instancesCount;
+    DriveMass *outputDrive2;
+
+    // physics
+    double outputsRelAngle;
+    double prevOutputsRelAngle;
+    double outputsRelAngularVel;
+    double prevOutputsRelAngularVel;
+    double ratio;
+    double springConstant;
+    double dampConstant;
+    double limitedSlipClutchFriction;
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void stopPhysics ();
+
+  public:
+    // data
+    LSD (XERCES_CPP_NAMESPACE::DOMNode * n);
+    LSD ();
+    ~LSD ();
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void setOutputPointer2 (DriveMass *output)   { outputDrive2 = output; } ;
+    
+    // physics
+    void stepPhysics ();
 };
 
 #endif

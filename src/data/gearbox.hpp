@@ -9,11 +9,11 @@
 
 #ifndef GEARBOX_HPP
 #   define GEARBOX_HPP
-#   include "drive.hpp"
+#   include "driveMass.hpp"
 #   include "wheel.hpp"
 #   include "data/xercesc_fwd.hpp"
 
-class Gearbox : public Drive
+class Gearbox : public DriveMass
 {
   private:
     // data

@@ -16,41 +16,36 @@
 
 class DriveJoint;
 
-class Drive : public WorldObject
+class DriveMass : public WorldObject
 {
   protected:
 //    static int instancesCount;
     double inertia;
     double friction;
-    double angularVel;
+    double inputAngularVel;
     double prevAngularVel;
     double angularAcc;
-    double revAngularVel;
-    double torqueTransfer;
-    double revTorqueTransfer;
-    DriveJoint *inputJoint;
-    DriveJoint *outputJoint;
-    dBodyID bodyID;
+    double outputAngularVel;
+    double outputTorqueTransfer;
+    double inputTorqueTransfer;
     
   public:
 
     // data
-    Drive () { } ;
-    ~Drive () { } ;
+    DriveMass () { } ;
+    ~DriveMass () { } ;
     virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
 
     // physics
     virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
     virtual void stepPhysics () = 0;
     virtual void stopPhysics () = 0;
-    dBodyID getBodyID ()                    { return bodyID; } ;
-    double getTorque ()                     { return torqueTransfer; } ;
-    double getRevTorque ()                  { return revTorqueTransfer; } ;
-    double getAngularVel ()                 { return angularVel; } ;
-    double getRevAngularVel ()              { return revAngularVel; } ;
-    void setOutputPointer (DriveJoint *output)   { outputJoint = output; } ;
-    void setInputPointer (DriveJoint *input)     { inputJoint = input; } ;
+    double getInputTorque ()             { return inputTorqueTransfer; } ;
+    double getOutputTorque ()            { return outputTorqueTransfer; } ;
+    double getInputAngularVel ()         { return inputAngularVel; } ;
+    double getOutputAngularVel ()        { return outputAngularVel; } ;
+    void addInputTorque (double inputTorque)    { inputTorqueTransfer += inputTorque; } ;
+    void addOutputTorque (double outputTorque)  { outputTorqueTransfer += outputTorque; } ;
 };
 
 #endif
-

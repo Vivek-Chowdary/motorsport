@@ -13,16 +13,16 @@
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
 #include "engine.hpp"
-#include "clutch.hpp"
+#include "driveJoint.hpp"
 #include "gearbox.hpp"
-#include "diff.hpp"
+#include "finalDrive.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     velocity = 0.0;
-    //log->telemetry (LOG_TRACE, "VehSpeed EngineTorque DiffAngularVel RRWhAngulVel RLWhAngulVel VehPosition");
+    log->telemetry (LOG_TRACE, "VehSpeed EngineTorque DiffAngularVel RRWhAngulVel RLWhAngulVel VehPosition");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -127,13 +127,12 @@ void Vehicle::stepPhysics ()
     // step torque transfer components first
     clutch->stepPhysics();
     transfer->stepPhysics();
-    transferW1->stepPhysics();
-    transferW2->stepPhysics();
+    rearDiff->stepPhysics();
         
     // step rigid bodies    
     engine->stepPhysics();
     gearbox->stepPhysics();
-    diff->stepPhysics();
+    finalDrive->stepPhysics();
     body->stepPhysics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
@@ -149,5 +148,5 @@ void Vehicle::stepPhysics ()
     const dReal * bodyVel;
     bodyVel = dBodyGetLinearVel(body->bodyID);
     velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
-    //log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f (%12.8f,%12.8f,%12.8f)", velocity, engine->getTorque(), diff->getAngularVel(), wheelMap["RearRight"]->getAngularVel(), wheelMap["RearLeft"]->getAngularVel(), getPosition().x, getPosition().y, getPosition().z);
+    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f (%12.8f,%12.8f,%12.8f)", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), getPosition().x, getPosition().y, getPosition().z);
 }

@@ -158,7 +158,7 @@ void recordVideoFrames ()
 {
     static unsigned int time = 0;
     int takeShot = 0;
-    if ( time >= SystemData::getSystemDataPointer()->videoRecordTimestep )
+    if ( (int)time >= SystemData::getSystemDataPointer()->videoRecordTimestep )
     {
         takeShot++;
         time -= SystemData::getSystemDataPointer()->physicsTimeStep;

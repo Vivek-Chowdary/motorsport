@@ -9,11 +9,11 @@
 
 #ifndef ENGINE_HPP
 #   define ENGINE_HPP
-#   include "drive.hpp"
+#   include "driveMass.hpp"
 #   include "driveJoint.hpp"
 #   include "data/xercesc_fwd.hpp"
 
-class Engine : public Drive
+class Engine : public DriveMass
 {
   private:
     // data
@@ -31,6 +31,6 @@ class Engine : public Drive
 
     // physics
     void stepPhysics ();
-    double getTorque();
+    double getOutputTorque();
 };
 #endif

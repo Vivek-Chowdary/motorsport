@@ -20,10 +20,15 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double radius = 0.0;
     double width = 0.0;
     powered = 0;
-    angularVel = 0.0;
+    inputAngularVel = 0.0;
+    outputAngularVel = 0.0;
     prevAngularVel = 0.0;
     angularAcc = 0.0;
+    inputTorqueTransfer = 0.0;
+    outputTorqueTransfer = 0.0;
     torque = 0.0;
+    inertia = 1.0;
+    friction = 0.1;
      
     if (n->hasAttributes ())
     {
@@ -122,43 +127,41 @@ void Wheel::stopPhysics ()
 
 void Wheel::stepPhysics ()
 {
-    prevAngularVel = angularVel;
+    prevAngularVel = inputAngularVel;
 
     if(powered!=0){
 //        dJointGetHingeAxis (suspJointID, wheelAxisVector);
 //        dBodySetFiniteRotationAxis (wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
 //        log->format(LOG_TRACE, "%s:FRAx=%f FRAy=%f FRAz=%f",index.c_str(), wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
-        torque = inputJoint->getTorque();
+        torque = inputTorqueTransfer;
     }
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
-//    angularVel = dJointGetHingeAngleRate (suspJointID);
+    inputAngularVel = dJointGetHinge2Angle2Rate (suspJointID)*-1;
+//    inputAngularVel = dJointGetHingeAngleRate (suspJointID);
 
     // calculate angular acceleration      
-    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
 
     // tire rolling resistance
-    torque -= 0.1*angularVel;
+    //torque -= 0.1*inputAngularVel;
 
     // FIXME prevent explosion from too high angular rates
-    if ( angularVel > 300 || angularVel < -300 )
-    {
-        torque *= -1;
-    }
+ //   if ( inputAngularVel > 300 || inputAngularVel < -300 )
+ //   {
+ //       torque *= -1;
+ //   }
 
     // accumulate torques on wheel
     dBodyAddRelTorque (wheelID, 0, 0, powered*torque);
     
-    log->format(LOG_TRACE, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), angularVel, angularAcc, torque);
+    log->format(LOG_TRACE, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), inputAngularVel, angularAcc, torque);
 
     torque = 0;
+    inputTorqueTransfer = 0;
+    outputTorqueTransfer = 0;
 }
 
-void Wheel::addTorque(double torque)
+double Wheel::getInputAngularVel()
 {
-}
-
-double Wheel::getAngularVel()
-{
-    return angularVel;
+    return inputAngularVel;
 }
