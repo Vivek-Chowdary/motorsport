@@ -31,4 +31,17 @@
 #    include "graphicsEngine.hpp"   //displays the virtual and system data (sim+gui)
 #    include "physicsEngine.hpp"    //calculates the physics of the world data
 #    include "guiEngine.hpp"    //displays all the user interface on screen
+
+struct MainData;
+
+void sdl_stop ( void );
+void sdl_start ( LogEngine * log );
+int processMainConfigFile ( DOMNode * n, void * data);
+
+struct MainData
+{
+    LOG_LEVEL localLogLevel;
+    char * localLogName;
+};
+
 #endif
