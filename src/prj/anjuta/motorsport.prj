@@ -1,4 +1,4 @@
-# Anjuta Version 1.0.2 
+# Anjuta Version 1.2.0 
 Compatibility Level: 1 
 
 <PROJECT_DESCRIPTION_START>
@@ -22,7 +22,7 @@ The goal of Motorsport is to become the most realistic simulation of wheeled veh
 
 props.file.type=project
 
-anjuta.version=1.0.2
+anjuta.version=1.2.0
 anjuta.compatibility.level=1
 
 project.name=motorsport
@@ -32,6 +32,7 @@ project.version=BaseCode
 project.author=stenyak
 project.source.target=motorsport
 project.has.gettext=0
+project.gui.command=
 project.programming.language=C++
 project.excluded.modules=intl
 
@@ -48,27 +49,27 @@ project.menu.need.terminal=0
 
 project.configure.options=
 anjuta.program.arguments=
+preferences.build.option.jobs=0
+preferences.build.option.silent=0
+preferences.build.option.autosave=1
+preferences.make=make
+preferences.build.option.keep.going=1
+preferences.build.option.warn.undef=1
+preferences.autoformat.custom.style= -i8 -sc -bli0 -bl0 -cbi0 -ss
+preferences.indent.opening=0
+preferences.autoformat.disable=0
 preferences.indent.automatic=1
 preferences.use.tabs=0
-preferences.indent.opening=0
-preferences.indent.closing=0
-preferences.tabsize=4
 preferences.indent.size=4
-preferences.autoformat.style=Style of Kangleipak
-preferences.autoformat.custom.style= -i8 -sc -bli0 -bl0 -cbi0 -ss
-preferences.autoformat.disable=0
-preferences.debugger.command=gdb
-preferences.ui.designer=glade '$(project.name).glade'
-preferences.help.browser=devhelp -s '$(current.file.selection)'
+preferences.tabsize=4
+preferences.indent.closing=0
 
 module.include.name=include
 module.include.type=
-module.include.expanded=0
 module.include.files=
 
 module.source.name=.
 module.source.type=
-module.source.expanded=1
 module.source.files=\
 	../../main.cpp\
 	../../log/logEngine.cpp\
@@ -90,25 +91,20 @@ module.source.files=\
 
 module.pixmap.name=pixmaps
 module.pixmap.type=
-module.pixmap.expanded=0
 module.pixmap.files=
 
 module.data.name=data
 module.data.type=
-module.data.expanded=0
 module.data.files=
 
 module.help.name=help
 module.help.type=
-module.help.expanded=0
 module.help.files=
 
 module.doc.name=doc
 module.doc.type=
-module.doc.expanded=0
 module.doc.files=
 
-module.po.expanded=0
 module.po.files=
 
 compiler.options.supports=
@@ -117,11 +113,12 @@ compiler.options.library.paths=
 compiler.options.libraries=
 compiler.options.libraries.selected=
 compiler.options.defines=
+compiler.options.defines.selected=
 compiler.options.warning.buttons=0 0 1 1 0 1 0 0 0 0 0 0 0 1 0 0 
 compiler.options.optimize.buttons=1 0 0 0 
 compiler.options.other.buttons=1 0 
 compiler.options.other.c.flags=
 compiler.options.other.l.flags=
 compiler.options.other.l.libs=
-project.source.paths=
 
+project.src.paths=
