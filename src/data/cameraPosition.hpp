@@ -18,7 +18,6 @@ class CameraPosition
     Vector3d destination;
   public:
     CameraPosition (const Vector3d & position, const Vector3d & destination);
-    CameraPosition (double posX, double posY, double posZ, double destX, double destY, double destZ);
     ~CameraPosition ();
     Vector3d getPosition();
     Vector3d getDestination();

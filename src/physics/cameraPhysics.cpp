@@ -17,12 +17,12 @@
 #include "SDL/SDL_keysym.h"
 #include "vector3d.hpp"
 
-void Camera::startPhysics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
+void Camera::startPhysics (Vector3d position, Vector3d lookAt)
 {
     positionID = 0;
     targetID = 0;
-    positionOffset = new Vector3d (posX, posY, posZ);
-    targetOffset = new Vector3d (lookAtX, lookAtY, lookAtZ);
+    positionOffset = new Vector3d (position);
+    targetOffset = new Vector3d (lookAt);
 }
 
 void Camera::stopPhysics ()

@@ -15,16 +15,6 @@ CameraPosition::CameraPosition (const Vector3d & position, const Vector3d & dest
     this->destination = destination;
 }
 
-CameraPosition::CameraPosition (double posX, double posY, double posZ, double destX, double destY, double destZ)
-{
-    position.x = posX;
-    position.y = posY;
-    position.z = posZ;
-    destination.x = destX;
-    destination.y = destY;
-    destination.z = destZ;
-}
-
 CameraPosition::~CameraPosition ()
 {
     //empty

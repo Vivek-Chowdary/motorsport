@@ -14,12 +14,12 @@
 
 int Camera::instancesCount = 0;
 
-Camera::Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
+Camera::Camera (Vector3d position, Vector3d lookAt)
 {
     instancesCount ++;
     
     startGraphics ();
-    startPhysics (posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+    startPhysics (position, lookAt);
     startInput ();
 }
 

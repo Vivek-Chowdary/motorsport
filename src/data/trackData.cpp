@@ -395,12 +395,12 @@ void Track::processXmlCameraPositionNode (DOMNode * n)
             }
             attribute.clear();
         }
-        CameraPosition * tmpCam = new CameraPosition (position.x, position.y, position.z, target.x, target.y, target.z);
+        CameraPosition * tmpCam = new CameraPosition (position, target);
         cameraPositionMap[index]=tmpCam;
         
         //load some cameras FIXME should be taken from file config
         log->put (LOG_INFO, "Creating a camera");
-        Camera *cameraPointer = new Camera (position.x, position.y, position.z, target.x, target.y, target.z);
+        Camera *cameraPointer = new Camera (position, target);
         cameraList.push_back (cameraPointer);
     }
 }
