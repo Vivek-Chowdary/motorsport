@@ -64,6 +64,7 @@ void Clutch::stopPhysics ()
 
 void Clutch::stepPhysics ()
 {
+  if(enabled) {
     double clutch = 0;
     clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
     if (clutch == 0) {
@@ -95,6 +96,7 @@ void Clutch::stepPhysics ()
 
  //   rotationalVelocity = pOutTorque->getInputAngularVel();
     log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
+  }
 }
 
 
@@ -149,6 +151,7 @@ void Gear::stopPhysics ()
 
 void Gear::stepPhysics ()
 {
+  if(enabled) {
     double dt;
     dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
     prevRelAngle = relAngle;
@@ -169,6 +172,10 @@ void Gear::stepPhysics ()
     outputDrive->addInputTorque(outputTorqueTransfer);   
              
     log->format(LOG_TRACE, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+  }
+  else {
+    relAngle = 0;
+  }
 }
 
 void LSD::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -222,6 +229,7 @@ void LSD::stopPhysics ()
 
 void LSD::stepPhysics ()
 {
+  if(enabled) {
     double dt;
     dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
     prevRelAngle = relAngle;
@@ -243,4 +251,8 @@ void LSD::stepPhysics ()
     outputDrive2->addInputTorque(outputTorqueTransfer/2);   
              
     log->format(LOG_TRACE, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+  }
+  else {
+    relAngle = 0;
+  }
 }

@@ -21,6 +21,7 @@ class Engine;
 class Clutch;
 class Gear;
 class Gearbox;
+class GearboxGear;
 class FinalDrive;
 class LSD;
 class Wheel;
@@ -40,7 +41,11 @@ class Vehicle : public WorldObject
     std::string author;
     std::string contact;
     std::string license;
+
     double velocity;
+    bool upKeyReset;
+    bool downKeyReset;
+
 
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);

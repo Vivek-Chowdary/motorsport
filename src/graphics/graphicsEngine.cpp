@@ -408,13 +408,13 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 //        "\nPlugin=RenderSystem_Direct3D9"
 #endif
         "\nPlugin=Plugin_FileSystem"
-        "\nPlugin=Plugin_ParticleFX"
-        "\nPlugin=Plugin_BSPSceneManager"
-        "\nPlugin=Plugin_OctreeSceneManager"
+//        "\nPlugin=Plugin_ParticleFX"
+//        "\nPlugin=Plugin_BSPSceneManager"
+//        "\nPlugin=Plugin_OctreeSceneManager"
         "\nPlugin=Plugin_GuiElements"
-        "\nPlugin=Plugin_NatureSceneManager"
-        "\nPlugin=Plugin_CgProgramManager",
-        ogrePluginsDir.c_str());
+//        "\nPlugin=Plugin_NatureSceneManager"
+//        "\nPlugin=Plugin_CgProgramManager"
+        ,ogrePluginsDir.c_str());
     log->put (LOG_INFO, "Closing temporary ogre plugins config file (plugins.cfg)");
     fclose(ogrePluginsConfig);
 

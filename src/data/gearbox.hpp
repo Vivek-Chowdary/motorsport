@@ -9,17 +9,41 @@
 
 #ifndef GEARBOX_HPP
 #   define GEARBOX_HPP
+#   include <string>
+#   include <map>
 #   include "driveMass.hpp"
 #   include "wheel.hpp"
 #   include "data/xercesc_fwd.hpp"
 
-class Gearbox : public DriveMass
+class GearboxGear : public WorldObject
+{
+  public:
+    double ratio;   
+    bool enabled;
+    int index;
+    std::string label;
+
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
+    GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~GearboxGear () { } ;
+
+    int getIndex() { return index; } ;
+    double getRatio() { return ratio; } ;
+    bool isEnabled() { return enabled; } ;
+    
+}; 
+
+class Gearbox : public DriveMass 
 {
   private:
     // data
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlGearListNode(XERCES_CPP_NAMESPACE::DOMNode * GearListNode);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
+    std::map < int, GearboxGear *> gearMap;
+    int currentGear;
 
     // physics
     double gearRatio;
@@ -27,8 +51,16 @@ class Gearbox : public DriveMass
     // data
     Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Gearbox ();
-
+    void setGear (int inputGear)      { currentGear = inputGear; };
+    double getGearRatio()             { return gearMap[currentGear]->ratio; };
+    std::string getCurrentGearLabel() { return gearMap[currentGear]->label; };
+    int getCurrentGearIndex()         { return currentGear; };
+    
     // physics
     void stepPhysics ();
+    void gearUp ();
+    void gearDown ();
 };
+
+
 #endif

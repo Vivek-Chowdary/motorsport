@@ -225,6 +225,13 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     rearDiff->setOutputPointer(wheelMap["RearRight"]);
     rearDiff->setOutputPointer2(wheelMap["RearLeft"]);
 
+    clutch->enable();
+    transfer->enable();
+    rearDiff->enable();
+    
+    //start in neutral (hardcoded to 1)
+    gearbox->setGear(1);
+
     startPhysics(NULL);
 }
 

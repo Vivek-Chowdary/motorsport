@@ -33,7 +33,9 @@ class DriveJoint : public WorldObject
     double prevRelAngularVel;
     DriveMass *inputDrive;
     DriveMass *outputDrive;
-    
+
+    bool enabled;
+        
     // physics
     virtual void stopPhysics () = 0;
   public:
@@ -41,7 +43,10 @@ class DriveJoint : public WorldObject
     DriveJoint () { } ;
     ~DriveJoint () { } ;
     virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
-
+    void enable () { enabled = 1; } ;
+    void disable () { enabled = 0; } ;
+    bool isEnabled () { return enabled; } ;
+     
     // physics
     virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
     virtual void stepPhysics () = 0;

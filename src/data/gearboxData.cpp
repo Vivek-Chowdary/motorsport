@@ -16,6 +16,7 @@ Gearbox::Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n)
     log = new LogEngine (LOG_TRACE, "GBX");
     log->put (LOG_INFO, "Starting to parse a gearbox node");
     processXmlRootNode (n);
+    processXmlGearListNode (n);
 }
 
 Gearbox::~Gearbox ()
@@ -28,5 +29,75 @@ Gearbox::~Gearbox ()
 void Gearbox::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     startPhysics (n);
+}
+
+void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
+{
+    if (gearListNode != 0)
+    {
+        DOMNode * gearNode;
+        for (gearNode = gearListNode->getFirstChild (); gearNode != 0; gearNode = gearNode->getNextSibling ())
+        {
+            if (gearNode->getNodeType () == DOMNode::ELEMENT_NODE)
+            {
+                std::string nodeName;
+                assignXmlString (nodeName, gearNode->getNodeName());
+                if (nodeName == "gear")
+                {
+                    log->put (LOG_TRACE, "Found a gear.");
+                    GearboxGear * tmpGear = new GearboxGear (gearNode);
+                    gearMap[tmpGear->getIndex()]=tmpGear;
+  //                  tmpGear->setRefBody(body->bodyID);
+                }
+                nodeName.clear();
+            }
+        }
+    }
+}
+
+GearboxGear::GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n)
+{
+    log = new LogEngine (LOG_TRACE, "GBG");
+    log->put (LOG_INFO, "Starting to parse a gearbox gear node");
+    processXmlRootNode (n);
+}
+
+void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+{
+    ratio = 1.0;
+    index = 0;
+    if (n->hasAttributes ())
+    {
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "index")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the Gear Index: %s", attribute.c_str() );
+                index = stoi (attribute);
+            }
+            if (attribute == "ratio")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the Gear Ratio: %s", attribute.c_str() );
+                ratio = stod (attribute);
+            }
+            if (attribute == "label")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the Gear Label: %s", attribute.c_str() );
+                label = attribute;
+            }
+            attribute.clear();
+        }
+    }
 }
 

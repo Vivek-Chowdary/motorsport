@@ -9,6 +9,7 @@
 
 #include "log/logEngine.hpp"
 #include "world.hpp"
+#include "system.hpp"
 #include "vehicle.hpp"
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
@@ -18,11 +19,12 @@
 #include "finalDrive.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
+#include "SDL/SDL_keysym.h"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     velocity = 0.0;
-    log->telemetry (LOG_TRACE, "VehSpeed EngineTorque DiffAngularVel RRWhAngulVel RLWhAngulVel VehPosition");
+    log->telemetry (LOG_TRACE, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear");
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -124,6 +126,26 @@ void Vehicle::attachWheelsToBody()
 
 void Vehicle::stepPhysics ()
 {
+    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_t)]->getValue()>0)
+    {
+        if(upKeyReset) {
+                gearbox->gearUp();
+                upKeyReset = 0;
+        }
+    }
+    else {
+        upKeyReset=1;
+    }
+    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_b)]->getValue())
+    {
+        if(downKeyReset) {
+                gearbox->gearDown();
+                downKeyReset = 0;
+        }
+    }
+    else {
+        downKeyReset=1;
+    }
     // step torque transfer components first
     clutch->stepPhysics();
     transfer->stepPhysics();
@@ -148,5 +170,5 @@ void Vehicle::stepPhysics ()
     const dReal * bodyVel;
     bodyVel = dBodyGetLinearVel(body->bodyID);
     velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
-    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f (%12.8f,%12.8f,%12.8f)", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), getPosition().x, getPosition().y, getPosition().z);
+    log->telemetry (LOG_TRACE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str());
 }

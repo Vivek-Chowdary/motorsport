@@ -26,6 +26,9 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     inputAngularVel = 0.0;
     outputAngularVel = 0.0;
     angularAcc = 0.0;
+    gearRatio = 0.0;
+    currentGear = 0;
+    
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -49,13 +52,6 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 log->format (LOG_TRACE, "Found the Gearbox Inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
-            if (attribute == "gear1Ratio")
-            {
-                attribute.clear();
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_TRACE, "Found the Gear 1 Ratio: %s", attribute.c_str() );
-                gearRatio = stod (attribute);
-            }
             attribute.clear();
         }
     }
@@ -70,36 +66,55 @@ void Gearbox::stepPhysics ()
     double dt;
     double torqueSum;
     
+    gearRatio = gearMap[currentGear]->ratio;
+    
     dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
-
     prevAngularVel = inputAngularVel;
 
-//    inputTorqueTransfer = inputJoint->getOutputTorque();
-//    outputTorqueTransfer = outputJoint->getInputTorque()/gearRatio;
-
-    torqueSum = inputTorqueTransfer + outputTorqueTransfer/gearRatio;
+    if(gearRatio>0.0 || gearRatio <0.0) {
+        torqueSum = inputTorqueTransfer + outputTorqueTransfer/gearRatio;
+    }
+    else {
+        torqueSum = inputTorqueTransfer;
+    }
     
     angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
     
     // improved Euler ODE solve
     inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
 
-    outputAngularVel = inputAngularVel/gearRatio;
+    if(gearRatio>0.0 || gearRatio < 0.0) {
+        outputAngularVel = inputAngularVel/gearRatio;
+    }
+    else {
+        double outputAngularAcc;
+        outputAngularAcc = (outputTorqueTransfer - 0.1 * outputAngularVel)/0.1;
+        outputAngularVel = outputAngularVel + dt / 2 * (outputAngularAcc + (outputTorqueTransfer - 0.1*(outputAngularVel+outputAngularAcc*dt))/0.1);
+    }
     
-/*    double dtOverJe;
-    prevAngularVel = inputAngularVel;
-
-    dtOverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
-
-    inputTorqueTransfer = inputJoint->getOutputTorque();
-    outputTorqueTransfer = outputJoint->getInputTorque()/gearRatio;
-
-    inputAngularVel = (dtOverJe*(inputTorqueTransfer+outputTorqueTransfer)+prevAngularVel)/(1+(dtOverJe*friction));
-    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
-    outputAngularVel = inputAngularVel/gearRatio;
-*/
     log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer, inputAngularVel, outputAngularVel);
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
 }
 
+void Gearbox::gearUp() {
+    if(currentGear >= 6) {
+        currentGear = 6;
+    }
+    else {
+        currentGear++;
+    }
+    gearRatio = gearMap[currentGear]->ratio;
+    log->format(LOG_TRACE, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+}
+
+void Gearbox::gearDown() {
+    if(currentGear <=0) {
+        currentGear = 0;
+    }
+    else {
+        currentGear--;
+    }
+    gearRatio = gearMap[currentGear]->ratio;
+    log->format(LOG_TRACE, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+}
