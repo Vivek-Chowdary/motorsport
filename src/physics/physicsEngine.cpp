@@ -54,11 +54,10 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
                 contact[i].surface.mu = 0.5;
             contact[i].surface.slip1 = 0.0;
             contact[i].surface.slip2 = 0.0;
-/*            contact[i].surface.soft_erp = 0.8;
-            contact[i].surface.soft_cfm = 0.01;*/
             // FIXME!!! check what kind of surfaces are colliding, setting the appropriate cfm and erp values!
             contact[i].surface.soft_erp = 0.8;
-            contact[i].surface.soft_cfm = 0.00001;
+            contact[i].surface.soft_cfm = 0.00000001;
+
             dJointID c = dJointCreateContact (World::getWorldPointer ()->worldID, World::getWorldPointer ()->jointGroupID, contact + i);
             dJointAttach (c, dGeomGetBody (o1), dGeomGetBody (o2));
         }

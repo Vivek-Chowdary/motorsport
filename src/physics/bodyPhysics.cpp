@@ -68,6 +68,8 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dBodySetMass (bodyID, &tmpMass);
     setPosition(Vector3d(0, 0, 0));
     setRotation(Vector3d(0, 0, 0));
+    dBodySetLinearVel  (bodyID, 0, 0, 0);
+    dBodySetAngularVel (bodyID, 0, 0, 0);
 }
 
 void Body::setPosition (Vector3d position)

@@ -20,6 +20,7 @@ class Body;
 class Engine;
 class Clutch;
 class Gearbox;
+class Diff;
 class Wheel;
 class Suspension;
 class Vector3d;
@@ -37,6 +38,8 @@ class Vehicle : public WorldObject
     std::string author;
     std::string contact;
     std::string license;
+    double velocity;
+
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
@@ -57,7 +60,11 @@ class Vehicle : public WorldObject
     Body * body;
     Engine * engine;
     Clutch * clutch;
+    Clutch * transfer;
+    Clutch * transferW1;
+    Clutch * transferW2;
     Gearbox * gearbox;
+    Diff * diff;
     std::map < std::string, Wheel *> wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
     std::map < std::string, CameraPosition * > cameraPositionMap;

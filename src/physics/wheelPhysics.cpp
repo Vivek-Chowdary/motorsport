@@ -9,6 +9,7 @@
 
 #include "wheel.hpp"
 #include "world.hpp"
+#include "system.hpp"
 #include "xmlParser.hpp"
 #include "ode.h"
 #include "log/logEngine.hpp"
@@ -18,7 +19,12 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double mass = 0.0;
     double radius = 0.0;
     double width = 0.0;
-    powered = 0.0;
+    powered = 0;
+    angularVel = 0.0;
+    prevAngularVel = 0.0;
+    angularAcc = 0.0;
+    torque = 0.0;
+     
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -62,14 +68,26 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     dMass tmpMass;
-    dMassSetCylinderTotal (&tmpMass, mass, 3, radius, width);
+//    dMassSetCylinderTotal (&tmpMass, mass, 3, radius, width);
+    dMassSetParameters (&tmpMass, mass,
+                         0, 0, 0,
+                         0.237, 0.237, 0.409,
+                         0, 0, 0);
+
     wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
     wheelGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, width);
+    dBodySetLinearVel  (wheelID, 0, 0, 0);
+    dBodySetAngularVel (wheelID, 0, 0, 0);
+
+    dBodySetMass (wheelID, &tmpMass);
     dGeomSetBody (wheelGeomID, wheelID);
     dBodySetMass (wheelID, &tmpMass);
     setPosition (Vector3d (0, 0, 0) );
     setRotation (Vector3d (0, 0, 0) );
-    torque = 0;
+    
+//    if(powered) {
+//        dBodySetFiniteRotationMode (wheelID, 1);
+//    }
 }
 
 void Wheel::setPosition (Vector3d position)
@@ -104,16 +122,33 @@ void Wheel::stopPhysics ()
 
 void Wheel::stepPhysics ()
 {
-    const dReal * angularVelVector;
-    dBodyAddRelTorque (wheelID, 0, 0, torque * powered);
-    angularVelVector = dBodyGetAngularVel (wheelID);
-    angularVel = angularVelVector[1];    
+    prevAngularVel = angularVel;
+
+    if(powered!=0){
+//        dJointGetHingeAxis (suspJointID, wheelAxisVector);
+//        dBodySetFiniteRotationAxis (wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+//        log->format(LOG_TRACE, "%s:FRAx=%f FRAy=%f FRAz=%f",index.c_str(), wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+        torque = inputJoint->getTorque();
+    }
+    // use hinge's angular rate as angular velocity of wheel (rad/s)
+    angularVel = dJointGetHinge2Angle2Rate (suspJointID);
+
+    // calculate angular acceleration      
+    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+
+    // tire rolling resistance
+    torque -= 0.1*angularVel;   
+
+    // accumulate torques on wheel
+    dBodyAddRelTorque (wheelID, 0, 0, powered*torque);
+    
+    log->format(LOG_TRACE, "%s:angVel=%f angAcc=%f torque=%f",index.c_str(), angularVel, angularAcc, torque);
+
     torque = 0;
 }
 
 void Wheel::addTorque(double torque)
 {
-    this->torque = torque;
 }
 
 double Wheel::getAngularVel()

@@ -9,15 +9,10 @@
 
 #ifndef CLUTCH_HPP
 #   define CLUTCH_HPP
-#   include "worldObject.hpp"
-#   include "engine.hpp"
+#   include "driveJoint.hpp"
 #   include "data/xercesc_fwd.hpp"
 
-//forward declarations
-class Engine;
-class Gearbox;
-
-class Clutch : public WorldObject
+class Clutch : public DriveJoint
 {
   private:
     // data
@@ -26,27 +21,19 @@ class Clutch : public WorldObject
     // physics
     double coeffStaticFriction;
     double coeffDynamicFriction;
-    double rotationalVelocity;
-    double rotationalAcceleration;
     double maxTorqueTransfer;
-    double torqueTransfer;
-    double revTorque;
+    double lockedParam;
     bool locked;
-    Engine *inputClass;
-    Gearbox *pOutTorque;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
   public:
     // data
-    Clutch (XERCES_CPP_NAMESPACE::DOMNode * n, Engine *input);
+    Clutch (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Clutch ();
     ~Clutch ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
     void stepPhysics ();
-    double getTorque ();
-    double getRevTorque ();
-    double getAngularVel ();
-    void setOutputPointer (Gearbox *output);
 };
 #endif

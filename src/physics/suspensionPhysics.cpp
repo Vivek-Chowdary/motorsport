@@ -88,6 +88,12 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     wheel.setRotation (rotation);
     wheel.setPosition (position);
     dJointAttach (jointID, wheel.wheelID, vehicle.body->bodyID);
+    wheel.setSuspJoint (jointID);
+ 
+    dVector3 wheelAxisVector;
+    dJointGetHingeAxis (jointID, wheelAxisVector);
+    dBodySetFiniteRotationAxis (wheel.wheelID, wheelAxisVector[0], wheelAxisVector[1], wheelAxisVector[2]);
+
     setPosition(position);
     setRotation(rotation);
 }

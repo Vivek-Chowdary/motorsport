@@ -9,28 +9,17 @@
 
 #ifndef ENGINE_HPP
 #   define ENGINE_HPP
-#   include "worldObject.hpp"
+#   include "drive.hpp"
+#   include "driveJoint.hpp"
 #   include "data/xercesc_fwd.hpp"
-//forward declaration
-class Clutch;
 
-class Engine : public WorldObject
+class Engine : public Drive
 {
   private:
-    // data
-    static int instancesCount;
+   double torqueLinearMultiplier;
+
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-  
-    // physics
-    double torqueLinearMultiplier;
-    double rotationalVelocity;
-    double prevRotationalVelocity;
-    double rotationalAcceleration;
-    double torque;
-    double engineTorque;
-    double engineInertia;
-    double engineFriction;
-    Clutch *pOutTorque;
+
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
   public:
@@ -40,8 +29,5 @@ class Engine : public WorldObject
 
     // physics
     void stepPhysics ();
-    double getTorque ();
-    double getRotationalVelocity ();
-    void setOutputPointer (Clutch *output);
 };
 #endif

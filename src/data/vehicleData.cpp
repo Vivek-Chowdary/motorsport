@@ -15,6 +15,7 @@
 #include "engine.hpp"
 #include "clutch.hpp"
 #include "gearbox.hpp"
+#include "diff.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
 #include "camera.hpp"
@@ -45,7 +46,11 @@ Vehicle::~Vehicle ()
     delete body; 
     delete engine;
     delete clutch;
+    delete transfer;
+    delete transferW1;
+    delete transferW2;
     delete gearbox;
+    delete diff;
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
@@ -72,6 +77,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     DOMNode * engineNode = 0;
     DOMNode * clutchNode = 0;
     DOMNode * gearboxNode = 0;
+    DOMNode * diffNode = 0;
     DOMNode * wheelListNode = 0;
     DOMNode * suspListNode = 0; //suspension
     DOMNode * cameraListNode = 0;
@@ -170,6 +176,11 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                 log->put (LOG_TRACE, "Found a gearbox.");
                                 gearboxNode = n;
                             }
+                            if (nodeName == "diff")
+                            {
+                                log->put (LOG_TRACE, "Found a diff.");
+                                diffNode = n;
+                            }
                             if (nodeName == "wheelList")
                             {
                                 log->put (LOG_TRACE, "Found a wheel list.");
@@ -194,16 +205,37 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
-    clutch = new Clutch (clutchNode, engine);
+    clutch = new Clutch (clutchNode);
+    gearbox = new Gearbox (gearboxNode);
+    diff = new Diff (diffNode);
+    transfer = new Clutch ();
+    transferW1 = new Clutch ();
+    transferW2 = new Clutch ();
+    
     engine->setOutputPointer(clutch);
-    gearbox = new Gearbox (gearboxNode, clutch);
     clutch->setOutputPointer(gearbox);
+    gearbox->setOutputPointer(transfer);
+    transfer->setOutputPointer(diff);
+    diff->setOutputPointer(transferW1);
+    diff->setOutputPointer2(transferW2);
+    
+    clutch->setInputPointer(engine);
+    gearbox->setInputPointer(clutch);
+    transfer->setInputPointer(gearbox);
+    diff->setInputPointer(transfer);
+    transferW1->setInputPointer(diff);
+    transferW2->setInputPointer(diff);
         
     processXmlWheelListNode(wheelListNode);
     processXmlSuspensionListNode(suspListNode);
     processXmlCameraListNode(cameraListNode);
 
-    gearbox->setOutputPointer(wheelMap["RearRight"], wheelMap["RearLeft"]);
+    transferW1->setOutputPointer(wheelMap["RearRight"]);
+    transferW2->setOutputPointer(wheelMap["RearLeft"]);
+
+    wheelMap["RearRight"]->setInputPointer(transferW1);
+    wheelMap["RearLeft"]->setInputPointer(transferW2);
+
 }
 
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
@@ -222,6 +254,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                     log->put (LOG_TRACE, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (wheelNode);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
+                    tmpWheel->setRefBody(body->bodyID);
                 }
                 nodeName.clear();
             }

@@ -241,6 +241,8 @@ SOURCES := \
         data/clutchData.cpp \
         data/gearboxData.cpp \
         tools/vector3d.cpp \
+        physics/diffPhysics.cpp \
+        data/diffData.cpp \
 	main.cpp
 ###########################################
 

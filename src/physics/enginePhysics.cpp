@@ -8,7 +8,6 @@
 \*****************************************************************************/
 
 #include "engine.hpp"
-#include "clutch.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "xmlParser.hpp"
@@ -18,11 +17,13 @@
 
 void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    torqueLinearMultiplier = 0.0;
-    engineFriction = 0.1;
-    engineInertia = 1.0;
-    rotationalVelocity = 0.0;
-    rotationalAcceleration = 0.0;
+    torqueLinearMultiplier = 0.0001;
+    friction = 0.1;
+    inertia = 1.0;
+    angularVel = 0.0;
+    prevAngularVel = 0.0;
+    revAngularVel = 0.0;
+    angularAcc = 0.0;
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -46,20 +47,18 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the engine inertia: %s", attribute.c_str() );
-                engineInertia = stod (attribute);
+                inertia = stod (attribute);
             }
             if (attribute == "engineFriction")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the engine friction: %s", attribute.c_str() );
-                engineFriction = stod (attribute);
+                friction = stod (attribute);
             }
-
             attribute.clear();
         }
     }
-    torque = 0.0;
 }
 
 void Engine::stopPhysics ()
@@ -68,22 +67,27 @@ void Engine::stopPhysics ()
 
 void Engine::stepPhysics ()
 {
-//    prevRotationalVelocity = rotationalVelocity;
+    double dtoverJe;
+    double engineTorque;
+    
+    prevAngularVel = angularVel;
+  
     engineTorque = 0;
     engineTorque += torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_y)]->getValue();
     engineTorque -= torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_h)]->getValue();
-    torque = engineTorque;
-//    torque = engineTorque - engineInertia*rotationalAcceleration - engineFriction*rotationalVelocity;
-    rotationalVelocity = pOutTorque->getAngularVel();
-//    rotationalAcceleration = (engineTorque-pOutTorque->getTorque()-(engineFriction*rotationalVelocity))/engineInertia;
-//    rotationalVelocity = prevRotationalVelocity+rotationalAcceleration*SystemData::getSystemDataPointer()->physicsTimeStep/1000;
-    log->format(LOG_TRACE, "torqueMultiplier=%f inputAxis=%f outputTorque=%f(Nm) engspeed=%f(rad/s)", torqueLinearMultiplier, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_y)]->getValue(), torque, rotationalVelocity);
-}
-double Engine::getTorque ()
-{
-    return torque;
-}
-double Engine::getRotationalVelocity ()
-{
-    return rotationalVelocity;
+    
+//    angularVel = (engineTorque - pOutTorque->getRevTorque() - engineInertia*rotationalAcceleration)/friction;        
+    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
+
+//    rotationalAcceleration = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000;
+//    torque = engineTorque - inertia*rotationalAcceleration - friction*angularVel;
+    angularVel = (dtoverJe*(engineTorque-outputJoint->getRevTorque())+prevAngularVel)/(1+(dtoverJe*friction));
+    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    revAngularVel = angularVel;
+//    torqueTransfer = engineTorque - inertia*angularAcc - friction*angularVel;
+//  rotationalAcceleration = (engineTorque-pOutTorque->getTorque()-(friction*angularVel))/inertia;
+
+//    angularVel = prevAngularVel+rotationalAcceleration*SystemData::getSystemDataPointer()->physicsTimeStep/1000;
+
+    log->format(LOG_TRACE, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, angularVel);
 }

@@ -8,7 +8,6 @@
 \*****************************************************************************/
 
 #include "clutch.hpp"
-#include "gearbox.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "xmlParser.hpp"
@@ -19,6 +18,9 @@
 void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     torqueTransfer = 0.0;
+    revTorqueTransfer = 0.0;
+    lockedParam = 1;
+     
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -49,7 +51,7 @@ void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
-                coeffDynamicFriction = stod (attribute);
+                maxTorqueTransfer = stod (attribute);
             }
             attribute.clear();
         }
@@ -62,25 +64,24 @@ void Clutch::stopPhysics ()
 
 void Clutch::stepPhysics ()
 {
-    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_g)]->getValue()) 
-        torqueTransfer = 0.0;
-    else
-        torqueTransfer = inputClass->getTorque();
-    rotationalVelocity = pOutTorque->getAngularVel();
-    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f", torqueTransfer, torqueTransfer);
+    if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_g)]->getValue()) {
+        torqueTransfer = 0*(inputDrive->getRevAngularVel()-outputDrive->getAngularVel());
+        revTorqueTransfer = torqueTransfer;
+    }
+    else {
+        torqueTransfer = lockedParam*(inputDrive->getRevAngularVel()-outputDrive->getAngularVel());
+        log->format(LOG_TRACE, "torqueTransfer=%f", torqueTransfer);
+
+        if(torqueTransfer > maxTorqueTransfer) {
+                torqueTransfer = maxTorqueTransfer;
+        }
+        else if(torqueTransfer < -1*maxTorqueTransfer) {
+                torqueTransfer = -1 * maxTorqueTransfer;
+        }
+        revTorqueTransfer = torqueTransfer;
+    }       
+
+ //   rotationalVelocity = pOutTorque->getAngularVel();
+    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", revTorqueTransfer, torqueTransfer,inputDrive->getRevAngularVel(),outputDrive->getAngularVel());
 }
 
-double Clutch::getTorque ()
-{
-    return torqueTransfer;
-}
-
-double Clutch::getRevTorque ()
-{
-    return 0.0;
-}
-
-double Clutch::getAngularVel ()
-{
-    return rotationalVelocity;
-}

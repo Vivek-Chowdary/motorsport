@@ -1,62 +1,71 @@
 # Project: motorsport
-# Makefile created by Dev-C++ 4.9.9.0
+# Makefile created by Dev-C++ 4.9.8.0
 
-CPP  = g++.exe
-CC   = gcc.exe
+CPP  = g++.exe -D__DEBUG__
+CC   = gcc.exe -D__DEBUG__
 WINDRES = windres.exe
 RES  = 
-OBJ  = ../../main.o ../../system.o ../../world.o ../../physics/cubePhysics.o ../../physics/physicsEngine.o ../../log/logEngine.o ../../log/testLogEngine.o ../../input/cameraInput.o ../../input/cubeInput.o ../../input/inputEngine.o ../../gui/guiEngine.o ../../graphics/cameraGraphics.o ../../graphics/cubeGraphics.o ../../graphics/graphicsEngine.o ../../data/cameraData.o ../../data/cubeData.o ../../data/cubeDataParser.o ../../data/dataEngine.o ../../data/dataParser.o ../../data/domParser.o ../../data/graphicsParser.o ../../data/guiParser.o ../../data/inputParser.o ../../data/logParser.o ../../data/mainParser.o ../../data/physicsParser.o $(RES)
-LINKOBJ  = ../../main.o ../../system.o ../../world.o ../../physics/cubePhysics.o ../../physics/physicsEngine.o ../../log/logEngine.o ../../log/testLogEngine.o ../../input/cameraInput.o ../../input/cubeInput.o ../../input/inputEngine.o ../../gui/guiEngine.o ../../graphics/cameraGraphics.o ../../graphics/cubeGraphics.o ../../graphics/graphicsEngine.o ../../data/cameraData.o ../../data/cubeData.o ../../data/cubeDataParser.o ../../data/dataEngine.o ../../data/dataParser.o ../../data/domParser.o ../../data/graphicsParser.o ../../data/guiParser.o ../../data/inputParser.o ../../data/logParser.o ../../data/mainParser.o ../../data/physicsParser.o $(RES)
-LIBS =  -L"C:/DEV-CPP/lib" -mwindows -L"C:/Dev-Cpp/ogre-0.14-mingw/lib" -lOgreMain -lReferenceAppLayer -Wl,--enable-runtime-pseudo-reloc  
-INCS =  -I"C:/DEV-CPP/include" 
-CXXINCS =  -I"C:/DEV-CPP/include/c++/3.3.1"  -I"C:/DEV-CPP/include/c++/3.3.1/mingw32"  -I"C:/DEV-CPP/include/c++/3.3.1/backward"  -I"C:/DEV-CPP/lib/gcc-lib/mingw32/3.3.1/include"  -I"C:/DEV-CPP/include" 
-BIN  = motorsport.exe
-CXXFLAGS = $(CXXINCS) -D__WIN32__ -DEXT_HASH -DGCC_3_1 -DOGRE_NONCLIENT_BUILD -D_GLIBCPP_USE_C99_DYNAMIC -DOGRE_GL_USE_MULTITEXTURING -DYY_NO_UNPUT -mcpu=pentium4 -fexpensive-optimizations -O3 -D__ogreMinGW -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\OgreMain" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlatformManager_Win32" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\BSPSceneManager" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\CgProgramManager" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\FileSystem" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\GuiElements" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\NatureSceneManger" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\OctreeSceneManager" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\PlugIns\ParticleFX" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\ReferenceApplication\Common" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\ReferenceApplication\ReferenceAppLayer" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\freetype" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\l ibcms" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libjpeg" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libmng" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libode" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libopcode" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libpng" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libtiff" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libungif" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\libz" -I"C:\Dev-Cpp\ogre-0.14-mingw\include\deps\NVIDIA_Cg"  
-CFLAGS = $(INCS)  
+OBJ  = ../../data/bodyData.o ../../data/cameraData.o ../../data/cameraPosition.o ../../data/cubeData.o ../../data/engineData.o ../../data/suspensionData.o ../../data/trackData.o ../../data/vehicleData.o ../../data/vehiclePosition.o ../../data/wheelData.o ../../data/worldData.o ../../data/worldObject.o ../../data/xmlParser.o ../../graphics/bodyGraphics.o ../../graphics/cameraGraphics.o ../../graphics/cubeGraphics.o ../../graphics/graphicsEngine.o ../../graphics/vehicleGraphics.o ../../graphics/wheelGraphics.o ../../gui/guiEngine.o ../../input/axis.o ../../input/cameraInput.o ../../input/cubeInput.o ../../input/inputEngine.o ../../log/logEngine.o ../../physics/bodyPhysics.o ../../physics/cubePhysics.o ../../physics/enginePhysics.o ../../physics/physicsEngine.o ../../physics/suspensionPhysics.o ../../physics/vehiclePhysics.o ../../physics/wheelPhysics.o ../../tools/vector3d.o ../../main.o ../../system.o ../../physics/cameraPhysics.o ../../data/clutchData.o ../../physics/clutchPhysics.o ../../data/gearboxData.o ../../physics/gearboxPhysics.o ../../physics/diffPhysics.o ../../data/diffData.o $(RES)
+LINKOBJ  = ../../data/bodyData.o ../../data/cameraData.o ../../data/cameraPosition.o ../../data/cubeData.o ../../data/engineData.o ../../data/suspensionData.o ../../data/trackData.o ../../data/vehicleData.o ../../data/vehiclePosition.o ../../data/wheelData.o ../../data/worldData.o ../../data/worldObject.o ../../data/xmlParser.o ../../graphics/bodyGraphics.o ../../graphics/cameraGraphics.o ../../graphics/cubeGraphics.o ../../graphics/graphicsEngine.o ../../graphics/vehicleGraphics.o ../../graphics/wheelGraphics.o ../../gui/guiEngine.o ../../input/axis.o ../../input/cameraInput.o ../../input/cubeInput.o ../../input/inputEngine.o ../../log/logEngine.o ../../physics/bodyPhysics.o ../../physics/cubePhysics.o ../../physics/enginePhysics.o ../../physics/physicsEngine.o ../../physics/suspensionPhysics.o ../../physics/vehiclePhysics.o ../../physics/wheelPhysics.o ../../tools/vector3d.o ../../main.o ../../system.o ../../physics/cameraPhysics.o ../../data/clutchData.o ../../physics/clutchPhysics.o ../../data/gearboxData.o ../../physics/gearboxPhysics.o ../../physics/diffPhysics.o ../../data/diffData.o $(RES)
+LIBS =  -L"C:/dev/apps/Dev-Cpp/mingw/lib" -L"../../../3pl/windows/lib" -lmingw32 ../../../3pl/windows/lib/libode.a ../../../3pl/windows/lib/libfreetype.a ../../../3pl/windows/lib/libOgreMain.a ../../../3pl/windows/lib/libpthreadGC.a ../../../3pl/windows/lib/libReferenceAppLayer.a ../../../3pl/windows/lib/libsdl.a ../../../3pl/windows/lib/xerces-c_2.lib ../../../3pl/windows/lib/libRenderSystem_GL.a ../../../3pl/windows/lib/sdl-main.a ../../../3pl/windows/lib/libPlatformManager_Win32.a -mno-mingw -mwindows -Wl --enable-runtime-pseudo-reloc ../../../3pl/windows/lib/libPlugin_BSPSceneManager.a ../../../3pl/windows/lib/libPlugin_CgProgramManager.a ../../../3pl/windows/lib/libPlugin_FileSystem.a ../../../3pl/windows/lib/libPlugin_GuiElements.a ../../../3pl/windows/lib/libPlugin_NatureSceneManager.a ../../../3pl/windows/lib/libPlugin_OctreeSceneManager.a ../../../3pl/windows/lib/libPlugin_ParticleFX.a ../../../3pl/windows/lib/libsdl.a 
+INCS =  -I"C:/dev/apps/Dev-Cpp/mingw/include"  -I"../../"  -I"../../../3pl/windows/include"  -I"../../../3pl/windows/include/drawstuff"  -I"../../../3pl/windows/include/ode"  -I"../../../3pl/windows/include/OgreMain"  -I"../../../3pl/windows/include/SDL"  -I"../../../3pl/windows/include/xercesc"  -I"../../tools"  -I"../../data"  -I"../../input"  -I"../../../3pl/windows/include/RenderSystems"  -I"../../../3pl/windows/include/RenderSystems/GL"  -I"../../log"  -I"../../physics"  -I"../../graphics"  -I"../../gui" 
+CXXINCS =  -I"C:/dev/apps/Dev-Cpp/mingw/include"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++/3.3.1"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++/3.3.1/mingw32"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++/3.3.1/backward"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++/3.3.1/bits"  -I"C:/dev/apps/Dev-Cpp/mingw/include/c++/3.3.1/ext"  -I"../../"  -I"../../../3pl/windows/include"  -I"../../../3pl/windows/include/drawstuff"  -I"../../../3pl/windows/include/ode"  -I"../../../3pl/windows/include/OgreMain"  -I"../../../3pl/windows/include/SDL"  -I"../../../3pl/windows/include/xercesc"  -I"../../tools"  -I"../../data"  -I"../../input"  -I"../../../3pl/windows/include/RenderSystems"  -I"../../../3pl/windows/include/RenderSystems/GL"  -I"../../log"  -I"../../physics"  -I"../../graphics"  -I"../../gui" 
+BIN  = ../../motorsport.exe
+CXXFLAGS = $(CXXINCS)-D__WIN32__  -D_WINDOWS -DWIN32 -DGCC_3_1 -DOGRE_NONCLIENT_BUILD  -D_GLIBCPP_USE_C99_DYNAMIC  -DOGRE_GL_USE_MULTITEXTURING  -DYY_NO_UNPUT  -D__ogreMinGW  -Dmain=SDL_main -mieee-fp -malign-double -m128bit-long-double -maccumulate-outgoing-args -mthreads -momit-leaf-frame-pointer -mmmx -msse -mfpmath=sse -fms-extensions -finline-limit=1200 -fsched-spec-load-dangerous -ffast-math -funsafe-math-optimizations -ftracer -fprefetch-loop-arrays -O3    -g3
+CFLAGS = $(INCS)-D__WIN32__  -D_WINDOWS -DWIN32 -DGCC_3_1 -DOGRE_NONCLIENT_BUILD  -D_GLIBCPP_USE_C99_DYNAMIC  -DOGRE_GL_USE_MULTITEXTURING  -DYY_NO_UNPUT  -D__ogreMinGW  -Dmain=SDL_main -std=gnu99 -mieee-fp -malign-double -m128bit-long-double -maccumulate-outgoing-args -mthreads -momit-leaf-frame-pointer -mmmx -msse -mfpmath=sse -fms-extensions -finline-limit=1200 -fsched-spec-load-dangerous -ffast-math -funsafe-math-optimizations -ftracer -fprefetch-loop-arrays -O3   -g3
 
 .PHONY: all all-before all-after clean clean-custom
 
-all: all-before motorsport.exe all-after
+all: all-before ../../motorsport.exe all-after
 
 
 clean: clean-custom
 	rm -f $(OBJ) $(BIN)
 
-$(BIN): $(OBJ)
-	$(CPP) $(LINKOBJ) -o "motorsport.exe" $(LIBS)
+$(BIN): $(LINKOBJ)
+	$(CPP) $(LINKOBJ) -o "..\..\motorsport.exe" $(LIBS)
 
-../../main.o: ../../main.cpp
-	$(CPP) -c ../../main.cpp -o ../../main.o $(CXXFLAGS)
+../../data/bodyData.o: ../../data/bodyData.cpp
+	$(CPP) -c ../../data/bodyData.cpp -o ../../data/bodyData.o $(CXXFLAGS)
 
-../../system.o: ../../system.cpp
-	$(CPP) -c ../../system.cpp -o ../../system.o $(CXXFLAGS)
+../../data/cameraData.o: ../../data/cameraData.cpp
+	$(CPP) -c ../../data/cameraData.cpp -o ../../data/cameraData.o $(CXXFLAGS)
 
-../../world.o: ../../world.cpp
-	$(CPP) -c ../../world.cpp -o ../../world.o $(CXXFLAGS)
+../../data/cameraPosition.o: ../../data/cameraPosition.cpp
+	$(CPP) -c ../../data/cameraPosition.cpp -o ../../data/cameraPosition.o $(CXXFLAGS)
 
-../../physics/cubePhysics.o: ../../physics/cubePhysics.cpp
-	$(CPP) -c ../../physics/cubePhysics.cpp -o ../../physics/cubePhysics.o $(CXXFLAGS)
+../../data/cubeData.o: ../../data/cubeData.cpp
+	$(CPP) -c ../../data/cubeData.cpp -o ../../data/cubeData.o $(CXXFLAGS)
 
-../../physics/physicsEngine.o: ../../physics/physicsEngine.cpp
-	$(CPP) -c ../../physics/physicsEngine.cpp -o ../../physics/physicsEngine.o $(CXXFLAGS)
+../../data/engineData.o: ../../data/engineData.cpp
+	$(CPP) -c ../../data/engineData.cpp -o ../../data/engineData.o $(CXXFLAGS)
 
-../../log/logEngine.o: ../../log/logEngine.cpp
-	$(CPP) -c ../../log/logEngine.cpp -o ../../log/logEngine.o $(CXXFLAGS)
+../../data/suspensionData.o: ../../data/suspensionData.cpp
+	$(CPP) -c ../../data/suspensionData.cpp -o ../../data/suspensionData.o $(CXXFLAGS)
 
-../../log/testLogEngine.o: ../../log/testLogEngine.cpp
-	$(CPP) -c ../../log/testLogEngine.cpp -o ../../log/testLogEngine.o $(CXXFLAGS)
+../../data/trackData.o: ../../data/trackData.cpp
+	$(CPP) -c ../../data/trackData.cpp -o ../../data/trackData.o $(CXXFLAGS)
 
-../../input/cameraInput.o: ../../input/cameraInput.cpp
-	$(CPP) -c ../../input/cameraInput.cpp -o ../../input/cameraInput.o $(CXXFLAGS)
+../../data/vehicleData.o: ../../data/vehicleData.cpp
+	$(CPP) -c ../../data/vehicleData.cpp -o ../../data/vehicleData.o $(CXXFLAGS)
 
-../../input/cubeInput.o: ../../input/cubeInput.cpp
-	$(CPP) -c ../../input/cubeInput.cpp -o ../../input/cubeInput.o $(CXXFLAGS)
+../../data/vehiclePosition.o: ../../data/vehiclePosition.cpp
+	$(CPP) -c ../../data/vehiclePosition.cpp -o ../../data/vehiclePosition.o $(CXXFLAGS)
 
-../../input/inputEngine.o: ../../input/inputEngine.cpp
-	$(CPP) -c ../../input/inputEngine.cpp -o ../../input/inputEngine.o $(CXXFLAGS)
+../../data/wheelData.o: ../../data/wheelData.cpp
+	$(CPP) -c ../../data/wheelData.cpp -o ../../data/wheelData.o $(CXXFLAGS)
 
-../../gui/guiEngine.o: ../../gui/guiEngine.cpp
-	$(CPP) -c ../../gui/guiEngine.cpp -o ../../gui/guiEngine.o $(CXXFLAGS)
+../../data/worldData.o: ../../data/worldData.cpp
+	$(CPP) -c ../../data/worldData.cpp -o ../../data/worldData.o $(CXXFLAGS)
+
+../../data/worldObject.o: ../../data/worldObject.cpp
+	$(CPP) -c ../../data/worldObject.cpp -o ../../data/worldObject.o $(CXXFLAGS)
+
+../../data/xmlParser.o: ../../data/xmlParser.cpp
+	$(CPP) -c ../../data/xmlParser.cpp -o ../../data/xmlParser.o $(CXXFLAGS)
+
+../../graphics/bodyGraphics.o: ../../graphics/bodyGraphics.cpp
+	$(CPP) -c ../../graphics/bodyGraphics.cpp -o ../../graphics/bodyGraphics.o $(CXXFLAGS)
 
 ../../graphics/cameraGraphics.o: ../../graphics/cameraGraphics.cpp
 	$(CPP) -c ../../graphics/cameraGraphics.cpp -o ../../graphics/cameraGraphics.o $(CXXFLAGS)
@@ -67,38 +76,77 @@ $(BIN): $(OBJ)
 ../../graphics/graphicsEngine.o: ../../graphics/graphicsEngine.cpp
 	$(CPP) -c ../../graphics/graphicsEngine.cpp -o ../../graphics/graphicsEngine.o $(CXXFLAGS)
 
-../../data/cameraData.o: ../../data/cameraData.cpp
-	$(CPP) -c ../../data/cameraData.cpp -o ../../data/cameraData.o $(CXXFLAGS)
+../../graphics/vehicleGraphics.o: ../../graphics/vehicleGraphics.cpp
+	$(CPP) -c ../../graphics/vehicleGraphics.cpp -o ../../graphics/vehicleGraphics.o $(CXXFLAGS)
 
-../../data/cubeData.o: ../../data/cubeData.cpp
-	$(CPP) -c ../../data/cubeData.cpp -o ../../data/cubeData.o $(CXXFLAGS)
+../../graphics/wheelGraphics.o: ../../graphics/wheelGraphics.cpp
+	$(CPP) -c ../../graphics/wheelGraphics.cpp -o ../../graphics/wheelGraphics.o $(CXXFLAGS)
 
-../../data/cubeDataParser.o: ../../data/cubeDataParser.cpp
-	$(CPP) -c ../../data/cubeDataParser.cpp -o ../../data/cubeDataParser.o $(CXXFLAGS)
+../../gui/guiEngine.o: ../../gui/guiEngine.cpp
+	$(CPP) -c ../../gui/guiEngine.cpp -o ../../gui/guiEngine.o $(CXXFLAGS)
 
-../../data/dataEngine.o: ../../data/dataEngine.cpp
-	$(CPP) -c ../../data/dataEngine.cpp -o ../../data/dataEngine.o $(CXXFLAGS)
+../../input/axis.o: ../../input/axis.cpp
+	$(CPP) -c ../../input/axis.cpp -o ../../input/axis.o $(CXXFLAGS)
 
-../../data/dataParser.o: ../../data/dataParser.cpp
-	$(CPP) -c ../../data/dataParser.cpp -o ../../data/dataParser.o $(CXXFLAGS)
+../../input/cameraInput.o: ../../input/cameraInput.cpp
+	$(CPP) -c ../../input/cameraInput.cpp -o ../../input/cameraInput.o $(CXXFLAGS)
 
-../../data/domParser.o: ../../data/domParser.cpp
-	$(CPP) -c ../../data/domParser.cpp -o ../../data/domParser.o $(CXXFLAGS)
+../../input/cubeInput.o: ../../input/cubeInput.cpp
+	$(CPP) -c ../../input/cubeInput.cpp -o ../../input/cubeInput.o $(CXXFLAGS)
 
-../../data/graphicsParser.o: ../../data/graphicsParser.cpp
-	$(CPP) -c ../../data/graphicsParser.cpp -o ../../data/graphicsParser.o $(CXXFLAGS)
+../../input/inputEngine.o: ../../input/inputEngine.cpp
+	$(CPP) -c ../../input/inputEngine.cpp -o ../../input/inputEngine.o $(CXXFLAGS)
 
-../../data/guiParser.o: ../../data/guiParser.cpp
-	$(CPP) -c ../../data/guiParser.cpp -o ../../data/guiParser.o $(CXXFLAGS)
+../../log/logEngine.o: ../../log/logEngine.cpp
+	$(CPP) -c ../../log/logEngine.cpp -o ../../log/logEngine.o $(CXXFLAGS)
 
-../../data/inputParser.o: ../../data/inputParser.cpp
-	$(CPP) -c ../../data/inputParser.cpp -o ../../data/inputParser.o $(CXXFLAGS)
+../../physics/bodyPhysics.o: ../../physics/bodyPhysics.cpp
+	$(CPP) -c ../../physics/bodyPhysics.cpp -o ../../physics/bodyPhysics.o $(CXXFLAGS)
 
-../../data/logParser.o: ../../data/logParser.cpp
-	$(CPP) -c ../../data/logParser.cpp -o ../../data/logParser.o $(CXXFLAGS)
+../../physics/cubePhysics.o: ../../physics/cubePhysics.cpp
+	$(CPP) -c ../../physics/cubePhysics.cpp -o ../../physics/cubePhysics.o $(CXXFLAGS)
 
-../../data/mainParser.o: ../../data/mainParser.cpp
-	$(CPP) -c ../../data/mainParser.cpp -o ../../data/mainParser.o $(CXXFLAGS)
+../../physics/enginePhysics.o: ../../physics/enginePhysics.cpp
+	$(CPP) -c ../../physics/enginePhysics.cpp -o ../../physics/enginePhysics.o $(CXXFLAGS)
 
-../../data/physicsParser.o: ../../data/physicsParser.cpp
-	$(CPP) -c ../../data/physicsParser.cpp -o ../../data/physicsParser.o $(CXXFLAGS)
+../../physics/physicsEngine.o: ../../physics/physicsEngine.cpp
+	$(CPP) -c ../../physics/physicsEngine.cpp -o ../../physics/physicsEngine.o $(CXXFLAGS)
+
+../../physics/suspensionPhysics.o: ../../physics/suspensionPhysics.cpp
+	$(CPP) -c ../../physics/suspensionPhysics.cpp -o ../../physics/suspensionPhysics.o $(CXXFLAGS)
+
+../../physics/vehiclePhysics.o: ../../physics/vehiclePhysics.cpp
+	$(CPP) -c ../../physics/vehiclePhysics.cpp -o ../../physics/vehiclePhysics.o $(CXXFLAGS)
+
+../../physics/wheelPhysics.o: ../../physics/wheelPhysics.cpp
+	$(CPP) -c ../../physics/wheelPhysics.cpp -o ../../physics/wheelPhysics.o $(CXXFLAGS)
+
+../../tools/vector3d.o: ../../tools/vector3d.cpp
+	$(CPP) -c ../../tools/vector3d.cpp -o ../../tools/vector3d.o $(CXXFLAGS)
+
+../../main.o: ../../main.cpp
+	$(CPP) -c ../../main.cpp -o ../../main.o $(CXXFLAGS)
+
+../../system.o: ../../system.cpp
+	$(CPP) -c ../../system.cpp -o ../../system.o $(CXXFLAGS)
+
+../../physics/cameraPhysics.o: ../../physics/cameraPhysics.cpp
+	$(CPP) -c ../../physics/cameraPhysics.cpp -o ../../physics/cameraPhysics.o $(CXXFLAGS)
+
+../../data/clutchData.o: ../../data/clutchData.cpp
+	$(CPP) -c ../../data/clutchData.cpp -o ../../data/clutchData.o $(CXXFLAGS)
+
+../../physics/clutchPhysics.o: ../../physics/clutchPhysics.cpp
+	$(CPP) -c ../../physics/clutchPhysics.cpp -o ../../physics/clutchPhysics.o $(CXXFLAGS)
+
+../../data/gearboxData.o: ../../data/gearboxData.cpp
+	$(CPP) -c ../../data/gearboxData.cpp -o ../../data/gearboxData.o $(CXXFLAGS)
+
+../../physics/gearboxPhysics.o: ../../physics/gearboxPhysics.cpp
+	$(CPP) -c ../../physics/gearboxPhysics.cpp -o ../../physics/gearboxPhysics.o $(CXXFLAGS)
+
+../../physics/diffPhysics.o: ../../physics/diffPhysics.cpp
+	$(CPP) -c ../../physics/diffPhysics.cpp -o ../../physics/diffPhysics.o $(CXXFLAGS)
+
+../../data/diffData.o: ../../data/diffData.cpp
+	$(CPP) -c ../../data/diffData.cpp -o ../../data/diffData.o $(CXXFLAGS)

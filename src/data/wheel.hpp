@@ -10,6 +10,7 @@
 #ifndef WHEEL_HPP
 #   define WHEEL_HPP
 #   include "ode/objects.h"
+#   include "drive.hpp"
 #   include "worldObject.hpp"
 #   include "data/xercesc_fwd.hpp"
 #   include <string>
@@ -21,7 +22,7 @@ namespace Ogre {
   class SceneNode;
 }
 
-class Wheel : public WorldObject
+class Wheel : public Drive
 {
   private:
     // data
@@ -29,7 +30,8 @@ class Wheel : public WorldObject
     std::string index;
     double powered;
     double torque;
-    double angularVel;
+    dBodyID bodyID;
+    dJointID suspJointID;
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -46,6 +48,8 @@ class Wheel : public WorldObject
     Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Wheel ();
     std::string getIndex();
+    void setRefBody(dBodyID inputID) { bodyID = inputID; };
+    void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
     
     // physics
     void stepPhysics ();

@@ -421,7 +421,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 #ifdef WIN32
     // Here we choose to let the user choose the rendering window settings
     log->put (LOG_WARNING, "Windows version: running Ogre setup window. FIXME");
-    ogreRoot->showConfigDialog();
+//    ogreRoot->showConfigDialog();
 #endif
     // Here we choose to let the system create a default rendering window
     log->put (LOG_INFO, "Initializing ogre root element");

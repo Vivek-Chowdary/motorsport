@@ -15,11 +15,13 @@
 #include "engine.hpp"
 #include "clutch.hpp"
 #include "gearbox.hpp"
+#include "diff.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
 
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
+    velocity = 0.0;
 }
 dBodyID Vehicle::getVehicleID()
 {
@@ -121,10 +123,17 @@ void Vehicle::attachWheelsToBody()
 
 void Vehicle::stepPhysics ()
 {
-    body->stepPhysics();
-    engine->stepPhysics();
+    // step torque transfer components first
     clutch->stepPhysics();
+    transfer->stepPhysics();
+    transferW1->stepPhysics();
+    transferW2->stepPhysics();
+        
+    // step rigid bodies    
+    engine->stepPhysics();
     gearbox->stepPhysics();
+    diff->stepPhysics();
+    body->stepPhysics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
@@ -133,7 +142,11 @@ void Vehicle::stepPhysics ()
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
-        wheelIter->second->addTorque (gearbox->getTorque());
         wheelIter->second->stepPhysics();
     }
+
+    const dReal * bodyVel;
+    bodyVel = dBodyGetLinearVel(body->bodyID);
+    velocity = sqrt(bodyVel[0]*bodyVel[0]+bodyVel[1]*bodyVel[1]+bodyVel[2]*bodyVel[2]);    
+    log->format (LOG_TRACE, "Vehicle Velocity (m/s): %f",velocity);
 }

@@ -11,31 +11,30 @@
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 
-int Clutch::instancesCount = 0;
-
-Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n, Engine *input)
+Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "CLU");
     log->put (LOG_INFO, "Starting to parse a clutch node");
     processXmlRootNode (n);
-    instancesCount++;
-    inputClass = input;
+}
+
+Clutch::Clutch ()
+{
+    log = new LogEngine (LOG_TRACE, "TFR");
+    torqueTransfer = 0.0;
+    revTorqueTransfer = 0.0;
+    maxTorqueTransfer = 1000;
+    lockedParam = 1;
 }
 
 Clutch::~Clutch ()
 {
-    instancesCount--;
     stopPhysics ();
     delete log;
 }
-
 
 void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     startPhysics (n);
 }
 
-void Clutch::setOutputPointer(Gearbox *output)
-{
-    pOutTorque = output;
-}

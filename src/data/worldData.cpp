@@ -247,7 +247,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         log->format (LOG_INFO, "Setting ODE erp value to %f", SystemData::getSystemDataPointer()->getErpValue());
         dWorldSetERP (worldID, SystemData::getSystemDataPointer()->getErpValue());
     }
-    
+
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
     dWorldSetGravity (ghostWorldID, 0, 0, 0);

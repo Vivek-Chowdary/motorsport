@@ -1,3 +1,4 @@
+
 /*****************************************************************************\
 |* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
@@ -18,16 +19,16 @@
 void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     torqueTransfer = 0.0;
-    gearboxFriction = 0.0;
-    gearboxInertia = 1.0;
+    revTorqueTransfer = 0.0;
+    friction = 0.01;
+    inertia = 1.0;
     angularVel = 0.0;
+    revAngularVel = 0.0;
     angularAcc = 0.0;
     if (n->hasAttributes ())
     {
-        // get all the attributes of the node
         DOMNamedNodeMap *attList = n->getAttributes ();
         int nSize = attList->getLength ();
-
         for (int i = 0; i < nSize; ++i)
         {
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
@@ -38,14 +39,14 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the Gearbox Friction: %s", attribute.c_str() );
-                gearboxFriction = stod (attribute);
+                friction = stod (attribute);
             }
             if (attribute == "gearboxInertia")
             {
                 attribute.clear();
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_TRACE, "Found the Gearbox Inertia: %s", attribute.c_str() );
-                gearboxInertia = stod (attribute);
+                inertia = stod (attribute);
             }
             if (attribute == "gear1Ratio")
             {
@@ -65,22 +66,18 @@ void Gearbox::stopPhysics ()
 
 void Gearbox::stepPhysics ()
 {
-    torqueTransfer = inputClass->getTorque()*gearRatio;
-    angularVel = (pOutWheel1->getAngularVel()+pOutWheel2->getAngularVel())/2/gearRatio;
-    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputClass->getTorque(), torqueTransfer,inputClass->getAngularVel(), angularVel);
-}
-double Gearbox::getTorque ()
-{
-    return torqueTransfer;
-}
+    double dtOverJe;
+    prevAngularVel = angularVel;
 
-double Gearbox::getRevTorque ()
-{
-    return 0.0;
-}
+    dtOverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
 
-double Gearbox::getAngularVel ()
-{
-    return angularVel;
+    torqueTransfer = inputJoint->getTorque();
+    revTorqueTransfer = outputJoint->getRevTorque()/gearRatio;
+
+    angularVel = (dtOverJe*(inputJoint->getTorque()-outputJoint->getRevTorque())+prevAngularVel)/(1+(dtOverJe*friction));
+    angularAcc = (angularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    revAngularVel = angularVel/gearRatio;
+
+    log->format(LOG_TRACE, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", torqueTransfer, revTorqueTransfer, angularVel, revAngularVel);
 }
 

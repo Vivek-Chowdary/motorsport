@@ -9,47 +9,26 @@
 
 #ifndef GEARBOX_HPP
 #   define GEARBOX_HPP
-#   include "worldObject.hpp"
-#   include "clutch.hpp"
+#   include "drive.hpp"
 #   include "wheel.hpp"
 #   include "data/xercesc_fwd.hpp"
-//forward declarations
-class Clutch;
-class Wheel;
 
-class Gearbox : public WorldObject
+class Gearbox : public Drive
 {
   private:
     // data
-    static int instancesCount;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
-    // physics
-    double gearboxFriction;
-    double gearboxInertia;
-    double angularVel;
-    double angularAcc;
-    double gearRatio;
-    double torqueTransfer;
-    double revTorque;
-    bool locked;
-    Clutch *inputClass;
-    Wheel *pOutWheel1;
-    Wheel *pOutWheel2;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
+
+    // physics
+    double gearRatio;
   public:
     // data
-    Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n, Clutch *input);
+    Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Gearbox ();
 
     // physics
     void stepPhysics ();
-    double getTorque ();
-    double getRevTorque ();
-    double getAngularVel ();
-
-    // links
-    void setOutputPointer(Wheel * wheel1, Wheel * wheel2);
 };
 #endif
