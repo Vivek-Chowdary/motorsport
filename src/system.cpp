@@ -26,6 +26,7 @@ SystemData::SystemData ()
     graphicsFrequency(0),
     timeScale(1),
     pauseStep(0),
+    videoRecordTimestep(0),
     height(1),
     width(1)
 {

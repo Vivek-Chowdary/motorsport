@@ -2,7 +2,9 @@
 <graphicsConfig
     localLogLevel = "LOG_VERBOSE"
     localLogName = "GFX"
-    screenshotFile = "screenshot.png"
+    _screenshotFile = "/dev/shm/screenframe%06i.jpg"
+    screenshotFile = "screenframe%02i.jpg"
+    initialScreenshotFileNumber = "0"
     >
     <ogre
         configFile = "../data/resources.cfg"

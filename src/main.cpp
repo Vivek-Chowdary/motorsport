@@ -24,6 +24,7 @@
 #include <string>
 #include "data/xmlParser.hpp"
 #include <iostream>
+#include "SDL/SDL_keysym.h"
 
 int main (int argc, char **argv)
 {
@@ -99,11 +100,15 @@ int main (int argc, char **argv)
                 if ( (systemData->pauseStep != 0 && steps < systemData->pauseStep) || (systemData->pauseStep == 0))
                 {
                     physicsEngine->computeStep ();
+                    if (SystemData::getSystemDataPointer()->videoRecordTimestep > 0)
+                    {
+                        recordVideoFrames();
+                    }
+                    inputEngine->computeStep ();
                     steps++;
                 }
                 step = systemData->timeScale;
             }
-            inputEngine->computeStep ();
         }
         // Run the gui engine.
         guiEngine->computeStep ();
@@ -149,13 +154,29 @@ void stopSdl (void)
     SDL_Quit ();
 }
 
+void recordVideoFrames ()
+{
+    static unsigned int time = 0;
+    int takeShot = 0;
+    if ( time >= SystemData::getSystemDataPointer()->videoRecordTimestep )
+    {
+        takeShot++;
+        time -= SystemData::getSystemDataPointer()->physicsTimeStep;
+    }
+    if ( (takeShot > 0) && (SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 0))
+    {
+        SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->setNewRawValue (1);
+        takeShot--;
+    }
+    time += SystemData::getSystemDataPointer()->physicsTimeStep;
+}
+
 LogEngine * processXmlRootNode (DOMNode * node)
 {
     LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     log->put(LOG_INFO, "Assigning default values");
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "MAI";
-    
     if (node)
     {
         if (node->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -168,7 +189,6 @@ LogEngine * processXmlRootNode (DOMNode * node)
                 log->put (LOG_INFO, "Found the main config element.");
                 if (node->hasAttributes ())
                 {
-                    // get all the attributes of the node
                     DOMNamedNodeMap *pAttributes = node->getAttributes ();
                     int nodeSize = pAttributes->getLength ();
 
@@ -198,9 +218,15 @@ LogEngine * processXmlRootNode (DOMNode * node)
                             name.erase();
                             name = XMLString::transcode (pAttributeNode->getValue ());
                             log->format (LOG_INFO, "Found the log name: %s", name.c_str());
-
                             localLogName.erase();
                             localLogName = name;
+                        }
+                        if (name == "videoRecordTimestep")
+                        {
+                            name.erase();
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_INFO, "Found video recording timestep value: %s", name.c_str());
+                            SystemData::getSystemDataPointer()->videoRecordTimestep = stoi (name);
                         }
                         name.erase();
                     }

@@ -6,4 +6,6 @@
 
     localLogLevel = "LOG_TRACE"
     localLogName = "MAI"
+    _videoRecordTimestep = "40" _="1000 / 40 = 25 frames per second"
+    videoRecordTimestep = "0"
 />

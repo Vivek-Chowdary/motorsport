@@ -99,8 +99,11 @@ int GraphicsEngine::computeStep (void)
     // take a screenshot if neededa
     if (systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
     {
-        log->format (LOG_INFO, "Taking a screenshot in %s.", screenshotFilename.c_str());
-        systemData->ogreWindow->writeContentsToFile (screenshotFilename);
+        static unsigned int count = initialFrame;
+        static char tmpName[64];
+        sprintf (tmpName, screenshotFilename.c_str(), count++);
+        log->format (LOG_TRACE, "Taking a screenshot in %s.", tmpName);
+        systemData->ogreWindow->writeContentsToFile (tmpName);
         systemData->axisMap[getIDKeyboardKey(SDLK_PRINT)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
 
@@ -180,7 +183,8 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 {
     LOG_LEVEL localLogLevel = LOG_TRACE;
     std::string localLogName = "GFX";
-    screenshotFilename.assign ("screenshot.png");
+    screenshotFilename.assign ("frame%i.jpg");
+    initialFrame = 0;
     std::string ogreConfigFile = "../data/resources.cfg";
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
@@ -236,6 +240,13 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                             screenshotFilename.clear();
                             assignXmlString (screenshotFilename, attNode->getValue());
                             tmpLog->format (LOG_INFO, "Found the screenshot filename: %s", screenshotFilename.c_str());
+                        }
+                        if (attribute == "initialScreenshotFileNumber")
+                        {
+                            attribute.clear();
+                            assignXmlString (attribute, attNode->getValue());
+                            tmpLog->format (LOG_INFO, "Found the initial screenshot number: %s", attribute.c_str());
+                            initialFrame = stoi (attribute);
                         }
                         attribute.clear();
                     }

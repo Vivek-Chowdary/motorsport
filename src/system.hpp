@@ -51,6 +51,7 @@ class SystemData
     int height;
     int width;
 
+    int videoRecordTimestep;
     bool isMainLoopEnabled (void); // does the program have to keep running?
     void enableMainLoop (void); // allows the program to start running
     void disableMainLoop (void);    // allows the program to stop running

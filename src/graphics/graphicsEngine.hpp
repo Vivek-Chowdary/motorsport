@@ -32,6 +32,7 @@ class GraphicsEngine
 
     // / Name of the file were screenshots will be saved.
     std::string screenshotFilename;
+    int initialFrame;
   public:
     int width;
     int height;
