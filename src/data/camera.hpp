@@ -37,11 +37,11 @@ class Camera
     int rotateDown;
 
   public:
-    Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     ~Camera ();
 
     // graphics
-    void startGraphics (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
+    void startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ);
     void stepGraphics ();
     void stopGraphics ();
     Ogre::Camera * ogreCamera;

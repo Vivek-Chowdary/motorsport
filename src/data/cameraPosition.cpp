@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -19,43 +20,35 @@
 *
 ******************************************************************************/
 
-#ifndef BODY_HPP
-#   define BODY_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
-#   include "worldObject.hpp"
-class Body;
-#   include "world.hpp"
+#include "cameraPosition.hpp"
 
-class Body : public WorldObject
+CameraPosition::CameraPosition (const Vector3d & position, const Vector3d & destination)
 {
-  private:
-    static int instancesCount;
+    this->position = position;
+    this->destination = destination;
+}
 
-  public:
-    // data
-    Body (const std::string & xmlFilename);
-    ~Body ();
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
-    void processXmlRootNode (DOMNode * n);
+CameraPosition::CameraPosition (double posX, double posY, double posZ, double destX, double destY, double destZ)
+{
+    position.x = posX;
+    position.y = posY;
+    position.z = posZ;
+    destination.x = destX;
+    destination.y = destY;
+    destination.z = destZ;
+}
 
-    // physics
-    void startPhysics (DOMNode * n);
-    void stepPhysics ();
-    void stopPhysics ();
-    dBodyID bodyID;
-    dGeomID bodyGeomID;
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
+CameraPosition::~CameraPosition ()
+{
+    //empty
+}
 
-    // graphics
-    void startGraphics (DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
-    Ogre::Entity * bodyEntity;
-    Ogre::SceneNode * bodyNode;
-};
-#endif
+Vector3d CameraPosition::getPosition()
+{
+    return position;
+}
+
+Vector3d CameraPosition::getDestination()
+{
+    return destination;
+}

@@ -21,10 +21,13 @@
 
 #include "camera.hpp"
 
-Camera::Camera (int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
-{
+int Camera::instancesCount = 0;
 
-    startGraphics (cameraNumber, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+Camera::Camera (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
+{
+    instancesCount ++;
+    
+    startGraphics (posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
     startInput ();
     rotateLeft = rotateRight = rotateUp = rotateDown = 0;
     goBack = goForward = goLeft = goRight = false;
@@ -32,7 +35,7 @@ Camera::Camera (int cameraNumber, float posX, float posY, float posZ, float look
 
 Camera::~Camera ()
 {
-
+    instancesCount--;
 }
 
 int Camera::getRotateUp ()

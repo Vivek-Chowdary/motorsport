@@ -1,6 +1,6 @@
 /******************************************************************************
 *
-* Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
+* Copyright (C) 2004 Daniel Toplak (homer.simpson123@gmx.de)
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License
@@ -10,37 +10,39 @@
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-*
+*   
 * See the GNU General Public License for more details.
-*
+*   
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*
+*   
 ******************************************************************************/
 
-#include "camera.hpp"
-
-void Camera::startGraphics (float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
-{
-    char name[20];
-    sprintf (name, "Camera%i", instancesCount);
-
-    ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (name);
-    ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
-    ogreCamera->setPosition (Ogre::Vector3 (posX, posY, posZ));
-    ogreCamera->lookAt (Ogre::Vector3 (lookAtX, lookAtY, lookAtZ));
+#ifndef VECTOR3D_HPP
+#   define VECTOR3D_HPP
+#   include <vector>
+#   include <math.h>
     
-    // Set near clip plane at 1 mm. of distance.
-    ogreCamera->setNearClipDistance (0.001);
-}
-
-void Camera::stepGraphics ()
+class Vector3d 
 {
-    // empty
-}
+  public:double x;
+    double y;
+    double z;
+    Vector3d ();
+    Vector3d (double x, double y, double z);
+    Vector3d (const Vector3d & cpy);
+    const Vector3d & operator= (const Vector3d & cpy);
+    bool operator== (const Vector3d & cpy) const;
+    bool operator!= (const Vector3d & cpy) const;
+    Vector3d & operator+ (const Vector3d & k) const;
+    Vector3d & operator- (const Vector3d & k) const;
+    const Vector3d & operator+= (const Vector3d & k);
+    const Vector3d & operator-= (const Vector3d & k);
+    double distance () const;
+    double distance (const Vector3d & k) const;
+};
 
-void Camera::stopGraphics ()
-{
-
-}
+#   include "vector3d.cpp"
+    
+#endif  /*  */

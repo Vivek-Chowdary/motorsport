@@ -2,7 +2,7 @@
 <world
     name = "Test World"
     description = "Drive the test car in the testing grounds! Or something :)"
-    camera = "track"            a="vehicle, track. #0 by default"
+    useTrackCamera = "true"            a="vehicle, track. #0 by default"
     gravityX = "0.0"
     gravityY = "0.0"
     gravityZ = "-0.000098"      b="Must be fixed, should be -9.8"
@@ -10,7 +10,7 @@
     <vehicle
         directory = "testCar"
         driver = "user"         c="ai, net, user, replay, ghostReplay, none... still not used"
-        startPosition = "0"     d="Reference to track position (starting grid positions, pits, important places...)"
+        startPosition = "centerHigh"     d="Reference to track position (starting grid positions, pits, important places...), indexed by string!!!!"
         >
     </vehicle>
     <track

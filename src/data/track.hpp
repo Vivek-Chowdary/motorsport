@@ -19,43 +19,50 @@
 *
 ******************************************************************************/
 
-#ifndef BODY_HPP
-#   define BODY_HPP
+#ifndef TRACK_HPP
+#   define TRACK_HPP
 #   include "ode.h"
 #   include "Ogre.h"
 #   include "OgreNoMemoryMacros.h"
 #   include "system.hpp"
 #   include "worldObject.hpp"
-class Body;
+#   include <map>
+#   include "cameraPosition.hpp"
+#   include "vehiclePosition.hpp"
+class Track;
 #   include "world.hpp"
 
-class Body : public WorldObject
+class Track : public WorldObject
 {
   private:
-    static int instancesCount;
-
+    std::string name;
+    std::string description;
+    std::string author;
+    std::string contact;
+    std::string license;
   public:
     // data
-    Body (const std::string & xmlFilename);
-    ~Body ();
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
+    Track (const std::string & xmlFilename);
+    ~Track ();
     void processXmlRootNode (DOMNode * n);
+    void processXmlVehiclePositionNode (DOMNode * n);
+    void processXmlCameraPositionNode (DOMNode * n);
+    std::map <std::string, CameraPosition * > cameraPositionMap;
+    std::map <std::string, VehiclePosition * > vehiclePositionMap;
+    std::vector < Cube * > cubeList;
+    std::vector < Camera * >cameraList;
 
     // physics
-    void startPhysics (DOMNode * n);
+/*    void startPhysics (DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
-    dBodyID bodyID;
+    void stopPhysics ();*/
     dGeomID bodyGeomID;
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
 
     // graphics
-    void startGraphics (DOMNode * n);
+/*    void startGraphics (DOMNode * n);
     void stepGraphics ();
-    void stopGraphics ();
-    Ogre::Entity * bodyEntity;
-    Ogre::SceneNode * bodyNode;
+    void stopGraphics ();*/
+    Ogre::Entity * trackEntity;
+    Ogre::SceneNode * trackNode;
 };
 #endif

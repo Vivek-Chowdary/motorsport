@@ -36,12 +36,18 @@ World *World::getWorldPointer ()
 
 World::World (char * xmlFilename)
 {
-    log = new LogEngine(LOG_TRACE, "WRL");
-    worldPointer = this;
+    if (worldPointer != 0)
+    {
+        delete this;
+    } else {
+        log = new LogEngine(LOG_TRACE, "WRL");
+        worldPointer = this;
 
-    XmlFile* xmlFile = new XmlFile (xmlFilename);
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+        log->format(LOG_INFO,"Reading %s world file", xmlFilename);
+        XmlFile* xmlFile = new XmlFile (xmlFilename);
+        processXmlRootNode (xmlFile->getRootNode());
+        delete xmlFile;
+    }
 }
 
 World::~World ()
@@ -55,24 +61,13 @@ World::~World ()
     }
     bodyList.clear ();
     
-    // unload the cubes from memory
-    log->put (LOG_INFO, "Unloading cubes from memory...");
-    size = cubeList.size ();
+    size = trackList.size ();
     for (int i = 0; i < size; i++)
     {
-        delete cubeList[i];
+        delete trackList[i];
     }
-    cubeList.clear ();
+    trackList.clear ();
     
-    // unload the cameras from memory
-    log->put (LOG_INFO, "Unloading cameras from memory...");
-    size = cameraList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        delete cameraList[i];
-    }
-    cameraList.clear ();
-
     log->put (LOG_INFO, "Destroying ODE world");
     dSpaceDestroy (spaceID);
     log->put (LOG_INFO, "Destroying ODE main collision space");
@@ -80,6 +75,9 @@ World::~World ()
     log->put (LOG_INFO, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
 
+    
+
+    
     worldPointer = NULL;
     delete log;
 }
@@ -94,10 +92,9 @@ void World::processXmlRootNode (DOMNode * n)
     double gravityZ = 0.0;
     bool useTrackCamera = true;    //if false, use car camera
     std::string carDirectory = "testCar";
-    int carStartPosition = 0;   //first 'grid' position
+    std::string carStartPosition = "0";   //first 'grid' position
     std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
     std::string trackDirectory = "testingGround";
-
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -129,7 +126,7 @@ void World::processXmlRootNode (DOMNode * n)
                             assignXmlString (description, attNode->getValue());
                             log->format (LOG_INFO, "Found the world description: %s", description.c_str());
                         }
-                        if (attribute == "camera")
+                        if (attribute == "useTrackCamera")
                         {
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
@@ -195,10 +192,9 @@ void World::processXmlRootNode (DOMNode * n)
                                         }
                                         if (attribute == "startPosition")
                                         {
-                                            attribute.clear();
-                                            assignXmlString (attribute, attNode->getValue());
-                                            log->format (LOG_INFO, "Found the car start position index: %s", attribute.c_str());
-                                            carStartPosition = stoi (attribute);
+                                            carStartPosition.clear();
+                                            assignXmlString (carStartPosition, attNode->getValue());
+                                            log->format (LOG_INFO, "Found the car start position index: %s", carStartPosition.c_str());
                                         }
                                         attribute.clear();
                                     }
@@ -259,18 +255,34 @@ void World::processXmlRootNode (DOMNode * n)
     log->put ( LOG_INFO, "Setting ODE world gravity");
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
 
-    //track = new Track ("../data/tracks" + trackDirectory + "/track.xml");
-    //car = new Car ("../data/vehicles/" + carDirectory + "/vehicle.xml"); // TODO
-    std::string tmpPath = ("../data/vehicles/");
+    std::string tmpPath = ("../data/tracks/");
+    tmpPath.append (trackDirectory);
+    tmpPath.append ("/track.xml");
+    Track * tmpTrack = new Track (tmpPath);
+    //tmpTrack->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
+    trackList.push_back (tmpTrack);
+
+    tmpPath = ("../data/vehicles/");
     tmpPath.append (carDirectory);
     tmpPath.append ("/body.xml");
-    body = new Body ( tmpPath );
-    //car->setPosition (track->getPositionX(carStartPosition), track->getPositionY(carStartPosition), track->getPositionZ(carStartPosition));  //TODO
-    //body->setPosition (track->getPositionX(carStartPosition), track->getPositionY(carStartPosition), track->getPositionZ(carStartPosition));
-    body->setPosition (-5.0, -5.0, 3.0);
+    Body * tmpBody = new Body (tmpPath);
+    Vector3d tmpPos = tmpTrack->vehiclePositionMap[carStartPosition]->getPosition();
+    tmpBody->setPosition (tmpPos.x, tmpPos.y, tmpPos.z);
+    Vector3d tmpRot = tmpTrack->vehiclePositionMap[carStartPosition]->getRotation();
+    tmpBody->setRotation (tmpPos.x, tmpPos.y, tmpPos.z);
+    bodyList.push_back (tmpBody);
 
-    // small hack to continue using the vectors:
-    bodyList.push_back (body);
+    Ogre::Viewport * vp;
+    log->put (LOG_INFO, "Setting camera viewport");
+    if (useTrackCamera)
+    {
+        vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (trackList[0]->cameraList[0]->ogreCamera);
+    } else {
+        //don't use track camera; use vehicle camera. until there's vehicles, let's use 2nd track camera instead.
+        vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (trackList[0]->cameraList[1]->ogreCamera);
+    }
+    log->put (LOG_INFO, "Setting bg color");
+    vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
 
 //////// OLD CODE, WILL BE REUSED FOR SEVERAL CARS
 //    for (int i = 0; i < 10; i++)
@@ -282,47 +294,6 @@ void World::processXmlRootNode (DOMNode * n)
 //        bodyList.push_back (bodyPointer);
 //    }
 //////////////////////////////////////////////////
-
-    // Create the cubes. Must be moved to track constructor.
-    int numberOfCubes = 20;
-    log->format (LOG_INFO, "Creating an array of %i cubes", numberOfCubes);
-    for (int i = 0; i < numberOfCubes; i++)
-    {
-        log->format (LOG_VERBOSE, "Adding cube number %i", i);
-        const int separation = 4;
-        Cube *cubePointer;
-        cubePointer = new Cube ("../data/parts/cube/cube.xml");
-        cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
-        cubeList.push_back (cubePointer);
-    }
-    
-    // Must be moved to track and vehicle constructors.
-    int numberOfCameras = 4;
-    log->format (LOG_INFO, "Creating %i cameras", numberOfCameras);
-    for (int i = 0; i < numberOfCameras; i++)
-    {
-        Camera *cameraPointer = new Camera (i, -20, -20, 5, 0, 0, 0);
-        cameraList.push_back (cameraPointer);
-    }
-    
-    log->put (LOG_INFO, "Setting camera viewport");
-    Ogre::Viewport * vp = SystemData::getSystemDataPointer()->ogreWindow->addViewport (cameraList[0]->ogreCamera);
-    log->put (LOG_INFO, "Setting bg color");
-    vp->setBackgroundColour (Ogre::ColourValue (0, 0, 0));
-    Ogre::Quaternion rotationToZAxis;
-    rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
-    SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, "skyboxMaterial", 5000, true, rotationToZAxis);
-    log->put (LOG_INFO, "Creating the ode plane");
-    dCreatePlane (spaceID, 0, 0, 1, 0);
-    Ogre::Plane plane; 
-    plane.normal = Ogre::Vector3::UNIT_Z; 
-    plane.d = 0; 
-    Ogre::SceneManager* pOgreSceneManager = SystemData::getSystemDataPointer()->ogreSceneManager; 
-    Ogre::MeshManager::getSingleton().createPlane("Myplane",plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y); 
-    Ogre::Entity* pPlaneEnt = pOgreSceneManager->createEntity("plane", "Myplane"); //"MyPlane" name,generated on the fly with instancesNumber
-    pPlaneEnt->setMaterialName("groundMaterial"); 
-    pPlaneEnt->setCastShadows(true); 
-    pOgreSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(pPlaneEnt);
 
     // Clean up things, leave others in memory (world properties).
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");

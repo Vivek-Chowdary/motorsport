@@ -190,7 +190,10 @@ SOURCES := \
 	gui/guiEngine.cpp \
 	data/xmlParser.cpp \
         data/worldObject.cpp \
+        data/cameraPosition.cpp \
+        data/vehiclePosition.cpp \
 	data/worldData.cpp \
+        data/trackData.cpp \
 	data/cubeData.cpp \
 	data/bodyData.cpp \
 	data/cameraData.cpp \

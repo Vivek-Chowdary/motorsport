@@ -102,10 +102,10 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update Ogre's cubes positions with Ode's positions.
-    int numberOfCubes = World::getWorldPointer ()->cubeList.size ();
+    int numberOfCubes = World::getWorldPointer ()->trackList[0]->cubeList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        World::getWorldPointer ()->cubeList[currentCube]->stepGraphics ();
+        World::getWorldPointer ()->trackList[0]->cubeList[currentCube]->stepGraphics ();
     }
 
     // Let the listener frames be started and ended: they are needed for particle systems.

@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -19,43 +20,21 @@
 *
 ******************************************************************************/
 
-#ifndef BODY_HPP
-#   define BODY_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
-#   include "worldObject.hpp"
-class Body;
-#   include "world.hpp"
+#ifndef VEHICLEPOSITION_HPP
+#   define VEHICLEPOSITION_HPP
+#   include "vector3d.hpp"
 
-class Body : public WorldObject
+class VehiclePosition
 {
   private:
-    static int instancesCount;
-
+    Vector3d position;
+    Vector3d rotation;
   public:
-    // data
-    Body (const std::string & xmlFilename);
-    ~Body ();
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
-    void processXmlRootNode (DOMNode * n);
-
-    // physics
-    void startPhysics (DOMNode * n);
-    void stepPhysics ();
-    void stopPhysics ();
-    dBodyID bodyID;
-    dGeomID bodyGeomID;
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
-
-    // graphics
-    void startGraphics (DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
-    Ogre::Entity * bodyEntity;
-    Ogre::SceneNode * bodyNode;
+    VehiclePosition (const Vector3d & position, const Vector3d & rotation);
+    VehiclePosition (double posX, double posY, double posZ, double rotX, double rotY, double rotZ);
+    ~VehiclePosition ();
+    Vector3d getPosition();
+    Vector3d getRotation();
 };
+
 #endif

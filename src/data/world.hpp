@@ -31,6 +31,7 @@
 #   include "cube.hpp"
 #   include "body.hpp"
 #   include "camera.hpp"
+#   include "track.hpp"
 
 class World : public WorldObject
 {
@@ -48,13 +49,9 @@ class World : public WorldObject
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 
-    //Track * track;
-    //Car * body;
-    Body * body;
-
-    std::vector < Cube * > cubeList;
+    std::vector < Track * > trackList;
     std::vector < Body * >bodyList;
-    std::vector < Camera * >cameraList;
+    //std::vector < Vehicle * >vehicleList;
 };
 
 #endif

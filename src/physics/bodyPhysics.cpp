@@ -102,9 +102,18 @@ void Body::startPhysics (DOMNode * n)
     license.clear();
 }
 
-void Body::setPosition (float posX, float posY, float posZ)
+void Body::setPosition (double posX, double posY, double posZ)
 {               
     dBodySetPosition (bodyID, posX, posY, posZ);
+}
+
+void Body::setRotation (double rotX, double rotY, double rotZ)
+{
+    dReal newRot[3];
+    newRot[0] = rotX;
+    newRot[1] = rotY;
+    newRot[2] = rotZ;
+    dBodySetRotation (bodyID, newRot);
 }
 
 void Body::stopPhysics ()

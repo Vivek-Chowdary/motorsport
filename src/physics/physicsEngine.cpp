@@ -66,10 +66,10 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->put (LOG_TRACE, "Doing an step: calculating a physics step");
 
-    int size = World::getWorldPointer ()->cubeList.size ();
+    int size = World::getWorldPointer ()->trackList[0]->cubeList.size ();
     for (int i = 0; i < size; i++)
     {
-        World::getWorldPointer ()->cubeList[i]->stepPhysics ();
+        World::getWorldPointer ()->trackList[0]->cubeList[i]->stepPhysics ();
     }
 
     size = World::getWorldPointer ()->bodyList.size ();
@@ -96,24 +96,24 @@ int PhysicsEngine::computeStep (void)
     {
         float x = 0, z = 0;
         // translation of the camera, advancing or strafing
-        x += (World::getWorldPointer ()->cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
-        x -= (World::getWorldPointer ()->cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
-        z -= (World::getWorldPointer ()->cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
-        z += (World::getWorldPointer ()->cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
+        x += (World::getWorldPointer ()->trackList[0]->cameraList[0]->goRight) ? systemData->physicsTimeStep : 0;
+        x -= (World::getWorldPointer ()->trackList[0]->cameraList[0]->goLeft) ? systemData->physicsTimeStep : 0;
+        z -= (World::getWorldPointer ()->trackList[0]->cameraList[0]->goForward) ? systemData->physicsTimeStep : 0;
+        z += (World::getWorldPointer ()->trackList[0]->cameraList[0]->goBack) ? systemData->physicsTimeStep : 0;
         x /= 100;
         z /= 100;
-        World::getWorldPointer ()->cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
+        World::getWorldPointer ()->trackList[0]->cameraList[0]->ogreCamera->moveRelative (Ogre::Vector3 (x, 0, z));
     }
     {
         float x = 0, z = 0;
-        x -= World::getWorldPointer ()->cameraList[0]->getRotateRight ();
-        x += World::getWorldPointer ()->cameraList[0]->getRotateLeft ();
-        z += World::getWorldPointer ()->cameraList[0]->getRotateUp ();
-        z -= World::getWorldPointer ()->cameraList[0]->getRotateDown ();
+        x -= World::getWorldPointer ()->trackList[0]->cameraList[0]->getRotateRight ();
+        x += World::getWorldPointer ()->trackList[0]->cameraList[0]->getRotateLeft ();
+        z += World::getWorldPointer ()->trackList[0]->cameraList[0]->getRotateUp ();
+        z -= World::getWorldPointer ()->trackList[0]->cameraList[0]->getRotateDown ();
         x /= 100;
         z /= 100;
-        World::getWorldPointer ()->cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
-        World::getWorldPointer ()->cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
+        World::getWorldPointer ()->trackList[0]->cameraList[0]->ogreCamera->yaw (x * (systemData->physicsTimeStep));
+        World::getWorldPointer ()->trackList[0]->cameraList[0]->ogreCamera->pitch (z * (systemData->physicsTimeStep));
     }
 
     return (0);
