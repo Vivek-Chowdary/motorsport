@@ -5,7 +5,7 @@
     screenshotFile = "screenshot.png"
     >
     <ogre
-        configFile = "resources.cfg"
+        configFile = "../data/resources.cfg"
         sceneManager = "ST_GENERIC"
         anisotropy = "1"
         filtering = "TFO_NONE"

@@ -24,16 +24,17 @@
 
 void Cube::processCubeDataFile (DOMNode * n, void *data)
 {
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
         {
             char *name = XMLString::transcode (n->getNodeName ());
-            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+            log->format (LOG_TRACE, "Name: %s", name);;
 
             if (!strncmp (name, "cube", 5))
             {
-                XERCES_STD_QUALIFIER cout << "Found the cube main data config element." << XERCES_STD_QUALIFIER endl;
+                log->put (LOG_TRACE, "Found the cube main data config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -46,17 +47,32 @@ void Cube::processCubeDataFile (DOMNode * n, void *data)
                         if (!strncmp (name, "name", 5))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the name:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_TRACE, "\tFound the name: %s", name);
                         }
-
                         if (!strncmp (name, "description", 13))
                         {
                             XMLString::release (&name);
-                            XERCES_STD_QUALIFIER cout << "\tFound the description:";
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_TRACE, "\tFound the description: %s", name);
+                        }
+                        if (!strncmp (name, "author", 7))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the author: %s", name);
+                        }
+                        if (!strncmp (name, "contact", 5))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+                        }
+                        if (!strncmp (name, "license", 8))
+                        {
+                            XMLString::release (&name);
+                            name = XMLString::transcode (pAttributeNode->getValue ());
+                            log->format (LOG_TRACE, "\tFound the license: %s", name);
                         }
                         XMLString::release (&name);
                     }
@@ -68,15 +84,15 @@ void Cube::processCubeDataFile (DOMNode * n, void *data)
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
                             char *name = XMLString::transcode (n->getNodeName ());
-                            XERCES_STD_QUALIFIER cout << "Name:" << name << XERCES_STD_QUALIFIER endl;
+                            log->format (LOG_TRACE, "Name: %s", name);;
                             if (!strncmp (name, "graphics", 9))
                             {
-                                XERCES_STD_QUALIFIER cout << "Found the cube graphics data element." << XERCES_STD_QUALIFIER endl;
+                                log->put (LOG_TRACE, "Found the cube graphics data element.");
                                 (*(CubeData *) data).cube->processCubeGraphicsDataNode (n, (*(CubeData *) data).graphics);
                             }
                             if (!strncmp (name, "physics", 8))
                             {
-                                XERCES_STD_QUALIFIER cout << "Found the cube physics data element." << XERCES_STD_QUALIFIER endl;
+                                log->put (LOG_TRACE, "Found the cube physics data element.");
                                 (*(CubeData *) data).cube->processCubePhysicsDataNode (n, (*(CubeData *) data).physics);
                             }
                         }
@@ -85,11 +101,13 @@ void Cube::processCubeDataFile (DOMNode * n, void *data)
             }
         }
     }
+    delete log;
 }
 
 void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics)
 {
-    XERCES_STD_QUALIFIER cout << "\t\t\tParsing cube graphics:";
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    log->put (LOG_TRACE, "Parsing cube graphics");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -99,12 +117,29 @@ void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics
         {
             DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
             char *name = XMLString::transcode (pAttributeNode->getName ());
+            if (!strncmp (name, "author", 7))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the author: %s", name);
+            }
+            if (!strncmp (name, "contact", 5))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+            }
+            if (!strncmp (name, "license", 8))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the license: %s", name);
+            }
             if (!strncmp (name, "material", 9))
             {
                 XMLString::release (&name);
-                XERCES_STD_QUALIFIER cout << "\tFound the cube graphics material:";
                 name = XMLString::transcode (pAttributeNode->getValue ());
-                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                log->format (LOG_TRACE, "\tFound the cube graphics material: %s", name);
 
                 graphics->material = new char[strlen (name) + 1];
                 strncpy (graphics->material, name, strlen (name) + 1);
@@ -113,18 +148,16 @@ void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics
             if (!strncmp (name, "mesh", 5))
             {
                 XMLString::release (&name);
-                XERCES_STD_QUALIFIER cout << "\tFound the cube graphics mesh filename:";
                 name = XMLString::transcode (pAttributeNode->getValue ());
-                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                log->format (LOG_TRACE, "\tFound the cube graphics mesh filename: %s", name);
 
                 graphics->mesh = new char[strlen (name) + 1];
                 strncpy (graphics->mesh, name, strlen (name) + 1);
             }
             if (!strncmp (name, "ogreName", 9))
             {
-                XERCES_STD_QUALIFIER cout << "\tFound the cube graphics ogre-identifier format:";
                 name = XMLString::transcode (pAttributeNode->getValue ());
-                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                log->format (LOG_TRACE, "\tFound the cube graphics ogre-identifier format: %s", name);
 
                 graphics->ogreName = new char[strlen (name) + 1];
                 strncpy (graphics->ogreName, name, strlen (name) + 1);
@@ -132,11 +165,14 @@ void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics
             XMLString::release (&name);
         }
     }
-    XERCES_STD_QUALIFIER cout << "\t\t\tFinished cube graphics:";
+    log->put (LOG_TRACE, "Finished cube graphics.");
+    delete log;
 }
 
 void Cube::processCubePhysicsDataNode (DOMNode * n, CubePhysicsData * physics)
 {
+    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    log->put (LOG_TRACE, "Parsing cube physic.");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -147,16 +183,35 @@ void Cube::processCubePhysicsDataNode (DOMNode * n, CubePhysicsData * physics)
         {
             DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
             char *name = XMLString::transcode (pAttributeNode->getName ());
+            if (!strncmp (name, "author", 7))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the author: %s", name);
+            }
+            if (!strncmp (name, "contact", 5))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the contact information: %s", name);
+            }
+            if (!strncmp (name, "license", 8))
+            {
+                XMLString::release (&name);
+                name = XMLString::transcode (pAttributeNode->getValue ());
+                log->format (LOG_TRACE, "\tFound the license: %s", name);
+            }
             if (!strncmp (name, "size", 5))
             {
                 XMLString::release (&name);
-                XERCES_STD_QUALIFIER cout << "\tFound the cube physics size:";
                 name = XMLString::transcode (pAttributeNode->getValue ());
-                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                log->format (LOG_TRACE, "\tFound the cube physics size: %s", name);
 
                 physics->size = atoi (name);
             }
             XMLString::release (&name);
         }
     }
+    log->put (LOG_TRACE, "Finished cube physic.");
+    delete log;
 }

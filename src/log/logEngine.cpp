@@ -64,7 +64,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     }
     // increase logEngines counter
     numberOfLogEngines++;
-    format (LOG_INFO, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
+    format (LOG_TRACE, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
 
     return;
 }
@@ -133,7 +133,7 @@ LogEngine::~LogEngine ()
 {
     // decrease number of logEngines
     numberOfLogEngines--;
-    format (LOG_INFO, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
+    format (LOG_TRACE, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
 
     if (numberOfLogEngines == 0)
     {

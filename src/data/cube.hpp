@@ -27,6 +27,7 @@
 #   include "system.hpp"
 #   include "world.hpp"
 #   include "domParser.hpp"
+#   include "logEngine.hpp"
 
 struct CubeData;
 struct CubePhysicsData;

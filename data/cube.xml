@@ -1,19 +1,24 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <cube
     name = "Cube"
-    description = "A strange black and white textured cube"
+    description = "A strange wooden cube"
+    author = "Bruno Gonzalez Campo (STenyaK)"
+    contact = "stenyak AT gmx DOT net"
+    license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <graphics
-        author = "sinbad (sinbadATogre3dDOTorg), STenyaK (stenyakATgmxDOTnet)"
-        license = "LGPL"
+        author = "Bruno Gonzalez Campo (STenyaK)"
+        contact = "stenyak AT gmx DOT net"
+        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
         material = "cube"
         mesh = "../data/cube.mesh"
         ogreName = "cube%i"
         >
     </graphics>
     <physics
-        author = "STenyaK (stenyakATgmxDOTnet)"
-        license = "Creative Commons"
+        author = "Bruno Gonzalez Campo (STenyaK)"
+        contact = "stenyak AT gmx DOT net"
+        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
         size = "100"
         >
     </physics>

@@ -1,47 +1,31 @@
 material skybox
 {
-	technique
-	{
-		pass
-		{
-			lighting off
-			depth_write off
-
-			texture_unit
-			{
-				cubic_texture mospSky.jpg separateUV
-				tex_address_mode clamp
-			}
-		}
-	}
+    technique
+    {
+        pass
+        {
+            lighting off
+            depth_write off
+            texture_unit
+            {
+            cubic_texture mospSky.jpg separateUV
+            tex_address_mode clamp
+            }
+        }
+    }
 }
 material cube
 {
-	technique
-	{
-		pass
-		{
-			lighting off
-			ambient 5.2 5.2 5.2
-			texture_unit
-			{
-				texture cubetexture.jpg
-			}
-		}
-	}
-}
-material 1 - Default
-{
-	technique
-	{
-		pass
-		{
-			lighting off
-			ambient 0.2 0.2 0.2
-			texture_unit
-			{
-				texture cubetexture.jpg
-			}
-		}
-	}
+    technique
+    {
+        pass
+        {
+            lighting off
+            ambient 5.2 5.2 5.2
+            texture_unit
+            {
+                texture cubetexture.jpg
+            }
+        }
+    }
 }
