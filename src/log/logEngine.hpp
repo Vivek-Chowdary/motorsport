@@ -28,6 +28,9 @@
 #    include <cstdlib>
 #    include <string>
 
+#include <fstream>
+#include <iostream>
+
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
 */
@@ -64,7 +67,7 @@ class LogEngine
     /// Indicates the file where logs will be writen.
     /** Indicates a plain-text file where log messages can be writen.
     */
-    static FILE *logFile;
+    static std::fstream logFile;
     /// Indicates how much information will be stored in the log file.
     /** Indiactes how much information will be stored in the log file, regardless of a higher level for current instance.
     */
@@ -73,6 +76,12 @@ class LogEngine
     /** Stores the number of log engine instances that have been created. This number is increased or decreased everytime a log engine is created or deleted.
     */
     static int numberOfLogEngines;
+    /// Helper function translating log level into a short code.
+    /** Helper function translating log level into a short code. 
+	@param verbosity level to get code for.
+	@return code as a short c-string.
+    */
+    const char* GetLogLevelCode(LOG_LEVEL level);
   public:
     /// Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.
@@ -106,6 +115,13 @@ class LogEngine
         @return -3 if there was a problem writing to the file.
     */
     int format ( LOG_LEVEL level, const char *textToLogFormat, ... );
+
+
+
+    /// Friends, this test function is a friend and can use private methods.
+    friend void TestGetLogLevelCode();
+  
+
 };
 
 #endif

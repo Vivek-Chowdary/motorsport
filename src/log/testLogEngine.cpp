@@ -384,6 +384,19 @@ void TestFormat()
 }
 
 //////////////////////////////////////////////////////////////////
+
+void TestGetLogLevelCode()
+{
+  LogEngine l( LOG_WARNING, "TST");
+  MAssert(std::string("EE") == l.GetLogLevelCode(LOG_ERROR));
+  MAssert(std::string("WW") == l.GetLogLevelCode(LOG_WARNING));
+  MAssert(std::string("II") == l.GetLogLevelCode(LOG_INFO));
+  MAssert(std::string("VV") == l.GetLogLevelCode(LOG_VERBOSE));
+  MAssert(std::string("TT") == l.GetLogLevelCode(LOG_TRACE));
+}
+
+//////////////////////////////////////////////////////////////////
+
 int main()
 {
   MTestName = "Log Engine Tests";
@@ -391,6 +404,7 @@ int main()
   TestLogEngineConstructor();
   TestPut();
   TestFormat();
+  TestGetLogLevelCode();
 
   MTestReport();
   return MTestErrors;

@@ -23,16 +23,13 @@
 #include "logEngine.hpp"
 //TODO use iostreams for file management/writing
 
-FILE * LogEngine::logFile = NULL;
+std::fstream LogEngine::logFile;
 LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
 int LogEngine::numberOfLogEngines = 0;
 
 LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name ) :
     logName(name)
 {
-    //check if the level is correct
-    if ( localLevel < 0 || localLevel > MAX_LOG_LEVEL ) return;
-    
     //we set the local level of verbosity
     logLevel = localLevel;
 
@@ -40,24 +37,25 @@ LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name ) :
     logName.resize(3, ' ');
 
     //open the file for writing in rewrite mode if necessary.
-    if (!numberOfLogEngines || !logFile)
+    if (!numberOfLogEngines || !logFile.is_open())
     {
-        if ( ( logFile = fopen ("motorsport.log", "w") ) == NULL ) return;
+        logFile.open("motorsport.log", std::fstream::out);
+	if (!logFile.good()) { 
+	  std::cerr << "Error: Logfile could not be opened.\n";
+	  return;
+	}
         put (LOG_INFO, "LogFile created");
     }
 
     //increase logEngines counter
     numberOfLogEngines++;
-    format ( LOG_INFO, "Start of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
+    format( LOG_INFO, "Start of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
 
     return;
 }
 
 int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
 {
-    //check if the level is correct
-    if ( level < 0 || level > MAX_LOG_LEVEL ) return ( -2 );
-
     //TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
@@ -77,43 +75,39 @@ int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
     return ( put ( level, buffer ) );
 }
 
+const char* LogEngine::GetLogLevelCode(LOG_LEVEL level)
+{
+  switch ( level ) {
+  case LOG_ERROR:
+    return "EE";
+  case LOG_WARNING:
+    return "WW";
+  case LOG_INFO:
+    return "II";
+  case LOG_VERBOSE:
+    return "VV";
+  case LOG_TRACE:
+    return "TT";
+  default:
+    return "  ";
+  }
+}
+
 int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
 {
-    //check if the level is correct
-    if ( level < 0 || logLevel > MAX_LOG_LEVEL ) return ( -2 );
-    
     //check if we have been told to write this kind of log
     if ( level > globalLevel || level > logLevel ) return ( -1 );
-    
-    fputc ('(', logFile );
-    fputs (logName.c_str(), logFile );
-    
-    //write log level information
-    switch ( level )
-    {
-    case LOG_ERROR:
-        fputs ( ")(EE): ", logFile );
-        break;
-    case LOG_WARNING:
-        fputs ( ")(WW): ", logFile );
-        break;
-    case LOG_INFO:
-        fputs ( ")(II): ", logFile );
-        break;
-    case LOG_VERBOSE:
-        fputs ( ")(VV): ", logFile );
-        break;
-    case LOG_TRACE:
-        fputs ( ")(TT): ", logFile );
-    default:
-        break;
-    }
+
+    //write line header
+    logFile << '(' <<  logName << ")(" << GetLogLevelCode(level) << "): ";
     
     //write log text
-    fputs ( textToLog, logFile );
-    fputc ('\n', logFile );
-    fflush ( logFile );
-    if ( level == LOG_ERROR ) exit ( 1 );
+    logFile << textToLog << "\n";
+    logFile.flush();
+
+    if ( level == LOG_ERROR ) { 
+      exit ( 1 );
+    }
     return ( 0 );
 }
 
@@ -121,14 +115,11 @@ LogEngine::~LogEngine ( )
 {
     //decrease number of logEngines
     numberOfLogEngines--;
-    format ( LOG_INFO, "End of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
+    format(LOG_INFO, "End of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
 
-    if (!numberOfLogEngines)
-    {
-        put ( LOG_INFO, "Closing logFile" );
-        if ( fclose ( logFile ) != 0 ){
-	  //failed, what do we do now?
-	}
+    if (numberOfLogEngines == 0) {
+      put ( LOG_INFO, "Closing logFile" );
+      logFile.close();
     }
 }
 
