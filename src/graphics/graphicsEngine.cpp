@@ -28,7 +28,11 @@
 
 GraphicsEngine::GraphicsEngine ()
 {
-    XmlFile* xmlFile = new XmlFile ("graphicsConfig.xml");
+#ifdef MACOSX
+    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/graphicsConfig.xml");
+#else
+    XmlFile *xmlFile = new XmlFile ("graphicsConfig.xml");
+#endif
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 }
@@ -433,21 +437,25 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     }
     log->put (LOG_DEVELOPER, "Writing configuration to plugins.cfg");
     fprintf(ogrePluginsConfig, "# IMPORTANT NOTE #"
-        "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. oou can therefore safely delete this file.\n\n"
+        "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. You can therefore safely delete this file.\n\n"
         "\n# Define plugins folder"
+#ifdef MACOSX
+        "\n#PluginFolder=%s"
+#else
         "\nPluginFolder=%s"
+#endif
         "\n# Define plugins"
         "\nPlugin=RenderSystem_GL"
 #ifdef WIN32
-//        "\nPlugin=RenderSystem_Direct3D9"
+        "\n#Plugin=RenderSystem_Direct3D9"
 #endif
-//        "\nPlugin=Plugin_FileSystem"
-//        "\nPlugin=Plugin_ParticleFX"
-//        "\nPlugin=Plugin_BSPSceneManager"
-//        "\nPlugin=Plugin_OctreeSceneManager"
-//        "\nPlugin=Plugin_GuiElements"
-//        "\nPlugin=Plugin_NatureSceneManager"
-//        "\nPlugin=Plugin_CgProgramManager"
+        "\n#Plugin=Plugin_FileSystem"
+        "\n#Plugin=Plugin_ParticleFX"
+        "\n#Plugin=Plugin_BSPSceneManager"
+        "\n#Plugin=Plugin_OctreeSceneManager"
+        "\n#Plugin=Plugin_GuiElements"
+        "\n#Plugin=Plugin_NatureSceneManager"
+        "\n#Plugin=Plugin_CgProgramManager"
         ,ogrePluginsDir.c_str());
     log->put (LOG_DEVELOPER, "Closing temporary ogre plugins config file (plugins.cfg)");
     fclose(ogrePluginsConfig);

@@ -9,7 +9,7 @@
 
 #include "main.hpp"
 
-#include "SDL.h"
+#include "SDL/SDL.h"
 #include "world.hpp"            // contains the IDF for the simulated/virtual world data
 #include "system.hpp"           // contains the IDF for the system data
 #include "log/logEngine.hpp"    // allows to easily log actions
@@ -18,7 +18,7 @@
 #include "physicsEngine.hpp"    // calculates the physics of the world data
 #include "guiEngine.hpp"        // displays all the user interface on screen
 #ifdef WIN32
-#define WIN32_LEAN_AND_MEAN
+#   define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
 #endif
 #include <string>
@@ -38,7 +38,11 @@ int main (int argc, char **argv)
     std::cout << "===============================================================================" << std::endl;
 
     // We start the main log engine.
+#ifdef MACOSX
+    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/mainConfig.xml");
+#else
     XmlFile *xmlFile = new XmlFile ("mainConfig.xml");
+#endif
     LogEngine *log = processXmlRootNode (xmlFile->getRootNode ());
     delete xmlFile;
 

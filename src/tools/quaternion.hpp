@@ -9,7 +9,7 @@
 
 #ifndef QUATERNION_HPP
 #   define QUATERNION_HPP
-#   include "ode.h"
+#   include "ode/ode.h"
 #   include <string>
 
 class Vector3d;

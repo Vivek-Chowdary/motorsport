@@ -12,7 +12,7 @@
 #include "system.hpp"
 #include "axis.hpp"
 #include "xmlParser.hpp"
-#include "ode.h"
+#include "ode/ode.h"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"

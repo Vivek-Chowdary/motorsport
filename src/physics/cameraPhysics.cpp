@@ -9,7 +9,7 @@
 
 #include "camera.hpp"
 #include "xmlParser.hpp"
-#include "ode.h"
+#include "ode/ode.h"
 #include "log/logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"

@@ -29,7 +29,11 @@ bool PhysicsEngine::checkpointPassed = false;
 PhysicsEngine::PhysicsEngine ()
   : stepType(0), dWorldStepFast1MaxIterations(0) 
 {
-    XmlFile * xmlFile = new XmlFile ("physicsConfig.xml");
+#ifdef MACOSX
+    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/physicsConfig.xml");
+#else
+    XmlFile *xmlFile = new XmlFile ("physicsConfig.xml");
+#endif
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 }

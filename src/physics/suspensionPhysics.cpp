@@ -11,7 +11,7 @@
 #include "world.hpp"
 #include "system.hpp"
 #include "xmlParser.hpp"
-#include "ode.h"
+#include "ode/ode.h"
 #include "log/logEngine.hpp"
 #include "vector3d.hpp"
 #include "vehicle.hpp"

@@ -34,7 +34,11 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
     if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
     {
         std::cout << "Creating first LogEngine instance (" << name << "). Reading LogEngine config file..." << std::endl;
+#ifdef MACOSX
+        XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/logConfig.xml");
+#else
         XmlFile *xmlFile = new XmlFile ("logConfig.xml");
+#endif
         processXmlRootNode (xmlFile->getRootNode ());
         delete xmlFile;
     }

@@ -10,7 +10,7 @@
 #include "finalDrive.hpp"
 #include "world.hpp"
 #include "system.hpp"
-#include "ode.h"
+#include "ode/ode.h"
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"

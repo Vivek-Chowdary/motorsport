@@ -8,7 +8,7 @@
 \*****************************************************************************/
 
 #include "xercesc_fwd.hpp"
-#include "SDL.h"
+#include "SDL/SDL.h"
 #include <string>
 
 //forward declaration

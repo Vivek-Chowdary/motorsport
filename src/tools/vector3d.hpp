@@ -11,7 +11,7 @@
 #   define VECTOR3D_HPP
 #   include <vector>
 #   include <cmath>
-#   include "ode.h"
+#   include "ode/ode.h"
 
 class Vector3d
 {
