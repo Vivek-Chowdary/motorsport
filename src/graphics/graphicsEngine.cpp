@@ -68,13 +68,6 @@ GraphicsEngine::GraphicsEngine (  )
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton (  ).setDefaultNumMipMaps ( data->defaultNumMipMaps );
 
-    // Create the skybox
-    Ogre::Quaternion rotationToZAxis;
-    rotationToZAxis.
-        FromRotationMatrix ( Ogre::Matrix3 ( 1, 0, 0, 0, 0, -1, 0, 1, 0 ) );
-    systemData->ogreSceneManager->setSkyBox ( true, "skybox", 5000, true,
-                                              rotationToZAxis );
-
     //Set some graphics settings
     Ogre::MaterialManager::getSingleton (  ).setDefaultAnisotropy ( data->anisotropy );
     Ogre::MaterialManager::getSingleton (  ).

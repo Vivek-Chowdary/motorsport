@@ -47,18 +47,22 @@ DataEngine::DataEngine ( )
 int DataEngine::loadWorldData ( void )
 {
     //create the camera and initialize it
-    int numberOfCameras = 1;
+    int numberOfCameras = 4;
     log->format ( LOG_INFO, "Creating %i cameras", numberOfCameras );
     for (int i=0; i<numberOfCameras; i++)
     {
-        char name[20];
-        sprintf ( name, "Camera%i", i );
-        Camera * cameraPointer = new Camera( name, -2000, -2000, 500, 0, 0, 0 );
+        Camera * cameraPointer = new Camera( i, -2000, -2000, 500, 0, 0, 0 );
         Camera::cameraList.push_back (cameraPointer);
     }
     log->put ( LOG_INFO, "Setting camera viewport" );
+
     Ogre::Viewport *vp = systemData->ogreWindow->addViewport ( Camera::cameraList[0]->ogreCamera );
     vp->setBackgroundColour ( Ogre::ColourValue (0,0,0));
+
+    // Create the skybox
+    Ogre::Quaternion rotationToZAxis;
+    rotationToZAxis.FromRotationMatrix ( Ogre::Matrix3 ( 1, 0, 0, 0, 0, -1, 0, 1, 0 ) );
+    systemData->ogreSceneManager->setSkyBox ( true, "skybox", 5000, true, rotationToZAxis );
 
     // Create the cubes
     int numberOfCubes = 200;

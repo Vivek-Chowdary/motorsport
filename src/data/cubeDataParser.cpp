@@ -95,3 +95,111 @@ int Cube::processCubeDataFile ( DOMNode * n, void * data)
     }
     return 1;
 }
+
+int Cube::processCubeGraphicsDataNode ( DOMNode * n, CubeGraphicsData * graphics )
+{
+    XERCES_STD_QUALIFIER cout << "\t\t\tParsing cube graphics:";
+    if ( n->hasAttributes (  ) )
+    {
+        // get all the attributes of the node
+        DOMNamedNodeMap *pAttributes = n->getAttributes (  );
+        int nSize = pAttributes->getLength (  );
+        for ( int i = 0; i < nSize; ++i )
+        {
+            DOMAttr *pAttributeNode =
+                ( DOMAttr * ) pAttributes->item ( i );
+            char *name =
+                XMLString::transcode ( pAttributeNode->
+                                       getName (  ) );
+            if ( !strncmp ( name, "material", 9 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics material:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                graphics->material = new char[strlen(name)+1];
+                strncpy (graphics->material, name, strlen(name)+1);
+            }
+
+            if ( !strncmp ( name, "mesh", 5 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics mesh filename:";
+                name = XMLString::transcode ( pAttributeNode->getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name << XERCES_STD_QUALIFIER endl;
+                
+                graphics->mesh = new char[strlen(name)+1];
+                strncpy (graphics->mesh, name, strlen(name)+1);
+            }
+            if ( !strncmp ( name, "ogreName", 9 ) )
+            {
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube graphics ogre-identifier format:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                graphics->ogreName = new char[strlen(name)+1];
+                strncpy (graphics->ogreName, name, strlen(name)+1);
+            }
+            XMLString::release ( &name );
+        }
+    }
+    XERCES_STD_QUALIFIER cout << "\t\t\tFinished cube graphics:";
+    return 1;
+}
+
+int Cube::processCubePhysicsDataNode ( DOMNode * n,
+                                        CubePhysicsData * physics )
+{
+    if ( n->hasAttributes (  ) )
+    {
+        // get all the attributes of the node
+        DOMNamedNodeMap *pAttributes = n->getAttributes (  );
+        int nSize = pAttributes->getLength (  );
+
+        for ( int i = 0; i < nSize; ++i )
+        {
+            DOMAttr *pAttributeNode =
+                ( DOMAttr * ) pAttributes->item ( i );
+            char *name =
+                XMLString::transcode ( pAttributeNode->getName (  ) );
+            if ( !strncmp ( name, "size", 5 ) )
+            {
+                XMLString::release ( &name );
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the cube physics size:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                physics->size = atoi ( name );
+            }
+/*            if ( !strncmp ( name, "screenshotFile", 15 ) )
+            {
+                XERCES_STD_QUALIFIER cout <<
+                    "\tFound the screenshot filename:";
+                name =
+                    XMLString::transcode ( pAttributeNode->
+                                           getValue (  ) );
+                XERCES_STD_QUALIFIER cout << name <<
+                    XERCES_STD_QUALIFIER endl;
+
+                //physics.screenshotFile = new char[strlen(name)+1];
+                //strncpy (physics->screenshotFile, name, strlen(name)+1);
+            }*/
+            XMLString::release ( &name );
+        }
+    }
+    return 1;
+}

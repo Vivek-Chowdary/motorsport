@@ -23,9 +23,10 @@
 
 std::vector <Camera*>Camera::cameraList;
 
-Camera::Camera ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ )
+Camera::Camera ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ )
 {
-    startGraphics(cameraName, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+
+    startGraphics(cameraNumber, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
     startInput();
     rotateLeft = rotateRight = rotateUp = rotateDown = 0;
     goBack = goForward = goLeft = goRight = false;

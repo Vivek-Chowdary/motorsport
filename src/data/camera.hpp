@@ -34,12 +34,11 @@ class Camera
         int rotateDown;
 
     public:
-        Camera ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
+        Camera ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
         ~Camera ( );
-        static std::vector <Camera*> cameraList;
 
         //graphics
-        void startGraphics ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
+        void startGraphics ( int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
         void stepGraphics();
         void stopGraphics();
         Ogre::Camera * ogreCamera;
@@ -57,7 +56,8 @@ class Camera
         bool goLeft;
         bool goRight;
         
-        //others/common
+        //data
+        static std::vector <Camera*> cameraList;
         int getRotateUp ( );
         int getRotateDown ( );
         int getRotateLeft ( );

@@ -21,9 +21,12 @@
 
 #include "camera.hpp"
 
-void Camera::startGraphics(char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
+void Camera::startGraphics(int cameraNumber, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {
-    ogreCamera = SystemData::getSystemDataPointer()->ogreSceneManager->createCamera ( cameraName );
+    char name[20];
+    sprintf ( name, "Camera%i", cameraNumber );
+    
+    ogreCamera = SystemData::getSystemDataPointer()->ogreSceneManager->createCamera ( name );
     ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
     ogreCamera->setPosition ( Ogre::Vector3 ( posX, posY, posZ ) );
     ogreCamera->lookAt ( Ogre::Vector3 ( lookAtX, lookAtY, lookAtZ) );
