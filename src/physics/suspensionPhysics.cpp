@@ -195,4 +195,9 @@ void Suspension::stepPhysics ()
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
     dJointSetHinge2Param (jointID, dParamLoStop, angle-0.0000001);
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
+
+    // Re-set suspension settings... if physics rate has changed, this needs to be updated.
+    double h = SystemData::getSystemDataPointer()->physicsTimeStep / 1000.0 ;
+    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
+    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
 }

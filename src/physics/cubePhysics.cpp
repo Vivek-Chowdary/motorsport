@@ -72,9 +72,9 @@ void Cube::startPhysics (DOMNode * n)
     license.clear();
 }
 
-void Cube::setPosition (float posX, float posY, float posZ)
+void Cube::setPosition (Vector3d position)
 {
-    dBodySetPosition (cubeID, posX, posY, posZ);
+    dBodySetPosition (cubeID, position.x, position.y, position.z);
 }
 
 void Cube::stopPhysics ()

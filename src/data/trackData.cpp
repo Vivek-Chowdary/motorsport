@@ -277,7 +277,7 @@ void Track::processXmlRootNode (DOMNode * n)
         const int separation = 4;
         Cube *cubePointer;
         cubePointer = new Cube ("../data/parts/cube/cube.xml");
-        cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
+        cubePointer->setPosition (Vector3d (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation));
         cubeList.push_back (cubePointer);
         if ( i%4 && false) //snake mode. will slow down things. i%4 sets the number of cubes per snake.
         {

@@ -12,6 +12,7 @@
 #   include "ode/objects.h"
 #   include "worldObject.hpp"
 
+class Vector3d;
 namespace Ogre {
   class Entity;
   class SceneNode;
@@ -46,7 +47,7 @@ class Cube : public WorldObject
     void stepPhysics ();
     dBodyID cubeID;
     dGeomID cubeGeomID;
-    void setPosition (float posX, float posY, float posZ);
+    void setPosition (Vector3d position);
 
     // graphics
     void stepGraphics ();
