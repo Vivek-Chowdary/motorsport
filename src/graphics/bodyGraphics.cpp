@@ -23,13 +23,9 @@
 
 void Body::startGraphics (DOMNode * n)
 {
-    std::string author = "Anonymous";
-    std::string contact = "None";
-    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     std::string material = "None";
     std::string mesh = "None";
     std::string ogreName = "None";
-
     log->put (LOG_TRACE, "Parsing body graphics");
     if (n->hasAttributes ())
     {
@@ -40,24 +36,6 @@ void Body::startGraphics (DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "author")
-            {
-                author.clear();
-                assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
-            }
-            if (attribute == "contact")
-            {
-                contact.clear();
-                assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
-            }
-            if (attribute == "license")
-            {
-                license.clear();
-                assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
-            }
             if (attribute == "material")
             {
                 material.clear();
@@ -88,9 +66,6 @@ void Body::startGraphics (DOMNode * n)
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
  
-    author.clear();
-    contact.clear();
-    license.clear();
     material.clear();
     mesh.clear();
     ogreName.clear();

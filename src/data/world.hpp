@@ -28,8 +28,9 @@
 #   include "logEngine.hpp"
 #   include "worldObject.hpp"
 #   include "system.hpp"
+class World;
 #   include "cube.hpp"
-#   include "body.hpp"
+#   include "vehicle.hpp"
 #   include "camera.hpp"
 #   include "track.hpp"
 
@@ -52,8 +53,7 @@ class World : public WorldObject
     dJointGroupID jointGroupID;
 
     std::vector < Track * > trackList;
-    std::vector < Body * >bodyList;
-    //std::vector < Vehicle * >vehicleList;
+    std::vector < Vehicle * >vehicleList;
 
     void setActiveCamera (Camera * camera);
     Camera * getActiveCamera (void);

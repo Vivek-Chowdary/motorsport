@@ -19,43 +19,28 @@
 *
 ******************************************************************************/
 
-#ifndef BODY_HPP
-#   define BODY_HPP
-#   include "ode.h"
-#   include "Ogre.h"
-#   include "OgreNoMemoryMacros.h"
-#   include "system.hpp"
-#   include "worldObject.hpp"
-class Body;
-#   include "world.hpp"
+#include "vehicle.hpp"
 
-class Body : public WorldObject
+void Vehicle::startPhysics (DOMNode * n)
 {
-  private:
-    static int instancesCount;
+}
 
-  public:
-    // data
-    Body (DOMNode * n);
-    ~Body ();
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
-    void processXmlRootNode (DOMNode * n);
+void Vehicle::setPosition (double posX, double posY, double posZ)
+{
+    body->setPosition (posX, posY, posZ);
+}
 
-    // physics
-    void startPhysics (DOMNode * n);
-    void stepPhysics ();
-    void stopPhysics ();
-    dBodyID bodyID;
-    dGeomID bodyGeomID;
-    void setPosition (double posX, double posY, double posZ);
-    void setRotation (double rotX, double rotY, double rotZ);
+void Vehicle::setRotation (double rotX, double rotY, double rotZ)
+{
+    body->setRotation (rotX, rotY, rotZ);
+}
 
-    // graphics
-    void startGraphics (DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();
-    Ogre::Entity * bodyEntity;
-    Ogre::SceneNode * bodyNode;
-};
-#endif
+void Vehicle::stopPhysics ()
+{
+    body->stopPhysics();
+}
+
+void Vehicle::stepPhysics ()
+{
+    body->stepPhysics();
+}

@@ -72,10 +72,10 @@ int PhysicsEngine::computeStep (void)
         World::getWorldPointer ()->trackList[0]->cubeList[i]->stepPhysics ();
     }
 
-    size = World::getWorldPointer ()->bodyList.size ();
+    size = World::getWorldPointer ()->vehicleList.size ();
     for (int i = 0; i < size; i++)
     {
-        World::getWorldPointer ()->bodyList[i]->stepPhysics ();
+        World::getWorldPointer ()->vehicleList[i]->stepPhysics ();
     }
 
     dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);

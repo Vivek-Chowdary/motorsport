@@ -27,9 +27,6 @@ void Body::startPhysics (DOMNode * n)
     double width = 1;
     double height = 1;
     double mass = 1;
-    std::string author = "Anonymous";
-    std::string contact = "None";
-    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     log->put (LOG_TRACE, "Parsing body physics.");
     if (n->hasAttributes ())
     {
@@ -42,24 +39,6 @@ void Body::startPhysics (DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "author")
-            {
-                author.clear();
-                assignXmlString (author, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the author: %s", author.c_str());
-            }
-            if (attribute == "contact")
-            {
-                contact.clear();
-                assignXmlString (contact, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the contact information: %s", contact.c_str());
-            }
-            if (attribute == "license")
-            {
-                license.clear();
-                assignXmlString (license, attNode->getValue());
-                log->format (LOG_TRACE, "\tFound the license: %s", license.c_str());
-            }
             if (attribute == "length")
             {
                 attribute.clear();
@@ -97,9 +76,6 @@ void Body::startPhysics (DOMNode * n)
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     bodyGeomID = dCreateBox (World::getWorldPointer ()->spaceID, length, width, height);
     dGeomSetBody (bodyGeomID, bodyID);
-
-    author.clear();
-    license.clear();
 }
 
 void Body::setPosition (double posX, double posY, double posZ)

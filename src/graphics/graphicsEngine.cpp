@@ -114,10 +114,10 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
     }
     // Update Ogre's bodies positions with Ode's positions.
-    int numberOfBodies = World::getWorldPointer ()->bodyList.size ();
-    for (int currentBody = 0; currentBody < numberOfBodies; currentBody++)
+    int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
+    for (int currentVehicle = 0; currentVehicle < numberOfVehicles; currentVehicle++)
     {
-        World::getWorldPointer ()->bodyList[currentBody]->stepGraphics ();
+        World::getWorldPointer ()->vehicleList[currentVehicle]->stepGraphics ();
     }
 
     // Update Ogre's cubes positions with Ode's positions.

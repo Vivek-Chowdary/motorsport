@@ -28,7 +28,7 @@
 #include "system.hpp"
 #include "world.hpp"
 #include "cube.hpp"
-#include "body.hpp"
+#include "vehicle.hpp"
 #include "camera.hpp"
 #include "xmlParser.hpp"
 

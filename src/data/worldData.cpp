@@ -54,12 +54,12 @@ World::~World ()
 {
     // unload the bodies from memory
     log->put (LOG_INFO, "Unloading bodies from memory...");
-    int size = bodyList.size ();
+    int size = vehicleList.size ();
     for (int i = 0; i < size; i++)
     {
-        delete bodyList[i];
+        delete vehicleList[i];
     }
-    bodyList.clear ();
+    vehicleList.clear ();
     
     size = trackList.size ();
     for (int i = 0; i < size; i++)
@@ -266,13 +266,13 @@ void World::processXmlRootNode (DOMNode * n)
     // load vehicle (and its cameras)
     tmpPath = ("../data/vehicles/");
     tmpPath.append (carDirectory);
-    tmpPath.append ("/body.xml");
-    Body * tmpBody = new Body (tmpPath);
+    tmpPath.append ("/vehicle.xml");
+    Vehicle * tmpVehicle = new Vehicle (tmpPath);
     Vector3d tmpPos = tmpTrack->vehiclePositionMap[carStartPosition]->getPosition();
-    tmpBody->setPosition (tmpPos.x, tmpPos.y, tmpPos.z);
+    tmpVehicle->setPosition (tmpPos.x, tmpPos.y, tmpPos.z);
     Vector3d tmpRot = tmpTrack->vehiclePositionMap[carStartPosition]->getRotation();
-    tmpBody->setRotation (tmpPos.x, tmpPos.y, tmpPos.z);
-    bodyList.push_back (tmpBody);
+    tmpVehicle->setRotation (tmpPos.x, tmpPos.y, tmpPos.z);
+    vehicleList.push_back (tmpVehicle);
 
     // set active camera
     log->put (LOG_INFO, "Setting camera viewport");

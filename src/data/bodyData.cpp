@@ -23,13 +23,11 @@
 
 int Body::instancesCount = 0;
 
-Body::Body (const std::string & xmlFilename)
+Body::Body (DOMNode * n)
 {
     log = new LogEngine (LOG_TRACE, "BOD");
-    log->put (LOG_INFO, "Starting to parse the body xml file");
-    XmlFile * xmlFile = new XmlFile (xmlFilename.c_str());
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+    log->put (LOG_INFO, "Starting to parse the body node");
+    processXmlRootNode (n);
 
     instancesCount++;
 }

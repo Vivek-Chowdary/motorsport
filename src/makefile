@@ -196,12 +196,15 @@ SOURCES := \
         data/trackData.cpp \
 	data/cubeData.cpp \
 	data/bodyData.cpp \
+	data/vehicleData.cpp \
 	data/cameraData.cpp \
 	physics/cubePhysics.cpp \
 	physics/bodyPhysics.cpp \
+	physics/vehiclePhysics.cpp \
 	graphics/cameraGraphics.cpp \
 	graphics/cubeGraphics.cpp \
 	graphics/bodyGraphics.cpp \
+	graphics/vehicleGraphics.cpp \
 	input/cubeInput.cpp \
 	input/cameraInput.cpp
 ###########################################
