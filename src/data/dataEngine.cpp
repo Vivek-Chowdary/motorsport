@@ -41,15 +41,15 @@
 int DataEngine::start (WorldData * wrlData, SystemData * sysData)
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start (false, 2, "logData.txt");
+    log.start (2, "logData.txt");
 
-    log.put (false, 2, "Setting up data pointers...");
+    log.put (2, "Setting up data pointers...");
     //we tell the dataEngine where to find/store all the data in memory.
     worldData = wrlData;        //world data is for the simulated world data (cars,
     // track, weather, etc...)
     systemData = sysData;       //system data is for the rest of things (screen
     // resolution, 
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     return (0);
 }
@@ -57,30 +57,30 @@ int DataEngine::start (WorldData * wrlData, SystemData * sysData)
 int DataEngine::loadWorldData (void)
 {
     //create 2 rectangles in the world data
-    log.put (false, 2, "Creating an array of 2 rectangles...");
+    log.put (2, "Creating an array of 2 rectangles...");
     worldData->numberOfRectangles = 2;
     worldData->rectangleList = new Rectangle[2];
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
 
     //initializating rectangle values
-    log.put (false, 2, "Assigning initial rectangle 1 values...");
+    log.put (2, "Assigning initial rectangle 1 values...");
     worldData->rectangleList[0].setVisible (0);
     worldData->rectangleList[0].setSize (80, 80);
     worldData->rectangleList[0].setPosition (40, 80);
     worldData->rectangleList[0].red = 255;
     worldData->rectangleList[0].green = 0;
     worldData->rectangleList[0].blue = 0;
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
-    log.put (false, 2, "Assigning initial rectangle 2 values...");
+    log.put (2, "Assigning initial rectangle 2 values...");
     worldData->rectangleList[1].setVisible (0);
     worldData->rectangleList[1].setSize (160, 160);
     worldData->rectangleList[1].setPosition (350, 240);
     worldData->rectangleList[1].red = 0;
     worldData->rectangleList[1].green = 255;
     worldData->rectangleList[1].blue = 255;
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     return (0);
 }
@@ -88,25 +88,25 @@ int DataEngine::loadWorldData (void)
 int DataEngine::loadSystemData (void)
 {
     //set screen properties
-    log.put (false, 2, "Setting screen properties...");
+    log.put (2, "Setting screen properties...");
     systemData->graphicsData.width = 640;
     systemData->graphicsData.height = 480;
     systemData->graphicsData.bpp = 0;
     systemData->graphicsData.flags = SDL_SWSURFACE;
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     //set window properties
     const int maxLength = 15;
 
-    log.put (false, 2, "Allocating memory for window properties...");
+    log.put (2, "Allocating memory for window properties...");
     systemData->graphicsData.title = new char[maxLength];
     systemData->graphicsData.icon = new char[maxLength];
+    log.append (2, "Ok");
 
-    log.put (true, 2, "Ok");
-    log.put (false, 2, "Setting window properties...");
+    log.put (2, "Setting window properties...");
     strncpy (systemData->graphicsData.title, "Motorsport", maxLength);
     strncpy (systemData->graphicsData.icon, "Icon File", maxLength);
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     return (0);
 }
@@ -114,9 +114,9 @@ int DataEngine::loadSystemData (void)
 int DataEngine::unloadWorldData (void)
 {
     //unload the rectangles from memory
-    log.put (false, 2, "Unloading rectangles from memory...");
+    log.put (2, "Unloading rectangles from memory...");
     delete[](worldData->rectangleList);
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     return (0);
 }
@@ -124,10 +124,10 @@ int DataEngine::unloadWorldData (void)
 int DataEngine::unloadSystemData (void)
 {
     //unload the rectangles from memory
-    log.put (false, 2, "Unloading window data from memory...");
+    log.put (2, "Unloading window data from memory...");
     delete[](systemData->graphicsData.title);
     delete[](systemData->graphicsData.icon);
-    log.put (true, 2, "Ok");
+    log.append (2, "Ok");
 
     return (0);
 }

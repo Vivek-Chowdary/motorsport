@@ -165,6 +165,10 @@ clean:
 clobber : clean
 	rm -f log*.txt
 
+.PHONY: tags
+tags:
+	ctags --c-types=+px **/*.[ch]pp
+
 $(TARGET) : $(OBJECTS)
 	$(LD) $(LD_FLAGS) $(patsubst %,-L%,$(LIBRARY_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBRARIES))
 	chmod +x $@
