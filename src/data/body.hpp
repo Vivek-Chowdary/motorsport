@@ -23,6 +23,7 @@
 #   define BODY_HPP
 #   include "ode.h"
 #   include "Ogre.h"
+#   include "OgreNoMemoryMacros.h"
 #   include <vector>
 #   include "system.hpp"
 #   include "world.hpp"
