@@ -48,7 +48,7 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
     {
         renderSystem = (*it);
         log->format (LOG_DEVELOPER, "Locating desired renderer (%s).", renderer.c_str());
-        if (strstr (&(*renderSystem->getName ()), renderer.c_str()))
+        if (renderSystem->getName() == renderer)
         {
             log->put (LOG_DEVELOPER, "Ok, desired renderer found.");
             ok = true;

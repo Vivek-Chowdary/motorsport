@@ -33,10 +33,10 @@ void Camera::stepGraphics ()
     Vector3d position (updateOgrePosition());
     Vector3d target (updateOgreTarget());
     double distance = target.distance(position);
-    const double maxD = 150;
-    const double minD = 15;
-    const double minF = 5;
-    const double maxF = 45;
+    const double maxD = 150.;
+    const double minD = 15.;
+    const Ogre::Radian minF(5.  * 3.14159 / 180.);
+    const Ogre::Radian maxF(45. * 3.14159 / 180.);
     if (distance > maxD)
     {
         ogreCamera->setFOVy (minF);
