@@ -25,8 +25,8 @@ material bodyblack/SOLID/mosp1-body.tga
     pass
     {
       ambient 5.2 5.2 5.2
-      //diffuse 0.300000 0.300000 0.300000
-      //specular 0.800000 0.800000 0.800000 50.000000
+      diffuse 0.000000 0.000000 0.000000
+      specular 0.800000 0.800000 0.800000 50.000000
       //emissive 0.000000 0.000000 0.000000
       texture_unit
       {
@@ -43,6 +43,7 @@ material glass/SOLID/mosp1-body.tga
   {
     pass
     {
+      scene_blend alpha_blend
       ambient 5.2 5.2 5.2
       //diffuse 0.800000 0.800000 0.800000
       //specular 0.700000 0.700000 0.700000 280.000000
@@ -50,12 +51,14 @@ material glass/SOLID/mosp1-body.tga
       texture_unit
       {
         texture mosp1-blueBody.tga
+        colour_op replace
       }
-      texture_unit
-      {
-        texture mosp1-bodyseams.tga
-        colour_op alpha_blend
-      }
+      // texture_unit
+      //{
+      //  texture mosp1-bodyseams.tga
+      //  alpha_op_ex blend_texture_alpha
+      //  colour_op_ex blend_texture_alpha
+      // }
 
       texture_unit
       {
@@ -83,6 +86,10 @@ material chrome/SOLID/mosp1-body.tga
       //diffuse 0.800000 0.800000 0.800000
       //specular 1.000000 1.000000 1.000000 340.000000
       //emissive 0.000000 0.000000 0.000000
+      //texture_unit
+      //{
+      //  texture mosp1-blueBody.tga
+      //}
       texture_unit
       {
         cubic_texture mospSky.jpg combinedUVW
@@ -117,10 +124,13 @@ material bodycolor/SOLID/mosp1-body.tga
                 texture_unit
                 {
                         cubic_texture mospSky.jpg combinedUVW
+			// texture arch_00000.jpg
+			// texture envmap2.jpg
                         // cubic_normal gives the nicest reflections
 			// planar also works but reflections are "uglier"
                         // env_map planar
                         env_map cubic_reflection
+			// env_map spherical
                         colour_op modulate
                 }
                 texture_unit
@@ -131,3 +141,34 @@ material bodycolor/SOLID/mosp1-body.tga
         }
   }
 }
+material headlight/SOLID/mosp1-body.tga
+{
+  receive_shadows on
+  technique
+  {
+        pass
+        {
+                ambient 5.2 5.2 5.2
+                // diffuse 0 0 0
+                //specular 0.2 0.2 0.2 1
+                // specular 0.500000 0.500000 0.500000 50.000000
+                // emissive 0.000000 0.000000 0.000000
+
+                texture_unit
+                {
+                        texture mosp1-blueBody.tga
+                }
+
+                texture_unit
+                {
+                        cubic_texture mospSky.jpg combinedUVW
+                        // cubic_normal gives the nicest reflections
+			// planar also works but reflections are "uglier"
+                        // env_map planar
+                        env_map cubic_reflection
+                        colour_op modulate
+                }
+        }
+  }
+}
+

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <vehicle
     name = "Mosp1"
-    revision = "1"
     description = "The first official Motorsport vehicle. Made by Habalux, it started its life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car."
     author = "Habalux, STenyaK"
     contact = "habalux AT gmail DOT com, stenyak AT gmx DOT net"
