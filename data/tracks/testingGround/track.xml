@@ -18,7 +18,7 @@
         >
     </sky>
     <parts
-        numberOfCubes = "20"    comment="KISS, so you can't use other parts or position them manually."
+        numberOfCubes = "2"    comment="KISS, so you can't use other parts or position them manually."
         >
     </parts>
     <vehiclePositionList        comment="Rotation values are euler angles!"
@@ -57,6 +57,16 @@
     <cameraList
         >
         <camera
+            index = "0"
+            posX = "6.0"
+            posY = "12.0"
+            posZ = "1.0"
+            destX = "20.0"
+            destY = "10.0"
+            destZ = "0.5"
+            >
+        </camera>
+        <camera
             index = "low"
             posX = "-20.0"
             posY = "-25.0"
@@ -64,16 +74,6 @@
             destX = "0.0"
             destY = "0.0"
             destZ = "0.0"
-            >
-        </camera>
-        <camera
-            index = "0"
-            posX = "-20.0"
-            posY = "-20.0"
-            posZ = "10.0"
-            destX = "0.0"
-            destY = "0.0"
-            destZ = "3.0"
             >
         </camera>
         <camera

@@ -30,6 +30,7 @@
 void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     torqueLinearMultiplier = 0.0;
+    torque = 0.0;
     log->put (LOG_TRACE, "Parsing engine physics.");
     if (n->hasAttributes ())
     {
@@ -61,10 +62,10 @@ void Engine::stopPhysics ()
 
 void Engine::stepPhysics ()
 {
-    crankshaftRotationalSpeed = torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue();
-    log->format(LOG_TRACE, "crank=%f axis=%f torqueMul=%f", crankshaftRotationalSpeed, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue(), torqueLinearMultiplier);
+    torque = torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue();
+    log->format(LOG_TRACE, "torqueMultiplier=%f inputAxis=%f outputTorque=%f", torqueLinearMultiplier, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue(), torque);
 }
-double Engine::getCrankshaftRotationalSpeed ()
+double Engine::getTorque ()
 {
-    return crankshaftRotationalSpeed;
+    return torque;
 }

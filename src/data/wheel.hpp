@@ -56,6 +56,7 @@ class Wheel : public WorldObject
     dGeomID wheelGeomID;
     void setPosition (double posX, double posY, double posZ);
     void setRotation (double rotX, double rotY, double rotZ);
+    void addTorque (double torque);
 
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);

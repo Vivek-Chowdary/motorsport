@@ -31,6 +31,7 @@ class Engine : public WorldObject
     static int instancesCount;
     double torqueLinearMultiplier;
     double crankshaftRotationalSpeed;
+    double torque;
 
   public:
 
@@ -43,7 +44,7 @@ class Engine : public WorldObject
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
     void stopPhysics ();
-    double getCrankshaftRotationalSpeed ();
+    double getTorque ();
 
 };
 #endif

@@ -84,7 +84,6 @@ void Wheel::setRotation (double rotX, double rotY, double rotZ)
 {
     dMatrix3 rot;
     dRFromEulerAngles (rot, rotX, rotY, rotZ);
-    //dRFromEulerAngles (rot, phi, theta, psi);
     dBodySetRotation (wheelID, rot);
 }
 
@@ -96,4 +95,9 @@ void Wheel::stopPhysics ()
 
 void Wheel::stepPhysics ()
 {
+}
+
+void Wheel::addTorque(double torque)
+{
+    dBodyAddRelTorque (wheelID, 0, 0, torque);
 }

@@ -185,39 +185,5 @@ void Vehicle::processXmlRootNode (DOMNode * n)
             }
         }
     }
-    double posX, posY, posZ;
-    body->getPosition(posX, posY, posZ);
-    wheelMap[0]->setPosition(posX+2,posY+1.2,posZ-0.6);
-    wheelMap[1]->setPosition(posX+2,posY-1.2,posZ-0.6);
-    wheelMap[2]->setPosition(posX-2,posY+1.2,posZ-0.6);
-    wheelMap[3]->setPosition(posX-2,posY-1.2,posZ-0.6);
-    wheelMap[0]->setRotation(90,0,0);
-    wheelMap[0]->setRotation(-90,0,0);
-    wheelMap[0]->setRotation(90,0,0);
-    wheelMap[0]->setRotation(-90,0,0);
-    int i=0;
-        dJointID jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
-        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
-        dJointSetUniversalAnchor (jointID, posX+2, posY+0.7, posZ-1);
-        dJointSetUniversalAxis1 (jointID, 0,1,0);
-        dJointSetUniversalAxis2 (jointID, 0,0,1);
-    i=1;
-        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
-        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
-        dJointSetUniversalAnchor (jointID, posX+2, posY-0.7, posZ-1);
-        dJointSetUniversalAxis1 (jointID, 0,1,0);
-        dJointSetUniversalAxis2 (jointID, 0,0,1);
-    i=2;
-        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
-        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
-        dJointSetUniversalAnchor (jointID, posX-2, posY+0.7, posZ-1);
-        dJointSetUniversalAxis1 (jointID, 0,1,0);
-        dJointSetUniversalAxis2 (jointID, 0,0,1);
-    i=3;
-        jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
-        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
-        dJointSetUniversalAnchor (jointID, posX-2, posY-0.7, posZ-1);
-        dJointSetUniversalAxis1 (jointID, 0,1,0);
-        dJointSetUniversalAxis2 (jointID, 0,0,1);
 }
 

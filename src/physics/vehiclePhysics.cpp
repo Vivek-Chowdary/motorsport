@@ -19,6 +19,7 @@
 *
 ******************************************************************************/
 
+#include "world.hpp"
 #include "vehicle.hpp"
 #include "data/xercesc_fwd.hpp"
 #include "body.hpp"
@@ -32,6 +33,40 @@ void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 void Vehicle::setPosition (double posX, double posY, double posZ)
 {
     body->setPosition (posX, posY, posZ);
+    for (int i=0; i<4; i++)
+    {
+        double offX = 1.50;
+        double offY = 1;
+        double offZ = 0.4;
+        wheelMap[0]->setRotation(90,0,0);
+        wheelMap[1]->setRotation(-90,0,0);
+        wheelMap[2]->setRotation(90,0,0);
+        wheelMap[3]->setRotation(-90,0,0);
+        wheelMap[0]->setPosition(posX+offX,posY+offY,posZ-offZ);
+        wheelMap[1]->setPosition(posX+offX,posY-offY,posZ-offZ);
+        wheelMap[2]->setPosition(posX-offX,posY+offY,posZ-offZ);
+        wheelMap[3]->setPosition(posX-offX,posY-offY,posZ-offZ);
+        int i=0;
+        dJointID jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetHingeAnchor (jointID, posX+offX, posY+offY, posZ-offZ);
+        dJointSetHingeAxis (jointID, 0,1,0);
+        i=1;
+        jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetHingeAnchor (jointID, posX+offX, posY-offY, posZ-offZ);
+        dJointSetHingeAxis (jointID, 0,1,0);
+        i=2;
+        jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetHingeAnchor (jointID, posX-offX, posY+offY, posZ-offZ);
+        dJointSetHingeAxis (jointID, 0,1,0);
+        i=3;
+        jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+        dJointAttach (jointID, wheelMap[i]->wheelID, body->bodyID);
+        dJointSetHingeAnchor (jointID, posX-offX, posY-offY, posZ-offZ);
+        dJointSetHingeAxis (jointID, 0,1,0);
+    }
 }
 
 void Vehicle::setRotation (double rotX, double rotY, double rotZ)
@@ -43,7 +78,7 @@ void Vehicle::stopPhysics ()
 {
     body->stopPhysics();
     engine->stopPhysics();
-    for (int i=0; i<wheelMap.size(); i++)
+    for (unsigned int i=0; i<wheelMap.size(); i++)
     {
         wheelMap[i]->stopPhysics();
     }
@@ -53,8 +88,10 @@ void Vehicle::stepPhysics ()
 {
     body->stepPhysics();
     engine->stepPhysics();
-    for (int i=0; i<wheelMap.size(); i++)
+    for (unsigned int i=0; i<wheelMap.size(); i++)
     {
         wheelMap[i]->stepPhysics();
     }
+    wheelMap[2]->addTorque (engine->getTorque());
+    wheelMap[3]->addTorque (-engine->getTorque());
 }

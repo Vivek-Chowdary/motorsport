@@ -35,7 +35,7 @@
         >
     </brakePedal>
     <engine
-        torqueLinearMultiplier = "20.0"
+        torqueLinearMultiplier = "0.0001"
         >
     </engine>
     <clutch

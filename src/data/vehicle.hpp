@@ -58,6 +58,7 @@ class Vehicle : public WorldObject
     void stopPhysics ();
     void setPosition (double posX, double posY, double posZ);
     void setRotation (double rotX, double rotY, double rotZ);
+    double getTorque ();
 
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
