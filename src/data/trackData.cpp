@@ -286,7 +286,7 @@ void Track::processXmlRootNode (DOMNode * n)
     plane.normal = Ogre::Vector3(0,0,1);
     plane.d = -groundHeight;
     Ogre::SceneManager* pOgreSceneManager = SystemData::getSystemDataPointer()->ogreSceneManager;
-    Ogre::MeshManager::getSingleton().createPlane("Ground plane",plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
+    Ogre::MeshManager::getSingleton().createPlane("Ground plane", "general", plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
     Ogre::Entity* pPlaneEnt = pOgreSceneManager->createEntity("plane", "Ground plane");
     pPlaneEnt->setMaterialName(groundMaterialName.c_str());
     pPlaneEnt->setCastShadows(true);

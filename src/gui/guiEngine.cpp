@@ -56,18 +56,18 @@ int GuiEngine::computeStep (void)
         lastRefreshTime += 1000;
     }
     //update last telemetry line every frame
-    GuiElement *telText = GuiManager::getSingleton ().getGuiElement ("telemetry/text");
+    OverlayElement *telText = OverlayManager::getSingleton ().getOverlayElement ("telemetry/text");
     telText->setCaption (telemetryText + tempLine);
 
     Overlay *overlay = (Overlay *) OverlayManager::getSingleton ().getByName ("gui");
     if (!overlay)
     {
-        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find gui overlay", "statusPanel");
+        OGRE_EXCEPT (Exception::ERR_ITEM_NOT_FOUND, "Could not find gui overlay", "statusPanel");
     }
     Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
     if (!telemetryOverlay)
     {
-        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
+        OGRE_EXCEPT (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
     }
 
     if (systemData->axisMap[getIDKeyboardKey(SDLK_f)]->getValue() == 1)
@@ -92,7 +92,7 @@ int GuiEngine::computeStep (void)
 
 void GuiEngine::showLoadscreen ()
 {
-    GuiElement *loadscreenHeader = GuiManager::getSingleton ().getGuiElement ("loadscreen/header");
+    OverlayElement *loadscreenHeader = OverlayManager::getSingleton ().getOverlayElement ("loadscreen/header");
     loadscreenHeader->setCaption ("Loading contents and engines. Please wait...");
         
     tmpOgreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera ("Loadscreen camera");
@@ -106,7 +106,7 @@ void GuiEngine::showLoadscreen ()
     Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
     if (!loadscreenOverlay)
     {
-        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
+        Exception (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
     }
     loadscreenOverlay->show();
 }
@@ -115,7 +115,7 @@ void GuiEngine::hideLoadscreen ()
     Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
     if (!loadscreenOverlay)
     {
-        Except (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
+        Exception (Exception::ERR_ITEM_NOT_FOUND, "Could not find loadscreen overlay", "statusPanel");
     }
     loadscreenOverlay->hide();
     delete tmpOgreCamera;
@@ -125,19 +125,19 @@ void GuiEngine::hideLoadscreen ()
 
 void GuiEngine::updateStatistics (void)
 {
-    GuiElement *guiAvg = GuiManager::getSingleton ().getGuiElement ("gui/AverageFps");
-    GuiElement *guiCurr = GuiManager::getSingleton ().getGuiElement ("gui/CurrFps");
-    GuiElement *guiScaledPhysics = GuiManager::getSingleton ().getGuiElement ("gui/ScaledPhysicsRate");
-    GuiElement *guiPhysics = GuiManager::getSingleton ().getGuiElement ("gui/PhysicsRate");
+    OverlayElement *guiAvg = OverlayManager::getSingleton ().getOverlayElement ("gui/AverageFps");
+    OverlayElement *guiCurr = OverlayManager::getSingleton ().getOverlayElement ("gui/CurrFps");
+    OverlayElement *guiScaledPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/ScaledPhysicsRate");
+    OverlayElement *guiPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/PhysicsRate");
     const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics ();
     guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
     guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString (systemData->graphicsFrequency) + " fps");
     guiScaledPhysics->setCaption ("Scaled Physics Rate: " + StringConverter::toString (systemData->physicsFrequency) + " Hz (" + StringConverter::toString (1000 / float(systemData->physicsFrequency)) + " ms)");
     guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (1000 / float(systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (systemData->physicsTimeStep) + " ms)" );
-    GuiElement *guiTris = GuiManager::getSingleton ().getGuiElement ("gui/NumTris");
+    OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
     
-    GuiElement *telText = GuiManager::getSingleton ().getGuiElement ("telemetry/text");
+    OverlayElement *telText = OverlayManager::getSingleton ().getOverlayElement ("telemetry/text");
     telemetryText.append (tempLine);
     if (telemetryText.size() == 0)
     {
@@ -167,7 +167,7 @@ void GuiEngine::addTelemetryLine (const char * line)
     {
         Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
         telemetryOverlay->show();
-        GuiElement *telHeader = GuiManager::getSingleton ().getGuiElement ("telemetry/header");
+        OverlayElement *telHeader = OverlayManager::getSingleton ().getOverlayElement ("telemetry/header");
         telHeader->setCaption (line);
         telemetryText.append (line);
     }
@@ -193,7 +193,7 @@ void GuiEngine::addLoadscreenLine (const char * line)
     loadscreenText.append ("\n");
     lines++;
     loadscreenText.append (tmp);
-    GuiElement *loadText = GuiManager::getSingleton ().getGuiElement ("loadscreen/text");
+    OverlayElement *loadText = OverlayManager::getSingleton ().getOverlayElement ("loadscreen/text");
     loadText->setCaption (loadscreenText);
     while (lines > nlines)
     {

@@ -13,6 +13,8 @@
         sceneManager = "ST_GENERIC"
         anisotropy = "1"
         filtering = "TFO_BILINEAR"
+        _shadowTechnique = "SHADOWTYPE_NONE"
+        shadowTechnique = "SHADOWTYPE_STENCIL_MODULATIVE"
         width = "1024"
         height = "768"
         bpp = "0" 

@@ -87,8 +87,11 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
         std::string file = dataDir;
         file.append("/");
         file.append(archName);
-        Ogre::ResourceManager::addCommonArchiveEx (file, typeName);
+        Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, typeName, "General");
     }
+
+    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
 }
 
 int GraphicsEngine::computeStep (void)
@@ -248,6 +251,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     Ogre::SceneType sceneManager = Ogre::ST_GENERIC;
     int anisotropy = 1;
     Ogre::TextureFilterOptions filtering = Ogre::TFO_NONE;
+    Ogre::ShadowTechnique shadowTechnique = Ogre::SHADOWTYPE_NONE;
     width = 800;
     height = 600;
     bpp = 0;
@@ -369,6 +373,19 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                             if (attribute == "TFO_ANISOTROPIC")
                                                 filtering = Ogre::TFO_ANISOTROPIC;
                                         }
+                                        if (attribute == "shadowTechnique")
+                                        {
+                                            assignXmlString (attribute, attNode->getValue());
+                                            tmpLog->format (LOG_ENDUSER, "Found the texture filtering level: %s", attribute.c_str());
+                                            if (attribute == "SHADOWTYPE_NONE")
+                                                shadowTechnique = Ogre::SHADOWTYPE_NONE;    
+                                            if (attribute == "SHADOWTYPE_STENCIL_MODULATIVE")
+                                                shadowTechnique = Ogre::SHADOWTYPE_STENCIL_MODULATIVE;
+                                            if (attribute == "SHADOWTYPE_STENCIL_STENCIL_ADDITIVE")
+                                                shadowTechnique = Ogre::SHADOWTYPE_STENCIL_ADDITIVE;
+                                            if (attribute == "SHADOWTYPE_STENCIL_TEXTURE_MODULATIVE")
+                                                shadowTechnique = Ogre::SHADOWTYPE_TEXTURE_MODULATIVE;
+                                        }
                                         if (attribute == "width")
                                         {
                                             assignXmlString (attribute, attNode->getValue());
@@ -442,11 +459,11 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 #ifdef WIN32
 //        "\nPlugin=RenderSystem_Direct3D9"
 #endif
-        "\nPlugin=Plugin_FileSystem"
+//        "\nPlugin=Plugin_FileSystem"
 //        "\nPlugin=Plugin_ParticleFX"
 //        "\nPlugin=Plugin_BSPSceneManager"
 //        "\nPlugin=Plugin_OctreeSceneManager"
-        "\nPlugin=Plugin_GuiElements"
+//        "\nPlugin=Plugin_GuiElements"
 //        "\nPlugin=Plugin_NatureSceneManager"
 //        "\nPlugin=Plugin_CgProgramManager"
         ,ogrePluginsDir.c_str());
@@ -459,7 +476,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/");
     file.append(ogreConfigFile);
-    setupResources (file);
+  
     // select renderer and set resolution and bpp
     manualInitialize (renderer);
 
@@ -470,7 +487,8 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
 
     // Here we choose to let the system create a default rendering window
     log->put (LOG_DEVELOPER, "Initializing ogre root element");
-    systemData->ogreWindow = ogreRoot->initialise (true);
+    systemData->ogreWindow = ogreRoot->initialise (true);  
+    setupResources (file);
 #ifdef WIN32
     // This is a bit of a hack way to get the HWND from Ogre.
     // Currently only works for the OpenGL renderer.
@@ -486,15 +504,12 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     log->put (LOG_DEVELOPER, "Getting ogre scene manager");
     // Set shadowing system
     systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
-    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_NONE);    
-    systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_MODULATIVE);
-    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    //systemData->ogreSceneManager->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_MODULATIVE);
+    systemData->ogreSceneManager->setShadowTechnique(shadowTechnique);
     systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
 
     // Set default mipmap level (NB some APIs ignore this)
     log->put (LOG_ENDUSER, "Setting up default number of mipmap levels");
-    Ogre::TextureManager::getSingleton ().setDefaultNumMipMaps (defaultNumMipMaps);
+    Ogre::TextureManager::getSingleton ().setDefaultNumMipmaps (defaultNumMipMaps);
 
     // Set some graphics settings
     log->put (LOG_ENDUSER, "Setting up anisotropy and filtering parameters");
