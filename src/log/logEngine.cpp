@@ -138,7 +138,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     logLine << buffer;
 
     // send to recievers
-    const bool telemetryOnly = true; // only modifiable at compile time
+    const bool telemetryOnly = false; // only modifiable at compile time
     if (telemetryOnly)
     {
         if (mask & LOG_TELEMETRY)
