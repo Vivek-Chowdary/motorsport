@@ -24,17 +24,42 @@
 //TODO use iostreams for file management/writing
 
 FILE * LogEngine::logFile = NULL;
+LOG_LEVEL LogEngine::globalLevel = LOG_INFO;
+int LogEngine::numberOfLogEngines = 0;
 
-int LogEngine::start ( LOG_LEVEL level, const char *filePath, bool appendMode )
+LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name )
 {
+    //open the file for writing in rewrite mode if necessary.
+    if (!numberOfLogEngines || !logFile)
+    {
+        if ( ( logFile = fopen ("motorsport.log", "w") ) == NULL ) return;// return ( -1 );
+    }
+    
+    //check if the level is correct
+    if ( localLevel < 0 || localLevel > MAX_LOG_LEVEL ); // return ( -2 );
+    
+    //we set the global level of verbosity
+    initialize (localLevel, name);
+}
+
+int LogEngine::initialize ( LOG_LEVEL level, const char *name)
+{
+    //increase logEngines counter
+    numberOfLogEngines++;
+    format ( LOG_INFO, "Number of logEngines created so far: %i.", numberOfLogEngines);
+    
     //check if the level is correct
     if ( level < 0 || level > MAX_LOG_LEVEL ) return ( -2 );
         
     //we set the level of verbosity
     logLevel = level;
 
-    //check if we append (or rewrite the whole file)
-    if ( ( logFile = fopen ( filePath, ( appendMode ? "a" : "w" ) ) ) == NULL ) return ( -1 );
+    //we set the log name (3 chars)
+    for (int i=0; i<LOG_NAME_LENGTH; i++)
+    {
+        logName[i] = name[i];
+    }
+    logName[LOG_NAME_LENGTH] = '\0';
 
     //we put some text at the start of the current log
     //TODO check returning value
@@ -45,6 +70,9 @@ int LogEngine::start ( LOG_LEVEL level, const char *filePath, bool appendMode )
 
 int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
 {
+    //check if the level is correct
+    if ( level < 0 || level > MAX_LOG_LEVEL ) return ( -2 );
+
     //TODO use strings instead of simple char*
     char buffer[1024];
     va_list arglist;
@@ -64,52 +92,48 @@ int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
     return ( put ( level, buffer ) );
 }
 
-int LogEngine::put ( LOG_LEVEL level, const char *textToLog, bool useNewLine )
+int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
 {
     //check if the level is correct
     if ( level < 0 || logLevel > MAX_LOG_LEVEL ) return ( -2 );
     
     //check if we have been told to write this kind of log
-    if ( level > logLevel ) return ( -1 );
+    if ( level > globalLevel || level > logLevel ) return ( -1 );
     
-    //check if we should append or create a new line
-    if ( !useNewLine )
+    fputs ("\n(", logFile );
+    fputs (logName, logFile );
+    
+    //write log level information
+    switch ( level )
     {
-        // separate previous log with a blank space
-        if ( fputc ( ' ', logFile ) == EOF ) return ( -3 );
+    case LOG_ERROR:
+        if ( fputs ( ")(EE): ", logFile ) == EOF ) return ( -3 );
+        break;
+    case LOG_WARNING:
+        if ( fputs ( ")(WW): ", logFile ) == EOF ) return ( -3 );
+        break;
+    default:
+        if ( fputs ( ")(II): ", logFile ) == EOF ) return ( -3 );
+        break;
     }
-    else
-    {
-        //write log level information
-        switch ( level )
-        {
-        case LOG_ERROR:
-            if ( fputs ( "\n(EE): ", logFile ) == EOF ) return ( -3 );
-            break;
-        case LOG_WARNING:
-            if ( fputs ( "\n(WW): ", logFile ) == EOF ) return ( -3 );
-            break;
-        default:
-            if ( fputs ( "\n(II): ", logFile ) == EOF ) return ( -3 );
-            break;
-        }
-    }
+    
     //write log text
     if ( fputs ( textToLog, logFile ) == EOF ) return ( -3 );
     if ( fflush ( logFile ) != 0) return ( -3 );
     return ( 0 );
 }
 
-int LogEngine::append ( LOG_LEVEL level, const char *textToLog )
+LogEngine::~LogEngine ( )
 {
-    //writes the log message without a newline.
-    return put ( level, textToLog, false );
+    put ( LOG_INFO, "End of logging for this engine" );
+    //decrease number of logEngines
+    numberOfLogEngines--;
+    format ( LOG_INFO, "Number of logEngines left: %i.", numberOfLogEngines);
+
+    if (!numberOfLogEngines)
+    {
+        put ( LOG_INFO, "Closing logFile" );
+        if ( fclose ( logFile ) != 0 ); // return ( -2 );
+    }
 }
 
-int LogEngine::stop ( void )
-{
-    if ( put ( LOG_INFO, "End of LogFile" ) < 0 ) return ( -1 );
-    if ( fclose ( logFile ) != 0 ) return ( -2 );
-
-    return ( 0 );
-}

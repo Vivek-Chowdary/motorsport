@@ -38,6 +38,7 @@ enum LOG_LEVEL
     LOG_TRACE = 4               //!< Message with lots of information, good for debugging.
 };
 #define MAX_LOG_LEVEL 4
+#define LOG_NAME_LENGTH 3
 
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
@@ -52,9 +53,16 @@ class LogEngine
     /** Indicates the level of verbosity of the log. All log messages with a number higher to this one will be discarded, and therefore not writen to the log file.
     */
     LOG_LEVEL logLevel;
-  public:
+    char logName [LOG_NAME_LENGTH+1];
     static FILE *logFile;
-
+    static LOG_LEVEL globalLevel;
+    static int numberOfLogEngines;
+    int initialize ( LOG_LEVEL level, const char *name);
+    int shutdown ( void );
+  public:
+    LogEngine ( LOG_LEVEL level, const char* filePath, LOG_LEVEL localLevel, const char* name );
+    LogEngine ( LOG_LEVEL localLevel, const char *name);
+    ~LogEngine ( void );
     /// Starts the log process.
     /** Initializes the pertinent data in order to allow logging. No logging should be attempted before executing this method.
         @param level level of verbosity of this log.
@@ -64,8 +72,6 @@ class LogEngine
         @return -1 if there was problems opening the log file.
         @return -2 if the level is incorrect.
     */
-    int start ( LOG_LEVEL level,
-                const char *filePath, bool appendMode = false );
 
     /// Writes a log message to the log file.
     /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). It's possible to avoid writing a newline before the message.
@@ -76,7 +82,7 @@ class LogEngine
         @return -1 if the message level is too high to be logged.
         @return -2 if there was problem writing to the file. 
     */
-    int put ( LOG_LEVEL level, const char *textToLog, bool useNewLine = true );
+    int put ( LOG_LEVEL level, const char *textToLog );
 
     /// Writes a printf-like formated log message to the log file.
     /** Writes a printf-like formated log message to the log file, provided its level is low enough (compared to the level of the log engine). A newline is always writen before the message.
@@ -89,17 +95,6 @@ class LogEngine
         @return -3 if there was a problem writing to the file.
     */
     int format ( LOG_LEVEL level, const char *textToLogFormat, ... );
-
-    /// Writes a log message to the log file, appending it to the previous line.
-    /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). No newline is ever writen before the log message.
-        @param level level of the log message.
-        @param textToLog message that is to be logged if its level os low enough.
-        @return 1 on success.
-        @return -1 if the message level is too high to be logged.
-        @return -2 if the message level is incorrect.
-        @return -3 if there was a problem writing to the file.
-    */
-    int append ( LOG_LEVEL level, const char *textToLog );
 
     /// Stops the log process
     /** Closes the log file.

@@ -32,7 +32,7 @@ class GraphicsEngine
   private:
     WorldData *worldData;
     SystemData *systemData;
-    LogEngine log;              //a log object for logging independently from other engines and main
+    LogEngine *log;              //a log object for logging independently from other engines and main
     GraphicsData *graphicsData;
   public:
     GraphicsEngine ( );    //starts the graphics engine

@@ -103,7 +103,6 @@ clean:
 .PHONY: clobber
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
-	rm -f log*.txt
 	rm -f *.log
 	rm -f *~ */*~ .*swp */.*swp
 	@echo    "----------------------------------------------"

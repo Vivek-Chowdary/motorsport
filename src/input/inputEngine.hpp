@@ -28,7 +28,7 @@
 class InputEngine
 {
   private:
-    LogEngine log;              //a log object for logging independently from other engines and main
+    LogEngine *log;              //a log object for logging independently from other engines and main
     InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;

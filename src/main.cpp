@@ -22,12 +22,12 @@
 
 #include "main.hpp"
 
-int sdl_start ( LogEngine & log )
+int sdl_start ( LogEngine * log )
 {                               //initialization functions for SDL
     //returns -2 on warning, -1 on error, 0 on success
     if (atexit (SDL_Quit) != 0){
         //warning message
-        log.put(LOG_WARNING, "Cannot set exit function");
+        log->put(LOG_WARNING, "Cannot set exit function");
         return (-2);
     }
     return SDL_Init ( SDL_INIT_TIMER );
@@ -40,26 +40,35 @@ void sdl_stop ( void )
 
 int main ( int argc, char **argv )
 {
+    LogEngine * log = new LogEngine(LOG_INFO, "MAI");
+    log->put(LOG_INFO, "Log Engine initializated");
     //we declare the 'global' data
+    log->put(LOG_INFO, "Creating system data");
     new SystemData();
+    log->put(LOG_INFO, "Creating world data");
     new WorldData();
+    log->put(LOG_INFO, "Creating data engine");
     DataEngine * data = new DataEngine();
     data->loadSystemData (  );
     data->loadWorldData (  );
     //we declare the engines
-    LogEngine * log = new LogEngine();
+    log->put(LOG_INFO, "Creating input engine");
     InputEngine * input = new InputEngine();
+    log->put(LOG_INFO, "Creating graphics engine");
     GraphicsEngine * graphics = new GraphicsEngine();
+    log->put(LOG_INFO, "Creating physics engine");
     PhysicsEngine * physics = new PhysicsEngine();
+    log->put(LOG_INFO, "Creating gui engine");
     GuiEngine * gui = new GuiEngine();
-
-    log->start ( LOG_VERBOSE, "./logMain.txt" );
-    //sdl_start ( *log );
+    //sdl_start ( log );
     
+    log->put(LOG_INFO, "Getting system data pointer");
     SystemData * systemData = SystemData::getSystemDataPointer();
+    log->put(LOG_INFO, "Initializating main loop");
+    systemData->lastStatTime = systemData->currentPhysicsTime = SDL_GetTicks (  );
+    log->put(LOG_INFO, "Enabling main loop");
     systemData->enableMainLoop (  );
-    systemData->lastStatTime = systemData->currentPhysicsTime =
-        SDL_GetTicks (  );
+    log->put(LOG_INFO, "Starting main loop");
     while ( systemData->canMainLoopRun (  ) )
     {
         systemData->currentMainLoopTime = SDL_GetTicks (  );
@@ -95,15 +104,22 @@ int main ( int argc, char **argv )
         // except that it's the computer who creates the "input"
         // for the car input parts (car pedals, car st.wheel,...)
     }
+    log->put(LOG_INFO, "Main loop finished");
 
+    log->put(LOG_INFO, "Deleting graphics engine");
     delete graphics;
+    log->put(LOG_INFO, "Deleting physics engine");
     delete physics;
+    log->put(LOG_INFO, "Deleting input engine");
     delete input;
-    data->unloadWorldData (  );
+    log->put(LOG_INFO, "Deleting gui engine");
     delete gui;
+    log->put(LOG_INFO, "Deleting data engine");
+    data->unloadWorldData (  );
     data->unloadSystemData (  );
     delete data;
-    log->stop (  );
+    delete log;
+    //log->stop (  );
     //sdl_stop (  );
 
     //and finally back to the OS

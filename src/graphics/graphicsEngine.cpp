@@ -28,14 +28,13 @@
 GraphicsEngine::GraphicsEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start ( LOG_VERBOSE, "logGraphics.txt" );
+    log = new LogEngine ( LOG_VERBOSE, "GFX" );
 
     //get the direction of the graphics data
-    log.put ( LOG_INFO, "Setting up data pointers..." );
+    log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
     graphicsData = &(systemData->graphicsData);
-    log.append ( LOG_INFO, "Ok" );
 
     graphicsData->ogreRoot = new Root (  );
     setupResources (  );
@@ -47,8 +46,8 @@ GraphicsEngine::GraphicsEngine ( )
     worldData->camera1->ogreCamera =
         graphicsData->ogreSceneManager->createCamera ( "Camera1" );
     worldData->camera1->ogreCamera->setFixedYawAxis(true,Vector3(0,0,1));
-    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 1200, 20, -200 ) );
-    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, -200 ) );
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 3000, 3000, 1000 ) );
+    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, 0 ) );
     worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
     
     // Create one viewport, entire window
@@ -171,5 +170,5 @@ int GraphicsEngine::step ( void )
 GraphicsEngine::~GraphicsEngine ( void )
 {
     //finally stop the log engine
-    log.stop (  );
+    delete log;
 }

@@ -27,7 +27,7 @@
 class PhysicsEngine
 {
   private:
-    LogEngine log;              //a log object for logging independently from other engines and main
+    LogEngine *log;              //a log object for logging independently from other engines and main
     PhysicsData *physicsData;
     WorldData *worldData;
     SystemData *systemData;

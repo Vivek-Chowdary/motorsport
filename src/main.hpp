@@ -34,4 +34,6 @@
 #    include "physicsEngine.hpp"    //calculates the physics of the world data
 #    include "guiEngine.hpp"    //displays all the user interface on screen
 
+#include "stdio.h"
+
 #endif

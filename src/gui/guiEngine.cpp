@@ -25,26 +25,24 @@
 GuiEngine::GuiEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start ( LOG_INFO, "logGui.txt" );
+    log = new LogEngine ( LOG_INFO, "GUI" );
 
     //get the direction of the graphics data
-    log.put ( LOG_INFO, "Setting up data pointers..." );
+    log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
-    log.append ( LOG_INFO, "Ok" );
 }
 
 int GuiEngine::step ( void )
 //makes the graphics engine draw one frame
 {
-    log.put ( LOG_VERBOSE, "Doing an step..." );
+    log->put ( LOG_VERBOSE, "Doing an step..." );
     static Uint32 lastRefreshTime = 0;
     if (SDL_GetTicks() - lastRefreshTime >= 1000)
     {
         updateStatistics();
         lastRefreshTime += 1000;
     }
-    log.append ( LOG_VERBOSE, "Ok" );
 
     Overlay *overlay = ( Overlay * ) OverlayManager::getSingleton (  ).
     getByName ( "gui" );
@@ -82,10 +80,8 @@ void GuiEngine::updateStatistics ( void  )
     guiDbg->setCaption ( systemData->graphicsData.ogreWindow->getDebugText (  ) );
 }
 
-                                                        
-
 GuiEngine::~GuiEngine ( void )
 {
     //finally stop the log engine
-    log.stop (  );
+    delete log;
 }

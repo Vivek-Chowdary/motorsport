@@ -32,7 +32,7 @@ using namespace Ogre;
 class GuiEngine
 {
   private:
-    LogEngine log;              //a log object for logging independently from other engines and main
+    LogEngine *log;              //a log object for logging independently from other engines and main
     WorldData *worldData;
     SystemData *systemData;
   public:

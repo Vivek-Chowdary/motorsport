@@ -41,43 +41,49 @@
 PhysicsEngine::PhysicsEngine ( )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start ( LOG_INFO, "logPhysics.txt" );
+    log = new LogEngine ( LOG_INFO, "FSX" );
 
     //get the direction of the graphics data
-    log.put ( LOG_INFO, "Setting up data pointers..." );
+    log->put ( LOG_INFO, "Setting up data pointers..." );
     worldData = WorldData::getWorldDataPointer();
     systemData = SystemData::getSystemDataPointer();
     physicsData = &(systemData->physicsData );
-    log.append ( LOG_INFO, "Ok" );
 
 /*    //get the direction of the graphics data
-    log.put(LOG_INFO, "Testing ODE library...");
+    log->put(LOG_INFO, "Testing ODE library...");
     testOde();
-    log.append(LOG_INFO, "Ok");
 */
 
-    log.put ( LOG_INFO, "Creating ODE world");
+    log->put ( LOG_INFO, "Creating ODE world");
     worldData->worldID = dWorldCreate();
     worldData->spaceID = dHashSpaceCreate(0);
     worldData->jointGroupID = dJointGroupCreate (0);
-    log.put ( LOG_INFO, "Setting ODE world gravity");
+    log->put ( LOG_INFO, "Setting ODE world gravity");
 //    dWorldSetGravity (worldData->worldID, 0,0,-0.000098);
     dWorldSetCFM (worldData->worldID, 1e-5);
     dWorldSetERP (worldData->worldID, 0.8);
-    log.put ( LOG_INFO, "Creating sample mass");
+    log->put ( LOG_INFO, "Creating sample mass");
     dMass mass;
-    log.put ( LOG_INFO, "Assigning box mass values");
+    log->put ( LOG_INFO, "Assigning box mass values");
     dMassSetBoxTotal (&mass, 1, 1, 1, 1);
-    log.put ( LOG_INFO, "Creating cubes in ODE world");
+    log->put ( LOG_INFO, "Creating cubes in ODE world");
     
+    const int separation = 150;
+    const int minForce = 100;
     for ( int currentCube = 0;
           currentCube < worldData->numberOfCubes; currentCube++ )
     {
         worldData->cubeList[currentCube].cubeID = dBodyCreate (worldData->worldID);
-        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * 200, currentCube / 10 % 10 * 200, currentCube / 100 % 10 * 200 * ((int(currentCube/1000))+1));
+        dBodySetPosition (worldData->cubeList[currentCube].cubeID, currentCube % 10 * separation, currentCube / 10 % 10 * separation, currentCube / 100 % 10 * separation * ((int(currentCube/1000))+1));
 
         dBodySetMass (worldData->cubeList[currentCube].cubeID, &mass);
-        dBodyAddForce (worldData->cubeList[currentCube].cubeID,random()%2?1/float(25+random()%200):-1/float(25+random()%200),random()%2?1/float(25+random()%200):-1/float(25+random()%200),random()%2?1/float(25+random()%200):-1/float(25+random()%200));
+        dBodyAddForce (worldData->cubeList[currentCube].cubeID,
+            random()%2? 1/float(minForce+random()%200):
+                        -1/float(minForce+random()%200),
+            random()%2? 1/float(minForce+random()%200):
+                        -1/float(minForce+random()%200),
+            random()%2? 1/float(minForce+random()%200):
+                        -1/float(minForce+random()%200));
         worldData->cubeList[currentCube].cubeGeomID = dCreateBox (worldData->spaceID, 100,100,100);
         dGeomSetBody (worldData->cubeList[currentCube].cubeGeomID,worldData->cubeList[currentCube].cubeID);
     }
@@ -116,8 +122,8 @@ int PhysicsEngine::step ( void )
 //makes the graphics engine draw one frame
 {
     //mega-verbosity
-    log.put ( LOG_TRACE, "Doing an step: calculating a physics step" );
-    log.put ( LOG_INFO, "Doing an step.....");
+    log->put ( LOG_TRACE, "Doing an step: calculating a physics step" );
+    log->put ( LOG_INFO, "Doing an step.....");
 
     dSpaceCollide (worldData->spaceID,0,&nearCallback);
     dWorldStep (worldData->worldID, systemData->physicsData.timeStep);
@@ -162,8 +168,8 @@ int PhysicsEngine::step ( void )
 
 PhysicsEngine::~PhysicsEngine ( void )
 {
-    log.put ( LOG_INFO, "Removing ODE world data from memory");
+    log->put ( LOG_INFO, "Removing ODE world data from memory");
     dCloseODE();
     //finally stop the log engine
-    log.stop (  );
+    delete log;
 }
