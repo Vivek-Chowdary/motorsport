@@ -85,6 +85,7 @@ int LogEngine::put (LOG_LEVEL level, const char* textToLog, bool useNewLine)
         }
         //write log text
         fputs (textToLog, logFile);
+        fflush (logFile);
 	    return (0);
     }
 	return (-1);
