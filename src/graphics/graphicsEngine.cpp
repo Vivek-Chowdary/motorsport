@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -24,47 +25,47 @@
 #include "graphicsEngine.hpp"
 #include <stdlib.h>
 
-int GraphicsEngine::start (WorldData * wrlData, SystemData * sysData)
+int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start (LOG_VERBOSE, "logGraphics.txt");
+    log.start ( LOG_VERBOSE, "logGraphics.txt" );
 
     //get the direction of the graphics data
-    log.put (LOG_INFO, "Setting up data pointers...");
-    graphicsData = &(sysData->graphicsData);
+    log.put ( LOG_INFO, "Setting up data pointers..." );
+    graphicsData = &( sysData->graphicsData );
     worldData = wrlData;
     systemData = sysData;
-    log.append (LOG_INFO, "Ok");
+    log.append ( LOG_INFO, "Ok" );
 
     app = new ExampleApplication;
     try
     {
-        app->go (graphicsData->width,graphicsData->height);
-    } catch (Exception & e)
+        app->go ( graphicsData->width, graphicsData->height );
+    } catch ( Exception & e )
     {
-        fprintf (stderr, "An exception has occured: %s\n", e.getFullDescription ().c_str ());
+        fprintf ( stderr, "An exception has occured: %s\n",
+                  e.getFullDescription (  ).c_str (  ) );
     }
-    return (0);
+    return ( 0 );
 }
 
-
-int GraphicsEngine::step (void)
+int GraphicsEngine::step ( void )
 //makes the graphics engine draw one frame
 {
-    app->mRoot->_fireFrameStarted(); 
-    app->mWindow->update(); 
-    app->mRoot->_fireFrameEnded();
+    app->mRoot->_fireFrameStarted (  );
+    app->mWindow->update (  );
+    app->mRoot->_fireFrameEnded (  );
 
-    return (0);
+    return ( 0 );
 }
 
-int GraphicsEngine::stop (void)
+int GraphicsEngine::stop ( void )
 {
 //    delete app;
-  //  app = NULL;
-   
-    //finally stop the log engine
-    log.stop ();
+    //  app = NULL;
 
-    return (0);
+    //finally stop the log engine
+    log.stop (  );
+
+    return ( 0 );
 }

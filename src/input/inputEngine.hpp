@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -26,13 +27,13 @@
 
 class InputEngine
 {
-    LogEngine log;  //a log object for logging independently from other engines and main
+    LogEngine log;              //a log object for logging independently from other engines and main
     InputData *inputData;
     SystemData *systemData;
     WorldData *worldData;
-    public:
-        int start (WorldData *wrlData, SystemData *sysData);        //starts the input engine
-        int step (void);   //processes user input queue
-        void processInput (SDLKey keySymbol);
-        int stop (void);        //stops the input engine
+  public:
+    int start ( WorldData * wrlData, SystemData * sysData );    //starts the input engine
+    int step ( void );          //processes user input queue
+    void processInput ( SDLKey keySymbol );
+    int stop ( void );          //stops the input engine
 };

@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -28,32 +29,27 @@
 #include <paragui/paragui.h>
 #include <paragui/pgapplication.h>
 
-
 class GuiEngine
 {
-    LogEngine log;    //a log object for logging independently from other engines and main
+    LogEngine log;              //a log object for logging independently from other engines and main
     WorldData *worldData;
     SystemData *systemData;
-    PG_Application * currentMenu;
-    public:
-        int optionsMenu(void);
-        int mainMenu(void);
-        int testBasicParagui (void);
-        int start (WorldData *wrlData, SystemData *sysData);        //starts the graphics engine
-        int step (void);        //makes the graphics engine draw one frame
-        int stop (void);        //stops the graphics engine
-        PG_Application* getCurrentMenu(void);
-        WorldData *getWorldData(void);
-        SystemData *getSystemData(void);
-        LogEngine* getLog(void);
+    PG_Application *currentMenu;
+  public:
+    int optionsMenu ( void );
+    int mainMenu ( void );
+    int testBasicParagui ( void );
+    int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
+    int step ( void );          //makes the graphics engine draw one frame
+    int stop ( void );          //stops the graphics engine
+    PG_Application *getCurrentMenu ( void );
+    WorldData *getWorldData ( void );
+    SystemData *getSystemData ( void );
+    LogEngine *getLog ( void );
 };
 
-
 #include <paragui/pgwindow.h>
-                                                                                
-										#include <paragui/pgbutton.h>
-										#include <paragui/pgwidgetlist.h>
-										#include <paragui/pglabel.h>
-										                                                                                
-																				                                                                                
 
+#include <paragui/pgbutton.h>
+#include <paragui/pgwidgetlist.h>
+#include <paragui/pglabel.h>

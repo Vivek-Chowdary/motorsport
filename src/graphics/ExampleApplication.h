@@ -32,12 +32,11 @@ Description: Base class for all the OGRE examples
 */
 
 #ifndef __ExampleApplication_H__
-#define __ExampleApplication_H__
+#    define __ExampleApplication_H__
 
-#include "Ogre.h"
-#include "OgreConfigFile.h"
-#include "ExampleFrameListener.h"
-
+#    include "Ogre.h"
+#    include "OgreConfigFile.h"
+#    include "ExampleFrameListener.h"
 
 using namespace Ogre;
 
@@ -48,50 +47,51 @@ class ExampleApplication
 {
   public:
     /// Standard constructor
-    ExampleApplication ()
+    ExampleApplication (  )
     {
         mFrameListener = 0;
         mRoot = 0;
     }
     /// Start the example
-    void go (int resX, int resY)
+    void go ( int resX, int resY )
     {
-        mRoot = new Root ();
-        setupResources ();
-        if ( !configure (resX, resY))
-	    return /*false*/;
-        chooseSceneManager ();
-        createCamera ();
-        createViewports ();
+        mRoot = new Root (  );
+        setupResources (  );
+        if ( !configure ( resX, resY ) )
+            return /*false */ ;
+        chooseSceneManager (  );
+        createCamera (  );
+        createViewports (  );
         // Set default mipmap level (NB some APIs ignore this)
-        TextureManager::getSingleton ().setDefaultNumMipMaps (5);
+        TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
         // Create the scene
-        createScene ();
-        createFrameListener ();
-        return /*true*/;
+        createScene (  );
+        createFrameListener (  );
+        return /*true */ ;
     }
 
 //  protected:
-    Root * mRoot;
+    Root *mRoot;
     Camera *mCamera;
     SceneManager *mSceneMgr;
     ExampleFrameListener *mFrameListener;
     RenderWindow *mWindow;
 
-
     /// Standard destructor
-     ~ExampleApplication ()
+    ~ExampleApplication (  )
     {
-        if (mFrameListener)
+        if ( mFrameListener )
             delete mFrameListener;
-        if (mRoot)
+
+        if ( mRoot )
             delete mRoot;
-/*	if (mCamera)
-	    delete mCamera;
-	if (mWindow)
-	    delete mWindow;
-	if (mSceneMgr)
-	    delete mSceneMgr;*/
+
+/*    if (mCamera)
+        delete mCamera;
+    if (mWindow)
+        delete mWindow;
+    if (mSceneMgr)
+        delete mSceneMgr;*/
     }
 
     // These internal methods package up the stages in the startup process
@@ -99,17 +99,17 @@ class ExampleApplication
     /** Sets up the application - returns false if the user chooses to abandon configuration. */
 
     /** Configures the application - returns false if the user chooses to abandon configuration. */
-    bool configure (int resX, int resY)
+    bool configure ( int resX, int resY )
     {
         // Show the configuration dialog and initialise the system
         // You can skip this and use root.restoreConfig() to load configuration
         // settings if you were sure there are valid ones saved in ogre.cfg
 //        if(mRoot->showConfigDialog())
-        if (manualInitialize ("OpenGL",resX,resY))
+        if ( manualInitialize ( "OpenGL", resX, resY ) )
         {
             // If returned true, user clicked OK so initialise
             // Here we choose to let the system create a default rendering window by passing 'true'
-            mWindow = mRoot->initialise (true);
+            mWindow = mRoot->initialise ( true );
             return true;
         }
         else
@@ -118,105 +118,106 @@ class ExampleApplication
         }
     }
 
-    void chooseSceneManager (void)
+    void chooseSceneManager ( void )
     {
         // Get the SceneManager, in this case a generic one
-        mSceneMgr = mRoot->getSceneManager (ST_GENERIC);
+        mSceneMgr = mRoot->getSceneManager ( ST_GENERIC );
     }
-    void createCamera (void)
+    void createCamera ( void )
     {
         // Create the camera
-        mCamera = mSceneMgr->createCamera ("PlayerCam");
+        mCamera = mSceneMgr->createCamera ( "PlayerCam" );
 
         // Position it at 500 in Z direction
-        mCamera->setPosition (Vector3 (0, 0, 500));
+        mCamera->setPosition ( Vector3 ( 0, 0, 500 ) );
         // Look back along -Z
-        mCamera->lookAt (Vector3 (0, 0, -300));
-        mCamera->setNearClipDistance (5);
+        mCamera->lookAt ( Vector3 ( 0, 0, -300 ) );
+        mCamera->setNearClipDistance ( 5 );
 
     }
-    bool manualInitialize (const String & desiredRenderer,int resX, int resY)
+    bool manualInitialize ( const String & desiredRenderer, int resX, int resY )
     {
         RenderSystem *renderSystem;
         bool ok = false;
 
-        RenderSystemList *renderers = Root::getSingleton ().getAvailableRenderers ();
+        RenderSystemList *renderers =
+            Root::getSingleton (  ).getAvailableRenderers (  );
 
         // See if the list is empty (no renderers available)
-        if (renderers->empty ())
+        if ( renderers->empty (  ) )
             return false;
 
-        for (RenderSystemList::iterator it = renderers->begin (); it != renderers->end (); it++)
+        for ( RenderSystemList::iterator it = renderers->begin (  );
+              it != renderers->end (  ); it++ )
         {
-            renderSystem = (*it);
-            if (strstr (&(*renderSystem->getName ()), &(*desiredRenderer)))
+            renderSystem = ( *it );
+            if ( strstr
+                 ( &( *renderSystem->getName (  ) ), &( *desiredRenderer ) ) )
             {
                 ok = true;
                 break;
             }
         }
 
-        if (!ok)
+        if ( !ok )
         {
             // We still don't have a renderer; pick up the first one from the list
-            renderSystem = (*renderers->begin ());
+            renderSystem = ( *renderers->begin (  ) );
         }
 
-        Root::getSingleton ().setRenderSystem (renderSystem);
-	char resolution[32];
-	sprintf(resolution,"%i x %i",resX,resY);
+        Root::getSingleton (  ).setRenderSystem ( renderSystem );
+        char resolution[32];
+
+        sprintf ( resolution, "%i x %i", resX, resY );
 
         // Manually set configuration options. These are optional.
-        renderSystem->setConfigOption ("Video Mode", resolution);
+        renderSystem->setConfigOption ( "Video Mode", resolution );
 
         return true;
     }
 
-    void createFrameListener (void)
+    void createFrameListener ( void )
     {
-        mFrameListener = new ExampleFrameListener (mWindow, mCamera);
-        mFrameListener->showDebugOverlay (true);
-        mRoot->addFrameListener (mFrameListener);
+        mFrameListener = new ExampleFrameListener ( mWindow, mCamera );
+        mFrameListener->showDebugOverlay ( true );
+        mRoot->addFrameListener ( mFrameListener );
     }
 
-    void createScene (void)     // pure virtual - this has to be overridden
+    void createScene ( void )   // pure virtual - this has to be overridden
     {
-        mSceneMgr->setSkyBox (true, "MotorsportSkyBox");
+        mSceneMgr->setSkyBox ( true, "MotorsportSkyBox" );
     }
 
-
-    virtual void createViewports (void)
+    virtual void createViewports ( void )
     {
         // Create one viewport, entire window
-        Viewport *vp = mWindow->addViewport (mCamera);
+        Viewport *vp = mWindow->addViewport ( mCamera );
 
-        vp->setBackgroundColour (ColourValue (0, 0, 0));
+        vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
     }
 
     /// Method which will define the source of resources (other than current folder)
-    virtual void setupResources (void)
+    virtual void setupResources ( void )
     {
         // Load resource paths from config file
         ConfigFile cf;
 
-        cf.load ("resources.cfg");
+        cf.load ( "resources.cfg" );
 
         // Go through all settings in the file
-        ConfigFile::SettingsIterator i = cf.getSettingsIterator ();
+        ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
 
-        String typeName, archName;
+        String typeName,
+               archName;
 
-        while (i.hasMoreElements ())
+        while ( i.hasMoreElements (  ) )
         {
-            typeName = i.peekNextKey ();
-            archName = i.getNext ();
-            ResourceManager::addCommonArchiveEx (archName, typeName);
+            typeName = i.peekNextKey (  );
+            archName = i.getNext (  );
+            ResourceManager::addCommonArchiveEx ( archName, typeName );
         }
     }
 
-
-
 };
-
 
 #endif

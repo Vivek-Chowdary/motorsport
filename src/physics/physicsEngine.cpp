@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -26,77 +27,90 @@
 #include <math.h>
 
 #ifdef dDOUBLE
-#   pragma message ( "[BUILDMESG] ODE double precision library loaded")
-#   pragma comment( lib, "ode_double.lib" )
+#    pragma message ( "[BUILDMESG] ODE double precision library loaded")
+#    pragma comment( lib, "ode_double.lib" )
 #else
-#   ifdef dSINGLE
-#       pragma message ( "[BUILDMESG] ODE single precision library loaded")
-#       pragma comment( lib, "ode_single.lib" )
+#    ifdef dSINGLE
+#        pragma message ( "[BUILDMESG] ODE single precision library loaded")
+#        pragma comment( lib, "ode_single.lib" )
 #    else
-#       pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
+#        pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
 #    endif
 #endif
 
-int PhysicsEngine::start (WorldData *wrlData, SystemData *sysData)
+int PhysicsEngine::start ( WorldData * wrlData, SystemData * sysData )
 {
     //first of all start the logger (automatically logs the start of itself)
-    log.start(LOG_INFO, "logPhysics.txt");
-    
+    log.start ( LOG_INFO, "logPhysics.txt" );
+
     //get the direction of the graphics data
-    log.put(LOG_INFO, "Setting up data pointers...");
-    physicsData = &(sysData->physicsData);
+    log.put ( LOG_INFO, "Setting up data pointers..." );
+    physicsData = &( sysData->physicsData );
     worldData = wrlData;
     systemData = sysData;
-    log.append(LOG_INFO, "Ok");
-    
+    log.append ( LOG_INFO, "Ok" );
+
 /*    //get the direction of the graphics data
     log.put(LOG_INFO, "Testing ODE library...");
     testOde();
     log.append(LOG_INFO, "Ok");
 */
-    return (0);
+    return ( 0 );
 }
 
-
-int PhysicsEngine::step (void)
+int PhysicsEngine::step ( void )
 //makes the graphics engine draw one frame
 {
     //mega-verbosity
-    log.put(LOG_TRACE, "Doing an step: calculating a physics step");
+    log.put ( LOG_TRACE, "Doing an step: calculating a physics step" );
 
-    for (int currentRectangle = 0; currentRectangle < worldData->numberOfRectangles; currentRectangle++)
+    for ( int currentRectangle = 0;
+          currentRectangle < worldData->numberOfRectangles; currentRectangle++ )
     {
         //change rectangle colors
         //do we have to increase or to decrease current color values?
-        if (worldData->rectangleList[currentRectangle].colorSpeed)
+        if ( worldData->rectangleList[currentRectangle].colorSpeed )
         {
-            worldData->rectangleList[currentRectangle].red -= 1+ physicsData->timeStep;
-            worldData->rectangleList[currentRectangle].green -= 2+ physicsData->timeStep;
-            worldData->rectangleList[currentRectangle].blue -= 0+ physicsData->timeStep;
-        }else{
-            worldData->rectangleList[currentRectangle].red += 2+ (physicsData->timeStep % 256);
-            worldData->rectangleList[currentRectangle].green += 0+ (physicsData->timeStep % 256);
-            worldData->rectangleList[currentRectangle].blue += 1+ (physicsData->timeStep % 256);
+            worldData->rectangleList[currentRectangle].red -=
+                1 + physicsData->timeStep;
+            worldData->rectangleList[currentRectangle].green -=
+                2 + physicsData->timeStep;
+            worldData->rectangleList[currentRectangle].blue -=
+                0 + physicsData->timeStep;
+        }
+        else
+        {
+            worldData->rectangleList[currentRectangle].red +=
+                2 + ( physicsData->timeStep % 256 );
+            worldData->rectangleList[currentRectangle].green +=
+                0 + ( physicsData->timeStep % 256 );
+            worldData->rectangleList[currentRectangle].blue +=
+                1 + ( physicsData->timeStep % 256 );
         }
         //move rectangles on screen
-        Sint16 currentX = worldData->rectangleList[currentRectangle].getPositionX ();
-        Sint16 currentY = worldData->rectangleList[currentRectangle].getPositionY ();
+        Sint16 currentX =
+            worldData->rectangleList[currentRectangle].getPositionX (  );
+        Sint16 currentY =
+            worldData->rectangleList[currentRectangle].getPositionY (  );
         currentX += physicsData->timeStep;
-        if (currentX + worldData->rectangleList[currentRectangle].getSizeX () > systemData->graphicsData.width)
+        if ( currentX +
+             worldData->rectangleList[currentRectangle].getSizeX (  ) >
+             systemData->graphicsData.width )
         {
             currentX = 0;
         }
-        worldData->rectangleList[currentRectangle].setPosition(currentX, currentY);
-        
+        worldData->rectangleList[currentRectangle].setPosition ( currentX,
+                                                                 currentY );
+
     }
-    
-    return (0);
+
+    return ( 0 );
 }
 
-int PhysicsEngine::stop (void)
+int PhysicsEngine::stop ( void )
 {
     //finally stop the log engine
-    log.stop ();
-    
-    return (0);
+    log.stop (  );
+
+    return ( 0 );
 }

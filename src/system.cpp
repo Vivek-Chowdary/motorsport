@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -25,42 +26,43 @@ bool mainLoopEnabled;
 bool simLoopEnabled;
 bool guiLoopEnabled;
 
-bool SystemData::canMainLoopRun(void)   //does the program have to keep running?
+bool SystemData::canMainLoopRun ( void )    //does the program have to keep running?
 {
     return mainLoopEnabled;
 }
 
-bool SystemData::canSimLoopRun(void)    //does the simulation have to keep running?
+bool SystemData::canSimLoopRun ( void ) //does the simulation have to keep running?
 {
     return simLoopEnabled;
 }
-bool SystemData::canGuiLoopRun(void)    //does the gui have to keep running?
+
+bool SystemData::canGuiLoopRun ( void ) //does the gui have to keep running?
 {
     return guiLoopEnabled;
 }
 
-void SystemData::enableMainLoop (void)  //allows the program to start running
+void SystemData::enableMainLoop ( void )    //allows the program to start running
 {
     mainLoopEnabled = true;
 }
-void SystemData::enableSimLoop (void)   //allows the simulation to start running
+void SystemData::enableSimLoop ( void ) //allows the simulation to start running
 {
     simLoopEnabled = true;
 }
-void SystemData::enableGuiLoop (void)   //allows the gui to start running
+void SystemData::enableGuiLoop ( void ) //allows the gui to start running
 {
     guiLoopEnabled = true;
 }
 
-void SystemData::disableMainLoop (void) //allows the program to stop running
+void SystemData::disableMainLoop ( void )   //allows the program to stop running
 {
     mainLoopEnabled = false;
 }
-void SystemData::disableSimLoop (void)  //allows the simulation to stop running
+void SystemData::disableSimLoop ( void )    //allows the simulation to stop running
 {
     simLoopEnabled = false;
 }
-void SystemData::disableGuiLoop (void)  //allows the gui to stop running{
+void SystemData::disableGuiLoop ( void )    //allows the gui to stop running{
 {
     guiLoopEnabled = false;
 }

@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -20,9 +21,9 @@
 ******************************************************************************/
 
 #ifndef SYSTEM_HPP
-#define SYSTEM_HPP
+#    define SYSTEM_HPP
 
-#include "SDL.h"
+#    include "SDL.h"
 
 struct GraphicsData
 {
@@ -38,7 +39,7 @@ struct GraphicsData
     char *icon;
     int titleLength;
     int iconLength;
-    
+
     //note that the camera data (origin, dest., angle, focus, etc...) should not
     // be here. that's part of the worldData. there should exist real TV
     // cameras in the track, and the virtual-driver's eyes are the in-car
@@ -65,46 +66,44 @@ struct PhysicsData
 
 struct GuiData
 {
-    int nextMenuIndex; //main menu = 1;  options menu = 2;
+    int nextMenuIndex;          //main menu = 1;  options menu = 2;
     int lastMenuIndex;
 };
 
 class SystemData
-{ //this contains all the data not related with the simulated/virtual world
+{                               //this contains all the data not related with the simulated/virtual world
 
     bool mainLoopEnabled;
     bool simLoopEnabled;
     bool guiLoopEnabled;
-    public:
-        //independent data
-        struct GraphicsData graphicsData;
-        struct InputData inputData;
-        struct PhysicsData physicsData;
-        struct GuiData guiData;
+  public:
+    //independent data
+    struct GraphicsData graphicsData;
+    struct InputData inputData;
+    struct PhysicsData physicsData;
+    struct GuiData guiData;
 
-        //main loop time control data
-        Uint32 currentSimLoopTime;
-        Uint32 currentPhysicsTime;
-        Uint32 lastStatTime;
-        int physicsSteps;
-        Uint32 physicsStepsPerSecond;
-        int graphicsSteps;
-        Uint32 graphicsStepsPerSecond;
+    //main loop time control data
+    Uint32 currentSimLoopTime;
+    Uint32 currentPhysicsTime;
+    Uint32 lastStatTime;
+    int physicsSteps;
+    Uint32 physicsStepsPerSecond;
+    int graphicsSteps;
+    Uint32 graphicsStepsPerSecond;
 
+    bool canMainLoopRun ( void );   //does the program have to keep running?
+    bool canSimLoopRun ( void );    //does the simulation have to keep running?
+    bool canGuiLoopRun ( void );    //does the gui have to keep running?
 
-        bool canMainLoopRun(void);  //does the program have to keep running?
-        bool canSimLoopRun(void);   //does the simulation have to keep running?
-        bool canGuiLoopRun(void);   //does the gui have to keep running?
+    void enableMainLoop ( void );   //allows the program to start running
+    void enableSimLoop ( void );    //allows the simulation to start running
+    void enableGuiLoop ( void );    //allows the gui to start running
 
-        void enableMainLoop (void); //allows the program to start running
-        void enableSimLoop (void);  //allows the simulation to start running
-        void enableGuiLoop (void);  //allows the gui to start running
-
-        void disableMainLoop (void);//allows the program to stop running
-        void disableSimLoop (void); //allows the simulation to stop running
-        void disableGuiLoop (void); //allows the gui to stop running
+    void disableMainLoop ( void );  //allows the program to stop running
+    void disableSimLoop ( void );   //allows the simulation to stop running
+    void disableGuiLoop ( void );   //allows the gui to stop running
 
 };
-
 
 #endif

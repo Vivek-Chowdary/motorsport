@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -20,33 +21,35 @@
 ******************************************************************************/
 
 #ifndef WORLD_HPP
-#define WORLD_HPP
+#    define WORLD_HPP
 
-#include "SDL.h"
+#    include "SDL.h"
 
 class Rectangle
-{    
+{
     SDL_Rect rectangle;
     int visible;
-    public:
-        void setPosition (Sint16 newPosX, Sint16 newPosY);
-        Sint16 getPositionX (void);
-        Sint16 getPositionY (void);
-        void setSize (Uint16 newWidth, Uint16 newHeight);
-        Sint16 getSizeX (void);
-        Sint16 getSizeY (void);
-        void setVisible (int visibility);
-        int isVisible ();
-        Uint8 red, green, blue;
-        SDL_Rect *sdlRectangle ();
-        bool colorSpeed;    //0 -> increasing; 1 -> decreasing
+  public:
+    void setPosition ( Sint16 newPosX, Sint16 newPosY );
+    Sint16 getPositionX ( void );
+    Sint16 getPositionY ( void );
+    void setSize ( Uint16 newWidth, Uint16 newHeight );
+    Sint16 getSizeX ( void );
+    Sint16 getSizeY ( void );
+    void setVisible ( int visibility );
+    int isVisible (  );
+    Uint8 red,
+          green,
+          blue;
+    SDL_Rect *sdlRectangle (  );
+    bool colorSpeed;            //0 -> increasing; 1 -> decreasing
 };
 
 class WorldData
-{ //this will contain everything related to the simulated/virtual world
-    public:
-        int numberOfRectangles;
-        Rectangle *rectangleList;  //for our example,the worlddata has only 2 rect.
+{                               //this will contain everything related to the simulated/virtual world
+  public:
+    int numberOfRectangles;
+    Rectangle *rectangleList;   //for our example,the worlddata has only 2 rect.
 };
 
 #endif

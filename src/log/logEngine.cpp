@@ -1,3 +1,4 @@
+
 /******************************************************************************
 *
 * Copyright (C) 2004 Bruno González Campo (stenyak@users.sourceforge.net)
@@ -21,73 +22,83 @@
 
 #include "logEngine.hpp"
 
-int LogEngine::start (LOG_LEVEL level, const char* filePath, bool appendMode)
+int LogEngine::start ( LOG_LEVEL level, const char *filePath, bool appendMode )
 {
     //check if we append (or rewrite the whole file)
-    logFile = fopen (filePath, (appendMode ? "a" : "w"));
-    
+    logFile = fopen ( filePath, ( appendMode ? "a" : "w" ) );
+
     //we set the level of verbosity
     logLevel = level;
-    
-    //we put some text at the start of the current log
-    put (LOG_INFO, "Start of LogFile");
 
-    return (0);
+    //we put some text at the start of the current log
+    put ( LOG_INFO, "Start of LogFile" );
+
+    return ( 0 );
 }
 
-int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
+int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
 {
     char buffer[1024];
     va_list arglist;
 
     //convert parameters to a string
-    va_start (arglist, textToLogFormat);
+    va_start ( arglist, textToLogFormat );
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
-    vsnprintf (buffer, sizeof(buffer), textToLogFormat, arglist);
+    vsnprintf ( buffer, sizeof ( buffer ), textToLogFormat, arglist );
 #else
-#   pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
-    vsprintf (buffer, textToLogFormat, arglist);
+#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
+    vsprintf ( buffer, textToLogFormat, arglist );
 #endif
-    va_end (arglist);
-    
+    va_end ( arglist );
+
     //put the string with a new line
-    return (put (level, buffer));
+    return ( put ( level, buffer ) );
 }
 
-
-int LogEngine::put (LOG_LEVEL level, const char* textToLog, bool useNewLine)
-{ 
+int LogEngine::put ( LOG_LEVEL level, const char *textToLog, bool useNewLine )
+{
     //check if we have been told to write this kind of log
-    if (level <= logLevel) {
+    if ( level <= logLevel )
+    {
         //check if we should append or create a new line
-        if (!useNewLine) {
+        if ( !useNewLine )
+        {
             // separate previous log with a blank space
-            fputc (' ', logFile);
-        } else {
+            fputc ( ' ', logFile );
+        }
+        else
+        {
             //write log level information
-            switch (level) {
-                case LOG_ERROR:   fputs ("\n(EE): ", logFile); break;
-                case LOG_WARNING: fputs ("\n(WW): ", logFile); break;
-                default:          fputs ("\n(II): ", logFile); break;
+            switch ( level )
+            {
+            case LOG_ERROR:
+                fputs ( "\n(EE): ", logFile );
+                break;
+            case LOG_WARNING:
+                fputs ( "\n(WW): ", logFile );
+                break;
+            default:
+                fputs ( "\n(II): ", logFile );
+                break;
             }
         }
         //write log text
-        fputs (textToLog, logFile);
-        fflush (logFile);
-        return (0);
+        fputs ( textToLog, logFile );
+        fflush ( logFile );
+        return ( 0 );
     }
-    return (-1);
+    return ( -1 );
 }
 
-int LogEngine::append (LOG_LEVEL level, const char *textToLog)
+int LogEngine::append ( LOG_LEVEL level, const char *textToLog )
 {
-    return put(level, textToLog, false /* don't useNewLine */);
+    return put ( level, textToLog, false /* don't useNewLine */  );
 }
 
-int LogEngine::stop (void)
+int LogEngine::stop ( void )
 {
-    put (LOG_INFO, "End of LogFile");
-    fclose (logFile);
+    put ( LOG_INFO, "End of LogFile" );
+    fclose ( logFile );
 
-    return (0);
+    return ( 0 );
 }
