@@ -73,7 +73,6 @@ int DataEngine::loadWorldData (void)
         const int separation = 250;
         Cube *cubePointer;
         cubePointer = new Cube (i, i % 10 * separation, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)));
-        dBodySetAngularVel (cubePointer->cubeID, float (random () % 10) / 10000.0, float (random () % 10) / 10000.0, float (random () % 10) / 10000.0);
         Cube::cubeList.push_back (cubePointer);
     }
 

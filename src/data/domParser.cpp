@@ -62,9 +62,9 @@ int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, vo
 {
     // ///////////////////////////////////////////////////////////////////////////////////////////////
     AbstractDOMParser::ValSchemes valScheme = AbstractDOMParser::Val_Auto;
-    bool doNamespaces = false;
-    bool doSchema = false;
-    bool schemaFullChecking = false;
+//    bool doNamespaces = false;
+//    bool doSchema = false;
+//    bool schemaFullChecking = false;
     bool errorOccurred = false;
     bool recognizeNEL = false;
 
@@ -101,22 +101,22 @@ int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, vo
     DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation (gLS);
     DOMBuilder *parser = ((DOMImplementationLS *) impl)->createDOMBuilder (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
 
-    parser->setFeature (XMLUni::fgDOMNamespaces, doNamespaces);
-    parser->setFeature (XMLUni::fgXercesSchema, doSchema);
-    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, schemaFullChecking);
+//    parser->setFeature (XMLUni::fgDOMNamespaces, doNamespaces);
+//    parser->setFeature (XMLUni::fgXercesSchema, doSchema);
+//    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, schemaFullChecking);
 
     if (valScheme == AbstractDOMParser::Val_Auto)
     {
-        parser->setFeature (XMLUni::fgDOMValidateIfSchema, true);
+//        parser->setFeature (XMLUni::fgDOMValidateIfSchema, true);
     } else if (valScheme == AbstractDOMParser::Val_Never)
     {
-        parser->setFeature (XMLUni::fgDOMValidation, false);
+//        parser->setFeature (XMLUni::fgDOMValidation, false);
     } else if (valScheme == AbstractDOMParser::Val_Always)
     {
-        parser->setFeature (XMLUni::fgDOMValidation, true);
+//        parser->setFeature (XMLUni::fgDOMValidation, true);
     }
     // enable datatype normalization - default is off
-    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, true);
+//    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, true);
     // And create our error handler and install it
     DOMCountErrorHandler errorHandler;
 
@@ -126,8 +126,6 @@ int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, vo
     // ///////////////////////////////////////////////////////////////////////////////////////////////
     // Get the starting time and kick off the parse of the indicated
     // file. Catch any exceptions that might propogate out of it.
-    unsigned long duration;
-
     XERCES_STD_QUALIFIER ifstream fin;
     // reset error count first
     errorHandler.resetErrors ();
@@ -137,10 +135,7 @@ int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, vo
     {
         // reset document pool
         parser->resetDocumentPool ();
-        const unsigned long startMillis = XMLPlatformUtils::getCurrentMillis ();
         doc = parser->parseURI (configFileName);
-        const unsigned long endMillis = XMLPlatformUtils::getCurrentMillis ();
-        duration = endMillis - startMillis;
     } catch (const XMLException & toCatch)
     {
         XERCES_STD_QUALIFIER cerr << "\nError during parsing: '" << configFileName << "'\n" << "Exception message is:  \n" << StrX (toCatch.getMessage ()) << "\n" << XERCES_STD_QUALIFIER endl;
@@ -175,8 +170,6 @@ int processXmlFile (char *configFileName, void (*processFunction) (DOMNode *, vo
             {
                 (*processFunction) ((DOMNode *) doc->getDocumentElement (), data);
             }
-            // Print out the stats that we collected and time taken.
-            XERCES_STD_QUALIFIER cout << configFileName << ": " << duration << " ms." << XERCES_STD_QUALIFIER endl;
         }
     }
     // ///////////////////////////////////////////////////////////////////////////////////////////////

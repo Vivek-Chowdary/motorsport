@@ -94,6 +94,7 @@ struct GraphicsData
     char *localLogName;
     char *screenshotFile;
     char *ogreConfigFile;
+    char *ogrePluginsDir;
     /* ST_GENERIC ST_EXTERIOR_CLOSE ST_EXTERIOR_FAR ST_EXTERIOR_REAL_FAR ST_INTERIOR */
       Ogre::SceneType sceneManager;
     int anisotropy;

@@ -30,6 +30,9 @@
 #    include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
 #    include "physicsEngine.hpp"    // calculates the physics of the world data
 #    include "guiEngine.hpp"    // displays all the user interface on screen
+#ifdef WIN32
+#   include "windows.h"
+#endif
 
 struct ParsingMainData;
 void stopSdl (void);

@@ -48,7 +48,7 @@ void InputEngine::processInputConfigFile (DOMNode * n, void *data)
                         {
                             XMLString::release (&name);
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "\tFound the local log level:", name);
+                            log->format (LOG_INFO, "\tFound the local log level: %s", name);
 
                             if (!strncmp (name, "LOG_ERROR", 10))
                                 (*(InputData *) data).localLogLevel = LOG_ERROR;
@@ -58,7 +58,7 @@ void InputEngine::processInputConfigFile (DOMNode * n, void *data)
                                 (*(InputData *) data).localLogLevel = LOG_INFO;
                             if (!strncmp (name, "LOG_VERBOSE", 12))
                                 (*(InputData *) data).localLogLevel = LOG_VERBOSE;
-                            if (!strncmp (name, "LOG_TRACE", 9))
+                            if (!strncmp (name, "LOG_TRACE", 10))
                                 (*(InputData *) data).localLogLevel = LOG_TRACE;
                         }
 
@@ -66,7 +66,7 @@ void InputEngine::processInputConfigFile (DOMNode * n, void *data)
                         {
                             XMLString::release (&name);
                             name = XMLString::transcode (pAttributeNode->getValue ());
-                            log->format (LOG_INFO, "\tFound the log name:", name);
+                            log->format (LOG_INFO, "\tFound the log name: %s", name);
 
                             (*(InputData *) data).localLogName = new char[strlen (name) + 1];
                             strncpy ((*(InputData *) data).localLogName, name, strlen (name) + 1);

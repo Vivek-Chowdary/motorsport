@@ -48,7 +48,29 @@ GraphicsEngine::GraphicsEngine ()
     fullScreen = data->fullScreen;
     log->format (LOG_INFO, "Graphics data initialized for %ix%i@%ibpp", width, height, bpp);
 
-    ogreRoot = new Ogre::Root ();
+    log->put (LOG_INFO, "Creating temporary ogre plugins config file (plugins.cfg)");
+    FILE *ogrePluginsConfig = fopen("plugins.cfg", "w");
+    log->put (LOG_INFO, "Writing configuration to plugins.cfg");
+    fprintf(ogrePluginsConfig, "# IMPORTANT NOTE #"
+        "\n#Everything you write in this file will be ignored and overwriten next time you run motorsport. You can therefore safely delete this file.\n\n"
+        "\n# Define plugins folder"
+        "\nPluginFolder=%s"
+        "\n# Define plugins"
+        "\nPlugin=RenderSystem_GL"
+        "\nPlugin=Plugin_FileSystem"
+        "\nPlugin=Plugin_ParticleFX"
+        "\nPlugin=Plugin_BSPSceneManager"
+        "\nPlugin=Plugin_OctreeSceneManager"
+        "\nPlugin=Plugin_GuiElements"
+        "\nPlugin=Plugin_NatureSceneManager"
+        "\nPlugin=Plugin_CgProgramManager",
+        data->ogrePluginsDir);
+    log->put (LOG_INFO, "Closing temporary ogre plugins config file (plugins.cfg)");
+    fclose(ogrePluginsConfig);
+
+    log->put (LOG_INFO, "Creating Ogre root element");
+    ogreRoot = new Ogre::Root ("plugins.cfg", "nothingToSeeHere.cfg", "motorsport-ogre.log");
+
     setupResources (data);
     // Initialise the system
     if (!manualInitialize (data))
@@ -68,10 +90,14 @@ GraphicsEngine::GraphicsEngine ()
     Ogre::MaterialManager::getSingleton ().setDefaultAnisotropy (data->anisotropy);
     Ogre::MaterialManager::getSingleton ().setDefaultTextureFiltering (data->filtering);
 
+    log->put (LOG_INFO, "Removing temporary ogre plugins config file (plugins.cfg)");
+    remove("plugins.cfg");
+    
     log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
     delete[](data->localLogName);
     delete[](data->screenshotFile);
     delete[](data->ogreConfigFile);
+    delete[](data->ogrePluginsDir);
     delete[](data->renderer);
     delete data;
 }

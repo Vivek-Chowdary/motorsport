@@ -38,7 +38,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
 
     // open the file for writing in rewrite mode if necessary.
 
-    if (!numberOfLogEngines || !logFile.is_open ())
+    if ((!numberOfLogEngines) || (!logFile.is_open ()))
     {
         LogData *data = new LogData;
         data->log = this;
@@ -81,7 +81,7 @@ int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
     vsnprintf (buffer, sizeof (buffer), textToLogFormat, arglist);
 #else
-#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
+//#    pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
     vsprintf (buffer, textToLogFormat, arglist);
 #endif
     va_end (arglist);

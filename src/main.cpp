@@ -20,7 +20,11 @@
 ******************************************************************************/
 #include "main.hpp"
 
+#ifdef WIN32
+INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+#else
 int main (int argc, char **argv)
+#endif
 {
     // We start the main log engine.
     ParsingMainData *parsingMainData = new ParsingMainData;

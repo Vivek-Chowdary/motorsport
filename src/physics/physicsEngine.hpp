@@ -30,20 +30,6 @@
 #include "camera.hpp"
 #include "domParser.hpp"
 
-#ifdef WIN32
-#ifdef dDOUBLE
-#    pragma message ( "[BUILDMESG] ODE double precision library loaded")
-#    pragma comment( lib, "ode_double.lib" )
-#else
-#    ifdef dSINGLE
-#        pragma message ( "[BUILDMESG] ODE single precision library loaded")
-#        pragma comment( lib, "ode_single.lib" )
-#    else
-#        pragma message ( "[BUILDMESG] No ODE-mode specified, you _will_ run into problems ")
-#    endif
-#endif
-#endif
-
 struct PhysicsData;
 
 /// Manages everything related to the simulated world data.

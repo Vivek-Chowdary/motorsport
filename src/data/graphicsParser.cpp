@@ -111,6 +111,19 @@ void GraphicsEngine::processGraphicsConfigFile (DOMNode * n, void *data)
                                             (*(GraphicsData *) data).ogreConfigFile = new char[strlen (name) + 1];
                                             strncpy ((*(GraphicsData *) data).ogreConfigFile, name, strlen (name) + 1);
                                         }
+                                        #ifdef WIN32
+                                        if (!strncmp (name, "windowsPluginsDir", 18))
+                                        #else
+                                        if (!strncmp (name, "linuxPluginsDir", 16))
+                                        #endif
+                                        {
+                                            XMLString::release (&name);
+                                            name = XMLString::transcode (pAttributeNode->getValue ());
+                                            log->format (LOG_INFO, "Found the ogre plugins directory: %s", name);
+
+                                            (*(GraphicsData *) data).ogrePluginsDir = new char[strlen (name) + 1];
+                                            strncpy ((*(GraphicsData *) data).ogrePluginsDir, name, strlen (name) + 1);
+                                        }
                                         if (!strncmp (name, "sceneManager", 13))
                                         {
                                             XMLString::release (&name);

@@ -6,15 +6,17 @@
     >
     <ogre
         configFile = "../data/resources.cfg"
+        linuxPluginsDir = "/usr/lib/OGRE"
+        windowsPluginsDir = "./plugins"
         sceneManager = "ST_GENERIC"
         anisotropy = "1"
         filtering = "TFO_NONE"
-        width = "1024"
-        height = "768"
+        width = "800"
+        height = "600"
         bpp = "0" 
         renderer = "OpenGL"
         defaultNumMipmaps = "5"
-        fullScreen = "1"
+        fullScreen = "0"
         >
     </ogre>
 </graphicsConfig>
