@@ -17,6 +17,7 @@
 void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string mesh = "None";
+    Ogre::SceneDetailLevel renderMode = Ogre::SDL_SOLID;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -32,6 +33,19 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (mesh, attNode->getValue());
                 log->format (LOG_TRACE, "Found the wheel graphics mesh filename: %s", mesh.c_str());
             }
+            if (attribute == "renderMode")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the wheel rendering mode: %s", attribute.c_str());
+
+                if(attribute == "points")
+                    renderMode=Ogre::SDL_POINTS;
+                if(attribute == "wireframe")
+                    renderMode=Ogre::SDL_WIREFRAME;
+                if(attribute == "solid")
+                    renderMode=Ogre::SDL_SOLID;
+            }
             attribute.clear();
         }
     }
@@ -40,6 +54,7 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     ogreName.append ("%i");
     sprintf (name, ogreName.c_str(), instancesCount);
     wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
+    wheelEntity->setRenderDetail(renderMode);
 
     log->format (LOG_TRACE, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
     for(unsigned int i = 0; i < wheelEntity->getNumSubEntities(); i++)
