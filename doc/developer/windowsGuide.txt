@@ -23,7 +23,7 @@ Create a new dir
 	md \motorsport
 	cd \motorsport
 Download everything
-	svn co svn://motorsport-sim.org/motorsport/trunk ./
+	svn co http://motorsport-sim.org/svn/trunk ./
 If you do...
 	dir
 ...you'll see 4 directories. We'll be working mainly in the 3pl (3rd Party Libraries) directory.
@@ -168,7 +168,7 @@ If you are using GNU/Linux, for example Gentoo, you ca do all the above with som
 	emerge ogre ode sdl subversion
 	mkdir ~/motorsport
 	cd ~/motorsport
-	svn co svn://motorsport-sim.org/motorsport/trunk ./
+	svn co http://motorsport-sim.org/svn/trunk ./
 ############################################
 
 ############################################
