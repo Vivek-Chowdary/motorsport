@@ -2,6 +2,11 @@
 Motorsport - Changelog
 ----------------------
 
+2004-02-09
+    * physics: rectangles movement added
+    * graphics: disabled per-render screen blanking
+    * world data: physics related additions
+
 2004-02-08 Bruno González  <stenyak@users.sourceforge.net>
     * changelog: added change log file
     * physics: added basic sample physics engine
