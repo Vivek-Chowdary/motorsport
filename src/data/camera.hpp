@@ -37,23 +37,31 @@ class Camera
         Camera ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
         ~Camera ( );
         static std::vector <Camera*> cameraList;
-        //should be private
+
+        //graphics
+        void startGraphics ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ );
+        void stepGraphics();
+        void stopGraphics();
         Ogre::Camera * ogreCamera;
 
-        //should be public
+        //input
+        void startInput ();
+        void stepInput ();
+        void stopInput ();
         void setRotateUp ( int multiplier );
         void setRotateDown ( int multiplier );
         void setRotateLeft ( int multiplier );
         void setRotateRight ( int multiplier );
-        int getRotateUp ( );
-        int getRotateDown ( );
-        int getRotateLeft ( );
-        int getRotateRight ( );
-
         bool goBack;
         bool goForward;
         bool goLeft;
         bool goRight;
+        
+        //others/common
+        int getRotateUp ( );
+        int getRotateDown ( );
+        int getRotateLeft ( );
+        int getRotateRight ( );
 };
 
 #endif

@@ -19,49 +19,38 @@
 *
 ******************************************************************************/
 
-#include "cube.hpp"
+#include "camera.hpp"
 
-std::vector <Cube *>Cube::cubeList;
-
-Cube::Cube ( char * cubeName, float size, float posX, float posY, float posZ )
+void Camera::startInput()
 {
-    startPhysics ( size, posX, posY, posZ );
-    startInput ( );
-    startGraphics ( cubeName );
+    rotateLeft = rotateRight = rotateUp = rotateDown = 0;
+    goBack = goForward = goLeft = goRight = false;
 }
 
-Cube::~Cube ()
+void Camera::stepInput()
 {
-    stopPhysics();
-    stopGraphics ();
+
 }
 
+void Camera::stopInput()
+{
 
-void Cube::updateOgrePosition()
-{
-    const dReal * temp = dBodyGetPosition(cubeID);//need to allocate memory first??
-    cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
-}
-float Cube::getMoveToXPositive ( )
-{
-    return moveToXPositive;
-}
-float Cube::getMoveToXNegative ( )
-{
-    return moveToXNegative;
 }
 
-float Cube::getMoveToYPositive ( )
+void Camera::setRotateLeft ( int multiplier )
 {
-    return moveToYPositive;
+    rotateLeft = multiplier;
 }
-float Cube::getMoveToYNegative ( )
+void Camera::setRotateRight ( int multiplier )
 {
-    return moveToYNegative;
+    rotateRight = multiplier;
 }
-void Cube::updateOgreOrientation()
+void Camera::setRotateUp ( int multiplier )
 {
-    const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
-    cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
+    rotateUp = multiplier;
+}
+void Camera::setRotateDown ( int multiplier )
+{
+    rotateDown = multiplier;
 }
 

@@ -19,49 +19,23 @@
 *
 ******************************************************************************/
 
-#include "cube.hpp"
+#include "camera.hpp"
 
-std::vector <Cube *>Cube::cubeList;
-
-Cube::Cube ( char * cubeName, float size, float posX, float posY, float posZ )
+void Camera::startGraphics(char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ)
 {
-    startPhysics ( size, posX, posY, posZ );
-    startInput ( );
-    startGraphics ( cubeName );
-}
-
-Cube::~Cube ()
-{
-    stopPhysics();
-    stopGraphics ();
+    ogreCamera = SystemData::getSystemDataPointer()->ogreSceneManager->createCamera ( cameraName );
+    ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
+    ogreCamera->setPosition ( Ogre::Vector3 ( posX, posY, posZ ) );
+    ogreCamera->lookAt ( Ogre::Vector3 ( lookAtX, lookAtY, lookAtZ) );
+    ogreCamera->setNearClipDistance ( 5 );
 }
 
-
-void Cube::updateOgrePosition()
+void Camera::stepGraphics()
 {
-    const dReal * temp = dBodyGetPosition(cubeID);//need to allocate memory first??
-    cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
-}
-float Cube::getMoveToXPositive ( )
-{
-    return moveToXPositive;
-}
-float Cube::getMoveToXNegative ( )
-{
-    return moveToXNegative;
+    //empty
 }
 
-float Cube::getMoveToYPositive ( )
+void Camera::stopGraphics()
 {
-    return moveToYPositive;
-}
-float Cube::getMoveToYNegative ( )
-{
-    return moveToYNegative;
-}
-void Cube::updateOgreOrientation()
-{
-    const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
-    cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
-}
 
+}

@@ -37,29 +37,35 @@ class Cube
 
     public:
         Cube ( char * cubeName, float size, float posX, float posY, float posZ );
-        void startPhysics ( float size, float posX, float posY, float posZ );
-        void startGraphics ( char * cubeName );
         ~Cube ( );
-        void stopPhysics ( );
-        void stopGraphics ( );
-        static std::vector <Cube*> cubeList;
-        //should be private
-        Ogre::Entity * cubeEntity;
-        Ogre::SceneNode * cubeNode;
 
+        //physics
+        void startPhysics ( float size, float posX, float posY, float posZ );
+        void stepPhysics();
+        void stopPhysics ( );
         dBodyID cubeID;
         dGeomID cubeGeomID;
 
-        //should be public or similar
-        void updateOgrePosition();
-        void updateOgreOrientation();
+        //graphics
+        void startGraphics (char * cubeName);
         void stepGraphics();
-        void stepPhysics();
-        
+        void stopGraphics ( );
+        Ogre::Entity * cubeEntity;
+        Ogre::SceneNode * cubeNode;
+
+        //input
+        void startInput ( );
+        void stepInput();
+        void stopInput ( );
         void setMoveToXPositive ( float multiplier );
         void setMoveToXNegative ( float multiplier );
         void setMoveToYPositive ( float multiplier );
         void setMoveToYNegative ( float multiplier );
+
+        //others/common
+        static std::vector <Cube*> cubeList;
+        void updateOgrePosition();
+        void updateOgreOrientation();
         float getMoveToXPositive ( );
         float getMoveToXNegative ( );
         float getMoveToYPositive ( );

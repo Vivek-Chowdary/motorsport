@@ -25,37 +25,16 @@ std::vector <Camera*>Camera::cameraList;
 
 Camera::Camera ( char * cameraName, float posX, float posY, float posZ, float lookAtX, float lookAtY, float lookAtZ )
 {
+    startGraphics(cameraName, posX, posY, posZ, lookAtX, lookAtY, lookAtZ);
+    startInput();
     rotateLeft = rotateRight = rotateUp = rotateDown = 0;
     goBack = goForward = goLeft = goRight = false;
-    ogreCamera = SystemData::getSystemDataPointer()->ogreSceneManager->createCamera ( cameraName );
-    ogreCamera->setFixedYawAxis(true,Ogre::Vector3(0,0,1));
-    ogreCamera->setPosition ( Ogre::Vector3 ( posX, posY, posZ ) );
-    ogreCamera->lookAt ( Ogre::Vector3 ( lookAtX, lookAtY, lookAtZ) );
-    ogreCamera->setNearClipDistance ( 5 );
 }
 
 Camera::~Camera ( )
 {
     
 }
-
-void Camera::setRotateLeft ( int multiplier )
-{
-    rotateLeft = multiplier;
-}
-void Camera::setRotateRight ( int multiplier )
-{
-    rotateRight = multiplier;
-}
-void Camera::setRotateUp ( int multiplier )
-{
-    rotateUp = multiplier;
-}
-void Camera::setRotateDown ( int multiplier )
-{
-    rotateDown = multiplier;
-}
-
 
 int Camera::getRotateUp (  )
 {

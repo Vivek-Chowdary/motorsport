@@ -21,47 +21,35 @@
 
 #include "cube.hpp"
 
-std::vector <Cube *>Cube::cubeList;
 
-Cube::Cube ( char * cubeName, float size, float posX, float posY, float posZ )
+void Cube::startInput()
 {
-    startPhysics ( size, posX, posY, posZ );
-    startInput ( );
-    startGraphics ( cubeName );
+    moveToXPositive = moveToXNegative = moveToYPositive = moveToYNegative = 0; 
 }
 
-Cube::~Cube ()
+void Cube::stopInput()
 {
-    stopPhysics();
-    stopGraphics ();
+
+}
+void Cube::stepInput()
+{
+
 }
 
-
-void Cube::updateOgrePosition()
+void Cube::setMoveToXPositive ( float multiplier)
 {
-    const dReal * temp = dBodyGetPosition(cubeID);//need to allocate memory first??
-    cubeNode->setPosition( *(temp+0), *(temp+1), *(temp+2));
+    moveToXPositive = multiplier;
 }
-float Cube::getMoveToXPositive ( )
+void Cube::setMoveToXNegative ( float multiplier)
 {
-    return moveToXPositive;
-}
-float Cube::getMoveToXNegative ( )
-{
-    return moveToXNegative;
+    moveToXNegative = multiplier;
 }
 
-float Cube::getMoveToYPositive ( )
+void Cube::setMoveToYPositive ( float multiplier)
 {
-    return moveToYPositive;
+    moveToYPositive = multiplier;
 }
-float Cube::getMoveToYNegative ( )
+void Cube::setMoveToYNegative ( float multiplier)
 {
-    return moveToYNegative;
+    moveToYNegative = multiplier;
 }
-void Cube::updateOgreOrientation()
-{
-    const dReal * temp = dBodyGetQuaternion(cubeID);//need to allocate memory first??
-    cubeNode->setOrientation( *(temp+0), *(temp+1), *(temp+2), *(temp+3));
-}
-
