@@ -22,16 +22,13 @@
 
 #ifndef LOG_ENGINE_HPP
 #    define LOG_ENGINE_HPP
-
 #    include <cstdio>
 #    include <cstdarg>
 #    include <cstdlib>
 #    include <string>
-
 #include <fstream>
 #include <iostream>
-
-#include <domParser.hpp>
+#include <xmlParser.hpp>
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.

@@ -22,9 +22,8 @@
 
 #include "cube.hpp"
 
-void Cube::processCubeDataFile (DOMNode * n, void *data)
+void Cube::processXmlRootNode (DOMNode * n)
 {
-    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -88,12 +87,12 @@ void Cube::processCubeDataFile (DOMNode * n, void *data)
                             if (!strncmp (name, "graphics", 9))
                             {
                                 log->put (LOG_TRACE, "Found the cube graphics data element.");
-                                (*(CubeData *) data).cube->processCubeGraphicsDataNode (n, (*(CubeData *) data).graphics);
+                                processGraphicsDataNode (n);
                             }
                             if (!strncmp (name, "physics", 8))
                             {
                                 log->put (LOG_TRACE, "Found the cube physics data element.");
-                                (*(CubeData *) data).cube->processCubePhysicsDataNode (n, (*(CubeData *) data).physics);
+                                processPhysicsDataNode (n);
                             }
                         }
                     }
@@ -101,13 +100,13 @@ void Cube::processCubeDataFile (DOMNode * n, void *data)
             }
         }
     }
-    delete log;
+    startInput ();
 }
 
-void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics)
+void Cube::processGraphicsDataNode (DOMNode * n)
 {
+    CubeGraphicsData * graphics = new CubeGraphicsData;
     LogEngine * log = new LogEngine (LOG_TRACE, "XML");
-    log->put (LOG_TRACE, "Parsing cube graphics");
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -166,12 +165,17 @@ void Cube::processCubeGraphicsDataNode (DOMNode * n, CubeGraphicsData * graphics
         }
     }
     log->put (LOG_TRACE, "Finished cube graphics.");
-    delete log;
+    startGraphics (graphics);
+    delete[](graphics->material);
+    delete[](graphics->mesh);
+    delete[](graphics->ogreName);
+    delete graphics;
 }
 
-void Cube::processCubePhysicsDataNode (DOMNode * n, CubePhysicsData * physics)
+void Cube::processPhysicsDataNode (DOMNode * n)
 {
-    LogEngine * log = new LogEngine (LOG_TRACE, "XML");
+    CubePhysicsData * physics = new CubePhysicsData;
+    physics->size = 100;
     log->put (LOG_TRACE, "Parsing cube physic.");
     if (n->hasAttributes ())
     {
@@ -213,5 +217,6 @@ void Cube::processCubePhysicsDataNode (DOMNode * n, CubePhysicsData * physics)
         }
     }
     log->put (LOG_TRACE, "Finished cube physic.");
-    delete log;
+    startPhysics (physics);
+    delete physics;
 }

@@ -88,7 +88,8 @@ int DataEngine::loadWorldData (void)
         log->format (LOG_VERBOSE, "Adding cube number %i", i);
         const int separation = 4;
         Cube *cubePointer;
-        cubePointer = new Cube (i, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
+        cubePointer = new Cube ("../data/cube.xml");
+        cubePointer->setPosition (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
         Cube::cubeList.push_back (cubePointer);
     }
 

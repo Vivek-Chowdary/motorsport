@@ -26,7 +26,7 @@
 #include "SDL.h"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "domParser.hpp"
+#include "xmlParser.hpp"
 
 struct GuiData;
 

@@ -30,7 +30,7 @@
 #include "cube.hpp"
 #include "body.hpp"
 #include "camera.hpp"
-#include "domParser.hpp"
+#include "xmlParser.hpp"
 
 struct PhysicsData;
 

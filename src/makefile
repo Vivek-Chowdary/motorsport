@@ -190,7 +190,7 @@ SOURCES := \
 	graphics/graphicsEngine.cpp \
 	input/inputEngine.cpp \
 	gui/guiEngine.cpp \
-	data/domParser.cpp \
+	data/xmlParser.cpp \
 	data/mainParser.cpp \
 	data/logParser.cpp \
 	data/dataParser.cpp \
@@ -271,7 +271,7 @@ $(TARGET) :$(OBJECTS)
 	@echo    "----------------------------------------------"
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o log/logParser.o data/domParser.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o log/logParser.o data/xmlParser.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 

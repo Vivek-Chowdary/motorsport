@@ -21,15 +21,18 @@
 
 #include "cube.hpp"
 
-void Cube::startPhysics (float posX, float posY, float posZ, CubePhysicsData * physics)
+void Cube::startPhysics (CubePhysicsData * physics)
 {
     dMass mass;
-
     dMassSetBox (&mass, 1000, physics->size, physics->size, physics->size);
     cubeID = dBodyCreate (WorldData::getWorldDataPointer ()->worldID);
-    dBodySetPosition (cubeID, posX, posY, posZ);
     cubeGeomID = dCreateBox (WorldData::getWorldDataPointer ()->spaceID, physics->size, physics->size, physics->size);
     dGeomSetBody (cubeGeomID, cubeID);
+}
+
+void Cube::setPosition (float posX, float posY, float posZ)
+{
+    dBodySetPosition (cubeID, posX, posY, posZ);
 }
 
 void Cube::stopPhysics ()

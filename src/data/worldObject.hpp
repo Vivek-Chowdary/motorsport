@@ -19,25 +19,36 @@
 *
 ******************************************************************************/
 
-#include "cube.hpp"
+#ifndef WORLDOBJECT_HPP
+#   define WORLDOBJECT_HPP
+#   include "system.hpp"
+#   include "world.hpp"
+#   include "xmlParser.hpp"
+#   include "logEngine.hpp"
 
-void Cube::startGraphics (CubeGraphicsData * graphics)
+class WorldObject
 {
-    char name[20];
-    sprintf (name, graphics->ogreName, instancesCount);
-    cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, graphics->mesh);
-    cubeEntity->setMaterialName (graphics->material);
-    cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    cubeNode->attachObject (cubeEntity);
-}
+  protected:
+    LogEngine * log;
 
-void Cube::stepGraphics ()
-{
-    updateOgrePosition ();
-    updateOgreOrientation ();
-}
+  public:
+    // data
+    virtual ~WorldObject (){};
+    virtual void processXmlRootNode (DOMNode * n) = 0;
+    
+    // physics
+    virtual void processPhysicsDataNode (DOMNode * n) = 0;
+    virtual void stepPhysics () = 0;
+    virtual void stopPhysics () = 0;
 
-void Cube::stopGraphics ()
-{
-    // empty
-}
+    // graphics
+    
+    virtual void processGraphicsDataNode (DOMNode * n) = 0;
+    virtual void stepGraphics () = 0;
+    virtual void stopGraphics () = 0;
+
+    // input
+    virtual void stepInput () = 0;
+    virtual void stopInput () = 0;
+};
+#endif

@@ -27,7 +27,7 @@
 #   include <vector>
 #   include "system.hpp"
 #   include "world.hpp"
-#   include "domParser.hpp"
+#   include "xmlParser.hpp"
 #   include "logEngine.hpp"
 
 struct BodyData;

@@ -23,35 +23,23 @@
 
 std::vector < Cube * >Cube::cubeList;
 
-Cube::Cube (int cubeNumber, float posX, float posY, float posZ)
+int Cube::instancesCount = 0;
+
+Cube::Cube (char * xmlFilename)
 {
-    CubeData *cubeData = new CubeData;
-    cubeData->cube = this;
-    cubeData->physics = new CubePhysicsData;
-    cubeData->physics->size = 100;
-    cubeData->graphics = new CubeGraphicsData;
-    processXmlFile ("../data/cube.xml", &Cube::processCubeDataFile, (void *) cubeData);
+    log = new LogEngine (LOG_TRACE, "CUB");
 
-    startPhysics (posX, posY, posZ, cubeData->physics);
-    startInput ();
-    startGraphics (cubeNumber, cubeData->graphics);
+    XmlFile * xmlFile = new XmlFile (xmlFilename);
+    processXmlRootNode (xmlFile->getRootNode());
+    delete xmlFile;
 
-    // delete [](cubeData->name);
-    // delete [](cubeData->description);
-    // delete [](cubeData->physics->author);
-    // delete [](cubeData->physics->license);
-    delete cubeData->physics;
-    // delete [](cubeData->graphics->author);
-    // delete [](cubeData->graphics->license);
-    delete[](cubeData->graphics->material);
-    delete[](cubeData->graphics->mesh);
-    delete[](cubeData->graphics->ogreName);
-    delete cubeData->graphics;
-    delete cubeData;
+    instancesCount++;
 }
 
 Cube::~Cube ()
 {
+    instancesCount--;
+
     stopPhysics ();
     stopGraphics ();
 }
