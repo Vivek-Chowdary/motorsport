@@ -54,8 +54,12 @@ int LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 
     //convert parameters to a string
     va_start (arglist, textToLogFormat);
+#if defined( _STLPORT_VERSION ) || !defined(WIN32)
     vsnprintf (buffer, sizeof(buffer), textToLogFormat, arglist);
-    //vsprintf (buffer, textToLogFormat, arglist);
+#else
+	#pragma message ("[BUILDMESG] Unsafe buffer semantices used!")
+    vsprintf (buffer, textToLogFormat, arglist);
+#endif
     va_end (arglist);
     
     //put the string with a new line
