@@ -3,7 +3,7 @@ Motorsport - Changelog
 ----------------------
 
 2004-02-09
-    * physics: rectangles movement added
+    * physics: rectangles movement added; ode test working!
     * graphics: disabled per-render screen blanking
     * world data: physics related additions
 

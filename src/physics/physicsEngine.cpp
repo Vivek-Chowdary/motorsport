@@ -28,6 +28,7 @@
 #include "../system.hpp"
 #include "../world.hpp"
 #include "physicsEngine.hpp"
+#include "test_ode.cpp"
 #include <math.h>
 
 /******************************************************************************
@@ -46,6 +47,11 @@ int PhysicsEngine::start (WorldData *wrlData, SystemData *sysData)
     physicsData = &(sysData->physicsData);
     worldData = wrlData;
     systemData = sysData;
+    log.append (2, "Ok");
+    
+    //get the direction of the graphics data
+    log.put(2, "Testing ODE library...");
+    testOde ();
     log.append (2, "Ok");
     
     return (0);
