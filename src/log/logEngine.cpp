@@ -100,7 +100,7 @@ int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
     //check if we have been told to write this kind of log
     if ( level > globalLevel || level > logLevel ) return ( -1 );
     
-    fputs ("\n(", logFile );
+    fputc ('(', logFile );
     fputs (logName, logFile );
     
     //write log level information
@@ -119,6 +119,7 @@ int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
     
     //write log text
     if ( fputs ( textToLog, logFile ) == EOF ) return ( -3 );
+    fputc ('\n', logFile );
     if ( fflush ( logFile ) != 0) return ( -3 );
     return ( 0 );
 }
