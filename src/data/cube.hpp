@@ -74,12 +74,4 @@ class Cube : public WorldObject
     void setMoveToYPositive (float multiplier);
     void setMoveToYNegative (float multiplier);
 };
-
-struct CubePhysicsData
-{
-    char *author;
-    char *license;
-    int size;
-};
-
 #endif
