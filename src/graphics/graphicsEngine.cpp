@@ -93,11 +93,21 @@ void GraphicsEngine::setupResources (const std::string & ogreConfigFile)
 
 int GraphicsEngine::computeStep (void)
 {
+    Vector3d rotAngles (0, 0, 0);
     // Sun controller. FIXME the sun should be a class, physically behaved. */
     if (systemData->axisMap[getIDKeyboardKey(SDLK_o)]->getValue() == 1)
     {
         // Increase degree by degree, in Y axis.
-        Quaternion rotation (0, 1, 0);
+        rotAngles.y++;
+    }
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_p)]->getValue() == 1)
+    {
+        // Increase degree by degree, in Y axis.
+        rotAngles.y--;
+    }
+    if (rotAngles.y != 0)
+    {
+        Quaternion rotation (rotAngles.x, rotAngles.y, rotAngles.z);
 
         // Calculate and set the new direction of the sun light rays.
         Ogre::Light * light = SystemData::getSystemDataPointer ()->ogreSceneManager->getLight("Sun");
@@ -107,7 +117,7 @@ int GraphicsEngine::computeStep (void)
         
         // Predefined values for ambient light, depending on height of sun (max, med, min height)
         Vector3d maxa (0.87, 0.97, 1.00);
-        Vector3d meda (0.23, 0.27, 0.61);
+        Vector3d meda (0.53, 0.27, 0.61);
         Vector3d mina (0.20, 0.24, 0.38);
         
         // Predefined values for sun light, depending on height of sun (max, med, min height)
@@ -118,7 +128,7 @@ int GraphicsEngine::computeStep (void)
         // Cache some values
         double zm = -direction.z;
         Vector3d z (zm, zm, zm);
-        const double zx = 1, zd = 0.005, zn = 0;
+        const double zx = 1, zd = 0.00001, zn = 0;
         const Vector3d max(zx,zx,zx), med(zd,zd,zd), min(zn,zn,zn);
         Vector3d r;
 
