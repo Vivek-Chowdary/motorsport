@@ -7,7 +7,7 @@
     <ogre
         configFile = "../data/resources.cfg"
         linuxPluginsDir = "/usr/lib/OGRE"
-        windowsPluginsDir = "./plugins"
+        windowsPluginsDir = "plugins"
         sceneManager = "ST_GENERIC"
         anisotropy = "1"
         filtering = "TFO_NONE"
