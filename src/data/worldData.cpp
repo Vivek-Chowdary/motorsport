@@ -332,6 +332,10 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
                 vehicleList.push_back (tmpVehicle);
 
                 log->put (LOG_CCREATOR, "Setting vehicle starting relative rotation");
+                if (trackList[0]->vehiclePositionMap.count(vehicleStartPosition) == 0)
+                {
+                    log->format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the track!", vehicleStartPosition.c_str());
+                }
                 tmpVehicle->setPosition (Vector3d(0, 0, 0));
                 tmpVehicle->applyRotation ( trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
 
