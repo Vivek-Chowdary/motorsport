@@ -62,7 +62,7 @@ void Engine::stopPhysics ()
 void Engine::stepPhysics ()
 {
     crankshaftRotationalSpeed = torqueLinearMultiplier * SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue();
-    log->format(LOG_WARNING, "crank=%f axis=%f torqueMul=%f", crankshaftRotationalSpeed, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue(), torqueLinearMultiplier);
+    log->format(LOG_TRACE, "crank=%f axis=%f torqueMul=%f", crankshaftRotationalSpeed, SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue(), torqueLinearMultiplier);
 }
 double Engine::getCrankshaftRotationalSpeed ()
 {
