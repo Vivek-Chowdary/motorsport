@@ -132,7 +132,9 @@ int GraphicsEngine::step (void)
     
     //update the screen
     SDL_UpdateRect (graphicsData->screen, 0, 0, graphicsData->width,graphicsData->height);
-
+    
+    //SDL_Flip (graphicsData->screen);
+     
     return (0);
 }
 

@@ -21,7 +21,7 @@
 
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
-#include "common/portability/sdl.h"
+#include "SDL.h"
 
 /******************************************************************************
 *

@@ -26,10 +26,7 @@
 *
 ******************************************************************************/
 
-#include "world.hpp"
-#include "system.hpp"
 #include "dataEngine.hpp"
-#include <string.h>
 
 
 /******************************************************************************
@@ -103,7 +100,7 @@ int DataEngine::loadSystemData (void)
     log.format(LOG_INFO,"h%i",systemData->graphicsData.height);
     systemData->graphicsData.bpp = 0;
     log.format(LOG_INFO,"b%i",systemData->graphicsData.bpp);
-    systemData->graphicsData.flags = SDL_SWSURFACE;
+    systemData->graphicsData.flags = SDL_SWSURFACE /*SDL_HWSURFACE*/ | SDL_DOUBLEBUF | SDL_HWACCEL;
     log.append (LOG_INFO, "Ok");
 
     //set window properties

@@ -25,18 +25,7 @@
 *
 ******************************************************************************/
 
-#include "system.hpp"
-#include "world.hpp"
 #include "guiEngine.hpp"
-
-#include <paragui/pgwindow.h>
-
-#include <paragui/pgbutton.h>
-#include <paragui/pgwidgetlist.h>
-#include <paragui/pglabel.h>
-
-
-#include "test_paragui.cpp"
 
 /******************************************************************************
 *
@@ -109,17 +98,17 @@ int GuiEngine::optionsMenu(void) {
         exit (-1);
     }
 
-    PG_Button buttonSetRes800(NULL,1,PG_Rect(260, 50, 120, 50),"800x600");
+    PG_Button buttonSetRes800(NULL,1,PG_Rect(230, 50, 180, 50),"800x600");
     buttonSetRes800.SetTransparency(128,255,64);
     buttonSetRes800.SetEventCallback(MSG_BUTTONCLICK,setRes800_handler, this);
     buttonSetRes800.Show();
 
-    PG_Button buttonSetRes640(NULL,1,PG_Rect(260, 100, 120, 50),"640x480");
+    PG_Button buttonSetRes640(NULL,1,PG_Rect(230, 100, 180, 50),"640x480");
     buttonSetRes640.SetTransparency(128,255,64);
     buttonSetRes640.SetEventCallback(MSG_BUTTONCLICK,setRes640_handler, this);
     buttonSetRes640.Show();
 
-    PG_Button buttonExit(NULL,1,PG_Rect(260, 200, 120, 50),"Go back");
+    PG_Button buttonExit(NULL,1,PG_Rect(230, 200, 180, 50),"Go back");
     buttonExit.SetTransparency(128,255,64);
     buttonExit.SetEventCallback(MSG_BUTTONCLICK, goBack_handler, this);
     buttonExit.Show();
@@ -142,17 +131,17 @@ int GuiEngine::mainMenu(void) {
         exit (-1);
     }
 
-    PG_Button buttonStartSim(NULL,1,PG_Rect(260, 50, 120, 50),"Start simulation");
+    PG_Button buttonStartSim(NULL,1,PG_Rect(230, 50, 180, 50),"Start simulation");
     buttonStartSim.SetTransparency(128,255,64);
     buttonStartSim.SetEventCallback(MSG_BUTTONCLICK,startSim_handler, this);
     buttonStartSim.Show();
 
-    PG_Button buttonOptionsMenu(NULL,1,PG_Rect(260, 100, 120, 50),"Options Menu");
+    PG_Button buttonOptionsMenu(NULL,1,PG_Rect(230, 100, 180, 50),"Options Menu");
     buttonOptionsMenu.SetTransparency(128,255,64);
     buttonOptionsMenu.SetEventCallback(MSG_BUTTONCLICK, optionsMenu_handler, this);
     buttonOptionsMenu.Show();
 
-    PG_Button buttonExit(NULL,1,PG_Rect(260, 200, 120, 50),"Exit");
+    PG_Button buttonExit(NULL,1,PG_Rect(230, 200, 180, 50),"Exit");
     buttonExit.SetTransparency(128,255,64);
     buttonExit.SetEventCallback(MSG_BUTTONCLICK, exit_handler, this);
     buttonExit.Show();

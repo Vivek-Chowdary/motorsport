@@ -26,7 +26,10 @@
 ******************************************************************************/
 
 #include "logEngine.hpp"
-#include "common/portability/sdl.h"
+#include "SDL.h"
+#include "system.hpp"
+#include "world.hpp"
+
 
 /******************************************************************************
 *

@@ -25,18 +25,7 @@
 *
 ******************************************************************************/
 
-#include <stdlib.h>
-
-#include "common/portability/sdl.h"
-
-#include "world.hpp"        //contains the IDF for the simulated/virtual world data
-#include "system.hpp"       //contains the IDF for the system data
-#include "logEngine.hpp"    //allows to easily log actions
-#include "dataEngine.hpp"   //loads/saves data from memory into the virtual world
-#include "inputEngine.hpp"  //process the queue of input events
-#include "graphicsEngine.hpp"//displays the virtual and system data (sim+gui)
-#include "physicsEngine.hpp"//calculates the physics of the world data
-#include "guiEngine.hpp"    //displays all the user interface on screen
+#include "main.hpp"
 
 /******************************************************************************
 *
@@ -48,12 +37,12 @@
 int sdl_start (LogEngine &log)
 { //initialization functions for SDL
   //returns -2 on warning, -1 on error, 0 on success
-    if (atexit (SDL_Quit) != 0){
+/*    if (atexit (SDL_Quit) != 0){
         //warning message
         log.put(LOG_WARNING, "Cannot set exit function");
         return (-2);
-    }
-    return (0);
+    }*/
+    return SDL_Init(SDL_INIT_TIMER);
 }
 
 void sdl_stop (void)
@@ -104,43 +93,43 @@ void runSimLoop(WorldData & worldData, SystemData & systemData, LogEngine & log,
 
 void initializeSimLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
-    sdl_start (log);
-    input.start (&worldData, &systemData);
+    data.loadWorldData ();
     if (graphics.start (&worldData, &systemData))
     {
         log.put(LOG_ERROR, "Could not start the graphics engine.");
         exit (-1);
     }
+    input.start (&worldData, &systemData);
     physics.start (&worldData, &systemData);
-    data.loadWorldData ();
 }
 void shutdownSimLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
+    graphics.stop ();
     data.unloadWorldData ();
 
     physics.stop ();
-    graphics.stop ();
     input.stop ();
 
     systemData.enableGuiLoop();
-    sdl_stop();
 }
 void initializeGuiLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
+    sdl_start (log);
+    gui.start (&worldData, &systemData);
 }
 void shutdownGuiLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
+    gui.stop ();
+    sdl_stop();
 }
 void initializeMainLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
     log.start(LOG_VERBOSE , "./logMain.txt");
 
-
     systemData.guiData.lastMenuIndex = 1; //goto main menu
     systemData.guiData.nextMenuIndex = 1; //goto main menu
     data.start (&worldData, &systemData);
     data.loadSystemData ();
-    gui.start (&worldData, &systemData);
     systemData.enableMainLoop ();
     systemData.enableGuiLoop ();
     systemData.disableSimLoop ();
@@ -148,7 +137,6 @@ void initializeMainLoop(WorldData & worldData, SystemData & systemData, LogEngin
 void shutdownMainLoop(WorldData & worldData, SystemData & systemData, LogEngine & log, DataEngine & data, InputEngine & input, GraphicsEngine & graphics, PhysicsEngine & physics, GuiEngine&gui)
 {
     data.unloadSystemData ();
-    gui.stop ();
     data.stop ();
     log.stop ();
 }

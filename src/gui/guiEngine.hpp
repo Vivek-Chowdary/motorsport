@@ -25,8 +25,11 @@
 *
 ******************************************************************************/
 
+#include "system.hpp"
+#include "world.hpp"
+
 #include "logEngine.hpp"
-#include "common/portability/sdl.h"
+#include "SDL.h"
 
 #include <paragui/paragui.h>
 #include <paragui/pgapplication.h>
@@ -56,3 +59,13 @@ class GuiEngine
         SystemData *getSystemData(void);
         LogEngine* getLog(void);
 };
+
+
+#include <paragui/pgwindow.h>
+                                                                                
+										#include <paragui/pgbutton.h>
+										#include <paragui/pgwidgetlist.h>
+										#include <paragui/pglabel.h>
+										                                                                                
+																				                                                                                
+

@@ -21,7 +21,7 @@
 
 #ifndef WORLD_HPP
 #define WORLD_HPP
-#include "common/portability/sdl.h"
+#include "SDL.h"
 
 /******************************************************************************
 *
