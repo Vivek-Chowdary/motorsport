@@ -57,7 +57,6 @@ class LogEngine
     static FILE *logFile;
     static LOG_LEVEL globalLevel;
     static int numberOfLogEngines;
-    int initialize ( LOG_LEVEL level, const char *name);
     int shutdown ( void );
   public:
     LogEngine ( LOG_LEVEL level, const char* filePath, LOG_LEVEL localLevel, const char* name );

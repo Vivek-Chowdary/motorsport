@@ -25,12 +25,12 @@
 int sdl_start ( LogEngine * log )
 {                               //initialization functions for SDL
     //returns -2 on warning, -1 on error, 0 on success
-    if (atexit (SDL_Quit) != 0){
-        //warning message
-        log->put(LOG_WARNING, "Cannot set exit function");
-        return (-2);
+    if (SDL_Init( SDL_INIT_TIMER /* | SDL_INIT_JOYSTICK */ ) < 0)
+    {
+        log->format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError());
+        return (-1);
     }
-    return SDL_Init ( SDL_INIT_TIMER );
+    return (0);
 }
 
 void sdl_stop ( void )
@@ -41,17 +41,19 @@ void sdl_stop ( void )
 int main ( int argc, char **argv )
 {
     LogEngine * log = new LogEngine(LOG_INFO, "MAI");
-    log->put(LOG_INFO, "Log Engine initializated");
-    //we declare the 'global' data
+    //we declare the 'global' data and engines
+    log->put(LOG_INFO, "Starting SDL subsystems");
+    sdl_start ( log );
     log->put(LOG_INFO, "Creating system data");
     new SystemData();
     log->put(LOG_INFO, "Creating world data");
     new WorldData();
     log->put(LOG_INFO, "Creating data engine");
     DataEngine * data = new DataEngine();
+    log->put(LOG_INFO, "Loading initial system data");
     data->loadSystemData (  );
+    log->put(LOG_INFO, "Loading initial world data");
     data->loadWorldData (  );
-    //we declare the engines
     log->put(LOG_INFO, "Creating input engine");
     InputEngine * input = new InputEngine();
     log->put(LOG_INFO, "Creating graphics engine");
@@ -60,7 +62,6 @@ int main ( int argc, char **argv )
     PhysicsEngine * physics = new PhysicsEngine();
     log->put(LOG_INFO, "Creating gui engine");
     GuiEngine * gui = new GuiEngine();
-    //sdl_start ( log );
     
     log->put(LOG_INFO, "Getting system data pointer");
     SystemData * systemData = SystemData::getSystemDataPointer();
@@ -114,13 +115,15 @@ int main ( int argc, char **argv )
     delete input;
     log->put(LOG_INFO, "Deleting gui engine");
     delete gui;
-    log->put(LOG_INFO, "Deleting data engine");
+    log->put(LOG_INFO, "Unloading world data");
     data->unloadWorldData (  );
+    log->put(LOG_INFO, "Unloading system data");
     data->unloadSystemData (  );
+    log->put(LOG_INFO, "Deleting data engine");
     delete data;
+    log->put(LOG_INFO, "Deleting log engine");
     delete log;
-    //log->stop (  );
-    //sdl_stop (  );
+    sdl_stop (  );
 
     //and finally back to the OS
     return ( 0 );

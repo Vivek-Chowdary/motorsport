@@ -29,30 +29,11 @@ int LogEngine::numberOfLogEngines = 0;
 
 LogEngine::LogEngine ( LOG_LEVEL localLevel, const char* name )
 {
-    //open the file for writing in rewrite mode if necessary.
-    if (!numberOfLogEngines || !logFile)
-    {
-        if ( ( logFile = fopen ("motorsport.log", "w") ) == NULL ) return;// return ( -1 );
-    }
-    
     //check if the level is correct
-    if ( localLevel < 0 || localLevel > MAX_LOG_LEVEL ); // return ( -2 );
+    if ( localLevel < 0 || localLevel > MAX_LOG_LEVEL ) return;
     
-    //we set the global level of verbosity
-    initialize (localLevel, name);
-}
-
-int LogEngine::initialize ( LOG_LEVEL level, const char *name)
-{
-    //increase logEngines counter
-    numberOfLogEngines++;
-    format ( LOG_INFO, "Number of logEngines created so far: %i.", numberOfLogEngines);
-    
-    //check if the level is correct
-    if ( level < 0 || level > MAX_LOG_LEVEL ) return ( -2 );
-        
-    //we set the level of verbosity
-    logLevel = level;
+    //we set the local level of verbosity
+    logLevel = localLevel;
 
     //we set the log name (3 chars)
     for (int i=0; i<LOG_NAME_LENGTH; i++)
@@ -61,11 +42,18 @@ int LogEngine::initialize ( LOG_LEVEL level, const char *name)
     }
     logName[LOG_NAME_LENGTH] = '\0';
 
-    //we put some text at the start of the current log
-    //TODO check returning value
-    put ( LOG_INFO, "Start of log file" );
+    //open the file for writing in rewrite mode if necessary.
+    if (!numberOfLogEngines || !logFile)
+    {
+        if ( ( logFile = fopen ("motorsport.log", "w") ) == NULL ) return;
+        put (LOG_INFO, "LogFile created");
+    }
 
-    return ( 1 );
+    //increase logEngines counter
+    numberOfLogEngines++;
+    format ( LOG_INFO, "Start of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
+
+    return;
 }
 
 int LogEngine::format ( LOG_LEVEL level, const char *textToLogFormat, ... )
@@ -126,10 +114,9 @@ int LogEngine::put ( LOG_LEVEL level, const char *textToLog )
 
 LogEngine::~LogEngine ( )
 {
-    put ( LOG_INFO, "End of logging for this engine" );
     //decrease number of logEngines
     numberOfLogEngines--;
-    format ( LOG_INFO, "Number of logEngines left: %i.", numberOfLogEngines);
+    format ( LOG_INFO, "End of logging for this engine. There's %i engine[s] now.", numberOfLogEngines);
 
     if (!numberOfLogEngines)
     {

@@ -22,8 +22,6 @@
 
 #ifndef MAIN_HPP
 #    define MAIN_HPP
-
-#    include <stdlib.h>
 #    include "SDL.h"
 #    include "world.hpp"        //contains the IDF for the simulated/virtual world data
 #    include "system.hpp"       //contains the IDF for the system data
@@ -33,7 +31,4 @@
 #    include "graphicsEngine.hpp"   //displays the virtual and system data (sim+gui)
 #    include "physicsEngine.hpp"    //calculates the physics of the world data
 #    include "guiEngine.hpp"    //displays all the user interface on screen
-
-#include "stdio.h"
-
 #endif
