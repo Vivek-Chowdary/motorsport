@@ -10,6 +10,8 @@
 #ifndef CAMERA_HPP
 #   define CAMERA_HPP
 #   include "ode/objects.h"
+#   include "worldObject.hpp"
+#   include <string>
 
 namespace Ogre { 
   class Camera; 
@@ -17,40 +19,47 @@ namespace Ogre {
 
 class Vector3d;
 
-class Camera
+class Camera : public WorldObject
 {
   private:
+    // data
+    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     static int instancesCount;
+    std::string index;
+
+    // physics 
     dBodyID positionID;
     Vector3d * positionOffset;
     dBodyID targetID;
     Vector3d * targetOffset;
+    void stopPhysics();
 
+    // graphics
+    void stopGraphics ();
+
+    // input
+    void stopInput ();
   public:
-    Camera (Vector3d position, Vector3d target);
+    Camera (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Camera ();
     void updateOgreRotation ();
     void updateOgrePosition ();
     void updateOgreTarget ();
-    void setPositionID (dBodyID positionID);
-    void setTargetID (dBodyID targetID);
 
     // physics
-    void startPhysics (Vector3d position, Vector3d target);
+    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics();
-    void stopPhysics();
+    void setPositionID (dBodyID positionID);
+    void setTargetID (dBodyID targetID);
 
     // graphics
     void startGraphics ();
     void stepGraphics ();
-    void stopGraphics ();
-
     Ogre::Camera * ogreCamera;
 
     // input
     void startInput ();
     void stepInput ();
-    void stopInput ();
 };
 
 #endif

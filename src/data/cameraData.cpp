@@ -14,12 +14,16 @@
 
 int Camera::instancesCount = 0;
 
-Camera::Camera (Vector3d position, Vector3d target)
+Camera::Camera (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     instancesCount ++;
-    
+    processXmlRootNode (n);
+}
+
+void Camera::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+{
     startGraphics ();
-    startPhysics (position, target);
+    startPhysics (n);
     startInput ();
 }
 
@@ -69,12 +73,3 @@ void Camera::updateOgreTarget ()
     ogreCamera->lookAt (pos);
 }
 
-void Camera::setPositionID (dBodyID positionID)
-{
-    this->positionID = positionID;
-}
-
-void Camera::setTargetID (dBodyID targetID)
-{
-    this->targetID = targetID;
-}

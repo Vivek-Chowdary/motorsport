@@ -17,12 +17,47 @@
 #include "SDL/SDL_keysym.h"
 #include "vector3d.hpp"
 
-void Camera::startPhysics (Vector3d position, Vector3d target)
+void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
+    log = new LogEngine(LOG_TRACE, "CAM");
+    log->put (LOG_INFO, "Creating a camera");
+    positionOffset = new Vector3d (0, 0, 0);
+    targetOffset = new Vector3d (0, 0, 0);
     positionID = 0;
     targetID = 0;
-    positionOffset = new Vector3d (position);
-    targetOffset = new Vector3d (target);
+    index = "0";
+    if (n->hasAttributes ())
+    {
+        DOMNamedNodeMap *attList = n->getAttributes ();
+        int nSize = attList->getLength ();
+        for (int i = 0; i < nSize; ++i)
+        {
+            DOMAttr *attNode = (DOMAttr *) attList->item (i);
+            std::string attribute;
+            assignXmlString (attribute, attNode->getName());
+            if (attribute == "index")
+            {
+                index.clear();
+                assignXmlString (index, attNode->getValue());
+                log->format (LOG_TRACE, "Found the position index: %s", index.c_str());
+            }
+            if (attribute == "position")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue()); 
+                log->format (LOG_TRACE, "Found the position: %s", attribute.c_str());
+                *positionOffset = stov3d(attribute);
+            }
+            if (attribute == "target")
+            {
+                attribute.clear();
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_TRACE, "Found the target: %s", attribute.c_str());
+                *targetOffset = stov3d(attribute);
+            }
+            attribute.clear();
+        }
+    }
 }
 
 void Camera::stopPhysics ()
@@ -33,7 +68,6 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
-    //TODO move camera movement routines to the physics engine, so that it's not framerate-dependent
     if (this == World::getWorldPointer()->getActiveCamera() )
     {
         // Move the camera
@@ -81,3 +115,12 @@ void Camera::stepPhysics ()
     }
 }
 
+void Camera::setPositionID (dBodyID positionID)
+{
+    this->positionID = positionID;
+}
+
+void Camera::setTargetID (dBodyID targetID)
+{
+    this->targetID = targetID;
+}

@@ -51,7 +51,6 @@ class Vehicle : public WorldObject
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
-    void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -73,7 +72,6 @@ class Vehicle : public WorldObject
     LSD * rearDiff;
     std::map < std::string, Wheel *> wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
-    std::map < std::string, CameraPosition * > cameraPositionMap;
     std::vector < Camera * > cameraList;
 
     // physics
