@@ -24,8 +24,11 @@
 #include "SDL.h"
 
 #include "Ogre.h"
-#include "simulation.hpp"
+#    include "OgreConfigFile.h"
+#    include "stdio.h"
+//#include "simulation.hpp"
 //#include "ExampleApplication.h"
+using namespace Ogre;
 
 class GraphicsEngine
 {
@@ -33,11 +36,16 @@ class GraphicsEngine
     GraphicsData *graphicsData;
     WorldData *worldData;
     SystemData *systemData;
-    Simulation *sim;
+    //Simulation *sim;
   public:
     int start ( WorldData * wrlData, SystemData * sysData );    //starts the graphics engine
     int step ( void );          //makes the graphics engine draw one frame
     void showStatistics ( bool show ); //renders the statistics if (show).
     void updateStatistics (  ); //updates data about framerates, etc..
     int stop ( void );          //stops the graphics engine
+
+    bool configure ( int resX, int resY );
+    bool manualInitialize(const String & desiredRenderer, int resX, int resY);
+    void setupResources ( void );
+
 };

@@ -37,30 +37,128 @@ int GraphicsEngine::start ( WorldData * wrlData, SystemData * sysData )
     systemData = sysData;
     log.append ( LOG_INFO, "Ok" );
 
-    printf ( "\nhaciendo new simulation" );
-    sim = new Simulation;
-
-    printf ( "\ntrying the simulation" );
-    try
-    {
-        sim->go ( graphicsData->width, graphicsData->height, worldData,
-                  systemData );
-    } catch ( Exception & e )
-    {
-        fprintf ( stderr, "An exception has occured: %s\n",
-                  e.getFullDescription (  ).c_str (  ) );
-    }
+    systemData->graphicsData.ogreRoot = new Root (  );
+    setupResources (  );
+    if ( !configure ( graphicsData->width, graphicsData->height ) )
+        return false ;
+    systemData->graphicsData.ogreSceneManager =
+        systemData->graphicsData.ogreRoot->getSceneManager ( ST_GENERIC );
+    // Create the camera
+    worldData->camera1->ogreCamera =
+        systemData->graphicsData.ogreSceneManager->createCamera ( "Camera1" );
+    // Position it at 500 in Z direction
+    worldData->camera1->ogreCamera->setPosition ( Vector3 ( 0, 0, 500 ) );
+    // Look back along -Z
+    worldData->camera1->ogreCamera->lookAt ( Vector3 ( 0, 0, -300 ) );
+    worldData->camera1->ogreCamera->setNearClipDistance ( 5 );
+    // Create one viewport, entire window
+    Viewport *vp =
+        systemData->graphicsData.ogreWindow->addViewport ( worldData->camera1->
+                                                           ogreCamera );
+    vp->setBackgroundColour ( ColourValue ( 0, 0, 0 ) );
+    // Set default mipmap level (NB some APIs ignore this)
+    TextureManager::getSingleton (  ).setDefaultNumMipMaps ( 5 );
+    // Create the scene
+    systemData->graphicsData.ogreSceneManager->setSkyBox ( true,
+                                                           "MotorsportSkyBox" );
+    MaterialManager::getSingleton (  ).setDefaultAnisotropy ( systemData->
+                                                              graphicsData.
+                                                              anisotropic );
+    MaterialManager::getSingleton (  ).setDefaultTextureFiltering ( systemData->
+                                                                    graphicsData.
+                                                                    filtering );
     return ( 0 );
+
+}
+
+bool GraphicsEngine::configure ( int resX, int resY )
+{
+    // Show the configuration dialog and initialise the system
+    // You can skip this and use root.restoreConfig() to load configuration
+    // settings if you were sure there are valid ones saved in ogre.cfg
+    //        if(mRoot->showConfigDialog())
+    if ( manualInitialize ( "OpenGL", resX, resY ) )
+    {
+    // If returned true, user clicked OK so initialise
+    // Here we choose to let the system create a default rendering window
+    // by passing 'true'
+        systemData->graphicsData.ogreWindow =
+            systemData->graphicsData.ogreRoot->initialise ( true );
+        return true;
+    }
+    return false;
+}
+
+bool GraphicsEngine::manualInitialize ( const String & desiredRenderer,
+                                        int resX, int resY )
+{
+    RenderSystem *renderSystem;
+    bool ok = false;
+    RenderSystemList *renderers =
+        Root::getSingleton (  ).getAvailableRenderers (  );
+    // See if the list is empty (no renderers available)
+    if ( renderers->empty (  ) )
+        return false;
+    printf ( "\n\nDesired renderer:[%s]", &( *desiredRenderer ) );
+    printf ( "\n\nAvailable renderers(until we find the desired one:" );
+    for ( RenderSystemList::iterator it = renderers->begin (  );
+          it != renderers->end (  ); it++ )
+    {
+        renderSystem = ( *it );
+        printf ( "\n\t[%s]", &( *renderSystem->getName (  ) ) );
+        if ( strstr
+             ( &( *renderSystem->getName (  ) ), &( *desiredRenderer ) ) )
+        {
+            ok = true;
+            break;
+        }
+    }
+    if ( !ok )
+    {
+    // We still don't have a renderer; pick up the first one from the list
+        renderSystem = ( *renderers->begin (  ) );
+    }
+
+    Root::getSingleton (  ).setRenderSystem ( renderSystem );
+    char resolution[32];
+
+    sprintf ( resolution, "%i x %i", resX, resY );
+
+    // Manually set configuration options. These are optional.
+    renderSystem->setConfigOption ( "Video Mode", resolution );
+
+    return true;
+}
+
+void GraphicsEngine::setupResources ( void )
+{
+    // Load resource paths from config file
+    ConfigFile cf;
+
+    cf.load ( "resources.cfg" );
+
+    // Go through all settings in the file
+    ConfigFile::SettingsIterator i = cf.getSettingsIterator (  );
+
+    String typeName,
+        archName;
+
+    while ( i.hasMoreElements (  ) )
+    {
+        typeName = i.peekNextKey (  );
+        archName = i.getNext (  );
+        ResourceManager::addCommonArchiveEx ( archName, typeName );
+    }
 }
 
 int GraphicsEngine::step ( void )
-//makes the graphics engine draw one frame
+    //makes the graphics engine draw one frame
 {
 
-    sim->mRoot->_fireFrameStarted (  );
-    showStatistics ( systemData->graphicsData.getStatisticsEnabled() );
+    systemData->graphicsData.ogreRoot->_fireFrameStarted (  );
+    showStatistics ( systemData->graphicsData.getStatisticsEnabled (  ) );
     systemData->graphicsData.ogreWindow->update (  );
-    sim->mRoot->_fireFrameEnded (  );
+    systemData->graphicsData.ogreRoot->_fireFrameEnded (  );
     updateStatistics (  );
 
     return ( 0 );
@@ -91,7 +189,7 @@ void GraphicsEngine::updateStatistics (  )
     static String worstFps = "Worst FPS: ";
     static String tris = "Triangle Count: ";
 
-// update stats when necessary
+    // update stats when necessary
     GuiElement *guiAvg =
         GuiManager::getSingleton (  ).getGuiElement ( "Core/AverageFps" );
     GuiElement *guiCurr =
@@ -128,10 +226,6 @@ void GraphicsEngine::updateStatistics (  )
 
 int GraphicsEngine::stop ( void )
 {
-    delete sim;
-
-    //sim = NULL;
-
     //finally stop the log engine
     log.stop (  );
 
