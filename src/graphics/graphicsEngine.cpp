@@ -135,7 +135,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     screenshotFilename.assign ("screenshot.png");
     std::string ogreConfigFile = "../data/resources.cfg";
     #ifdef WIN32
-    std::string ogrePluginsDir = "plugins"
+    std::string ogrePluginsDir = "plugins";
     #else
     std::string ogrePluginsDir = "/usr/lib/OGRE";
     #endif
