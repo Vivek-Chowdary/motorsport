@@ -109,11 +109,11 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *attNode = (DOMAttr *) pAttributes->item (i);
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
                         std::string attribute;
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "localLogLevel")
@@ -121,9 +121,8 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                             attribute.clear();
                             assignXmlString (attribute, attNode->getValue());
                             name = XMLString::transcode (attNode->getValue ());
-
-                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                             localLogLevel = stologlevel (attribute);
+                            tmpLog->format (LOG_INFO, "Found the local log level: %s", attribute.c_str());
                         }
 
                         if (attribute == "localLogName")
@@ -148,24 +147,8 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
         }
     }
     delete tmpLog;
+    localLogName.clear();
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->put (LOG_INFO, "Temporary parsing data already loaded into memory...");
-    log->put (LOG_INFO, "Unloading temporary parsing data from memory...");
-    localLogName.clear();
+    log->put (LOG_INFO, "All config has been parsed");
 }
-
-LOG_LEVEL stologlevel (const std::string &srcString)
-{
-    if (srcString == "LOG_ERROR")
-        return LOG_ERROR;
-    if (srcString == "LOG_WARNING")
-        return LOG_WARNING;
-    if (srcString == "LOG_INFO")
-        return LOG_INFO;
-    if (srcString == "LOG_VERBOSE")
-        return LOG_VERBOSE;
-    if (srcString == "LOG_TRACE")
-        return LOG_TRACE;
-    return LOG_TRACE;
-}                                                                

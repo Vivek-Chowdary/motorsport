@@ -39,7 +39,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const char *name):logName (name)
     // open the file for writing in rewrite mode if necessary.
     if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
     {
-        std::cout << "Creating first LogEngine instance:" << name << std::endl;
+        std::cout << "Creating first LogEngine instance (" << name << "). Reading LogEngine config file..." << std::endl;
         XmlFile * xmlFile = new XmlFile ("logConfig.xml");
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
@@ -141,41 +141,28 @@ void LogEngine::processXmlRootNode (DOMNode * n)
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
                     {
-                        DOMAttr *pAttributeNode = (DOMAttr *) pAttributes->item (i);
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
                         std::string attribute;
-                        assignXmlString (attribute, pAttributeNode->getName());
+                        assignXmlString (attribute, attNode->getName());
                         if (attribute == "globalLevel")
                         {
                             attribute.clear();
-                            assignXmlString (attribute, pAttributeNode->getValue());
-
-                            if (attribute == "LOG_ERROR")
-                                globalLevel = LOG_ERROR;
-                            if (attribute == "LOG_WARNING")
-                                globalLevel = LOG_WARNING;
-                            if (attribute == "LOG_INFO")
-                                globalLevel = LOG_INFO;
-                            if (attribute == "LOG_VERBOSE")
-                                globalLevel = LOG_VERBOSE;
-                            if (attribute == "LOG_TRACE")
-                                globalLevel = LOG_TRACE;
+                            assignXmlString (attribute, attNode->getValue());
+                            globalLevel = stologlevel (attribute);
                         }
                         if (attribute == "fileName")
                         {
-                            attribute.clear();
-                            assignXmlString (attribute, pAttributeNode->getValue());
-                            
                             fileName.clear();
-                            fileName.assign (attribute);
+                            assignXmlString (fileName, attNode->getValue());
                         }
                         if (attribute == "textBuffer")
                         {
                             attribute.clear();
-                            assignXmlString (attribute, pAttributeNode->getValue());
+                            assignXmlString (attribute, attNode->getValue());
                             textBuffer = stoi (attribute);
                         }
                         attribute.clear();
@@ -191,11 +178,24 @@ void LogEngine::processXmlRootNode (DOMNode * n)
     logFile.open (fileName.c_str(), std::fstream::out);
     if (!logFile.good ())
     {
-        std::cerr << "Error: Logfile (" << fileName << ") could not be opened.\n";
+        std::cerr << "ERROR: Logfile (" << fileName << ") could not be opened!\n";
         return;
     }
     put (LOG_INFO, "LogFile created");
-    
-    put (LOG_INFO, "Unloading temporary parsing data from memory...");
     fileName.clear();
+}
+
+LOG_LEVEL stologlevel (const std::string &srcString)
+{
+    if (srcString == "LOG_ERROR")
+        return LOG_ERROR;
+    if (srcString == "LOG_WARNING")
+        return LOG_WARNING;
+    if (srcString == "LOG_INFO")
+        return LOG_INFO;
+    if (srcString == "LOG_VERBOSE")
+        return LOG_VERBOSE;
+    if (srcString == "LOG_TRACE")
+        return LOG_TRACE;
+    return LOG_TRACE;
 }
