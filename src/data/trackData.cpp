@@ -17,7 +17,6 @@
 #include "cube.hpp"
 #include "ode/ode.h"
 #include "vehiclePosition.hpp"
-#include "cameraPosition.hpp"
 #include "world.hpp"
 
 Track::Track (const std::string & xmlFilename)
@@ -259,7 +258,7 @@ void Track::processXmlRootNode (DOMNode * n)
                                         if (node2Name == "camera")
                                         {
                                             log->put (LOG_TRACE, "Found a camera.");
-                                            processXmlCameraPositionNode (n2);
+                                            processXmlCameraNode (n2);
                                         }
                                         node2Name.clear();
                                     }
@@ -363,7 +362,7 @@ void Track::processXmlVehiclePositionNode (DOMNode * n)
     }
 }
 
-void Track::processXmlCameraPositionNode (DOMNode * n)
+void Track::processXmlCameraNode (DOMNode * n)
 {
     if (n->hasAttributes ())
     {
@@ -399,9 +398,6 @@ void Track::processXmlCameraPositionNode (DOMNode * n)
             }
             attribute.clear();
         }
-        CameraPosition * tmpCam = new CameraPosition (position, target);
-        cameraPositionMap[index]=tmpCam;
-        
         //load some cameras FIXME should be taken from file config
         log->put (LOG_INFO, "Creating a camera");
         Camera *cameraPointer = new Camera (position, target);

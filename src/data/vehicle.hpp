@@ -51,7 +51,7 @@ class Vehicle : public WorldObject
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
-    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);

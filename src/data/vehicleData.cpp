@@ -19,7 +19,6 @@
 #include "wheel.hpp"
 #include "suspension.hpp"
 #include "camera.hpp"
-#include "cameraPosition.hpp"
 #include "system.hpp"
 
 
@@ -302,7 +301,7 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
                 if (nodeName == "camera")
                 {
                     log->put (LOG_TRACE, "Found a camera position.");
-                    processXmlCameraPositionNode (cameraNode);
+                    processXmlCameraNode (cameraNode);
                 }
                 nodeName.clear();
             }
@@ -310,7 +309,7 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
     }
 }
 
-void Vehicle::processXmlCameraPositionNode (DOMNode * n)
+void Vehicle::processXmlCameraNode (DOMNode * n)
 {
     if (n->hasAttributes ())
     {
@@ -346,8 +345,6 @@ void Vehicle::processXmlCameraPositionNode (DOMNode * n)
             }
             attribute.clear();
         }
-        CameraPosition * tmpCam = new CameraPosition (position, target);
-        cameraPositionMap[index]=tmpCam;
         //load some cameras FIXME should be taken from file config
         log->put (LOG_INFO, "Creating a camera");
         Camera *cameraPointer = new Camera (position, target);

@@ -20,7 +20,6 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 };
-class CameraPosition;
 class Cube;
 class VehiclePosition;
 class Camera;
@@ -37,12 +36,11 @@ class Track : public WorldObject
     std::string license;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlVehiclePositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void processXmlCameraPositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
     // data
     Track (const std::string & xmlFilename);
     ~Track ();
-    std::map <std::string, CameraPosition * > cameraPositionMap;
     std::map <std::string, VehiclePosition * > vehiclePositionMap;
     std::vector < Cube * > cubeList;
     std::vector < Camera * > cameraList;
