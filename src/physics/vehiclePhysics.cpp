@@ -127,11 +127,11 @@ void Vehicle::stepPhysics ()
     if ( userDriver )
     {
         // check the gearshift levers
-        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_t)]->getValue() == 1)
+        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue() == 1)
         {
             gearbox->gearUp();
         }
-        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
+        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_z)]->getValue() == 1)
         {
             gearbox->gearDown();
         }

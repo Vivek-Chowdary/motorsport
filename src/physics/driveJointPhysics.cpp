@@ -68,7 +68,7 @@ void Clutch::stepPhysics ()
         if (clutch == 0) {
             clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP1)]->getValue() * 1 / 3;
             if (clutch == 0) {
-                clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() * 3 / 3;
+                clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_q)]->getValue() * 3 / 3;
     }   }   }
     if(clutch) {
         outputTorqueTransfer = 0*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());

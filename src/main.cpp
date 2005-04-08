@@ -170,7 +170,7 @@ void computeLogic (LogEngine * log)
     SystemData *systemData = SystemData::getSystemDataPointer ();
     if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
+        log->put (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: User wants to exit. Notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
@@ -184,11 +184,6 @@ void computeLogic (LogEngine * log)
         log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
         systemData->physicsDesiredFrequency = 250;
         systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
-    }
-    if (systemData->axisMap[getIDKeyboardKey (SDLK_q)]->getValue () == 1)
-    {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
-        systemData->disableMainLoop ();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
     {

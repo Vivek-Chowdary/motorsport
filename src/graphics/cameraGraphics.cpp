@@ -25,7 +25,7 @@ void Camera::startGraphics ()
     ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (name);
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     ogreCamera->setNearClipDistance (0.100);
-    ogreCamera->setAutoAspectRatio(true);
+//    ogreCamera->setAutoAspectRatio(true);
 }
 
 void Camera::stepGraphics ()
