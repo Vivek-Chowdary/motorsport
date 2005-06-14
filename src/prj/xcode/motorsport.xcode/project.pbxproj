@@ -1130,14 +1130,6 @@
 			settings = {
 			};
 		};
-		AE7BCDE907DE649C00BB17AE = {
-			isa = PBXFileReference;
-			lastKnownFileType = folder;
-			name = data;
-			path = ../../data;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		AE7BCDEA07DE649C00BB17AE = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1200,12 +1192,6 @@
 			path = ../../physicsConfig.xml;
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
-		};
-		AE7BCDF107DE649C00BB17AE = {
-			fileRef = AE7BCDE907DE649C00BB17AE;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		AE7BCDF207DE649C00BB17AE = {
 			fileRef = AE7BCDEA07DE649C00BB17AE;
@@ -1349,7 +1335,6 @@
 		AE963C9407DBA68C00347EF5 = {
 			buildActionMask = 2147483647;
 			files = (
-				AE7BCDF107DE649C00BB17AE,
 				AE7BCDF207DE649C00BB17AE,
 				AE7BCDF307DE649C00BB17AE,
 				AE7BCDF407DE649C00BB17AE,
@@ -1357,6 +1342,7 @@
 				AE7BCDF607DE649C00BB17AE,
 				AE7BCDF707DE649C00BB17AE,
 				AE7BCDF807DE649C00BB17AE,
+				AECB623907E459D60087B523,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1608,7 +1594,7 @@
 		};
 		AEA07AF907DC7F8500DCAE63 = {
 			children = (
-				AE7BCDE907DE649C00BB17AE,
+				AECB623807E459D60087B523,
 				AE7BCDEA07DE649C00BB17AE,
 				AE7BCDEB07DE649C00BB17AE,
 				AE7BCDEC07DE649C00BB17AE,
@@ -1622,6 +1608,20 @@
 			path = "";
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
+		};
+		AECB623807E459D60087B523 = {
+			isa = PBXFileReference;
+			lastKnownFileType = folder;
+			name = data;
+			path = ../../../data;
+			refType = 2;
+			sourceTree = SOURCE_ROOT;
+		};
+		AECB623907E459D60087B523 = {
+			fileRef = AECB623807E459D60087B523;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 	};
 	rootObject = AE963C3A07DBA5C500347EF5;
