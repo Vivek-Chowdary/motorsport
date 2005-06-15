@@ -39,11 +39,11 @@ Vehicle::Vehicle (const std::string & xmlFilename)
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + xmlFilename);
     file.append("/vehicle.xml");
     log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", file.c_str());
-    Uint32 time = SDL_GetTicks();
+    double time = SDL_GetTicks()/1000.0;
     XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", file.c_str(), (SDL_GetTicks() - time) / 1000.0);
+    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", file.c_str(), SDL_GetTicks()/1000.0 - time);
 
     userDriver = false;
     instancesCount++;

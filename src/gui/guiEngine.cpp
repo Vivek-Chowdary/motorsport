@@ -55,11 +55,11 @@ int GuiEngine::computeStep (void)
 {
     log->put (LOG_DEVELOPER, "Doing an step...");
     //update all statistics every second
-    static Uint32 lastRefreshTime = 0;
-    if (SDL_GetTicks () - lastRefreshTime >= 1000)
+    static double lastRefreshTime = 0;
+    if (SDL_GetTicks ()/1000.0 - lastRefreshTime >= 1)
     {
         updateStatistics ();
-        lastRefreshTime += 1000;
+        lastRefreshTime += 1;
     }
     //update last telemetry line every frame
     OverlayElement *telText = OverlayManager::getSingleton ().getOverlayElement ("telemetry/text");
@@ -137,9 +137,9 @@ void GuiEngine::updateStatistics (void)
     OverlayElement *guiPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/PhysicsRate");
     const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics ();
     guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
-    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString (systemData->graphicsFrequency) + " fps");
-    guiScaledPhysics->setCaption ("Scaled Physics Rate: " + StringConverter::toString (systemData->physicsFrequency) + " Hz (" + StringConverter::toString (1000 / float(systemData->physicsFrequency)) + " ms)");
-    guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (1000 / float(systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (systemData->physicsTimeStep) + " ms)" );
+    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)systemData->graphicsFrequency) + " fps");
+    guiScaledPhysics->setCaption ("Scaled Physics Rate: " + StringConverter::toString (float(systemData->physicsFrequency)) + " Hz (" + StringConverter::toString (float(1000.0 / systemData->physicsFrequency)) + " ms)");
+    guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (float(1 / systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (float(systemData->physicsTimeStep * 1000.0)) + " ms)" );
     OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
     
@@ -214,18 +214,18 @@ void GuiEngine::addLoadscreenLine (const std::string & line)
     }
     SystemData::getSystemDataPointer()->ogreWindow->update ();
 }
-void GuiEngine::updateLapTime (Uint32 time)
+void GuiEngine::updateLapTime (double time)
 {
     OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/LapTime");
-    double tmpTime = time / 1000.0;
+    double tmpTime = time;
     int minutes = int (tmpTime / 60);
     tmpTime = tmpTime - (minutes * 60);
-    guiLapTime->setCaption ("Lap Time: " + StringConverter::toString(float(time)/1000.0f) + " s (" + StringConverter::toString(minutes) + "' " + StringConverter::toString(float(tmpTime)) + "\")");
+    guiLapTime->setCaption ("Lap Time: " + StringConverter::toString(float(time)) + " s (" + StringConverter::toString(minutes) + "' " + StringConverter::toString(float(tmpTime)) + "\")");
 }
-void GuiEngine::updateTime (Uint32 time)
+void GuiEngine::updateTime (double time)
 {
     OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/Time");
-    guiLapTime->setCaption ("Time: " + StringConverter::toString (float(time)/1000.0f) + " s");
+    guiLapTime->setCaption ("Time: " + StringConverter::toString (float(time)) + " s");
 }
 
 

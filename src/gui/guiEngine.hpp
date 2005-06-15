@@ -62,8 +62,8 @@ class GuiEngine
     void hideLoadscreen ();
     void showLoadscreen ();
     void addLoadscreenLine (const std::string & line);
-    void updateLapTime (Uint32 time);
-    void updateTime (Uint32 time);
+    void updateLapTime (double time);
+    void updateTime (double time);
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 

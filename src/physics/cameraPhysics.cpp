@@ -69,15 +69,15 @@ void Camera::stepPhysics ()
         // Move the camera
         float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
         float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        moveY *= SystemData::getSystemDataPointer()->physicsTimeStep;
+        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
+        moveY *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
         //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
         *positionOffset += Vector3d(moveX/1000, moveY/1000, 0);
 
         //moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue();
         //moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        moveY *= SystemData::getSystemDataPointer()->physicsTimeStep;
+        moveX *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
+        moveY *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
         //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
         *positionOffset += Vector3d(moveX/1000, moveY/1000, 0);
 
@@ -85,8 +85,8 @@ void Camera::stepPhysics ()
         // Rotate the camera
         float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
         float rotY = SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(1)]->getValue() - 0.5;
-        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep;
-        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep;
+        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
+        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
         *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
         */
     }

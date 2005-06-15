@@ -30,12 +30,12 @@ Track::Track (const std::string & xmlFilename)
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path + "/skybox.zip", "Zip", path);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(path);
     log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", path.c_str());
-    Uint32 time = SDL_GetTicks();
+    double time = SDL_GetTicks()/1000.0;
     std::string filename = path + "/track.xml";
     XmlFile * xmlFile = new XmlFile (filename.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", filename.c_str(), (SDL_GetTicks() - time) / 1000.0);
+    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", filename.c_str(), (SDL_GetTicks()/1000.0 - time));
 }
 
 Track::~Track ()
@@ -345,7 +345,7 @@ void Track::processXmlRootNode (DOMNode * n)
         // dGeomTriMeshDataDestroy (ground);
     }
 
-    // create the checkpoint spherea
+    // create the checkpoint sphere
     dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);
     dGeomSetBody (checkpointID, 0);
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 

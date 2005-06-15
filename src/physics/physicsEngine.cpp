@@ -64,6 +64,7 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
             {
                 checkpointPassed = true;
             }
+            // Collision with the checkpoint object. This assumes all spheres are a checkpoint, so FIXME.
             if (dGeomGetClass (o1) == dSphereClass || dGeomGetClass (o2) == dSphereClass)
             {
                 return;
@@ -118,23 +119,23 @@ int PhysicsEngine::computeStep (void)
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (World::getWorldPointer ()->worldID, (double)systemData->physicsTimeStep/1000);
+        dWorldStep (World::getWorldPointer ()->worldID, systemData->physicsTimeStep);
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (World::getWorldPointer ()->worldID, (double)systemData->physicsTimeStep/1000, dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
     
     // check if a car has passed the checkpoint
     static bool checkpointWasPassed = false;
-    static Uint32 time;
-    time = SDL_GetTicks();
-    static Uint32 lapTime = time;
+    static double time;
+    time = SDL_GetTicks()/1000.0;
+    static double lapTime = time;
     if (checkpointWasPassed && (!checkpointPassed))
     {
         GuiEngine::getGuiEnginePointer()->updateLapTime (time - lapTime);
-        log->format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", (time-lapTime) / 1000.0);
+        log->format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", time-lapTime);
         lapTime = time;
     }
     checkpointWasPassed = checkpointPassed;
@@ -154,7 +155,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "FSX" ;
-    int frequency = 250;
+    double frequency = 250.0;
     int timeScale = 1;
     int pauseStep = 0;
     SystemData::getSystemDataPointer()->setCfmValue (-1);
@@ -198,7 +199,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         if (attribute == "frequency")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            frequency = stoi (attribute);
+                            frequency = stod (attribute);
                             tmpLog->format (LOG_ENDUSER, "Found the frecuency: %s", attribute.c_str());
                         }
                         if (attribute == "timeScale")
@@ -293,8 +294,8 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     log->put (LOG_DEVELOPER, "Setting physics data");
     systemData->physicsDesiredFrequency = frequency;
-    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+    systemData->physicsTimeStep = 1.0 / systemData->physicsDesiredFrequency;
     systemData->timeScale = timeScale;
     systemData->pauseStep = pauseStep;
-    log->format (LOG_ENDUSER, "Physics rate set @ %i Hz (%i ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep);
+    log->format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep * 1000);
 }

@@ -65,7 +65,7 @@ void Gearbox::stepPhysics ()
     
     gearRatio = gearMap[currentGear]->ratio;
     
-    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep;
     prevAngularVel = inputAngularVel;
 
     if(gearRatio>0.0 || gearRatio <0.0) {

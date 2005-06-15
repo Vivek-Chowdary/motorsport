@@ -34,18 +34,18 @@ class SystemData
     double getErpValue();
     void setErpValue(const double & value);
     
-
-    Uint32 physicsTimeStep;
-    Uint32 physicsDesiredFrequency;
+    double physicsTimeStep;
+    double physicsDesiredFrequency;
 
     // main loop time control data
-    Uint32 realTime;
-    Uint32 simulationTime;
-    Uint32 statisticsTime;
-    int physicsSteps;
-    Uint32 physicsFrequency;
-    int graphicsSteps;
-    Uint32 graphicsFrequency;
+    double realTime;
+    double simulationTime;
+    double statisticsTime;
+    double physicsSteps;
+    double physicsFrequency;
+    double graphicsSteps;
+    double graphicsFrequency;
+
     int timeScale;
     int pauseStep;
     int height;

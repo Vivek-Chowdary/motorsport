@@ -146,12 +146,12 @@ int InputEngine::computeStep (void)
             case SDLK_HOME:
                 log->put (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
                 systemData->physicsDesiredFrequency = 30;
-                systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
                 break;
             case SDLK_END:
                 log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
                 systemData->physicsDesiredFrequency = 250;
-                systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
                 break;
             case SDLK_q:
                 log->put (LOG_DEVELOPER, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
@@ -161,14 +161,14 @@ int InputEngine::computeStep (void)
                 log->put (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
                 if (systemData->physicsDesiredFrequency < 37)
                 {
-                    if (!--systemData->physicsDesiredFrequency)
+                    if (systemData->physicsDesiredFrequency < 1)
                     {
                         systemData->physicsDesiredFrequency++;
                     }
-                    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                    systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
                 } else {
-                    systemData->physicsTimeStep++;
-                    systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+                    systemData->physicsTimeStep += 0.001;
+                    systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
                 }
                 break;
             case SDLK_KP_PLUS:
@@ -176,13 +176,14 @@ int InputEngine::computeStep (void)
                 if (systemData->physicsDesiredFrequency < 37)
                 {
                     systemData->physicsDesiredFrequency++;
-                    systemData->physicsTimeStep = 1000 / systemData->physicsDesiredFrequency;
+                    systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
                 } else {
-                    if (!--systemData->physicsTimeStep)
+                    systemData->physicsTimeStep -= 0.001;
+                    if (systemData->physicsTimeStep < 0.001)
                     {
-                        systemData->physicsTimeStep++;
+                        systemData->physicsTimeStep += 0.001;
                     }
-                    systemData->physicsDesiredFrequency = 1000 / systemData->physicsTimeStep;
+                    systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
                 }
                 break;
             default:

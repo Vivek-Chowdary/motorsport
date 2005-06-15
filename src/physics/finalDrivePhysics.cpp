@@ -69,7 +69,7 @@ void FinalDrive::stepPhysics ()
     double dt;
     double torqueSum;
     
-    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep;
 
     prevAngularVel = inputAngularVel;
 
@@ -89,7 +89,7 @@ void FinalDrive::stepPhysics ()
 
     prevAngularVel = inputAngularVel;
 
-    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
+    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep)/inertia;
 
     inputTorqueTransfer = inputJoint->getOutputTorque();
     outputTorqueTransfer = (outputJoint->getInputTorque() + outputJoint2->getInputTorque())/finalDriveRatio;
@@ -97,7 +97,7 @@ void FinalDrive::stepPhysics ()
     inputAngularVel = (dtoverJe*(outputTorqueTransfer+inputTorqueTransfer)+prevAngularVel)/(1+(dtoverJe*friction));
 
     // calculate angular acceleration (for reference)
-    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep;
     outputAngularVel = inputAngularVel/finalDriveRatio;
 */
     log->format(LOG_DEVELOPER, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);

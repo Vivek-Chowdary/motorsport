@@ -87,7 +87,7 @@ void Engine::stepPhysics ()
     double dt;
     double torqueSum;
     
-    dt = SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    dt = SystemData::getSystemDataPointer()->physicsTimeStep;
 
     prevAngularVel = inputAngularVel;
 
@@ -104,10 +104,10 @@ void Engine::stepPhysics ()
     outputAngularVel = inputAngularVel;
 
 
-/*    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep/1000.0)/inertia;
+/*    dtoverJe=(SystemData::getSystemDataPointer()->physicsTimeStep)/inertia;
 
     inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
-    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep/1000.0;
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep;
     outputAngularVel = inputAngularVel;
 */
     log->format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
