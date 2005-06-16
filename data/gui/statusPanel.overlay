@@ -8,7 +8,7 @@ gui
 		vert_align bottom
 		left 5 
 		top -118
-		width 300
+		width 310
 		height 113
 		material gui/StatsBlockCenter
         	border_size 1 1 1 1

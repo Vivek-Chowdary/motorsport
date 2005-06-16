@@ -131,7 +131,7 @@ void Wheel::stepPhysics ()
     //inputAngularVel = dJointGetHingeAngleRate (suspJointID); // old kart suspension code
 
     // calculate angular acceleration      
-    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->physicsTimeStep;
+    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
 
     // tire rolling resistance
     //inputTorqueTransfer -= 0.1*inputAngularVel;

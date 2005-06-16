@@ -137,58 +137,6 @@ int InputEngine::computeStep (void)
             axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
             log->format (LOG_DEVELOPER, "New SDL_KEYDOWN event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_ESCAPE:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: notifying to stop mainLoop...");
-                systemData->disableMainLoop ();
-                break;
-            case SDLK_HOME:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
-                systemData->physicsDesiredFrequency = 30;
-                systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-                break;
-            case SDLK_END:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
-                systemData->physicsDesiredFrequency = 250;
-                systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-                break;
-            case SDLK_q:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_q keypress: User wants to exit. Notifying to stop mainLoop...");
-                systemData->disableMainLoop ();
-                break;
-            case SDLK_KP_MINUS:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
-                if (systemData->physicsDesiredFrequency < 37)
-                {
-                    if (systemData->physicsDesiredFrequency < 1)
-                    {
-                        systemData->physicsDesiredFrequency++;
-                    }
-                    systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-                } else {
-                    systemData->physicsTimeStep += 0.001;
-                    systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
-                }
-                break;
-            case SDLK_KP_PLUS:
-                log->put (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
-                if (systemData->physicsDesiredFrequency < 37)
-                {
-                    systemData->physicsDesiredFrequency++;
-                    systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-                } else {
-                    systemData->physicsTimeStep -= 0.001;
-                    if (systemData->physicsTimeStep < 0.001)
-                    {
-                        systemData->physicsTimeStep += 0.001;
-                    }
-                    systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
-                }
-                break;
-            default:
-                break;
-            }
             break;
         case SDL_MOUSEMOTION:
             axisIDtoStr(getIDMouseAxis (0), tmpString);

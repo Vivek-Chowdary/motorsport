@@ -88,10 +88,10 @@ int main (int argc, char **argv)
         if (systemData->simulationTime - systemData->statisticsTime >= 1)
         {
             systemData->graphicsFrequency = systemData->graphicsSteps;
-            systemData->physicsFrequency = systemData->physicsSteps;
+            systemData->setCurrentPhysicsFrequency (systemData->physicsSteps);
             systemData->graphicsSteps = systemData->physicsSteps = 0;
             systemData->statisticsTime += 1;
-            log->format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->physicsFrequency);
+            log->format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->getCurrentPhysicsFrequency());
         }
         inputEngine->computeStep ();
         // Run the gui engine.
@@ -102,9 +102,9 @@ int main (int argc, char **argv)
         // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
         inputEngine->clearGraphicsEventAxis ();
         // Run the physics engine until the game time is in sync with the real loop time.
-        while (((systemData->realTime - systemData->simulationTime) >= systemData->physicsTimeStep) && (systemData->isMainLoopEnabled ()))
+        while (((systemData->realTime - systemData->simulationTime) >= systemData->getDesiredPhysicsTimestep()) && (systemData->isMainLoopEnabled ()))
         {
-            systemData->simulationTime += systemData->physicsTimeStep;
+            systemData->simulationTime += systemData->getDesiredPhysicsTimestep();
             static int step = systemData->timeScale;
             step--;
             if (!step)
@@ -176,46 +176,22 @@ void computeLogic (LogEngine * log)
     if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
     {
         log->put (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
-        systemData->physicsDesiredFrequency = 30;
-        systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
+        systemData->setDesiredPhysicsFrequency(150.0);
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
     {
         log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
-        systemData->physicsDesiredFrequency = 250;
-        systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
+        systemData->setDesiredPhysicsFrequency(300.0);
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
     {
         log->put (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
-        if (systemData->physicsDesiredFrequency < 37)
-        {
-            systemData->physicsDesiredFrequency--;
-            if (systemData->physicsDesiredFrequency < 1)
-            {
-                systemData->physicsDesiredFrequency++;
-            }
-            systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-        } else {
-            systemData->physicsTimeStep += 0.001;
-            systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
-        }
+        systemData->decreaseDesiredPhysicsRate();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
     {
         log->put (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
-        if (systemData->physicsDesiredFrequency < 37)
-        {
-            systemData->physicsDesiredFrequency++;
-            systemData->physicsTimeStep = 1 / systemData->physicsDesiredFrequency;
-        } else {
-            systemData->physicsTimeStep -= 0.001;
-            if (systemData->physicsTimeStep < 0.001)
-            {
-                systemData->physicsTimeStep += 0.001;
-            }
-            systemData->physicsDesiredFrequency = 1 / systemData->physicsTimeStep;
-        }
+        systemData->increaseDesiredPhysicsRate();
     }
 }
 
@@ -226,14 +202,14 @@ void recordVideoFrames ()
     if ((int) time >= SystemData::getSystemDataPointer ()->videoRecordTimestep)
     {
         takeShot++;
-        time -= SystemData::getSystemDataPointer ()->physicsTimeStep;
+        time -= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     }
     if ((takeShot > 0) && (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->getValue () == 0))
     {
         SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue (1);
         takeShot--;
     }
-    time += SystemData::getSystemDataPointer ()->physicsTimeStep;
+    time += SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
 }
 
 LogEngine *processXmlRootNode (DOMNode * n)

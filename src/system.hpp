@@ -24,6 +24,9 @@ class SystemData
     bool mainLoopEnabled;
     double cfmValue;     
     double erpValue;
+    
+    double desiredPhysicsFrequency;
+    double currentPhysicsFrequency;
   public:
     static SystemData *getSystemDataPointer ();
     SystemData ();
@@ -34,15 +37,25 @@ class SystemData
     double getErpValue();
     void setErpValue(const double & value);
     
-    double physicsTimeStep;
-    double physicsDesiredFrequency;
+
+
+    double getDesiredPhysicsFrequency();
+    double getDesiredPhysicsTimestep();
+    void setDesiredPhysicsFrequency(double frequency);
+    void setDesiredPhysicsTimestep(double timestep);
+    void increaseDesiredPhysicsRate();
+    void decreaseDesiredPhysicsRate();
+
+    double getCurrentPhysicsFrequency();
+    double getCurrentPhysicsTimestep();
+    void setCurrentPhysicsFrequency(double frequency);
+    void setCurrentPhysicsTimestep(double timestep);
 
     // main loop time control data
     double realTime;
     double simulationTime;
     double statisticsTime;
     double physicsSteps;
-    double physicsFrequency;
     double graphicsSteps;
     double graphicsFrequency;
 

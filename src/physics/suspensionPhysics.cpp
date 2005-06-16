@@ -91,7 +91,7 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     dBodySetFiniteRotationMode(wheel.wheelID, 1);
     dBodySetFiniteRotationAxis(wheel.wheelID, 0, 0, 1);
 
-    double h = SystemData::getSystemDataPointer()->physicsTimeStep;
+    double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
     Vector3d wPosition = wheel.getPosition();
@@ -182,7 +182,7 @@ void Suspension::stepPhysics ()
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
 
     // Re-set suspension settings... if physics rate has changed, this needs to be updated.
-    double h = SystemData::getSystemDataPointer()->physicsTimeStep;
+    double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
 }

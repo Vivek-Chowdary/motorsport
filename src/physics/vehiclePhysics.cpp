@@ -140,7 +140,7 @@ void Vehicle::stepPhysics ()
 /*
     // Code for using a higher rate in tranny code, thus eliminating some lag from it. FIXME when double seconds are used instead of int milliseconds.
     const int freq = 3;
-    SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep / freq;
+    SystemData::getSystemDataPointer()->setDesiredPhysicsTimestep (SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() / freq);
     for (int i = 0; i<freq; i++){
 // higher rate code continues below... */
     // step torque transfer components first
@@ -156,9 +156,9 @@ void Vehicle::stepPhysics ()
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
-//        SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep * freq;
+//        SystemData::getSystemDataPointer()->setDesiredPhysicsTimestep (SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * freq);
         suspIter->second->stepPhysics();
-//        SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep / freq;
+//        SystemData::getSystemDataPointer()->setDesiredPhysicsTimestep (SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() / freq);
     }
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
@@ -166,7 +166,7 @@ void Vehicle::stepPhysics ()
         wheelIter->second->stepPhysics();
     }
 //    }
-//    SystemData::getSystemDataPointer()->physicsTimeStep = SystemData::getSystemDataPointer()->physicsTimeStep * freq;
+//    SystemData::getSystemDataPointer()->setDesiredPhysicsTimestep (SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * freq);
 
     // print telemetry data
     if ( userDriver )

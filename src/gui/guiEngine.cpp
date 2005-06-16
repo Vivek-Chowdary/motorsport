@@ -138,8 +138,8 @@ void GuiEngine::updateStatistics (void)
     const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics ();
     guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
     guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)systemData->graphicsFrequency) + " fps");
-    guiScaledPhysics->setCaption ("Scaled Physics Rate: " + StringConverter::toString (float(systemData->physicsFrequency)) + " Hz (" + StringConverter::toString (float(1000.0 / systemData->physicsFrequency)) + " ms)");
-    guiPhysics->setCaption ("Simulated Physics Rate: " + StringConverter::toString (float(1 / systemData->physicsTimeStep)) + "Hz (" + StringConverter::toString (float(systemData->physicsTimeStep * 1000.0)) + " ms)" );
+    guiScaledPhysics->setCaption ("Current Physics Rate: " + StringConverter::toString (float(systemData->getCurrentPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(systemData->getCurrentPhysicsTimestep() * 1000.0)) + " ms)");
+    guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(systemData->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(systemData->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
     OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
     

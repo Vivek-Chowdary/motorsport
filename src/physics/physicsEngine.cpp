@@ -119,11 +119,11 @@ int PhysicsEngine::computeStep (void)
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (World::getWorldPointer ()->worldID, systemData->physicsTimeStep);
+        dWorldStep (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep());
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->physicsTimeStep, dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
     
@@ -293,9 +293,8 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     systemData = SystemData::getSystemDataPointer ();
 
     log->put (LOG_DEVELOPER, "Setting physics data");
-    systemData->physicsDesiredFrequency = frequency;
-    systemData->physicsTimeStep = 1.0 / systemData->physicsDesiredFrequency;
+    systemData->setDesiredPhysicsFrequency(frequency);
     systemData->timeScale = timeScale;
     systemData->pauseStep = pauseStep;
-    log->format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->physicsDesiredFrequency, systemData->physicsTimeStep * 1000);
+    log->format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
 }

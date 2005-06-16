@@ -145,7 +145,7 @@ void Gear::stepPhysics ()
 {
   if(enabled) {
     double dt;
-    dt = SystemData::getSystemDataPointer()->physicsTimeStep;
+    dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     prevRelAngle = relAngle;
     prevRelAngularVel = relAngularVel;
 
@@ -219,7 +219,7 @@ void LSD::stepPhysics ()
 {
   if(enabled) {
     double dt;
-    dt = SystemData::getSystemDataPointer()->physicsTimeStep;
+    dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     prevRelAngle = relAngle;
     prevRelAngularVel = relAngularVel;
 
