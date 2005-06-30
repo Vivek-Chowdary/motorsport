@@ -33,6 +33,8 @@
         torqueLinearMultiplier = "246"
         engineInertia = "0.4"
         engineFriction = "0.1"
+        angularVelLimit = "733.0382858"
+        _angularVelLimit = "radians per second = rpm * 2 * PI / 60"
         >
     </engine>
     <clutch

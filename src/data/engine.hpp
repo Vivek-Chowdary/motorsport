@@ -25,6 +25,7 @@ class Engine : public DriveMass
     void stopPhysics ();
     double torqueLinearMultiplier;
     double telemetryTorque;
+    double angularVelLimit;
   public:
     // data
     Engine (XERCES_CPP_NAMESPACE::DOMNode * n);

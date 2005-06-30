@@ -24,6 +24,7 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     prevAngularVel = 0.0;
     outputAngularVel = 0.0;
     angularAcc = 0.0;
+    angularVelLimit = 700;
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -52,6 +53,12 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
                 friction = stod (attribute);
+            }
+            if (attribute == "angularVelLimit")
+            {
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_CCREATOR, "Found the engine angular velocity limit: %s", attribute.c_str() );
+                angularVelLimit = stod (attribute);
             }
         }
     }
@@ -83,6 +90,7 @@ void Engine::stepPhysics ()
     }
     engineTorque = 0;
     engineTorque += torqueLinearMultiplier * gas;
+    if (inputAngularVel > angularVelLimit) engineTorque = 0;
     
     double dt;
     double torqueSum;
