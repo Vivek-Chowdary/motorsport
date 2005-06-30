@@ -95,23 +95,19 @@ void Gearbox::stepPhysics ()
 }
 
 void Gearbox::gearUp() {
-    if(currentGear >= 6) {
-        currentGear = 6;
-    }
-    else {
-        currentGear++;
-    }
+    currentGear++;
+
+    int maxGear = gearMap.size() - 1;
+    if(currentGear > maxGear) currentGear = maxGear;
+
     gearRatio = gearMap[currentGear]->ratio;
     log->format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
 }
 
 void Gearbox::gearDown() {
-    if(currentGear <=0) {
-        currentGear = 0;
-    }
-    else {
-        currentGear--;
-    }
+    currentGear--;
+    if(currentGear < 0) currentGear = 0;
+
     gearRatio = gearMap[currentGear]->ratio;
     log->format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
 }
