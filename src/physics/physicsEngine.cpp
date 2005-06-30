@@ -124,6 +124,7 @@ int PhysicsEngine::computeStep (void)
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
         dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
+        break;
     }
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
     
