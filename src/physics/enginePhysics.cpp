@@ -89,7 +89,7 @@ void Engine::stepPhysics ()
         }   }   }   }
     }
     engineTorque = 0;
-    engineTorque += torqueLinearMultiplier * gas;
+    engineTorque += ((torqueLinearMultiplier/2) + (inputAngularVel * (torqueLinearMultiplier/2) / angularVelLimit)) * gas;
     if (inputAngularVel > angularVelLimit) engineTorque = 0;
     
     double dt;
