@@ -15,6 +15,7 @@
 #   include "data/xercesc_fwd.hpp"
 
 class DriveMass;
+class Pedal;
 
 class DriveJoint : public WorldObject
 {
@@ -62,6 +63,7 @@ class Clutch : public DriveJoint
   private:
     // data
     static int instancesCount;
+    Pedal * clutchPedal;
 
     // physics
     double coeffStaticFriction;
@@ -77,6 +79,7 @@ class Clutch : public DriveJoint
     Clutch ();
     ~Clutch ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void setClutchPedal(Pedal * pedal);
 
     // physics
     void stepPhysics ();

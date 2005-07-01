@@ -14,6 +14,7 @@
 #include "ode/ode.h"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"
+#include "pedal.hpp"
 
 void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -142,24 +143,8 @@ void Wheel::stepPhysics ()
     dJointGetHinge2Axis2 (suspJointID, odeTAxis);
     Vector3d tAxis (odeTAxis);
 
-    // Apply brakes. FIXME should be in its own class!
-    double brake = 0;
-    if (userDriver)
-    {
-        brake = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue();
-        if (brake == 0) {
-            brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP8)]->getValue() * 3 / 3;
-            if (brake == 0) {
-                brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP5)]->getValue() * 2 / 3;
-                if (brake == 0) {
-                    brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP2)]->getValue() * 1 / 3;
-                    if (brake == 0) {
-                        brake = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
-    }   }   }   }
-    else
-    {
-        brake = 1;
-    }
+    double brake = brakePedal->getNormalizedAngle();
+    if (!userDriver) brake = 1;
     if (inputAngularVel > 0) brake *= -1;
     double maxBrakeTorque = 1250;
     inputTorqueTransfer += brake * maxBrakeTorque;
@@ -167,7 +152,6 @@ void Wheel::stepPhysics ()
     // then, scale it by desired torque in the desired direction of the axis
     tAxis.scalarMultiply (inputTorqueTransfer * powered);
 
-    }
     // finally, apply it
     dBodyAddTorque (wheelID, tAxis.x, tAxis.y, tAxis.z);
 

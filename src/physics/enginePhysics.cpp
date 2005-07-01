@@ -13,6 +13,7 @@
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"
+#include "pedal.hpp"
 
 
 void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -72,52 +73,32 @@ void Engine::stepPhysics ()
 {
 //    double dtoverJe;
     double engineTorque;
-    
-    double gas = 0;
-    // TODO: move this value inversion to axis filters!
-    if ( userDriver )
+    double gas = gasPedal->getNormalizedAngle();
+
+    if (inputAngularVel > angularVelLimit)
     {
-        gas = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue();
-        if (gas == 0) {
-            gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue() * 3 / 3;
-            if (gas == 0) {
-                gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP6)]->getValue() * 2 / 3;
-                if (gas == 0) {
-                    gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP3)]->getValue() * 1 / 3;
-                    if (gas == 0) {
-                        gas = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
-        }   }   }   }
+        engineTorque = 0;
+    } else {
+        engineTorque = ((torqueLinearMultiplier/2) + (inputAngularVel * (torqueLinearMultiplier/2) / angularVelLimit)) * gas;
     }
-    engineTorque = 0;
-    engineTorque += ((torqueLinearMultiplier/2) + (inputAngularVel * (torqueLinearMultiplier/2) / angularVelLimit)) * gas;
-    if (inputAngularVel > angularVelLimit) engineTorque = 0;
     
     double dt;
     double torqueSum;
     
     dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
-
     prevAngularVel = inputAngularVel;
-
 //    inputTorqueTransfer = inputJoint->getOutputTorque();
 //    outputTorqueTransfer += outputJoint->getInputTorque();
-
     torqueSum = outputTorqueTransfer + engineTorque;
-    
     angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
     
     // improved Euler ODE solve
     inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
-
     outputAngularVel = inputAngularVel;
-
-
-/*    dtoverJe=(SystemData::getSystemDataPointer()->getDesiredPhysicsTimeStep())/inertia;
-
+/*    dtoverJe=dt/inertia;
     inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
-    angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->getDesiredPhysicsTimeStep();
-    outputAngularVel = inputAngularVel;
-*/
+    angularAcc = (inputAngularVel-prevAngularVel)/ dt;
+    outputAngularVel = inputAngularVel; */
     log->format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;

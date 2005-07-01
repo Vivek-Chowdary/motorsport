@@ -25,6 +25,7 @@ class GearboxGear;
 class FinalDrive;
 class LSD;
 class Wheel;
+class Pedal;
 class Suspension;
 class Vector3d;
 class Quaternion;
@@ -46,6 +47,7 @@ class Vehicle : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
+    void processXmlPedalListNode(XERCES_CPP_NAMESPACE::DOMNode * pedalListNode);
     void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
 
     // physics
@@ -68,8 +70,9 @@ class Vehicle : public WorldObject
     Gearbox * gearbox;
     FinalDrive * finalDrive;
     LSD * rearDiff;
-    std::map < std::string, Wheel *> wheelMap;
+    std::map < std::string, Wheel * > wheelMap;
     std::map < std::string, Suspension * > suspensionMap;
+    std::map < std::string, Pedal * > pedalMap;
     std::vector < Camera * > cameraList;
     void setUserDriver ();
 

@@ -13,6 +13,7 @@
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"
+#include "pedal.hpp"
 
 
 void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -60,39 +61,32 @@ void Clutch::stopPhysics ()
 
 void Clutch::stepPhysics ()
 {
-  if(enabled) {
-    double clutch = 0;
-    clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
-    if (clutch == 0) {
-        clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP4)]->getValue() * 2 / 3;
-        if (clutch == 0) {
-            clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP1)]->getValue() * 1 / 3;
-            if (clutch == 0) {
-                clutch = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_q)]->getValue() * 3 / 3;
-    }   }   }
-    if(clutch) {
-        outputTorqueTransfer = 0*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
-        inputTorqueTransfer = outputTorqueTransfer*-1;
-    }
-    else {
-        outputTorqueTransfer = lockedParam*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
-        log->format(LOG_DEVELOPER, "torqueTransfer=%f", outputTorqueTransfer);
+    if(enabled) {
+        double clutch = clutchPedal->getNormalizedAngle();
+        if(clutch) {
+            outputTorqueTransfer = 0*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
+            inputTorqueTransfer = outputTorqueTransfer*-1;
+        } else
+        {
+            outputTorqueTransfer = lockedParam*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
+            log->format(LOG_DEVELOPER, "torqueTransfer=%f", outputTorqueTransfer);
 
-        if(outputTorqueTransfer > maxTorqueTransfer) {
+            if(outputTorqueTransfer > maxTorqueTransfer)
+            {
                 outputTorqueTransfer = maxTorqueTransfer;
-        }
-        else if(outputTorqueTransfer < -1*maxTorqueTransfer) {
+            } else if(outputTorqueTransfer < -1*maxTorqueTransfer)
+            {
                 outputTorqueTransfer = -1 * maxTorqueTransfer;
-        }
-        inputTorqueTransfer = outputTorqueTransfer*-1;
-    }       
+            }
+            inputTorqueTransfer = outputTorqueTransfer*-1;
+        }       
 
-    inputDrive->addOutputTorque(inputTorqueTransfer);
-    outputDrive->addInputTorque(outputTorqueTransfer);   
+        inputDrive->addOutputTorque(inputTorqueTransfer);
+        outputDrive->addInputTorque(outputTorqueTransfer);   
 
- //   rotationalVelocity = pOutTorque->getInputAngularVel();
-    log->format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
-  }
+        // rotationalVelocity = pOutTorque->getInputAngularVel();
+        log->format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
+    }
 }
 
 

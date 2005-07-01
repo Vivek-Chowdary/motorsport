@@ -36,6 +36,7 @@ class Wheel : public DriveMass
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Pedal * brakePedal;
     
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -52,6 +53,7 @@ class Wheel : public DriveMass
     void setRefBody(dBodyID inputID) { bodyID = inputID; };
     void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
     void setUserDriver ();
+    void setBrakePedal (Pedal * pedal);
     
     // physics
     void stepPhysics ();

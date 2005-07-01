@@ -17,18 +17,24 @@
         mass = "1224.0"
         >
     </body>
-    <clutchPedal
-        inputAxis = "normalizedRelativeRotation"
-        >
-    </clutchPedal>
-    <gasPedal
-        inputAxis = "normalizedRelativeRotation"
-        >
-    </gasPedal>
-    <brakePedal
-        inputAxis = "normalizedRelativeRotation"
-        >
-    </brakePedal>
+    <pedalList>
+        <pedal
+            id = "clutchPedal"
+            angleRange = "1.047975"
+            _angleRange = "radians = degrees * 2 * PI / 360"
+            >
+        </pedal>
+        <pedal
+            id = "gasPedal"
+            angleRange = "0.6981317"
+            >
+        </pedal>
+        <pedal
+            id = "brakePedal"
+            angleRange = "0.6981317"
+            >
+        </pedal>
+    </pedalList>
     <engine
         torqueLinearMultiplier = "246"
         engineInertia = "0.4"

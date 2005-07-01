@@ -245,6 +245,8 @@ SOURCES := \
         tools/vector3d.cpp \
         physics/finalDrivePhysics.cpp \
         data/finalDriveData.cpp \
+	data/pedalData.cpp \
+	physics/pedalPhysics.cpp \
 	main.cpp
 ###########################################
 

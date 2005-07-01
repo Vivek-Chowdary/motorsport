@@ -20,6 +20,7 @@
 #include "finalDrive.hpp"
 #include "wheel.hpp"
 #include "suspension.hpp"
+#include "pedal.hpp"
 #include "camera.hpp"
 #include "system.hpp"
 #include "SDL.h"
@@ -74,6 +75,11 @@ Vehicle::~Vehicle ()
     {
         delete wheelIter->second;
     }
+    std::map < std::string, Pedal * >::const_iterator pedalIter;
+    for (pedalIter=pedalMap.begin(); pedalIter != pedalMap.end(); pedalIter++)
+    {
+        delete pedalIter->second;
+    }
     delete log;
 }
 
@@ -86,7 +92,6 @@ void Vehicle::setUserDriver ()
     gearbox->setGear(1);
 
     // spread the news to the necessary (input-able) vehicle parts
-    engine->setUserDriver();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
@@ -96,6 +101,11 @@ void Vehicle::setUserDriver ()
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
         wheelIter->second->setUserDriver();
+    }
+    std::map < std::string, Pedal * >::const_iterator pedalIter;
+    for (pedalIter=pedalMap.begin(); pedalIter != pedalMap.end(); pedalIter++)
+    {
+        pedalIter->second->setUserDriver();
     }
 }
 
@@ -115,6 +125,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     DOMNode * wheelListNode = 0;
     DOMNode * suspListNode = 0; //suspension
     DOMNode * cameraListNode = 0;
+    DOMNode * pedalListNode = 0;
 
     if (n)
     {
@@ -210,6 +221,11 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                 log->put (LOG_CCREATOR, "Found a wheel list.");
                                 wheelListNode = n;
                             }
+                            if (nodeName == "pedalList")
+                            {
+                                log->put (LOG_CCREATOR, "Found a pedal list.");
+                                pedalListNode = n;
+                            }
                             if (nodeName == "suspensionList")
                             {
                                 log->put (LOG_CCREATOR, "Found a suspension list.");
@@ -231,6 +247,9 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     processXmlCameraListNode(cameraListNode);
 
     log->loadscreen (LOG_CCREATOR, "Creating the vehicle components");
+    
+    processXmlPedalListNode(pedalListNode);
+
     body = new Body (bodyNode);
     engine = new Engine (engineNode);
     clutch = new Clutch (clutchNode);
@@ -255,6 +274,14 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     rearDiff->setOutputPointer(wheelMap["RearRight"]);
     rearDiff->setOutputPointer2(wheelMap["RearLeft"]);
 
+    engine->setGasPedal(pedalMap["gasPedal"]);
+    clutch->setClutchPedal(pedalMap["clutchPedal"]);
+    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
+    {
+        wheelIter->second->setBrakePedal(pedalMap["brakePedal"]);;
+    }
+
     clutch->enable();
     transfer->enable();
     rearDiff->enable();
@@ -267,6 +294,27 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     stepGraphics();
 }
 
+void Vehicle::processXmlPedalListNode(DOMNode * pedalListNode)
+{
+    if (pedalListNode != 0)
+    {
+        DOMNode * pedalNode;
+        for (pedalNode = pedalListNode->getFirstChild (); pedalNode != 0; pedalNode = pedalNode->getNextSibling ())
+        {
+            if (pedalNode->getNodeType () == DOMNode::ELEMENT_NODE)
+            {
+                std::string nodeName;
+                assignXmlString (nodeName, pedalNode->getNodeName());
+                if (nodeName == "pedal")
+                {
+                    log->put (LOG_CCREATOR, "Found a pedal.");
+                    Pedal * tmpPedal = new Pedal (pedalNode);
+                    pedalMap[tmpPedal->getId()]=tmpPedal;
+                }
+            }
+        }
+    }
+}
 void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
 {
     if (wheelListNode != 0)

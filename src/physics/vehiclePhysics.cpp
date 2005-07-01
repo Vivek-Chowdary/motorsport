@@ -18,6 +18,7 @@
 #include "gearbox.hpp"
 #include "finalDrive.hpp"
 #include "wheel.hpp"
+#include "pedal.hpp"
 #include "suspension.hpp"
 #include "SDL/SDL_keysym.h"
 #include "quaternion.hpp"
@@ -124,6 +125,11 @@ void Vehicle::boltWheelsToSuspensions()
 
 void Vehicle::stepPhysics ()
 {
+    std::map < std::string, Pedal * >::const_iterator pedalIter;
+    for (pedalIter=pedalMap.begin(); pedalIter != pedalMap.end(); pedalIter++)
+    {
+        pedalIter->second->stepPhysics();
+    }
     if ( userDriver )
     {
         // check the gearshift levers

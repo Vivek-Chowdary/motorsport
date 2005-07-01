@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://motorsport-sim.org logConfig.xsd"
 
-    globalLevel ="LOG_ENDUSER"
+    globalLevel ="LOG_DEVELOPER"
     fileName = "motorsport.log"
     textBuffer = "1024"
 />

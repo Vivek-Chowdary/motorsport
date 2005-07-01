@@ -33,6 +33,11 @@ Clutch::~Clutch ()
     delete log;
 }
 
+void Clutch::setClutchPedal(Pedal * pedal)
+{
+    clutchPedal = pedal;
+}
+
 
 void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {

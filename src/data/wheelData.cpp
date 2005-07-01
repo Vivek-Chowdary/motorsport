@@ -51,6 +51,10 @@ std::string Wheel::getIndex()
 {
     return index;
 }
+void Wheel::setBrakePedal (Pedal * pedal)
+{
+    brakePedal = pedal;
+}
 
 void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {

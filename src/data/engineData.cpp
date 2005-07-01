@@ -11,12 +11,13 @@
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 
+class Pedal;
+
 Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "ENG");
     log->put (LOG_CCREATOR, "Starting to parse an engine node");
     processXmlRootNode (n);
-    userDriver = false;
 }
 
 Engine::~Engine ()
@@ -31,7 +32,7 @@ void Engine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
 }
 
-void Engine::setUserDriver ()
+void Engine::setGasPedal (Pedal * pedal)
 {
-    userDriver = true;
+    gasPedal = pedal;
 }
