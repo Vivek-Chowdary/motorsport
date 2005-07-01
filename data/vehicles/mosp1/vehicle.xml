@@ -15,6 +15,9 @@
         width = "2.08"
         height = "1.2" 
         mass = "1224.0"
+        dragCoefficient = "0.3"
+        _frontalArea = "default"  comment="default = width * height * 0.6"
+        frontalArea = "1.5"
         >
     </body>
     <pedalList>

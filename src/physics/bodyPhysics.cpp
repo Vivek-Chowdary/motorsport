@@ -13,6 +13,7 @@
 #include "axis.hpp"
 #include "xmlParser.hpp"
 #include "ode/ode.h"
+#include "math.h"
 #include "log/logEngine.hpp"
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
@@ -23,6 +24,8 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     double width = 1;
     double height = 1;
     double mass = 1;
+    dragCoefficient = 0.3;
+    frontalArea = 0;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -55,6 +58,18 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
+            }
+            if (attribute == "frontalArea")
+            {
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_CCREATOR, "Found the body frontal area: %s", attribute.c_str() );
+                frontalArea = stod (attribute);
+            }
+            if (attribute == "dragCoefficient")
+            {
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_CCREATOR, "Found the body drag coefficient: %s", attribute.c_str() );
+                dragCoefficient = stod (attribute);
             }
         }
     }
@@ -98,6 +113,12 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dBodySetPosition (bodyID, 0, 0 ,0);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
+
+    // set the air drag variables correctly
+    if (frontalArea == 0)
+    {
+        frontalArea = width * height * 0.6;
+    }
 }
 
 void Body::setPosition (Vector3d position)
@@ -140,4 +161,20 @@ void Body::stepPhysics ()
         moveZ -= SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
         dBodyAddForce (bodyID, 0, 0, moveZ);
     }
+    
+    // apply simple air drag forces:
+    const double airDensity = 1.225;
+    //  f = Cx              * 0.5 * airDensity * v^2     * area;
+    //  f = dragCoefficient * 0.5 * 1.225      * vel*vel * frontalArea;
+    Vector3d velocity (dBodyGetLinearVel (bodyID));
+    double velModule = velocity.distance();
+    Vector3d normalizedVel (velocity);
+    normalizedVel.scalarDivide(velModule);
+    normalizedVel.scalarMultiply(-1);
+    Vector3d force (normalizedVel);
+    force.scalarMultiply (0.5 * dragCoefficient * airDensity * frontalArea * velModule * velModule);
+
+    dBodyAddForce (bodyID, force.x, force.y, force.z);
+
+    log->format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
 }

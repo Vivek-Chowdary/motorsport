@@ -30,6 +30,8 @@ class Body : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void updateOgrePosition ();
     void updateOgreOrientation ();
+    double dragCoefficient;
+    double frontalArea;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
