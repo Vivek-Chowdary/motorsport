@@ -302,8 +302,11 @@ void Track::processXmlRootNode (DOMNode * n)
     }
 
     log->loadscreen (LOG_CCREATOR, "Creating the track ground");
+
     log->put (LOG_DEVELOPER, "Creating the ode plane");
     dCreatePlane (World::getWorldPointer()->spaceID, 0, 0, 1, groundHeight);
+
+    log->put (LOG_DEVELOPER, "Creating the ogre plane");
     Ogre::Plane plane;
     plane.normal = Ogre::Vector3(0,0,1);
     plane.d = -groundHeight;
@@ -312,7 +315,8 @@ void Track::processXmlRootNode (DOMNode * n)
     Ogre::Entity* pPlaneEnt = pOgreSceneManager->createEntity("plane", "Ground plane");
     pPlaneEnt->setMaterialName(groundMaterialName.c_str());
     pPlaneEnt->setCastShadows(true);
-    pOgreSceneManager->getRootSceneNode()->createChildSceneNode()->attachObject(pPlaneEnt);
+    planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
+    planeNode->attachObject(pPlaneEnt);
     trackBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
 
     // FIXME should be part of the world, not the track

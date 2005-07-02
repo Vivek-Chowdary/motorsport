@@ -212,6 +212,15 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer ()->vehicleList[0]->cameraList[currentCamera]->stepGraphics ();
     }
 
+    // Update infinite plane position according to vehicle position
+    Ogre::Vector3 trackPos (World::getWorldPointer()->trackList[0]->planeNode->getPosition());
+    Vector3d vehiclePos (World::getWorldPointer()->vehicleList[0]->getPosition());
+    Vector3d diff (trackPos.x - vehiclePos.x, trackPos.y - vehiclePos.y, trackPos.z - vehiclePos.z);
+    const double tile = 1000.0 / 20.0;
+    if (diff.x > tile || diff.x < -tile) trackPos.x -= int ((diff.x) / (tile)) * (tile);
+    if (diff.y > tile || diff.y < -tile) trackPos.y -= int ((diff.y) / (tile)) * (tile);
+    World::getWorldPointer()->trackList[0]->planeNode->setPosition(trackPos);
+    
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
     systemData->ogreWindow->update ();

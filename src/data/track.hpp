@@ -36,8 +36,8 @@ class Track : public WorldObject
     std::string contact;
     std::string license;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-//    void processXmlVehiclePositionNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+
   public:
     // data
     Track (const std::string & xmlFilename);
@@ -57,6 +57,7 @@ class Track : public WorldObject
 /*    void startGraphics (DOMNode * n);
     void stepGraphics ();
     void stopGraphics ();*/
+    Ogre::SceneNode * planeNode;
     Ogre::Entity * trackEntity;
     Ogre::SceneNode * trackNode;
 };
