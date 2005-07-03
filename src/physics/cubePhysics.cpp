@@ -69,6 +69,13 @@ void Cube::setPosition (Vector3d position)
     dBodySetPosition (cubeID, position.x, position.y, position.z);
 }
 
+void Cube::setRotation (Quaternion rotation)
+{
+    dMatrix3 rot;
+    rotation.getOdeMatrix (rot);
+    dBodySetRotation (cubeID, rot);
+}
+
 void Cube::stopPhysics ()
 {
     dGeomDestroy (cubeGeomID);

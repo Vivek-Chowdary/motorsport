@@ -13,6 +13,7 @@
 #   include "worldObject.hpp"
 
 class Vector3d;
+class Quaternion;
 namespace Ogre {
   class Entity;
   class SceneNode;
@@ -48,6 +49,7 @@ class Cube : public WorldObject
     dBodyID cubeID;
     dGeomID cubeGeomID;
     void setPosition (Vector3d position);
+    void setRotation (Quaternion rotation);
 
     // graphics
     void stepGraphics ();

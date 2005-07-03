@@ -37,7 +37,8 @@ class Track : public WorldObject
     std::string license;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
+    void Track::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
+    
   public:
     // data
     Track (const std::string & xmlFilename);

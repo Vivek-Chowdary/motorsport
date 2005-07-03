@@ -21,8 +21,28 @@
         >
     </sky>
     <parts
-        numberOfCubes = "2"    comment="KISS, so you can't use other parts or position them manually."
+        gridCubes = "0"
         >
+        <cube
+            position = "10 10 4"
+            rotation = "0 0 45"
+            >
+        </cube>
+        <cube
+            position = "0 0 4"
+            rotation = "0 0 10"
+            >
+        </cube>
+        <cube
+            position = "0 10 4"
+            rotation = "0 0 20"
+            >
+        </cube>
+        <cube
+            position = "10 0 4"
+            rotation = "0 0 80"
+            >
+        </cube>
     </parts>
     <vehiclePositionList        comment="Rotation values are euler angles!"
         >
