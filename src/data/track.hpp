@@ -20,7 +20,7 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 };
-class Cube;
+class Part;
 class VehiclePosition;
 class Camera;
 
@@ -44,7 +44,7 @@ class Track : public WorldObject
     Track (const std::string & xmlFilename);
     ~Track ();
     std::map <std::string, VehiclePosition * > vehiclePositionMap;
-    std::vector < Cube * > cubeList;
+    std::vector < Part * > partList;
     std::vector < Camera * > cameraList;
 
     // physics

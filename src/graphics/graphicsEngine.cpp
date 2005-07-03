@@ -16,7 +16,7 @@
 #include "graphicsEngine.hpp"
 #include "track.hpp"
 #include "camera.hpp"
-#include "cube.hpp"
+#include "part.hpp"
 #include "system.hpp"
 #include "xmlParser.hpp"
 #include "Ogre.h"
@@ -83,7 +83,6 @@ void GraphicsEngine::setupResources ()
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/vehicles", "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/tracks", "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/parts", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/parts/cube", "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 }
 
@@ -193,11 +192,11 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer ()->vehicleList[currentVehicle]->stepGraphics ();
     }
 
-    // Update Ogre's cubes positions with Ode's positions.
-    int numberOfCubes = World::getWorldPointer ()->trackList[0]->cubeList.size ();
+    // Update Ogre's parts positions with Ode's positions.
+    int numberOfCubes = World::getWorldPointer ()->trackList[0]->partList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        World::getWorldPointer ()->trackList[0]->cubeList[currentCube]->stepGraphics ();
+        World::getWorldPointer ()->trackList[0]->partList[currentCube]->stepGraphics ();
     }
 
     // Update cameras positions (should be done in the fsx engine FIXME.

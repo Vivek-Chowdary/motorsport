@@ -17,7 +17,6 @@
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string mesh = "None";
-    std::string ogreName = "None";
     Ogre::SceneDetailLevel renderMode = Ogre::SDL_SOLID;
     if (n->hasAttributes ())
     {
@@ -33,11 +32,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (mesh, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
-            if (attribute == "ogreName")
-            {
-                assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body graphics ogre-identifier format: %s", ogreName.c_str());
-            }
             if (attribute == "renderMode")
             {
                 assignXmlString (attribute, attNode->getValue());
@@ -52,16 +46,17 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    char name[256];
-    sprintf (name, ogreName.c_str(), instancesCount);
+    char number[256];
+    sprintf (number, "%i", instancesCount);
+    std::string name (mesh + " #");
+    name.append(number);
+
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/vehicles/");
     file.append(SystemData::getSystemDataPointer()->tmpPath);
     file.append("/");
     file.append(mesh);
-    static int no = 0;
-    name[0] = no++ + '0';
-    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
+    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), mesh.c_str());
     bodyEntity->setRenderDetail(renderMode);
 
     log->format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());

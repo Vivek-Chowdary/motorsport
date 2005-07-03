@@ -20,9 +20,12 @@
         drawFirst = "true"
         >
     </sky>
-    <parts
-        gridCubes = "0"
-        >
+    <parts>
+        <cone
+            position = "5 5 10"
+            rotation = "0 0 0"
+            >
+        </cone>
         <cube
             position = "10 10 4"
             rotation = "0 0 45"

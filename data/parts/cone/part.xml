@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <part
-    name = "Cube"
-    description = "A strange wooden cube"
+    name = "Cone"
+    description = "A typical road cone."
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
@@ -10,7 +10,7 @@
         author = "Bruno Gonzalez Campo (STenyaK)"
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        mesh = "cube.mesh"
+        mesh = "cone.mesh"
         >
     </graphics>
     <physics

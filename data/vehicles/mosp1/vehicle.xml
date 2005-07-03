@@ -8,7 +8,6 @@
     >
     <body
         mesh = "vehicles/mosp1/body.mesh"
-        ogreName = "mosp1Body"
         renderMode="solid"
         _renderMode="wireframe"
         length = "4.66"

@@ -14,7 +14,7 @@
 #include "log/logEngine.hpp"
 #include "system.hpp"
 #include "camera.hpp"
-#include "cube.hpp"
+#include "part.hpp"
 #include "ode/ode.h"
 #include "vehiclePosition.hpp"
 #include "world.hpp"
@@ -40,14 +40,14 @@ Track::Track (const std::string & xmlFilename)
 
 Track::~Track ()
 {
-    // unload the cubes from memory
-    log->put (LOG_DEVELOPER, "Unloading cubes from memory...");
-    int size = cubeList.size ();
+    // unload the parts from memory
+    log->put (LOG_DEVELOPER, "Unloading parts from memory...");
+    int size = partList.size ();
     for (int i = 0; i < size; i++)
     {
-        delete cubeList[i];
+        delete partList[i];
     }
-    cubeList.clear ();
+    partList.clear ();
 
     // unload the cameras from memory
     log->put (LOG_DEVELOPER, "Unloading cameras from memory...");
@@ -317,25 +317,7 @@ void Track::processXmlRootNode (DOMNode * n)
 
 void Track::processXmlPartListNode(DOMNode * partListNode)
 {
-    int gridCubes = 20;
-    // parse attributes
-    if (partListNode->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = partListNode->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "gridCubes")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the number of cubes aligned in a grid: %s", attribute.c_str());
-                gridCubes = stoi (attribute);
-            }
-        }
-    }
+    log->loadscreen (LOG_CCREATOR, "Creating track parts");
     // parse individual parts
     DOMNode * partNode;
     for (partNode = partListNode->getFirstChild (); partNode != 0; partNode = partNode->getNextSibling ())
@@ -344,70 +326,38 @@ void Track::processXmlPartListNode(DOMNode * partListNode)
         {
             std::string nodeName;
             assignXmlString (nodeName, partNode->getNodeName());
-            if (nodeName == "cube")
+            log->format (LOG_CCREATOR, "Found a part of type \"%s\".", nodeName.c_str());
+            Vector3d position(0, 0, 0);
+            Quaternion rotation(0, 0, 0);
+            if (partNode->hasAttributes ())
             {
-                log->put (LOG_CCREATOR, "Found a cube.");
-                Vector3d position(0, 0, 0);
-                Quaternion rotation(0, 0, 0);
-                if (partNode->hasAttributes ())
+                DOMNamedNodeMap *attList = partNode->getAttributes ();
+                int nSize = attList->getLength ();
+                for (int i = 0; i < nSize; ++i)
                 {
-                    DOMNamedNodeMap *attList = partNode->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
+                    DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                    std::string attribute;
+                    assignXmlString (attribute, attNode->getName());
+                    if (attribute == "position")
                     {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "position")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the cube position: %s", attribute.c_str());
-                            position = Vector3d (attribute);
-                        }
-                        if (attribute == "rotation")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the cube rotation: %s", attribute.c_str());
-                            rotation = Quaternion (attribute);
-                        }
+                        assignXmlString (attribute, attNode->getValue());
+                        log->format (LOG_CCREATOR, "Found the part position: %s", attribute.c_str());
+                        position = Vector3d (attribute);
+                    }
+                    if (attribute == "rotation")
+                    {
+                        assignXmlString (attribute, attNode->getValue());
+                        log->format (LOG_CCREATOR, "Found the part rotation: %s", attribute.c_str());
+                        rotation = Quaternion (attribute);
                     }
                 }
-                Cube * cubePointer = new Cube ();
-                cubePointer->setPosition (position);
-                cubePointer->setRotation (rotation);
-                cubeList.push_back (cubePointer);
-                cubePointer->stepGraphics();
             }
+            Part * partPointer = new Part (nodeName);
+            partPointer->setPosition (position);
+            partPointer->setRotation (rotation);
+            partList.push_back (partPointer);
+            partPointer->stepGraphics();
         }
-    }
-    //load cubes
-    log->loadscreen (LOG_CCREATOR, "Creating an array of %i cubes", gridCubes);
-    for (int i = 0; i < gridCubes; i++)
-    {
-        log->format (LOG_DEVELOPER, "Adding cube number %i", i);
-        const int separation = 4;
-        Cube *cubePointer;
-        cubePointer = new Cube ();
-        cubePointer->setPosition (Vector3d (i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation));
-        cubeList.push_back (cubePointer);
-        cubePointer->stepGraphics();
-        /* snake mode. will slow down things. i%4 sets the number of cubes per snake.
-        if ( i%4 && false)
-        {
-            if (0) //type of snake: universal joint vs. ball joint.
-            {
-                dJointID jointID = dJointCreateUniversal (World::getWorldPointer()->worldID, 0);
-                dJointAttach (jointID, cubeList[i-1]->cubeID, cubeList[i]->cubeID);
-                dJointSetUniversalAnchor (jointID, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
-                dJointSetUniversalAxis1 (jointID, 1,0,0);
-                dJointSetUniversalAxis2 (jointID, 0,1,0);
-            }else{
-                dJointID jointID = dJointCreateBall (World::getWorldPointer()->worldID, 0);
-                dJointAttach (jointID, cubeList[i-1]->cubeID, cubeList[i]->cubeID);
-                dJointSetBallAnchor (jointID, i / 10 % 10 * separation, i / 100 % 10 * separation + (separation * ((int (i / 1000)) +1)), separation + i % 10 * separation);
-            } 
-        }
-        */
     }
 }
 void Track::setCastShadows(bool castShadows)

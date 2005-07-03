@@ -7,8 +7,9 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#ifndef CUBE_HPP
-#   define CUBE_HPP
+#ifndef PART_HPP
+#   define PART_HPP
+#   include <string>
 #   include "ode/objects.h"
 #   include "worldObject.hpp"
 
@@ -19,7 +20,7 @@ namespace Ogre {
   class SceneNode;
 }
 
-class Cube : public WorldObject
+class Part : public WorldObject
 {
   private:
     // data
@@ -27,6 +28,7 @@ class Cube : public WorldObject
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    std::string partType;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -41,20 +43,20 @@ class Cube : public WorldObject
     void stopInput ();
   public:
     // data
-    Cube ();
-    ~Cube ();
+    Part (const std::string & partName);
+    ~Part ();
 
     // physics
     void stepPhysics ();
-    dBodyID cubeID;
-    dGeomID cubeGeomID;
+    dBodyID partID;
+    dGeomID partGeomID;
     void setPosition (Vector3d position);
     void setRotation (Quaternion rotation);
 
     // graphics
     void stepGraphics ();
-    Ogre::Entity * cubeEntity;
-    Ogre::SceneNode * cubeNode;
+    Ogre::Entity * partEntity;
+    Ogre::SceneNode * partNode;
 
     // input
     void stepInput ();

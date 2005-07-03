@@ -216,19 +216,19 @@ SOURCES := \
         data/vehiclePosition.cpp \
 	data/worldData.cpp \
         data/trackData.cpp \
-	data/cubeData.cpp \
+	data/partData.cpp \
 	data/bodyData.cpp \
 	data/vehicleData.cpp \
 	data/cameraData.cpp \
-	physics/cubePhysics.cpp \
+	physics/partPhysics.cpp \
 	physics/bodyPhysics.cpp \
 	physics/vehiclePhysics.cpp \
 	graphics/cameraGraphics.cpp \
-	graphics/cubeGraphics.cpp \
+	graphics/partGraphics.cpp \
 	graphics/bodyGraphics.cpp \
 	graphics/vehicleGraphics.cpp \
         input/axis.cpp \
-	input/cubeInput.cpp \
+	input/partInput.cpp \
 	input/cameraInput.cpp \
         data/engineData.cpp \
         physics/enginePhysics.cpp \

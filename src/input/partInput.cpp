@@ -7,19 +7,19 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "cube.hpp"
+#include "part.hpp"
 
 
-void Cube::startInput ()
+void Part::startInput ()
 {
 
 }
 
-void Cube::stopInput ()
+void Part::stopInput ()
 {
 
 }
-void Cube::stepInput ()
+void Part::stepInput ()
 {
 
 }

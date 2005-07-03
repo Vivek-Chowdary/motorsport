@@ -7,32 +7,30 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "cube.hpp"
+#include "part.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "data/xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "system.hpp"
 
-void Cube::stepGraphics ()
+void Part::stepGraphics ()
 {
     updateOgrePosition ();
     updateOgreOrientation ();
 }
 
-void Cube::stopGraphics ()
+void Part::stopGraphics ()
 {
     // empty
 }
 
-void Cube::startGraphics (DOMNode * n)
+void Part::startGraphics (DOMNode * n)
 {
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
-    std::string material = "None";
     std::string mesh = "None";
-    std::string ogreName = "None";
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -57,30 +55,23 @@ void Cube::startGraphics (DOMNode * n)
                 assignXmlString (license, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
             }
-            if (attribute == "material")
-            {
-                assignXmlString (material, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the cube graphics material: %s", material.c_str());
-            }
             if (attribute == "mesh")
             {
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the cube graphics mesh filename: %s", mesh.c_str());
-            }
-            if (attribute == "ogreName")
-            {
-                assignXmlString (ogreName, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the cube graphics ogre-identifier format: %s", ogreName.c_str());
+                log->format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", mesh.c_str());
             }
         }
     }
-    char name[256];
-    sprintf (name, ogreName.c_str(), instancesCount);
+    char number[256];
+    sprintf (number, "%i", instancesCount);
+    std::string name (partType + " #");
+    name.append(number);
     std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/parts/cube/");
+    file.append("/parts/");
+    file.append(partType);
+    file.append("/");
     file.append(mesh);
-    cubeEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name, mesh.c_str());
-    cubeEntity->setMaterialName (material.c_str());
-    cubeNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    cubeNode->attachObject (cubeEntity);
+    partEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
+    partNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
+    partNode->attachObject (partEntity);
 }

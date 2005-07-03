@@ -15,7 +15,7 @@
 #include "log/logEngine.hpp"
 #include "track.hpp"
 #include "camera.hpp"
-#include "cube.hpp"
+#include "part.hpp"
 #include "axis.hpp"
 
 

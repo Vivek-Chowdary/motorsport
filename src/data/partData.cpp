@@ -7,20 +7,25 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "cube.hpp"
+#include "part.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "system.hpp"
 
-int Cube::instancesCount = 0;
+int Part::instancesCount = 0;
 
-Cube::Cube ()
+Part::Part (const std::string & partName)
 {
-    log = new LogEngine (LOG_DEVELOPER, "CUB");
+    log = new LogEngine (LOG_DEVELOPER, "PAR");
+    partType = partName;
     std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/parts/cube/part.xml");
+    file.append("/parts/");
+    file.append(partName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, "FileSystem", "Parts - " + partName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Parts - " + partName);
+    file.append("/part.xml");
     XmlFile * xmlFile = new XmlFile (file.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
@@ -28,7 +33,7 @@ Cube::Cube ()
     instancesCount++;
 }
 
-Cube::~Cube ()
+Part::~Part ()
 {
     instancesCount--;
 
@@ -36,23 +41,23 @@ Cube::~Cube ()
     stopGraphics ();
     stopInput ();
     
-    log->format(LOG_DEVELOPER, "Removed a cube. %i left.", instancesCount);
+    log->format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
     delete log;
 }
 
 
-void Cube::updateOgrePosition ()
+void Part::updateOgrePosition ()
 {
-    const dReal *temp = dBodyGetPosition (cubeID);  // need to allocate memory first??
-    cubeNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
+    const dReal *temp = dBodyGetPosition (partID);  // need to allocate memory first??
+    partNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
 }
-void Cube::updateOgreOrientation ()
+void Part::updateOgreOrientation ()
 {
-    const dReal *temp = dBodyGetQuaternion (cubeID);    // need to allocate memory first??
-    cubeNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
+    const dReal *temp = dBodyGetQuaternion (partID);    // need to allocate memory first??
+    partNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
 }
 
-void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     DOMNode * graphicsNode = 0;
     DOMNode * physicsNode = 0;
@@ -62,9 +67,9 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            if (name == "cube")
+            if (name == "part")
             {
-                log->put (LOG_CCREATOR, "Found a cube.");
+                log->put (LOG_CCREATOR, "Found a part.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -110,12 +115,12 @@ void Cube::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             assignXmlString (name, n->getNodeName());
                             if (name == "graphics")
                             {
-                                log->put (LOG_CCREATOR, "Found the cube graphics.");
+                                log->put (LOG_CCREATOR, "Found the part graphics.");
                                 graphicsNode = n;
                             }
                             if (name == "physics")
                             {
-                                log->put (LOG_CCREATOR, "Found the cube physics.");
+                                log->put (LOG_CCREATOR, "Found the part physics.");
                                 physicsNode = n;
                             }
                         }

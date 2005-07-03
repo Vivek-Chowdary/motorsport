@@ -14,7 +14,7 @@
 #include "system.hpp"
 #include "world.hpp"
 #include "guiEngine.hpp"
-#include "cube.hpp"
+#include "part.hpp"
 #include "vehicle.hpp"
 #include "camera.hpp"
 #include "xmlParser.hpp"
@@ -88,10 +88,10 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->put (LOG_DEVELOPER, "Doing an step: calculating a physics step");
 
-    int size = World::getWorldPointer ()->trackList[0]->cubeList.size ();
+    int size = World::getWorldPointer ()->trackList[0]->partList.size ();
     for (int i = 0; i < size; i++)
     {
-        World::getWorldPointer()->trackList[0]->cubeList[i]->stepPhysics ();
+        World::getWorldPointer()->trackList[0]->partList[i]->stepPhysics ();
     }
 
     size = World::getWorldPointer ()->vehicleList.size ();
