@@ -19,8 +19,8 @@
 void Part::startPhysics (DOMNode * n)
 {
     int size = 1;
-    double mass = 0;
-    double density = 0;
+    double mass = -1;
+    double density = -1;
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
@@ -71,16 +71,17 @@ void Part::startPhysics (DOMNode * n)
         }
     }
     dMass dmass;
-    if (mass == 0)
+    if (mass < 0)
     {
-        if (density == 0)
+        if (density < 0)
         {
-            log->put (LOG_WARNING, "No mass or density values found for this part.");
+            log->put (LOG_WARNING, "No correct mass or density values were found for this part.");
             dMassSetBox (&dmass, 100, size, size, size);
         } else {
             dMassSetBox (&dmass, density, size, size, size);
         }
     } else {
+        log->put (LOG_WARNING, "Overriding possible density value, using total mass intead...");
         dMassSetBoxTotal (&dmass, mass, size, size, size);
     }
     partID = dBodyCreate (World::getWorldPointer ()->worldID);
