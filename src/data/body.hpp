@@ -63,5 +63,6 @@ class Body : public WorldObject
     class Ogre::SceneNode;
     Ogre::Entity * bodyEntity;
     Ogre::SceneNode * bodyNode;
+    void setRenderDetail(int renderMode);
 };
 #endif

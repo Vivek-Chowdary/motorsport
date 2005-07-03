@@ -71,5 +71,6 @@ class Wheel : public DriveMass
     class Ogre::SceneNode;
     Ogre::Entity * wheelEntity;
     Ogre::SceneNode * wheelNode;
+    void setRenderDetail(int renderMode);
 };
 #endif

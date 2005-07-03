@@ -189,6 +189,7 @@ int GraphicsEngine::computeStep (void)
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
     for (int currentVehicle = 0; currentVehicle < numberOfVehicles; currentVehicle++)
     {
+        World::getWorldPointer ()->vehicleList[currentVehicle]->setRenderDetail(vehicleRenderMode);
         World::getWorldPointer ()->vehicleList[currentVehicle]->stepGraphics ();
     }
 
@@ -219,8 +220,12 @@ int GraphicsEngine::computeStep (void)
     if (diff.x > tile || diff.x < -tile) trackPos.x -= int ((diff.x) / (tile)) * (tile);
     if (diff.y > tile || diff.y < -tile) trackPos.y -= int ((diff.y) / (tile)) * (tile);
     World::getWorldPointer()->trackList[0]->planeNode->setPosition(trackPos);
+    
     // Update track shadows state
     World::getWorldPointer()->trackList[0]->setCastShadows(castTrackShadows);
+    
+    // Update track render mode
+    World::getWorldPointer ()->trackList[0]->setRenderDetail(trackRenderMode);
     
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
@@ -246,6 +251,8 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
     castTrackShadows = true;
+    vehicleRenderMode = Ogre::SDL_SOLID;
+    trackRenderMode = Ogre::SDL_SOLID;
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -310,6 +317,29 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                             assignXmlString (attribute, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found whether to cast track shadows or not: %s", attribute.c_str());
                             castTrackShadows = stob (attribute);
+                        }
+                        if (attribute == "vehicleRenderMode")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the vehicles rendering mode: %s", attribute.c_str());
+                            
+                            if(attribute == "points")
+                                vehicleRenderMode=1;
+                            if(attribute == "wireframe")
+                                vehicleRenderMode=2;
+                            if(attribute == "solid")
+                                vehicleRenderMode=3;
+                        }
+                        if (attribute == "trackRenderMode")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the tracks rendering mode: %s", attribute.c_str());
+                            if(attribute == "points")
+                                trackRenderMode=1;
+                            if(attribute == "wireframe")
+                                trackRenderMode=2;
+                            if(attribute == "solid")
+                                trackRenderMode=3;
                         }
                     }
                 }

@@ -8,8 +8,6 @@
     >
     <body
         mesh = "body.mesh"
-        renderMode="solid"
-        _renderMode="wireframe"
         length = "4.66"
         width = "2.08"
         height = "1.2" 

@@ -63,5 +63,6 @@ class Track : public WorldObject
     Ogre::Entity * trackEntity;
     Ogre::SceneNode * trackNode;
     void setCastShadows(bool castShadows);
+    void setRenderDetail(int renderMode);
 };
 #endif

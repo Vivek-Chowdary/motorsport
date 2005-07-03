@@ -32,6 +32,16 @@ void Vehicle::stepGraphics ()
     }
 }
 
+void Vehicle::setRenderDetail(int renderMode)
+{
+    body->setRenderDetail(renderMode);
+    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
+    {
+        wheelIter->second->setRenderDetail(renderMode);
+    }
+}
+
 void Vehicle::stopGraphics ()
 {
 }

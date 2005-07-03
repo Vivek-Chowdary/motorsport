@@ -73,6 +73,23 @@ void Wheel::stepGraphics ()
     updateOgreOrientation ();
 }
 
+void Wheel::setRenderDetail(int renderMode)
+{
+    Ogre::SceneDetailLevel mode;
+    switch (renderMode)
+    {
+    case 1:
+        mode = Ogre::SDL_POINTS;
+        break;
+    case 2:
+        mode = Ogre::SDL_WIREFRAME;
+        break;
+    case 3:
+        mode = Ogre::SDL_SOLID;
+        break;
+    }
+    wheelEntity->setRenderDetail(mode);
+}
 void Wheel::stopGraphics ()
 {
     // empty

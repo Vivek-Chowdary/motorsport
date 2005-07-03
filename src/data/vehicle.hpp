@@ -86,6 +86,7 @@ class Vehicle : public WorldObject
     dBodyID getVehicleID();
 
     // graphics
+    void setRenderDetail(int renderMode);
     void stepGraphics ();
 };
 #endif

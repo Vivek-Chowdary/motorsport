@@ -17,7 +17,6 @@
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string mesh = "None";
-    Ogre::SceneDetailLevel renderMode = Ogre::SDL_SOLID;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -32,18 +31,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 assignXmlString (mesh, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
-            if (attribute == "renderMode")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body rendering mode: %s", attribute.c_str());
-
-                if(attribute == "points")
-                    renderMode=Ogre::SDL_POINTS;
-                if(attribute == "wireframe")
-                    renderMode=Ogre::SDL_WIREFRAME;
-                if(attribute == "solid")
-                    renderMode=Ogre::SDL_SOLID;
-            }
         }
     }
     char number[256];
@@ -57,7 +44,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     file.append("/");
     file.append(mesh);
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
-    bodyEntity->setRenderDetail(renderMode);
 
     log->format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
     for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
@@ -74,6 +60,23 @@ void Body::stepGraphics ()
     updateOgreOrientation ();
 }
 
+void Body::setRenderDetail(int renderMode)
+{
+    Ogre::SceneDetailLevel mode;
+    switch (renderMode)
+    {
+    case 1:
+        mode = Ogre::SDL_POINTS;
+        break;
+    case 2:
+        mode = Ogre::SDL_WIREFRAME;
+        break;
+    case 3:
+        mode = Ogre::SDL_SOLID;
+        break;
+    }
+    bodyEntity->setRenderDetail(mode);
+}
 void Body::stopGraphics ()
 {
     // empty

@@ -366,6 +366,25 @@ void Track::setCastShadows(bool castShadows)
     if (trackEntity != 0) trackEntity->setCastShadows(castShadows);
 }
 
+void Track::setRenderDetail(int renderMode)
+{
+    Ogre::SceneDetailLevel mode;
+    switch (renderMode)
+    {
+    case 1:
+        mode = Ogre::SDL_POINTS;
+        break;
+    case 2:
+        mode = Ogre::SDL_WIREFRAME;
+        break;
+    case 3:
+        mode = Ogre::SDL_SOLID;
+        break;
+    }
+    planeEntity->setRenderDetail(mode);
+    if (trackEntity != 0) trackEntity->setRenderDetail(mode);
+}
+
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)
 {
     vertex_count = index_count = 0;
