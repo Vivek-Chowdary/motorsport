@@ -18,6 +18,8 @@
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
         size = "2"
+        mass = "2000"
+        _density = "1000"
         >
     </physics>
 </part>

@@ -18,7 +18,9 @@
 
 void Part::startPhysics (DOMNode * n)
 {
-    int size = 100;
+    int size = 1;
+    double mass = 0;
+    double density = 0;
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
@@ -54,14 +56,37 @@ void Part::startPhysics (DOMNode * n)
                 log->format (LOG_CCREATOR, "Found the part physics size: %s", attribute.c_str() );
                 size = stoi (attribute);
             }
+            if (attribute == "mass")
+            {
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
+                mass = stod (attribute);
+            }
+            if (attribute == "density")
+            {
+                assignXmlString (attribute, attNode->getValue());
+                log->format (LOG_CCREATOR, "Found the part physics density: %s", attribute.c_str() );
+                density = stod (attribute);
+            }
         }
     }
-    dMass mass;
-    dMassSetBox (&mass, 1, size, size, size);
+    dMass dmass;
+    if (mass == 0)
+    {
+        if (density == 0)
+        {
+            log->put (LOG_WARNING, "No mass or density values found for this part.");
+            dMassSetBox (&dmass, 100, size, size, size);
+        } else {
+            dMassSetBox (&dmass, density, size, size, size);
+        }
+    } else {
+        dMassSetBoxTotal (&dmass, mass, size, size, size);
+    }
     partID = dBodyCreate (World::getWorldPointer ()->worldID);
     partGeomID = dCreateBox (World::getWorldPointer ()->spaceID, size, size, size);
     dGeomSetBody (partGeomID, partID);
-    dBodySetMass (partID, &mass);
+    dBodySetMass (partID, &dmass);
 }
 
 void Part::setPosition (Vector3d position)

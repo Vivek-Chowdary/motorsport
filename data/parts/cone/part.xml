@@ -18,6 +18,7 @@
         contact = "stenyak AT gmx DOT net"
         license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
         size = "2"
+        mass = "1"
         >
     </physics>
 </part>
