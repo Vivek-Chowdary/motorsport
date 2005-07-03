@@ -312,11 +312,10 @@ void Track::processXmlRootNode (DOMNode * n)
     plane.d = -groundHeight;
     Ogre::SceneManager* pOgreSceneManager = SystemData::getSystemDataPointer()->ogreSceneManager;
     Ogre::MeshManager::getSingleton().createPlane("Ground plane", "general", plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
-    Ogre::Entity* pPlaneEnt = pOgreSceneManager->createEntity("plane", "Ground plane");
-    pPlaneEnt->setMaterialName(groundMaterialName.c_str());
-    pPlaneEnt->setCastShadows(true);
+    planeEntity = pOgreSceneManager->createEntity("plane", "Ground plane");
+    planeEntity->setMaterialName(groundMaterialName.c_str());
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
-    planeNode->attachObject(pPlaneEnt);
+    planeNode->attachObject(planeEntity);
     trackBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
 
     // FIXME should be part of the world, not the track
@@ -333,9 +332,9 @@ void Track::processXmlRootNode (DOMNode * n)
     if (mesh != "none")
     {
         log->loadscreen (LOG_CCREATOR, "Creating loading the ogre track mesh");
-        Ogre::Entity * ent = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", path + "/" + mesh);
+        trackEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", path + "/" + mesh);
         Ogre::SceneNode * trackNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-        trackNode->attachObject (ent);
+        trackNode->attachObject (trackEntity);
         trackNode->setScale (1, 1, 1);
         trackNode->setPosition (0, 0, 0);
         Quaternion quat (0, 0, 0);
@@ -343,10 +342,12 @@ void Track::processXmlRootNode (DOMNode * n)
         size_t vertex_count, index_count;
         dVector3 * vertices;
         unsigned int *indices;
-        getMeshInformation (ent->getMesh (), vertex_count, vertices, index_count, indices, trackNode->getPosition(), trackNode->getOrientation(), trackNode->getScale());
+        getMeshInformation (trackEntity->getMesh (), vertex_count, vertices, index_count, indices, trackNode->getPosition(), trackNode->getOrientation(), trackNode->getScale());
         log->loadscreen (LOG_CCREATOR, "Building the ode track mesh");
         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
         // dGeomTriMeshDataDestroy (ground);
+    } else {
+        trackEntity = 0;
     }
 
     // create the checkpoint sphere
@@ -354,6 +355,12 @@ void Track::processXmlRootNode (DOMNode * n)
     dGeomSetBody (checkpointID, 0);
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
     
+}
+
+void Track::setCastShadows(bool castShadows)
+{
+    planeEntity->setCastShadows(castShadows);
+    if (trackEntity != 0) trackEntity->setCastShadows(castShadows);
 }
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)

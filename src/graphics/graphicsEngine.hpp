@@ -38,6 +38,7 @@ class GraphicsEngine
     int height;
     int bpp;
     bool fullScreen;
+    bool castTrackShadows;
     Ogre::Root * ogreRoot;
     // / Creates a new graphics engine.
     /** Creates a new graphics engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of world data (meshes, textures...), and sets up the underlying rendering libray (Ogre).

@@ -5,6 +5,7 @@
     _screenshotFile = "/dev/shm/screenframe%06i.jpg"
     screenshotFile = "screenframe%02i.jpg"
     initialScreenshotFileNumber = "0"
+    castTrackShadows = "true"
     >
     <ogre
         linuxPluginsDir = "/usr/lib/OGRE"

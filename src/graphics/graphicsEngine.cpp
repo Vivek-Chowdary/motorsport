@@ -220,6 +220,8 @@ int GraphicsEngine::computeStep (void)
     if (diff.x > tile || diff.x < -tile) trackPos.x -= int ((diff.x) / (tile)) * (tile);
     if (diff.y > tile || diff.y < -tile) trackPos.y -= int ((diff.y) / (tile)) * (tile);
     World::getWorldPointer()->trackList[0]->planeNode->setPosition(trackPos);
+    // Update track shadows state
+    World::getWorldPointer()->trackList[0]->setCastShadows(castTrackShadows);
     
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
@@ -244,6 +246,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     std::string localLogName = "GFX";
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
+    castTrackShadows = true;
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -302,6 +305,12 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                             assignXmlString (attribute, attNode->getValue());
                             tmpLog->format (LOG_ENDUSER, "Found the initial screenshot number: %s", attribute.c_str());
                             initialFrame = stoi (attribute);
+                        }
+                        if (attribute == "castTrackShadows")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            tmpLog->format (LOG_ENDUSER, "Found whether to cast track shadows or not: %s", attribute.c_str());
+                            castTrackShadows = stob (attribute);
                         }
                     }
                 }

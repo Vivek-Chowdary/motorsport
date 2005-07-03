@@ -58,7 +58,9 @@ class Track : public WorldObject
     void stepGraphics ();
     void stopGraphics ();*/
     Ogre::SceneNode * planeNode;
+    Ogre::Entity * planeEntity;
     Ogre::Entity * trackEntity;
     Ogre::SceneNode * trackNode;
+    void setCastShadows(bool castShadows);
 };
 #endif
