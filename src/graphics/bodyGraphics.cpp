@@ -56,7 +56,7 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     file.append(SystemData::getSystemDataPointer()->tmpPath);
     file.append("/");
     file.append(mesh);
-    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), mesh.c_str());
+    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
     bodyEntity->setRenderDetail(renderMode);
 
     log->format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());

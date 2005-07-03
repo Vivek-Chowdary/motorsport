@@ -81,7 +81,7 @@ void Part::startPhysics (DOMNode * n)
             dMassSetBox (&dmass, density, size, size, size);
         }
     } else {
-        log->put (LOG_WARNING, "Overriding possible density value, using total mass intead...");
+        if (density < 0) log->put (LOG_WARNING, "Total mass given, density value will be ignored");
         dMassSetBoxTotal (&dmass, mass, size, size, size);
     }
     partID = dBodyCreate (World::getWorldPointer ()->worldID);

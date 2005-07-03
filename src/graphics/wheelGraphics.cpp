@@ -55,7 +55,7 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     file.append(SystemData::getSystemDataPointer()->tmpPath);
     file.append("/");
     file.append(mesh);
-    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), mesh.c_str());
+    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
     log->format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
