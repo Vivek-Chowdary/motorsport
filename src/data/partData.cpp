@@ -59,8 +59,7 @@ void Part::updateOgreOrientation ()
 
 void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    DOMNode * graphicsNode = 0;
-    DOMNode * physicsNode = 0;
+    DOMNode * partNode = n;
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -106,31 +105,11 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         }
                     }
                 }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-                {
-                    if (n)
-                    {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (name, n->getNodeName());
-                            if (name == "graphics")
-                            {
-                                log->put (LOG_CCREATOR, "Found the part graphics.");
-                                graphicsNode = n;
-                            }
-                            if (name == "physics")
-                            {
-                                log->put (LOG_CCREATOR, "Found the part physics.");
-                                physicsNode = n;
-                            }
-                        }
-                    }
-                }
             }
         }
     }
-    startGraphics(graphicsNode);
-    startPhysics(physicsNode);
+    startGraphics(partNode);
+    startPhysics(partNode);
     startInput ();
 }
 

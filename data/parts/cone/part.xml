@@ -5,20 +5,23 @@
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
+    mesh = "cone.mesh"
+    mass = "50"
     >
-    <graphics
-        author = "Bruno Gonzalez Campo (STenyaK)"
-        contact = "stenyak AT gmx DOT net"
-        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        mesh = "cone.mesh"
+    <box
+        dimensions = "1 1 2"
         >
-    </graphics>
-    <physics
-        author = "Bruno Gonzalez Campo (STenyaK)"
-        contact = "stenyak AT gmx DOT net"
-        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        size = "2"
-        mass = "1"
+    </box>
+<!--
+    <sphere
+        radius = "2"
         >
-    </physics>
+    </sphere>
+    <cappedCylinder
+        length = "2"
+        radius = "1"
+        directionAxis = "z"
+        >
+    </cappedCylinder>
+-->
 </part>

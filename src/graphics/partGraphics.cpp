@@ -40,21 +40,6 @@ void Part::startGraphics (DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "author")
-            {
-                assignXmlString (author, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the author: %s", author.c_str());
-            }
-            if (attribute == "contact")
-            {
-                assignXmlString (contact, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
-            }
-            if (attribute == "license")
-            {
-                assignXmlString (license, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
-            }
             if (attribute == "mesh")
             {
                 assignXmlString (mesh, attNode->getValue());

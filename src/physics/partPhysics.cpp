@@ -18,9 +18,7 @@
 
 void Part::startPhysics (DOMNode * n)
 {
-    int size = 1;
     double mass = -1;
-    double density = -1;
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
@@ -35,57 +33,116 @@ void Part::startPhysics (DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "author")
-            {
-                assignXmlString (author, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the author: %s", author.c_str());
-            }
-            if (attribute == "contact")
-            {
-                assignXmlString (contact, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
-            }
-            if (attribute == "license")
-            {
-                assignXmlString (license, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the license: %s", license.c_str());
-            }
-            if (attribute == "size")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the part physics size: %s", attribute.c_str() );
-                size = stoi (attribute);
-            }
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
-            if (attribute == "density")
+        }
+    }
+    partID = dBodyCreate (World::getWorldPointer ()->worldID);
+    if (mass <= 0)
+    {
+        log->put (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
+        mass = 100;
+    }
+    dMass dmass;
+    std::string shape = "none";
+    for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
+    {
+        if (n)
+        {
+            if (n->getNodeType () == DOMNode::ELEMENT_NODE)
             {
-                assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the part physics density: %s", attribute.c_str() );
-                density = stod (attribute);
+                std::string name;
+                assignXmlString (name, n->getNodeName());
+                if (name == "box")
+                {
+                    shape = name;
+                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    Vector3d dimensions (1, 1, 1);
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "dimensions")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the part dimensions: %s", attribute.c_str() );
+                            dimensions = Vector3d (attribute);
+                        }
+                    }
+                    partGeomID = dCreateBox (World::getWorldPointer ()->spaceID, dimensions.x, dimensions.y, dimensions.z);
+                    dMassSetBoxTotal (&dmass, mass, dimensions.x, dimensions.y, dimensions.z);
+                }
+                if (name == "sphere")
+                {
+                    shape = name;
+                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    double radius = 1;
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "radius")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
+                            radius = stod (attribute);
+                        }
+                    }
+                    partGeomID = dCreateSphere (World::getWorldPointer ()->spaceID, radius);
+                    dMassSetSphereTotal (&dmass, mass, radius);
+                }
+                if (name == "cappedCylinder")
+                {
+                    shape = name;
+                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    double radius = 1;
+                    double length = 1;
+                    int directionAxis = 3;
+                    DOMNamedNodeMap *attList = n->getAttributes ();
+                    int nSize = attList->getLength ();
+                    for (int i = 0; i < nSize; ++i)
+                    {
+                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
+                        std::string attribute;
+                        assignXmlString (attribute, attNode->getName());
+                        if (attribute == "radius")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
+                            radius = stod (attribute);
+                        }
+                        if (attribute == "length")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
+                            length = stod (attribute);
+                        }
+                        if (attribute == "directionAxis")
+                        {
+                            assignXmlString (attribute, attNode->getValue());
+                            log->format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
+                            if (attribute == "x") directionAxis = 1;
+                            if (attribute == "y") directionAxis = 2;
+                            if (attribute == "z") directionAxis = 3;
+                        }
+                    }
+                    partGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, length);
+                    dMassSetCappedCylinderTotal (&dmass, mass, directionAxis, radius, length);
+                }
             }
         }
     }
-    dMass dmass;
-    if (mass < 0)
-    {
-        if (density < 0)
-        {
-            log->put (LOG_WARNING, "No correct mass or density values were found for this part.");
-            dMassSetBox (&dmass, 100, size, size, size);
-        } else {
-            dMassSetBox (&dmass, density, size, size, size);
-        }
-    } else {
-        if (density < 0) log->put (LOG_WARNING, "Total mass given, density value will be ignored");
-        dMassSetBoxTotal (&dmass, mass, size, size, size);
-    }
-    partID = dBodyCreate (World::getWorldPointer ()->worldID);
-    partGeomID = dCreateBox (World::getWorldPointer ()->spaceID, size, size, size);
+    if (shape == "none") log->put(LOG_ERROR, "No physics shape specified for this part.");
     dGeomSetBody (partGeomID, partID);
     dBodySetMass (partID, &dmass);
 }

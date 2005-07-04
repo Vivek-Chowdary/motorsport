@@ -5,21 +5,23 @@
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
+    mesh = "cube.mesh"
+    mass = "2000"
     >
-    <graphics
-        author = "Bruno Gonzalez Campo (STenyaK)"
-        contact = "stenyak AT gmx DOT net"
-        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        mesh = "cube.mesh"
+    <box
+        dimensions = "2 2 2"
         >
-    </graphics>
-    <physics
-        author = "Bruno Gonzalez Campo (STenyaK)"
-        contact = "stenyak AT gmx DOT net"
-        license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-        size = "2"
-        mass = "2000"
-        _density = "1000"
+    </box>
+<!--
+    <sphere
+        radius = "2"
         >
-    </physics>
+    </sphere>
+    <cappedCylinder
+        length = "2"
+        radius = "1"
+        directionAxis = "z"
+        >
+    </cappedCylinder>
+-->
 </part>
