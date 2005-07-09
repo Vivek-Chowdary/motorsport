@@ -209,9 +209,6 @@
 				RelativePath="..\..\data\cameraData.cpp">
 			</File>
 			<File
-				RelativePath="..\..\data\cubeData.cpp">
-			</File>
-			<File
 				RelativePath="..\..\data\driveJointData.cpp">
 			</File>
 			<File
@@ -222,6 +219,18 @@
 			</File>
 			<File
 				RelativePath="..\..\data\gearboxData.cpp">
+			</File>
+			<File
+				RelativePath="..\..\data\part.hpp">
+			</File>
+			<File
+				RelativePath="..\..\data\partData.cpp">
+			</File>
+			<File
+				RelativePath="..\..\data\pedal.hpp">
+			</File>
+			<File
+				RelativePath="..\..\data\pedalData.cpp">
 			</File>
 			<File
 				RelativePath="..\..\data\suspensionData.cpp">
@@ -257,10 +266,10 @@
 				RelativePath="..\..\graphics\cameraGraphics.cpp">
 			</File>
 			<File
-				RelativePath="..\..\graphics\cubeGraphics.cpp">
+				RelativePath="..\..\graphics\graphicsEngine.cpp">
 			</File>
 			<File
-				RelativePath="..\..\graphics\graphicsEngine.cpp">
+				RelativePath="..\..\graphics\partGraphics.cpp">
 			</File>
 			<File
 				RelativePath="..\..\graphics\vehicleGraphics.cpp">
@@ -284,10 +293,10 @@
 				RelativePath="..\..\input\cameraInput.cpp">
 			</File>
 			<File
-				RelativePath="..\..\input\cubeInput.cpp">
+				RelativePath="..\..\input\inputEngine.cpp">
 			</File>
 			<File
-				RelativePath="..\..\input\inputEngine.cpp">
+				RelativePath="..\..\input\partInput.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -305,9 +314,6 @@
 				RelativePath="..\..\physics\cameraPhysics.cpp">
 			</File>
 			<File
-				RelativePath="..\..\physics\cubePhysics.cpp">
-			</File>
-			<File
 				RelativePath="..\..\physics\driveJointPhysics.cpp">
 			</File>
 			<File
@@ -318,6 +324,12 @@
 			</File>
 			<File
 				RelativePath="..\..\physics\gearboxPhysics.cpp">
+			</File>
+			<File
+				RelativePath="..\..\physics\partPhysics.cpp">
+			</File>
+			<File
+				RelativePath="..\..\physics\pedalPhysics.cpp">
 			</File>
 			<File
 				RelativePath="..\..\physics\physicsEngine.cpp">
