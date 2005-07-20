@@ -321,7 +321,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                         if (attribute == "vehicleRenderMode")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the vehicles rendering mode: %s", attribute.c_str());
+                            tmpLog->format (LOG_CCREATOR, "Found the vehicles rendering mode: %s", attribute.c_str());
                             
                             if(attribute == "points")
                                 vehicleRenderMode=1;
@@ -333,7 +333,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                         if (attribute == "trackRenderMode")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the tracks rendering mode: %s", attribute.c_str());
+                            tmpLog->format (LOG_CCREATOR, "Found the tracks rendering mode: %s", attribute.c_str());
                             if(attribute == "points")
                                 trackRenderMode=1;
                             if(attribute == "wireframe")
