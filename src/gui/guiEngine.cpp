@@ -142,42 +142,48 @@ void GuiEngine::updateStatistics (void)
     guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(systemData->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(systemData->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
     OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
-    
-    OverlayElement *telText = OverlayManager::getSingleton ().getOverlayElement ("telemetry/text");
-    telemetryText.append (tempLine);
-    if (telemetryText.size() == 0)
+    if (telemetryLines > 0)
     {
-        telText->setCaption ("Telemetry not active.");
-    } else {
-        telemetryText.append ("\n");
-        int num = 0;
-        int lastLineEnd = telemetryText.rfind ('\n', telemetryText.size()-1);
-        while (lastLineEnd >= 0)
+        OverlayElement *telText = OverlayManager::getSingleton ().getOverlayElement ("telemetry/text");
+        telemetryText.append (tempLine);
+        if (telemetryText.size() == 0)
         {
-            num++;
-            if (num > telemetryLines-1)
+            telText->setCaption ("Telemetry not active.");
+        } else {
+            telemetryText.append ("\n");
+            int num = 0;
+            int lastLineEnd = telemetryText.rfind ('\n', telemetryText.size()-1);
+            while (lastLineEnd >= 0)
             {
-                telemetryText.erase (0, lastLineEnd+1);
-                lastLineEnd = -1;
-            } else {
-                lastLineEnd = telemetryText.rfind ('\n', lastLineEnd-1);
+                num++;
+                if (num > telemetryLines-1)
+                {
+                    telemetryText.erase (0, lastLineEnd+1);
+                    lastLineEnd = -1;
+                } else {
+                    lastLineEnd = telemetryText.rfind ('\n', lastLineEnd-1);
+                }
             }
+            telText->setCaption (telemetryText + tempLine);
         }
-        telText->setCaption (telemetryText + tempLine);
     }
 }
 
 void GuiEngine::addTelemetryLine (const std::string & line)
 {
-    if (telemetryText.size() == 0)
+    if (telemetryLines > 0)
     {
-        Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
-        telemetryOverlay->show();
-        OverlayElement *telHeader = OverlayManager::getSingleton ().getOverlayElement ("telemetry/header");
-        telHeader->setCaption (line);
-        telemetryText.append (line);
+        if (telemetryText.size() == 0)
+        {
+            Overlay *telemetryOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("telemetry");
+            telemetryOverlay->show();
+            OverlayElement *telHeader = OverlayManager::getSingleton ().getOverlayElement ("telemetry/header");
+            telHeader->setCaption (line);
+            telemetryText.append (line);
+            telemetryText.append ("\n");
+        }
+        tempLine.assign (line);
     }
-    tempLine.assign (line);
 }
 
 void GuiEngine::addLoadscreenLine (const std::string & line)

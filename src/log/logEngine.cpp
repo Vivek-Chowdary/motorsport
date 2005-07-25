@@ -51,6 +51,10 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
 
 void LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
+    // check now so that we don't incur any unnecessary formatting expense
+    if (level > globalLevel || level > logLevel)
+        return;
+
     char buffer[1024];
     va_list arglist;
     va_start (arglist, textToLogFormat);
@@ -65,6 +69,10 @@ void LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
 
 void LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
+    // check now so that we don't incur any unnecessary formatting expense
+    if (level > globalLevel || level > logLevel)
+        return;
+
     char buffer[1024];
     va_list arglist;
     va_start (arglist, textToLogFormat);
@@ -79,6 +87,10 @@ void LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
 
 void LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
 {
+    // check now so that we don't incur any unnecessary formatting expense
+    if (level > globalLevel || level > logLevel)
+        return;
+
     char buffer[1024];
     va_list arglist;
     va_start (arglist, textToLogFormat);
