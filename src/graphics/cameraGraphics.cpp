@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -38,15 +38,18 @@ void Camera::stepGraphics ()
     const double minD = 15.;
     const Ogre::Radian minF(5.  * 3.14159 / 180.);
     const Ogre::Radian maxF(45. * 3.14159 / 180.);
+    Ogre::Radian newFov;
     if (distance > maxD)
     {
-        ogreCamera->setFOVy (minF);
+        newFov = minF;
     } else if (distance < minD)
     {
-        ogreCamera->setFOVy (maxF);
+        newFov = maxF;
     } else {
-        ogreCamera->setFOVy ( maxF - ( ( ( distance - minD ) / ( maxD - minD ) ) * (maxF - minF) ) );
+        newFov = ( maxF - ( ( ( distance - minD ) / ( maxD - minD ) ) * (maxF - minF) ) );
     }
+    ogreCamera->setFOVy (newFov);
+    // ogreCamera->setLodBias (1.0);
 }
 
 void Camera::stopGraphics ()

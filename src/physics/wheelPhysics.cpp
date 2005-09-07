@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -137,22 +137,38 @@ void Wheel::stepPhysics ()
     // tire rolling resistance
     //inputTorqueTransfer -= 0.1*inputAngularVel;
 
-    // accumulate torques on wheel:
     // first, get the axis of the suspension
     dVector3 odeTAxis;
     dJointGetHinge2Axis2 (suspJointID, odeTAxis);
     Vector3d tAxis (odeTAxis);
 
+    // accumulate torques:
     double brake = brakePedal->getNormalizedAngle();
     if (!userDriver) brake = 1;
     if (inputAngularVel > 0) brake *= -1;
     double maxBrakeTorque = 1250;
-    inputTorqueTransfer += brake * maxBrakeTorque;
-    
+    double brakeTorque = brake * maxBrakeTorque;
+    int initialSign = inputTorqueTransfer>0?1:-1;
+    inputTorqueTransfer += brakeTorque;
+    int finalSign = inputTorqueTransfer>0?1:-1;
+    if (initialSign != finalSign)
+    {
+        inputTorqueTransfer = 0;
+    }
+
     // then, scale it by desired torque in the desired direction of the axis
     tAxis.scalarMultiply (inputTorqueTransfer * powered);
 
-    // finally, apply it
+    ///////////////////////////////////////////////////////////////////////
+    // get accumulated torque
+    const dReal * odeTorque = dBodyGetTorque (wheelID);
+    Vector3d accumulatedTorque (odeTorque);
+    // show acc torque
+    log->format(LOG_WARNING, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
+    // compare it to our torque
+    ///////////////////////////////////////////////////////////////////////
+    
+    // finally, apply the torques
     dBodyAddTorque (wheelID, tAxis.x, tAxis.y, tAxis.z);
 
     log->format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);

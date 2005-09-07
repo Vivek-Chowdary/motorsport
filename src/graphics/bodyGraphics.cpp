@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -53,6 +53,7 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
+    bodyEntity->setCastShadows(true);
 }
 void Body::stepGraphics ()
 {

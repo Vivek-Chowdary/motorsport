@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -413,11 +413,11 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                                             tmpLog->format (LOG_ENDUSER, "Found the texture filtering level: %s", attribute.c_str());
                                             if (attribute == "SHADOWTYPE_NONE")
                                                 shadowTechnique = Ogre::SHADOWTYPE_NONE;    
-                                            if (attribute == "SHADOWTYPE_STENCIL_MODULATIVE")
+                                            if (attribute == "SHADOWTYPE_STENCIL_MODULATIVE") 
                                                 shadowTechnique = Ogre::SHADOWTYPE_STENCIL_MODULATIVE;
-                                            if (attribute == "SHADOWTYPE_STENCIL_STENCIL_ADDITIVE")
+                                            if (attribute == "SHADOWTYPE_STENCIL_ADDITIVE")
                                                 shadowTechnique = Ogre::SHADOWTYPE_STENCIL_ADDITIVE;
-                                            if (attribute == "SHADOWTYPE_STENCIL_TEXTURE_MODULATIVE")
+                                            if (attribute == "SHADOWTYPE_TEXTURE_MODULATIVE")
                                                 shadowTechnique = Ogre::SHADOWTYPE_TEXTURE_MODULATIVE;
                                         }
                                         if (attribute == "width")
@@ -540,7 +540,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
     systemData->ogreSceneManager->setShadowTechnique(shadowTechnique);
     systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
-
+    systemData->ogreSceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
     // Set default mipmap level (NB some APIs ignore this)
     log->put (LOG_ENDUSER, "Setting up default number of mipmap levels");
     Ogre::TextureManager::getSingleton ().setDefaultNumMipmaps (defaultNumMipMaps);

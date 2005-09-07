@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2004 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -63,11 +63,11 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
                  (dGeomGetClass (o2) == dSphereClass && dGeomGetClass (o1) == dCCylinderClass))
             {
                 checkpointPassed = true;
+                return;
             }
             // Collision with the checkpoint object. This assumes all spheres are a checkpoint, so FIXME.
             if (dGeomGetClass (o1) == dSphereClass || dGeomGetClass (o2) == dSphereClass)
             {
-                return;
             }
             contact[i].surface.mu = 0.6;
             contact[i].surface.slip1 = 0.0;
@@ -92,12 +92,6 @@ int PhysicsEngine::computeStep (void)
     for (int i = 0; i < size; i++)
     {
         World::getWorldPointer()->trackList[0]->partList[i]->stepPhysics ();
-    }
-
-    size = World::getWorldPointer ()->vehicleList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        World::getWorldPointer ()->vehicleList[i]->stepPhysics ();
     }
 
     int numberOfCameras = World::getWorldPointer ()->trackList[0]->cameraList.size ();
@@ -126,6 +120,12 @@ int PhysicsEngine::computeStep (void)
         dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     }
+    size = World::getWorldPointer ()->vehicleList.size ();
+    for (int i = 0; i < size; i++)
+    {
+        World::getWorldPointer ()->vehicleList[i]->stepPhysics ();
+    }
+
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
     
     // check if a car has passed the checkpoint
