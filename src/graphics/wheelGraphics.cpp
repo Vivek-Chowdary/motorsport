@@ -85,6 +85,7 @@ void Wheel::setRenderDetail(int renderMode)
         mode = Ogre::SDL_WIREFRAME;
         break;
     case 3:
+    default:
         mode = Ogre::SDL_SOLID;
         break;
     }

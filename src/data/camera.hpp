@@ -26,6 +26,7 @@ class Camera : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     static int instancesCount;
     std::string index;
+    bool isFree;
 
     // physics 
     dBodyID positionID;

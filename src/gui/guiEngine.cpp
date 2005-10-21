@@ -76,11 +76,11 @@ int GuiEngine::computeStep (void)
         OGRE_EXCEPT (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
     }
 
-    if (systemData->axisMap[getIDKeyboardKey(SDLK_f)]->getValue() == 1)
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
     {
         log->put (LOG_ENDUSER, "Showing/hiding statistics on screen.");
         showStatistics = !showStatistics;
-        systemData->axisMap[getIDKeyboardKey(SDLK_f)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
+        systemData->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     if (showStatistics)
     {

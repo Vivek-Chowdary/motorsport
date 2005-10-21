@@ -159,6 +159,9 @@ void Wheel::stepPhysics ()
     // then, scale it by desired torque in the desired direction of the axis
     tAxis.scalarMultiply (inputTorqueTransfer * powered);
 
+
+    ///TODO TODO TODO TODO TODO
+    // use feedback thingy in ODE in order to find out torques
     ///////////////////////////////////////////////////////////////////////
     // get accumulated torque
     const dReal * odeTorque = dBodyGetTorque (wheelID);
