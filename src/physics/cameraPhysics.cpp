@@ -13,9 +13,12 @@
 #include "log/logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "track.hpp"
 #include "SDL/SDL_keysym.h"
 #include "vector3d.hpp"
+
 
 void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -67,33 +70,65 @@ void Camera::stepPhysics ()
 {
     if (this == World::getWorldPointer()->getActiveCamera() )
     {
-        // Move the camera
-        float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
-        float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
-        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_r)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-        *positionOffset += Vector3d(moveX/1000, moveY/1000, moveZ/1000);
+        static bool wasPressed = false;
+        if (SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_x)]->getValue() == 1)
+        {
+            if (!wasPressed)
+            {
+                isFree = !isFree;
+            }
+            wasPressed = true;
+        } else {
+            wasPressed = false;
+        }
+        if (isFree)
+        {
+            // Move the camera
+            Ogre::Vector3 test;
+            float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_f)]->getValue();
+            float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_e)]->getValue();
+            float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_r)]->getValue();
+            moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 800, moveZ / 1000, -moveY / 800));
 
-        moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
-        moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_e)]->getValue();
-        moveZ = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_f)]->getValue();
-        moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-        //World::getWorldPointer ()->getActiveCamera()->ogreCamera->moveRelative (Ogre::Vector3 (moveX / 100, 0, moveZ / 100));
-        *positionOffset += Vector3d(moveX/1000, moveY/1000, moveZ/1000);
+            moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
+            moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
+            moveZ = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
+            moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 800, moveZ / 1000, -moveY / 800));
 
-        /*
-        // Rotate the camera
-        float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
-        float rotY = SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(1)]->getValue() - 0.5;
-        rotX *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
-        rotY *= SystemData::getSystemDataPointer()->physicsTimeStep * 1000;
-        *targetOffset += Vector3d (rotX/1000, rotY/1000, 0);
-        */
+            // Rotate the camera
+            float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
+            float rotY = SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(1)]->getValue() - 0.5;
+            if (rotX < 0.05 && rotX > -0.05) rotX = 0;
+            if (rotY < 0.05 && rotY > -0.05) rotY = 0;
+            rotX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            rotY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            ogreCamera->yaw (Ogre::Radian(rotX / 500));
+            ogreCamera->pitch(Ogre::Radian(rotY / 500));
+        } else {
+            // Move the camera
+            float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_w)]->getValue();
+            float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
+            float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_r)]->getValue();
+            moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            *positionOffset += Vector3d(moveX/1000, moveY/1000, moveZ/1000);
+
+            moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
+            moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_e)]->getValue();
+            moveZ = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_f)]->getValue();
+            moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
+            *positionOffset += Vector3d(moveX/1000, moveY/1000, moveZ/1000);
+
+        }
     }
 }
 

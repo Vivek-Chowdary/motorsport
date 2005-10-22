@@ -31,25 +31,30 @@ void Camera::startGraphics ()
 void Camera::stepGraphics ()
 {
     updateOgreRotation();
-    Vector3d position (updateOgrePosition());
-    Vector3d target (updateOgreTarget());
-    double distance = target.distance(position);
-    const double maxD = 150.;
-    const double minD = 15.;
-    const Ogre::Radian minF(5.  * 3.14159 / 180.);
-    const Ogre::Radian maxF(45. * 3.14159 / 180.);
-    Ogre::Radian newFov;
-    if (distance > maxD)
+    if (isFree)
     {
-        newFov = minF;
-    } else if (distance < minD)
-    {
-        newFov = maxF;
+       // empty 
     } else {
-        newFov = ( maxF - ( ( ( distance - minD ) / ( maxD - minD ) ) * (maxF - minF) ) );
+        Vector3d position (updateOgrePosition());
+        Vector3d target (updateOgreTarget());
+        double distance = target.distance(position);
+        const double maxD = 150.;
+        const double minD = 15.;
+        const Ogre::Radian minF(5.  * 3.14159 / 180.);
+        const Ogre::Radian maxF(45. * 3.14159 / 180.);
+        Ogre::Radian newFov;
+        if (distance > maxD)
+        {
+            newFov = minF;
+        } else if (distance < minD)
+        {
+            newFov = maxF;
+        } else {
+            newFov = ( maxF - ( ( ( distance - minD ) / ( maxD - minD ) ) * (maxF - minF) ) );
+        }
+        ogreCamera->setFOVy (newFov);
+        // ogreCamera->setLodBias (1.0);
     }
-    ogreCamera->setFOVy (newFov);
-    // ogreCamera->setLodBias (1.0);
 }
 
 void Camera::stopGraphics ()
