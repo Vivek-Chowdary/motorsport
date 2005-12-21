@@ -91,7 +91,7 @@ void Camera::stepPhysics ()
             moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
             moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
             moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 800, moveZ / 1000, -moveY / 800));
+            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 200, moveZ / 500, -moveY / 200));
 
             moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_s)]->getValue();
             moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_d)]->getValue();
@@ -99,7 +99,7 @@ void Camera::stepPhysics ()
             moveX *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
             moveY *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
             moveZ *= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep() * 1000;
-            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 800, moveZ / 1000, -moveY / 800));
+            ogreCamera->moveRelative (Ogre::Vector3 (moveX / 200, moveZ / 500, -moveY / 200));
 
             // Rotate the camera
             float rotX = -SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis(0)]->getValue() + 0.5;
