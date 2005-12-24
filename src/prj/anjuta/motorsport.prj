@@ -1,4 +1,4 @@
-# Anjuta Version 1.2.0 
+# Anjuta Version 1.2.4 
 Compatibility Level: 1 
 
 <PROJECT_DESCRIPTION_START>
@@ -22,13 +22,13 @@ The goal of Motorsport is to become the most realistic simulation of wheeled veh
 
 props.file.type=project
 
-anjuta.version=1.2.0
+anjuta.version=1.2.4
 anjuta.compatibility.level=1
 
 project.name=motorsport
 project.type=GENERIC
 project.target.type=EXECUTABLE
-project.version=BaseCode
+project.version=0.1
 project.author=stenyak
 project.source.target=motorsport
 project.has.gettext=0
@@ -71,29 +71,82 @@ module.include.files=
 module.source.name=.
 module.source.type=
 module.source.files=\
-	../../main.cpp\
-	../../log/logEngine.cpp\
-	../../main.hpp\
-	../../log/logEngine.hpp\
-	../../data/dataEngine.cpp\
-	../../data/dataEngine.hpp\
-	../../input/inputEngine.cpp\
-	../../input/inputEngine.hpp\
-	../../graphics/graphicsEngine.cpp\
-	../../graphics/graphicsEngine.hpp\
-	../../graphics/simulation.cpp\
-	../../graphics/simulation.hpp\
-	../../graphics/simframelistener.cpp\
-	../../graphics/simframelistener.hpp\
 	../../gui/guiEngine.cpp\
 	../../gui/guiEngine.hpp\
+	../../log/logEngine.cpp\
+	../../log/logEngine.hpp\
+	../../log/testLogEngine.cpp\
+	../../log/fakeGuiEngine.cpp\
+	../../data/xmlParser.cpp\
+	../../data/xmlParser.hpp\
+	../../data/suspension.hpp\
+	../../data/engineData.cpp\
+	../../data/driveJoint.hpp\
+	../../data/suspensionData.cpp\
+	../../data/gearbox.hpp\
+	../../data/xercesc_fwd.hpp\
+	../../data/wheel.hpp\
+	../../data/trackData.cpp\
+	../../data/driveJointData.cpp\
+	../../data/pedal.hpp\
+	../../data/worldObject.cpp\
+	../../data/worldObject.hpp\
+	../../data/world.hpp\
+	../../data/wheelData.cpp\
+	../../data/part.hpp\
+	../../data/bodyData.cpp\
+	../../data/gearboxData.cpp\
+	../../data/vehiclePosition.cpp\
+	../../data/vehiclePosition.hpp\
+	../../data/pedalData.cpp\
+	../../data/vehicle.hpp\
+	../../data/engine.hpp\
+	../../data/body.hpp\
+	../../data/worldData.cpp\
+	../../data/partData.cpp\
+	../../data/camera.hpp\
+	../../data/cameraData.cpp\
+	../../data/finalDriveData.cpp\
+	../../data/track.hpp\
+	../../data/finalDrive.hpp\
+	../../data/driveMass.hpp\
+	../../data/vehicleData.cpp\
+	../../input/inputEngine.cpp\
+	../../input/inputEngine.hpp\
+	../../input/partInput.cpp\
+	../../input/axis.cpp\
+	../../input/axis.hpp\
+	../../input/cameraInput.cpp\
+	../../input/testAxis.cpp\
+	../../graphics/bodyGraphics.cpp\
+	../../graphics/vehicleGraphics.cpp\
+	../../graphics/wheelGraphics.cpp\
+	../../graphics/cameraGraphics.cpp\
+	../../graphics/graphicsEngine.cpp\
+	../../graphics/graphicsEngine.hpp\
+	../../graphics/partGraphics.cpp\
+	../../tools/vector3d.cpp\
+	../../tools/vector3d.hpp\
+	../../tools/quaternion.cpp\
+	../../tools/quaternion.hpp\
+	../../tools/testVector3d.cpp\
 	../../system.cpp\
 	../../system.hpp\
-	../../world.cpp\
-	../../world.hpp\
+	../../main.cpp\
+	../../main.hpp\
+	../../physics/cameraPhysics.cpp\
+	../../physics/enginePhysics.cpp\
+	../../physics/partPhysics.cpp\
+	../../physics/suspensionPhysics.cpp\
+	../../physics/gearboxPhysics.cpp\
+	../../physics/pedalPhysics.cpp\
 	../../physics/physicsEngine.cpp\
 	../../physics/physicsEngine.hpp\
-	../../physics/test_ode.cpp
+	../../physics/vehiclePhysics.cpp\
+	../../physics/bodyPhysics.cpp\
+	../../physics/driveJointPhysics.cpp\
+	../../physics/finalDrivePhysics.cp\
+	../../physics/wheelPhysics.cpp
 
 module.pixmap.name=pixmaps
 module.pixmap.type=

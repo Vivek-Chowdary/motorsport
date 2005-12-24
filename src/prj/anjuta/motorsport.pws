@@ -11,7 +11,7 @@ filter.dir.ignore.hidden=0
 ShowLocals=true
 
 [filenumbers]
-0=87
+0=17
 1=1
 2=95
 3=1
@@ -61,37 +61,6 @@ ShowLocals=true
 [Project State]
 clean before build=false
 
-[filelist]
-0=/home/stenyak/cvs/motorsport/src/data/dataEngine.cpp
-1=/home/stenyak/cvs/motorsport/src/data/dataEngine.hpp
-2=/home/stenyak/cvs/motorsport/src/graphics/ExampleApplication.h
-3=/home/stenyak/cvs/motorsport/src/graphics/ExampleFrameListener.h
-4=/home/stenyak/cvs/motorsport/src/graphics/graphicsEngine.cpp
-5=/home/stenyak/cvs/motorsport/src/graphics/graphicsEngine.hpp
-6=/home/stenyak/cvs/motorsport/src/gui/guiEngine.cpp
-7=/home/stenyak/cvs/motorsport/src/gui/guiEngine.hpp
-8=/home/stenyak/cvs/motorsport/src/input/inputEngine.cpp
-9=/home/stenyak/cvs/motorsport/src/input/inputEngine.hpp
-10=/home/stenyak/cvs/motorsport/src/log/logEngine.cpp
-11=/home/stenyak/cvs/motorsport/src/log/logEngine.hpp
-12=/home/stenyak/cvs/motorsport/src/main.cpp
-13=/home/stenyak/cvs/motorsport/src/main.hpp
-14=/home/stenyak/cvs/motorsport/src/physics/physicsEngine.cpp
-15=/home/stenyak/cvs/motorsport/src/physics/physicsEngine.hpp
-16=/home/stenyak/cvs/motorsport/src/system.cpp
-17=/home/stenyak/cvs/motorsport/src/system.hpp
-18=/home/stenyak/cvs/motorsport/src/physics/test_ode.cpp
-19=/home/stenyak/cvs/motorsport/src/gui/test_paragui.cpp
-20=/home/stenyak/cvs/motorsport/src/world.cpp
-21=/home/stenyak/cvs/motorsport/src/world.hpp
-
-[Project Tree]
-0=0
-1=0:0
-
-[File Tree]
-0=0
-
 [replace_text]
 0=log.put (false, 2, 
 1=log.put (true, 2, 
@@ -105,3 +74,14 @@ clean before build=false
 5=log.put (true, 
 6=log.put (0,
 7=log.put (-1,
+
+[filelist]
+0=/home/stenyak/dev/motorsport/src/data/worldObject.hpp
+1=/home/stenyak/dev/motorsport/src/data/worldObject.cpp
+
+[Project Tree]
+0=0
+1=0:0
+
+[File Tree]
+0=0
