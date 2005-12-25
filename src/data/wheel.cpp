@@ -21,8 +21,8 @@
 int Wheel::instancesCount = 0;
 
 Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass("Wheel")
 {
-    log = new LogEngine (LOG_DEVELOPER, "WHE");
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     processXmlRootNode (n);
 
@@ -32,12 +32,8 @@ Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n)
 Wheel::~Wheel ()
 {
     instancesCount--;
-
     stopPhysics ();
     stopGraphics ();
-    stopInput ();
-
-    delete log;
 }
 
 

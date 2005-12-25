@@ -27,9 +27,6 @@ int LogEngine::textBuffer = 128;
 
 LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
 {
-    // we set the log name (3 chars, extended with space if needed)
-    logName.resize (3, ' ');
-
     // open the file for writing in rewrite mode if necessary.
     if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
     {
@@ -199,7 +196,6 @@ LogEngine::~LogEngine ()
         format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
-
 }
 
 void LogEngine::setName(const std::string & name)

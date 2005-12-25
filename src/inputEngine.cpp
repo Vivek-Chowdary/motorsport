@@ -205,7 +205,7 @@ void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "INP";
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
+    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)

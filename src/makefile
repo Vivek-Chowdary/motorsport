@@ -201,6 +201,21 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+	data/body.cpp \
+	data/camera.cpp \
+        data/driveJoint.cpp \
+        data/driveMass.cpp \
+        data/engine.cpp \
+        data/finalDrive.cpp \
+        data/gearbox.cpp \
+	data/part.cpp \
+	data/pedal.cpp \
+	data/suspension.cpp \
+        data/track.cpp \
+	data/vehicle.cpp \
+	data/wheel.cpp \
+	data/world.cpp \
+        data/worldObject.cpp \
 	graphicsEngine.cpp \
 	guiEngine.cpp \
 	inputEngine.cpp \
@@ -211,22 +226,9 @@ SOURCES := \
         common/vector3d.cpp \
         common/location.cpp \
 	tools/xmlParser.cpp \
+	tools/paths.cpp \
 	system.cpp \
-	main.cpp \
-	data/body.cpp \
-	data/camera.cpp \
-	data/part.cpp \
-	data/pedal.cpp \
-	data/suspension.cpp \
-	data/vehicle.cpp \
-	data/wheel.cpp \
-	data/world.cpp \
-        data/driveJoint.cpp \
-        data/engine.cpp \
-        data/finalDrive.cpp \
-        data/gearbox.cpp \
-        data/track.cpp \
-        data/worldObject.cpp
+	main.cpp
 ###########################################
 
 

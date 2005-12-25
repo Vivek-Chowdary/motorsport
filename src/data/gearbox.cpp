@@ -15,8 +15,8 @@
 #include "SDL/SDL_keysym.h"
 
 Gearbox::Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass("Gearbox")
 {
-    log = new LogEngine (LOG_DEVELOPER, "GBX");
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
     processXmlRootNode (n);
     processXmlGearListNode (n);
@@ -25,7 +25,6 @@ Gearbox::Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n)
 Gearbox::~Gearbox ()
 {
     stopPhysics ();
-    delete log;
 }
 
 
@@ -58,12 +57,15 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
 }
 
 GearboxGear::GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject("GearboxGear")
 {
-    log = new LogEngine (LOG_DEVELOPER, "GBG");
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
     processXmlRootNode (n);
 }
 
+GearboxGear::~GearboxGear()
+{
+}
 void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     ratio = 1.0;

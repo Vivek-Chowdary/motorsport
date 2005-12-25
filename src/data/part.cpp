@@ -21,8 +21,8 @@
 int Part::instancesCount = 0;
 
 Part::Part (const std::string & partName)
+    :WorldObject("Part")
 {
-    log = new LogEngine (LOG_DEVELOPER, "PAR");
     partType = partName;
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/parts/");
@@ -46,7 +46,6 @@ Part::~Part ()
     stopInput ();
     
     log->__format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
-    delete log;
 }
 
 

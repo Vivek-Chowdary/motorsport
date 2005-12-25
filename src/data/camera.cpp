@@ -25,6 +25,7 @@
 int Camera::instancesCount = 0;
 
 Camera::Camera (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject("Camera")
 {
     instancesCount ++;
     processXmlRootNode (n);
@@ -145,7 +146,6 @@ void Camera::stopInput ()
 }
 void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    log = new LogEngine(LOG_DEVELOPER, "CAM");
     log->__format (LOG_DEVELOPER, "Creating a camera");
     positionOffset = new Vector3d (0, 0, 0);
     targetOffset = new Vector3d (0, 0, 0);

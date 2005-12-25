@@ -15,16 +15,23 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
+DriveJoint::DriveJoint (std::string identifier)
+    :WorldObject("DriveJoint" + identifier)
 {
-    log = new LogEngine (LOG_DEVELOPER, "CLJ");
+}
+DriveJoint::~DriveJoint ()
+{
+}
+Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint("ClutchCLJ")
+{
     log->__format (LOG_CCREATOR, "Starting to parse a clutch node");
     processXmlRootNode (n);
 }
 
 Clutch::Clutch ()
+    :DriveJoint("ClutchTFR")
 {
-    log = new LogEngine (LOG_DEVELOPER, "TFR");
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     maxTorqueTransfer = 1000;
@@ -34,7 +41,6 @@ Clutch::Clutch ()
 Clutch::~Clutch ()
 {
     stopPhysics ();
-    delete log;
 }
 
 void Clutch::setClutchPedal(Pedal * pedal)
@@ -49,15 +55,15 @@ void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 }
 
 Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint("GearGTJ")
 {
-    log = new LogEngine (LOG_DEVELOPER, "GTJ");
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
 Gear::Gear ()
+    :DriveJoint("GearTFJ")
 {
-    log = new LogEngine (LOG_DEVELOPER, "TFJ");
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;
@@ -72,7 +78,6 @@ Gear::Gear ()
 Gear::~Gear ()
 {
     stopPhysics ();
-    delete log;
 }
 
 void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -81,15 +86,15 @@ void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 }
 
 LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint("LSD-LSJ")
 {
-    log = new LogEngine (LOG_DEVELOPER, "LSJ");
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
 LSD::LSD ()
+    :DriveJoint("LSD-LSJ")
 {
-    log = new LogEngine (LOG_DEVELOPER, "LSJ");
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;
@@ -109,7 +114,6 @@ LSD::LSD ()
 LSD::~LSD ()
 {
     stopPhysics ();
-    delete log;
 }
 
 void LSD::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)

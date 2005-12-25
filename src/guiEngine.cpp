@@ -246,7 +246,7 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "GUI";
     showStatistics = true;
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
+    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)

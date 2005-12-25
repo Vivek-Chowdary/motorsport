@@ -16,8 +16,8 @@
 #include "SDL/SDL_keysym.h"
 
 FinalDrive::FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass("DriveMassFDM")
 {
-    log = new LogEngine (LOG_DEVELOPER, "FDM");
     log->__format (LOG_CCREATOR, "Starting to parse a FinalDrive Mass node");
     processXmlRootNode (n);
 }
@@ -25,7 +25,6 @@ FinalDrive::FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n)
 FinalDrive::~FinalDrive ()
 {
     stopPhysics ();
-    delete log;
 }
 
 

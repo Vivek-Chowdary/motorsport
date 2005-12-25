@@ -13,7 +13,7 @@
 
 Location::Location (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    LogEngine * log = new LogEngine (LOG_DEVELOPER, "VEP");
+    LogEngine * log = new LogEngine (LOG_DEVELOPER, "Location");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();

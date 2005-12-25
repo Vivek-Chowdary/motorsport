@@ -16,8 +16,8 @@
 #include "SDL/SDL_keysym.h"
 
 Pedal::Pedal (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject("Pedal")
 {
-    log = new LogEngine (LOG_DEVELOPER, "PED");
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     processXmlRootNode (n);
     userDriver = false;
@@ -26,7 +26,6 @@ Pedal::Pedal (XERCES_CPP_NAMESPACE::DOMNode * n)
 Pedal::~Pedal ()
 {
     stopPhysics ();
-    delete log;
 }
 
 

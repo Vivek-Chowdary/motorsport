@@ -214,7 +214,7 @@ void recordVideoFrames ()
 
 LogEngine *processXmlRootNode (DOMNode * n)
 {
-    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
+    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
     tmpLog->__format (LOG_DEVELOPER, "Assigning default values");
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "MAI";
@@ -256,8 +256,11 @@ LogEngine *processXmlRootNode (DOMNode * n)
                         }
                         if (attribute == "dataDir")
                         {
+                            std::string dataDir;
+                            assignXmlString (dataDir, attNode->getValue());
+                            Paths::setCustomDataDir(dataDir);
                             assignXmlString (SystemData::getSystemDataPointer ()->dataDir, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", SystemData::getSystemDataPointer ()->dataDir.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", dataDir.c_str());
                         }
                     }
                 }

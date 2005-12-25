@@ -10,40 +10,20 @@
 #ifndef WORLDOBJECT_HPP
 #   define WORLDOBJECT_HPP
 #   include "tools/xercesc_fwd.hpp"
+#include "log/logEngine.hpp"
 
 //forward declatations
-class LogEngine;
 
 class WorldObject
 {
+  private:
+    WorldObject ();
+    void construct (std::string identifier);
   protected:
-    // data
     LogEngine * log;
-
-    // physics
-    virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n){};
-    virtual void stopPhysics (){};
-    
-    // graphics
-    virtual void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n){};
-    virtual void stopGraphics (){};
-    
-    // input
-    virtual void startInput (XERCES_CPP_NAMESPACE::DOMNode * n){};
-    virtual void stopInput (){};
-
+    std::string identifier;
   public:
-    // data
-    virtual ~WorldObject (){};
-    virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
-    
-    // physics
-    virtual void stepPhysics (){};
-
-    // graphics
-    virtual void stepGraphics (){};
-
-    // input
-    virtual void stepInput (){};
+    WorldObject (std::string identifier);
+    ~WorldObject ();
 };
 #endif

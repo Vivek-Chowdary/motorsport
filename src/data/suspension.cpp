@@ -25,8 +25,8 @@
 int Suspension::instancesCount = 0;
 
 Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject("Suspension")
 {
-    log = new LogEngine (LOG_DEVELOPER, "SUS");
     log->__format (LOG_CCREATOR, "Starting to parse the suspension node");
     processXmlRootNode (n);
 
@@ -37,12 +37,7 @@ Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n)
 Suspension::~Suspension ()
 {
     instancesCount--;
-
     stopPhysics ();
-    stopGraphics ();
-    stopInput ();
-
-    delete log;
 }
 
 std::string Suspension::getIndex()

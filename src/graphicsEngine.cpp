@@ -269,7 +269,7 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     int defaultNumMipMaps = 5;
     fullScreen = false;
 
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
+    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)

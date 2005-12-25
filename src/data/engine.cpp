@@ -19,8 +19,8 @@
 class Pedal;
 
 Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass("Engine")
 {
-    log = new LogEngine (LOG_DEVELOPER, "ENG");
     log->__format (LOG_CCREATOR, "Starting to parse an engine node");
     processXmlRootNode (n);
 }
@@ -28,7 +28,6 @@ Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 Engine::~Engine ()
 {
     stopPhysics ();
-    delete log;
 }
 
 

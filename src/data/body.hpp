@@ -13,6 +13,7 @@
 #   include "worldObject.hpp"
 #   include "tools/xercesc_fwd.hpp"
 #   include "vector3d.hpp"
+#include "paths.hpp"
 
 //forward declarations
 namespace Ogre {

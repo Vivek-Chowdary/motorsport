@@ -30,25 +30,11 @@ class DriveMass : public WorldObject
     double inputTorqueTransfer;
     
   public:
-
     // data
-    DriveMass () 
-      : inertia(0.0),
-	friction(0.0),
-	inputAngularVel(0.0),
-	prevAngularVel(0.0),
-	angularAcc(0.0),
-	outputAngularVel(0.0),
-	outputTorqueTransfer(0.0),
-	inputTorqueTransfer(0.0)
-  { };
-    ~DriveMass () { } ;
-    virtual void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
+    DriveMass (std::string identifier);
+    ~DriveMass ();
 
     // physics
-    virtual void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n) = 0;
-    virtual void stepPhysics () = 0;
-    virtual void stopPhysics () = 0;
     double getInputTorque ()             { return inputTorqueTransfer; } ;
     double getOutputTorque ()            { return outputTorqueTransfer; } ;
     double getInputAngularVel ()         { return inputAngularVel; } ;

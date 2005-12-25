@@ -23,8 +23,8 @@
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
 Track::Track (const std::string & xmlFilename)
+    :WorldObject("Track")
 {
-    log = new LogEngine (LOG_DEVELOPER, "TRK");
     path = SystemData::getSystemDataPointer()->dataDir + "/tracks/" + xmlFilename;
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, "FileSystem", path);
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path + "/skybox.zip", "Zip", path);
@@ -57,12 +57,6 @@ Track::~Track ()
         delete cameraList[i];
     }
     cameraList.clear ();
-
-/*    stopPhysics ();
-    stopGraphics ();
-    stopInput ();*/
-
-    delete log;
 }
 
 void Track::processXmlRootNode (DOMNode * n)

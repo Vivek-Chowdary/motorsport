@@ -31,8 +31,8 @@
 int Vehicle::instancesCount = 0;
 
 Vehicle::Vehicle (const std::string & xmlFilename)
+    :WorldObject("Vehicle")
 {
-    log = new LogEngine (LOG_DEVELOPER, "VEH");
     SystemData::getSystemDataPointer()->tmpPath = xmlFilename;
     std::string file = SystemData::getSystemDataPointer()->dataDir;
     file.append("/vehicles/");
@@ -58,7 +58,6 @@ Vehicle::~Vehicle ()
 
     stopPhysics ();
     stopGraphics ();
-    stopInput ();
 
     delete body; 
     delete engine;
@@ -82,7 +81,6 @@ Vehicle::~Vehicle ()
     {
         delete pedalIter->second;
     }
-    delete log;
 }
 
 void Vehicle::setUserDriver ()
@@ -391,10 +389,13 @@ void Vehicle::stepGraphics ()
 {
     body->stepGraphics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
+    //FIXME: uncomment when suspensions have graphics representation
+    /*
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
         suspIter->second->stepGraphics();
     }
+    */
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {

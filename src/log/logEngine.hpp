@@ -45,11 +45,6 @@ struct LogConfig
   LOG_MASK mask;      // !< Where should we send the log
 };
 
-/// Number of characters for the log instance name.
-/** Number of characters for the log instance name. Those 3 characters (real characters, not counting '\0') can be read in the log file as a way to identify the originator engine.
-*/
-#define LOG_NAME_LENGTH 3
-
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
 */

@@ -26,7 +26,7 @@ class GearboxGear : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n);
-    ~GearboxGear () { } ;
+    ~GearboxGear ();
 
     int getIndex() { return index; } ;
     double getRatio() { return ratio; } ;

@@ -34,12 +34,12 @@ World *World::getWorldPointer ()
 }
 
 World::World (char * xmlFilename)
+    :WorldObject("World")
 {
     if (worldPointer != 0)
     {
         delete this;
     } else {
-        log = new LogEngine(LOG_DEVELOPER, "WRL");
         worldPointer = this;
         std::string file = SystemData::getSystemDataPointer()->dataDir;
         file.append("/worlds/");
@@ -81,7 +81,6 @@ World::~World ()
     dJointGroupDestroy (jointGroupID);
     
     worldPointer = NULL;
-    delete log;
 }
 
 

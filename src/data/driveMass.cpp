@@ -7,21 +7,20 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "worldObject.hpp"
-WorldObject::WorldObject (std::string identifier)
+#include "driveMass.hpp"
+
+DriveMass::DriveMass (std::string identifier)
+    :WorldObject("DriveMass" + identifier)
 {
-    construct(identifier);
+    inertia = 0.0;
+    friction = 0.0;
+    inputAngularVel = 0.0;
+    prevAngularVel = 0.0;
+    angularAcc = 0.0;
+    outputAngularVel = 0.0;
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
 }
-WorldObject::WorldObject ()
+DriveMass::~DriveMass ()
 {
-    construct("none");
-}
-void WorldObject::construct(std::string identifier)
-{
-    this->identifier = identifier;
-    log = new LogEngine (LOG_DEVELOPER, identifier);
-}
-WorldObject::~WorldObject ()
-{
-    delete log;
 }

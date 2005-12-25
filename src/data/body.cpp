@@ -23,8 +23,8 @@
 int Body::instancesCount = 0;
 
 Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject("Body")
 {
-    log = new LogEngine (LOG_DEVELOPER, "BOD");
     processXmlRootNode (n);
 
     instancesCount++;
@@ -36,9 +36,6 @@ Body::~Body ()
 
     stopPhysics ();
     stopGraphics ();
-    stopInput ();
-
-    delete log;
 }
 
 
