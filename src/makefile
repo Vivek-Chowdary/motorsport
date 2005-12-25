@@ -210,19 +210,19 @@ SOURCES := \
         tools/vector3d.cpp \
 	system.cpp \
 	main.cpp \
-	data/bodyData.cpp \
-	data/cameraData.cpp \
-	data/partData.cpp \
-	data/pedalData.cpp \
-	data/suspensionData.cpp \
-	data/vehicleData.cpp \
-	data/wheelData.cpp \
+	data/body.cpp \
+	data/camera.cpp \
+	data/part.cpp \
+	data/pedal.cpp \
+	data/suspension.cpp \
+	data/vehicle.cpp \
+	data/wheel.cpp \
 	data/world.cpp \
 	data/xmlParser.cpp \
-        data/driveJointData.cpp \
-        data/engineData.cpp \
-        data/finalDriveData.cpp \
-        data/gearboxData.cpp \
+        data/driveJoint.cpp \
+        data/engine.cpp \
+        data/finalDrive.cpp \
+        data/gearbox.cpp \
         data/track.cpp \
         data/vehiclePosition.cpp \
         data/worldObject.cpp
