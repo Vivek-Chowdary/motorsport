@@ -8,12 +8,13 @@
 \*****************************************************************************/
 
 #ifndef TRACK_HPP
-#   define TRACK_HPP
-#   include "ode/objects.h"
-#   include "worldObject.hpp"
-#   include <map>
-#   include <string>
-#   include <vector>
+#define TRACK_HPP
+#include "ode/objects.h"
+#include "worldObject.hpp"
+#include <map>
+#include <string>
+#include <vector>
+#include "paths.hpp"
 
 //forward declatation
 namespace Ogre {
@@ -27,6 +28,7 @@ class Camera;
 class Track : public WorldObject
 {
   private:
+    std::string relativeTrackDir;
     // data
     std::string path;
     std::string name;

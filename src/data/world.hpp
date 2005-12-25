@@ -35,7 +35,7 @@ class World : public WorldObject
   public:
     // data
     static World *getWorldPointer ();
-    World (char * xmlFilename);
+    World (std::string worldName);
     ~World ();
 
     dWorldID worldID;

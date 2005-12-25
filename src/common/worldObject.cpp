@@ -24,4 +24,5 @@ void WorldObject::construct(std::string identifier)
 WorldObject::~WorldObject ()
 {
     delete log;
+    log = NULL;
 }

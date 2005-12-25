@@ -69,7 +69,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->__format (LOG_ENDUSER, "( 2 ): Loading world data...");
     log->loadscreen (LOG_CCREATOR, "Loading initial world data...");
-    new World ("default.xml");
+    new World ("default");
 
     // We start the main loop.
     log->__format (LOG_ENDUSER, "( 3 ): Starting simulation...");
@@ -256,11 +256,9 @@ LogEngine *processXmlRootNode (DOMNode * n)
                         }
                         if (attribute == "dataDir")
                         {
-                            std::string dataDir;
-                            assignXmlString (dataDir, attNode->getValue());
-                            Paths::setCustomDataDir(dataDir);
-                            assignXmlString (SystemData::getSystemDataPointer ()->dataDir, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", dataDir.c_str());
+                            assignXmlString (attribute, attNode->getValue());
+                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", attribute.c_str());
+                            Paths::setCustomDataDir(attribute);
                         }
                     }
                 }

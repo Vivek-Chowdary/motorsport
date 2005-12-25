@@ -26,12 +26,16 @@ class Paths
     static std::string homeDataDir;
     static std::string defaultDataDir;
 
-    static std::string getDataFile(std::string relativeFilePath);
     static std::string getDataDir (std::string relativeDirPath );
-    static bool existsFile(std::string filePath);
     static bool existsDir (std::string dirPath );
+
   public:
     static void setCustomDataDir(std::string customDataDir);
+    static std::string data();
+    static std::string vehicles();
+    static std::string tracks();
+    static std::string parts();
+    static std::string gui();
     
     static std::string vehicle(std::string vehicle);
     static std::string track(std::string track);

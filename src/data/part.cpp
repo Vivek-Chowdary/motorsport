@@ -21,16 +21,14 @@
 int Part::instancesCount = 0;
 
 Part::Part (const std::string & partName)
-    :WorldObject("Part")
+    :WorldObject(partName)
 {
-    partType = partName;
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/parts/");
-    file.append(partName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, "FileSystem", "Parts - " + partName);
+    relativePartDir = partName;   
+    std::string partPath = Paths::part(partName);
+    std::string partXmlPath = Paths::partXml(partName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(partPath, "FileSystem", "Parts - " + partName);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Parts - " + partName);
-    file.append("/part.xml");
-    XmlFile * xmlFile = new XmlFile (file.c_str());
+    XmlFile * xmlFile = new XmlFile (partXmlPath.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 
@@ -151,14 +149,10 @@ void Part::startGraphics (DOMNode * n)
     }
     char number[256];
     sprintf (number, "%i", instancesCount);
-    std::string name (partType + " #");
+    std::string name (relativePartDir + " #");
     name.append(number);
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/parts/");
-    file.append(partType);
-    file.append("/");
-    file.append(mesh);
-    partEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
+    std::string meshPath = Paths::part(relativePartDir) + mesh;
+    partEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
     partNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     partNode->attachObject (partEntity);
 }

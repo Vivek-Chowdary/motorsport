@@ -35,8 +35,8 @@ class CameraPosition;
 class Vehicle : public WorldObject
 {
   private:
-    // data
     static int instancesCount;
+    std::string relativeVehicleDir;
     std::string name;
     bool userDriver;
     int revision;
@@ -61,7 +61,8 @@ class Vehicle : public WorldObject
     void stopGraphics ();
   public:
     // data
-    Vehicle (const std::string & xmlFilename);
+    std::string getRelativeVehicleDir();
+    Vehicle (const std::string & vehicleName);
     ~Vehicle ();
     Body * body;
     Engine * engine;

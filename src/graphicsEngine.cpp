@@ -12,7 +12,7 @@
 #   include <windows.h>
 #   include "OgreWin32Window.h"
 #endif
-#include "OgreNoMemoryMacros.h" // <- After
+#include "OgreNoMemoryMacros.h"
 #include "graphicsEngine.hpp"
 #include "track.hpp"
 #include "camera.hpp"
@@ -21,7 +21,6 @@
 #include "xmlParser.hpp"
 #include "Ogre.h"
 #include "OgreConfigFile.h"
-//#include "OgreNoMemoryMacros.h" // <- Before
 #include "log/logEngine.hpp"
 #include "world.hpp"
 #include "SDL/SDL_keysym.h"
@@ -76,13 +75,12 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
 void GraphicsEngine::setupResources ()
 {
     //load some default constant resources
-    std::string dataDir = SystemData::getSystemDataPointer()->dataDir;
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation("./", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir, "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/gui", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/vehicles", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/tracks", "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(dataDir + "/parts", "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::data(), "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::gui(), "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::vehicles(), "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::tracks(), "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::parts(), "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 }
 

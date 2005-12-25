@@ -22,11 +22,10 @@
 
 int Body::instancesCount = 0;
 
-Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject("Body")
+Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
+    :WorldObject("Body"),VehicleComponent(vehicle)
 {
     processXmlRootNode (n);
-
     instancesCount++;
 }
 
@@ -79,19 +78,14 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     std::string name (mesh + " #");
     name.append(number);
 
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/vehicles/");
-    file.append(SystemData::getSystemDataPointer()->tmpPath);
-    file.append("/");
-    file.append(mesh);
-    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
-
+    std::string vehicleDir = vehicle->getRelativeVehicleDir();
+    std::string meshPath = Paths::vehicle(vehicleDir) + mesh;
+    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
     log->__format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
     for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
     {
         log->__format (LOG_CCREATOR, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
     }
-
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
     bodyNode->attachObject (bodyEntity);
     bodyEntity->setCastShadows(true);

@@ -22,20 +22,21 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
-Track::Track (const std::string & xmlFilename)
-    :WorldObject("Track")
+Track::Track (const std::string & trackName)
+    :WorldObject(trackName)
 {
-    path = SystemData::getSystemDataPointer()->dataDir + "/tracks/" + xmlFilename;
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path, "FileSystem", path);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(path + "/skybox.zip", "Zip", path);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(path);
-    log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", path.c_str());
+    relativeTrackDir = trackName;
+    std::string trackPath = Paths::track(trackName);
+    std::string trackXmlPath = Paths::trackXml(trackName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(trackPath, "FileSystem", trackName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(trackPath + "skybox.zip", "Zip", trackName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(trackName);
+    log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", trackXmlPath.c_str());
     double time = SDL_GetTicks()/1000.0;
-    std::string filename = path + "/track.xml";
-    XmlFile * xmlFile = new XmlFile (filename.c_str());
+    XmlFile * xmlFile = new XmlFile (trackXmlPath.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", filename.c_str(), (SDL_GetTicks()/1000.0 - time));
+    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", trackXmlPath.c_str(), (SDL_GetTicks()/1000.0 - time));
 }
 
 Track::~Track ()

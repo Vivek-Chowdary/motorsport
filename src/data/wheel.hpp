@@ -8,12 +8,14 @@
 \*****************************************************************************/
 
 #ifndef WHEEL_HPP
-#   define WHEEL_HPP
-#   include "ode/objects.h"
-#   include "driveMass.hpp"
-#   include "worldObject.hpp"
-#   include "tools/xercesc_fwd.hpp"
-#   include <string>
+#define WHEEL_HPP
+#include "ode/objects.h"
+#include "driveMass.hpp"
+#include "worldObject.hpp"
+#include "tools/xercesc_fwd.hpp"
+#include <string>
+#include "vehicleComponent.hpp"
+#include "paths.hpp"
 
 //forward declarations
 class Vector3d;
@@ -22,8 +24,9 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
+class Vehicle;
 
-class Wheel : public DriveMass
+class Wheel : public DriveMass, public VehicleComponent
 {
   private:
     // data
@@ -47,7 +50,7 @@ class Wheel : public DriveMass
     void stopGraphics ();
   public:
     // data
-    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~Wheel ();
     std::string getIndex();
     void setRefBody(dBodyID inputID) { bodyID = inputID; };

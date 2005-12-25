@@ -28,28 +28,26 @@ World *World::getWorldPointer ()
     if (worldPointer == 0)
     {
         std::cout << "WARNING: Auto-creating a default world!" << std::endl;
-        worldPointer = new World("default.xml");
+        worldPointer = new World("default");
     }
     return (worldPointer);
 }
 
-World::World (char * xmlFilename)
-    :WorldObject("World")
+World::World (std::string worldName)
+    :WorldObject(worldName)
 {
     if (worldPointer != 0)
     {
         delete this;
     } else {
         worldPointer = this;
-        std::string file = SystemData::getSystemDataPointer()->dataDir;
-        file.append("/worlds/");
-        file.append(xmlFilename);
-        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", file.c_str());
+        std::string worldXmlPath = Paths::worldXml(worldName);
+        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", worldXmlPath.c_str());
         double time = SDL_GetTicks()/1000.0;
-        XmlFile* xmlFile = new XmlFile (file.c_str());
+        XmlFile* xmlFile = new XmlFile (worldXmlPath.c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
-        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", file.c_str(), SDL_GetTicks()/1000.0 - time);
+        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", worldXmlPath.c_str(), SDL_GetTicks()/1000.0 - time);
     }
 }
 

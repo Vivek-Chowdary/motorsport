@@ -8,10 +8,11 @@
 \*****************************************************************************/
 
 #ifndef PART_HPP
-#   define PART_HPP
-#   include <string>
-#   include "ode/objects.h"
-#   include "worldObject.hpp"
+#define PART_HPP
+#include <string>
+#include "ode/objects.h"
+#include "worldObject.hpp"
+#include "paths.hpp"
 
 class Vector3d;
 class Quaternion;
@@ -23,12 +24,12 @@ namespace Ogre {
 class Part : public WorldObject
 {
   private:
+    std::string relativePartDir;
     // data
     static int instancesCount;
     void updateOgrePosition ();
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    std::string partType;
 
     // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);

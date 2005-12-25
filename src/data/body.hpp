@@ -8,11 +8,12 @@
 \*****************************************************************************/
 
 #ifndef BODY_HPP
-#   define BODY_HPP
-#   include "ode/objects.h"
-#   include "worldObject.hpp"
-#   include "tools/xercesc_fwd.hpp"
-#   include "vector3d.hpp"
+#define BODY_HPP
+#include "ode/objects.h"
+#include "worldObject.hpp"
+#include "vehicleComponent.hpp"
+#include "tools/xercesc_fwd.hpp"
+#include "vector3d.hpp"
 #include "paths.hpp"
 
 //forward declarations
@@ -20,10 +21,10 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
-
 class Quaternion;
+class Vehicle;
 
-class Body : public WorldObject
+class Body : public WorldObject, public VehicleComponent
 {
   private:
     // data
@@ -43,7 +44,7 @@ class Body : public WorldObject
     void stopGraphics ();
   public:
     // data
-    Body (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Body (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~Body ();
 
     // physics

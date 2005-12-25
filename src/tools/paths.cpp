@@ -76,14 +76,6 @@ std::string Paths::home()
 }
 
 
-std::string Paths::getDataFile(std::string relativeFilePath)
-{
-    std::string result;
-    if (existsFile(result = customDataDir  + relativeFilePath)) return result;
-    if (existsFile(result = homeDataDir    + relativeFilePath)) return result;
-    if (existsFile(result = defaultDataDir + relativeFilePath)) return result;
-    return "not found:" + relativeFilePath;
-}
 std::string Paths::getDataDir (std::string relativeDirPath )
 {
     std::string result;
@@ -91,11 +83,6 @@ std::string Paths::getDataDir (std::string relativeDirPath )
     if (existsDir(result = homeDataDir    + relativeDirPath)) return result;
     if (existsDir(result = defaultDataDir + relativeDirPath)) return result;
     return "not found:" + relativeDirPath;
-}
-bool Paths::existsFile(std::string filePath)
-{
-    //TODO
-    return true;
 }
 bool Paths::existsDir (std::string dirPath )
 {
@@ -117,7 +104,6 @@ std::string Paths::track(std::string track)
 }
 std::string Paths::world(std::string world)
 {
-    //return getDataDir("worlds/" + world + "/");
     return getDataDir("worlds/");
 }
 std::string Paths::part(std::string part)
@@ -127,18 +113,37 @@ std::string Paths::part(std::string part)
 
 std::string Paths::vehicleXml(std::string vehicle)
 {
-    return Paths::getDataFile(Paths::vehicle(vehicle) + "vehicle.xml");
+    return Paths::vehicle(vehicle) + "vehicle.xml";
 }
 std::string Paths::trackXml(std::string track)
 {
-    return Paths::getDataFile(Paths::track(track) + "track.xml");
+    return Paths::track(track) + "track.xml";
 }
 std::string Paths::worldXml(std::string world)
 {
-    //return Paths::getDataFile(Paths::world(world) + "world.xml");
-    return Paths::getDataFile(Paths::world(world) + world + ".xml");
+    return Paths::world(world) + world + ".xml";
 }
 std::string Paths::partXml(std::string part)
 {
-    return Paths::getDataFile(Paths::part(part) + "part.xml");
+    return Paths::part(part) + "part.xml";
+}
+std::string Paths::data()
+{
+    return Paths::getDataDir("");
+}
+std::string Paths::vehicles()
+{
+    return Paths::getDataDir("vehicles/");
+}
+std::string Paths::tracks()
+{
+    return Paths::getDataDir("tracks/");
+}
+std::string Paths::parts()
+{
+    return Paths::getDataDir("parts/");
+}
+std::string Paths::gui()
+{
+    return Paths::getDataDir("gui/");
 }

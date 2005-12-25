@@ -213,8 +213,6 @@ class SystemData
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;
     std::map <int, Axis * > axisMap;
-    std::string dataDir;
-    std::string tmpPath;
 };
 
 #endif

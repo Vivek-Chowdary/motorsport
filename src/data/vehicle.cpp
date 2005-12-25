@@ -30,23 +30,21 @@
 
 int Vehicle::instancesCount = 0;
 
-Vehicle::Vehicle (const std::string & xmlFilename)
-    :WorldObject("Vehicle")
+Vehicle::Vehicle (const std::string & vehicleName)
+    :WorldObject(vehicleName)
 {
-    SystemData::getSystemDataPointer()->tmpPath = xmlFilename;
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/vehicles/");
-    file.append(xmlFilename);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file, "FileSystem", "vehicles - " + xmlFilename);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(file + "/skybox.zip", "Zip", "vehicles - " + xmlFilename);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + xmlFilename);
-    file.append("/vehicle.xml");
-    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", file.c_str());
+    relativeVehicleDir = vehicleName;
+    std::string vehiclePath = Paths::vehicle(vehicleName);
+    std::string vehicleXmlPath = Paths::vehicleXml(vehicleName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath, "FileSystem", "vehicles - " + vehicleName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath + "skybox.zip", "Zip", "vehicles - " + vehicleName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + vehicleName);
+    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", vehicleXmlPath.c_str());
     double time = SDL_GetTicks()/1000.0;
-    XmlFile * xmlFile = new XmlFile (file.c_str());
+    XmlFile * xmlFile = new XmlFile (vehicleXmlPath.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", file.c_str(), SDL_GetTicks()/1000.0 - time);
+    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", vehicleXmlPath.c_str(), SDL_GetTicks()/1000.0 - time);
 
     userDriver = false;
     instancesCount++;
@@ -81,6 +79,10 @@ Vehicle::~Vehicle ()
     {
         delete pedalIter->second;
     }
+}
+std::string Vehicle::getRelativeVehicleDir()
+{
+    return relativeVehicleDir;
 }
 
 void Vehicle::setUserDriver ()
@@ -250,7 +252,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     
     processXmlPedalListNode(pedalListNode);
 
-    body = new Body (bodyNode);
+    body = new Body (bodyNode, this);
     engine = new Engine (engineNode);
     clutch = new Clutch (clutchNode);
     gearbox = new Gearbox (gearboxNode);
@@ -329,7 +331,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                 if (nodeName == "wheel")
                 {
                     log->__format (LOG_CCREATOR, "Found a wheel.");
-                    Wheel * tmpWheel = new Wheel (wheelNode);
+                    Wheel * tmpWheel = new Wheel (wheelNode, this);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
                     tmpWheel->setRefBody(body->bodyID);
                 }

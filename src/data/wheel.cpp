@@ -17,15 +17,15 @@
 #include "ode/ode.h"
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
+#include "vehicle.hpp"
 
 int Wheel::instancesCount = 0;
 
-Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass("Wheel")
+Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
+    :DriveMass("Wheel"),VehicleComponent(vehicle)
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     processXmlRootNode (n);
-
     instancesCount++;
 }
 
@@ -120,12 +120,10 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     sprintf (number, "%i", instancesCount);
     std::string name ("Wheel #");
     name.append(number);
-    std::string file = SystemData::getSystemDataPointer()->dataDir;
-    file.append("/vehicles/");
-    file.append(SystemData::getSystemDataPointer()->tmpPath);
-    file.append("/");
-    file.append(mesh);
-    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
+    
+    std::string vehicleDir = vehicle->getRelativeVehicleDir();
+    std::string meshPath = Paths::vehicle(vehicleDir) + mesh;
+    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
     log->__format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());

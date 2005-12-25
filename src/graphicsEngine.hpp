@@ -8,7 +8,8 @@
 \*****************************************************************************/
 
 #include <string>
-#include "tools/xercesc_fwd.hpp"
+#include "xercesc_fwd.hpp"
+#include "paths.hpp"
 
 //forward declarations
 class SystemData;
