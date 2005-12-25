@@ -125,10 +125,6 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)/xercesc \
-	input \
-	graphics \
-	physics \
-	gui \
 	data \
 	log \
         tools \
@@ -204,50 +200,32 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
-	tools/quaternion.cpp \
-	system.cpp \
+	graphicsEngine.cpp \
+	guiEngine.cpp \
+	inputEngine.cpp \
 	log/logEngine.cpp \
-	physics/physicsEngine.cpp \
-	graphics/graphicsEngine.cpp \
-	input/inputEngine.cpp \
-	gui/guiEngine.cpp \
-	data/xmlParser.cpp \
-        data/worldObject.cpp \
-        data/vehiclePosition.cpp \
-	data/worldData.cpp \
-        data/trackData.cpp \
-	data/partData.cpp \
-	data/bodyData.cpp \
-	data/vehicleData.cpp \
-	data/cameraData.cpp \
-	physics/partPhysics.cpp \
-	physics/bodyPhysics.cpp \
-	physics/vehiclePhysics.cpp \
-	graphics/cameraGraphics.cpp \
-	graphics/partGraphics.cpp \
-	graphics/bodyGraphics.cpp \
-	graphics/vehicleGraphics.cpp \
-        input/axis.cpp \
-	input/partInput.cpp \
-	input/cameraInput.cpp \
-        data/engineData.cpp \
-        physics/enginePhysics.cpp \
-	data/wheelData.cpp \
-	physics/wheelPhysics.cpp \
-	graphics/wheelGraphics.cpp \
-	data/suspensionData.cpp \
-	physics/suspensionPhysics.cpp \
-	physics/cameraPhysics.cpp \
-        physics/driveJointPhysics.cpp \
-        physics/gearboxPhysics.cpp \
-        data/driveJointData.cpp \
-        data/gearboxData.cpp \
+	physicsEngine.cpp \
+	tools/quaternion.cpp \
+        tools/axis.cpp \
         tools/vector3d.cpp \
-        physics/finalDrivePhysics.cpp \
-        data/finalDriveData.cpp \
+	system.cpp \
+	main.cpp \
+	data/bodyData.cpp \
+	data/cameraData.cpp \
+	data/partData.cpp \
 	data/pedalData.cpp \
-	physics/pedalPhysics.cpp \
-	main.cpp
+	data/suspensionData.cpp \
+	data/vehicleData.cpp \
+	data/wheelData.cpp \
+	data/world.cpp \
+	data/xmlParser.cpp \
+        data/driveJointData.cpp \
+        data/engineData.cpp \
+        data/finalDriveData.cpp \
+        data/gearboxData.cpp \
+        data/track.cpp \
+        data/vehiclePosition.cpp \
+        data/worldObject.cpp
 ###########################################
 
 

@@ -13,7 +13,6 @@
 #   include <fstream>
 #   include "xercesc_fwd.hpp"
 #define __format(X ,Y, ...) format((X), std::string(std::string(__FILE__) + ":%i: " + std::string((Y))).c_str(), __LINE__, ##__VA_ARGS__)
-#define __format2(X ,Y, ...) format((X), std::string("[" + std::string(__DATE__) + " " + std::string(__TIME__) + "]" + std::string(__FILE__) + ":%i: " + std::string((Y))).c_str(), __LINE__, ##__VA_ARGS__)
 
 //forward declarations
 class GuiEngine;
