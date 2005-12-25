@@ -208,6 +208,7 @@ SOURCES := \
 	tools/quaternion.cpp \
         tools/axis.cpp \
         tools/vector3d.cpp \
+	tools/xmlParser.cpp \
 	system.cpp \
 	main.cpp \
 	data/body.cpp \
@@ -218,7 +219,6 @@ SOURCES := \
 	data/vehicle.cpp \
 	data/wheel.cpp \
 	data/world.cpp \
-	data/xmlParser.cpp \
         data/driveJoint.cpp \
         data/engine.cpp \
         data/finalDrive.cpp \

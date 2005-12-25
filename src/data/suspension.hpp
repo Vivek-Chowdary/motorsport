@@ -11,7 +11,7 @@
 #   define SUSPENSION_HPP
 #   include "ode/objects.h"
 #   include "worldObject.hpp"
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 #   include <string>
 #   include "quaternion.hpp"
 #   include "vector3d.hpp"

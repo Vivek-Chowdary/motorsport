@@ -11,7 +11,7 @@
 #   define ENGINE_HPP
 #   include "driveMass.hpp"
 #   include "driveJoint.hpp"
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 class Pedal;
 

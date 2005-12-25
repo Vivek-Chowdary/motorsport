@@ -13,7 +13,7 @@
 #   include <map>
 #   include "driveMass.hpp"
 #   include "wheel.hpp"
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 class GearboxGear : public WorldObject
 {

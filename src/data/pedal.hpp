@@ -9,7 +9,7 @@
 
 #ifndef PEDAL_HPP
 #   define PEDAL_HPP
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 #   include "worldObject.hpp"
 
 class Pedal : public WorldObject

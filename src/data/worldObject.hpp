@@ -9,7 +9,7 @@
 
 #ifndef WORLDOBJECT_HPP
 #   define WORLDOBJECT_HPP
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 //forward declatations
 class LogEngine;

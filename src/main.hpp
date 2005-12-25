@@ -9,7 +9,7 @@
 
 #ifndef MAIN_HPP
 #   define MAIN_HPP
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 //forward declarations
 class LogEngine;

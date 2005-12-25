@@ -12,7 +12,7 @@
 #   include "ode/objects.h"
 #   include "driveMass.hpp"
 #   include "worldObject.hpp"
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 class DriveMass;
 class Pedal;

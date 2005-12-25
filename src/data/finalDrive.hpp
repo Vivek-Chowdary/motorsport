@@ -10,7 +10,7 @@
 #ifndef FINALDRIVE_HPP
 #   define FINALDRIVE_HPP
 #   include "driveMass.hpp"
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 
 class FinalDrive : public DriveMass
 {

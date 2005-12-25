@@ -10,7 +10,7 @@
 #include "data/track.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "data/xmlParser.hpp"
+#include "tools/xmlParser.hpp"
 #include "log/logEngine.hpp"
 #include "system.hpp"
 #include "camera.hpp"

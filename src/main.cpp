@@ -22,7 +22,7 @@
 #   include "windows.h"
 #endif
 #include <string>
-#include "data/xmlParser.hpp"
+#include "tools/xmlParser.hpp"
 #include <iostream>
 #include "SDL/SDL_keysym.h"
 

@@ -9,7 +9,7 @@
 
 #ifndef VEHICLEPOSITION_HPP
 #   define VEHICLEPOSITION_HPP
-#   include "data/xercesc_fwd.hpp"
+#   include "tools/xercesc_fwd.hpp"
 #   include "vector3d.hpp"
 #   include <string>
 #   include "quaternion.hpp"

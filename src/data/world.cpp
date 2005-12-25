@@ -11,7 +11,7 @@
 #include "vehicle.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "data/xmlParser.hpp"
+#include "tools/xmlParser.hpp"
 #include "track.hpp"
 #include "log/logEngine.hpp"
 #include "ode/ode.h"
