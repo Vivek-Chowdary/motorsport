@@ -29,10 +29,10 @@ InputEngine::InputEngine ()
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 
-    log->put (LOG_DEVELOPER, "Setting up data pointers...");
+    log->__format (LOG_DEVELOPER, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
 
-    log->put (LOG_DEVELOPER, "Initializing mouse axis");
+    log->__format (LOG_DEVELOPER, "Initializing mouse axis");
     systemData->axisMap[getIDMouseAxis (0)] = new Axis; //axis X, mouse #1
     systemData->axisMap[getIDMouseAxis (1)] = new Axis; //axis Y, mouse #1
     systemData->axisMap[getIDMouseAxis (0)]->setNewRawValue (systemData->width);
@@ -40,7 +40,7 @@ InputEngine::InputEngine ()
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (-systemData->height);
     systemData->axisMap[getIDMouseAxis (1)]->setNewRawValue (0);
     
-    log->put (LOG_DEVELOPER, "Initializing keyboard axis");
+    log->__format (LOG_DEVELOPER, "Initializing keyboard axis");
     for (int i=SDLK_FIRST; i<SDLK_LAST; i++)
     {
         systemData->axisMap[getIDKeyboardKey (i)] = new Axis;
@@ -48,7 +48,7 @@ InputEngine::InputEngine ()
         systemData->axisMap[getIDKeyboardKey (i)]->setNewRawValue (0);
     }
     
-    log->put (LOG_DEVELOPER, "Initializing dummy joystick devices");
+    log->__format (LOG_DEVELOPER, "Initializing dummy joystick devices");
     systemData->axisMap[getIDJoyAxis (0, 0)] = new Axis;
     systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (32767);
     systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (-32767);
@@ -60,14 +60,14 @@ InputEngine::InputEngine ()
     systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (-32767);
     systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (32767);
     
-    log->put (LOG_DEVELOPER, "Initializing real joystick devices");
+    log->__format (LOG_DEVELOPER, "Initializing real joystick devices");
     int nJoysticks = SDL_NumJoysticks();
     for (int joy = 0; joy < nJoysticks; joy++ ) 
     {
         SDL_Joystick * joystick = SDL_JoystickOpen(joy);
         int nAxis = SDL_JoystickNumAxes(joystick);
         int nButtons = SDL_JoystickNumButtons(joystick);
-        log->format(LOG_ENDUSER, "Found joystick \"%s\" with %i axis and %i buttons.", SDL_JoystickName(joy), nAxis, nButtons);
+        log->__format(LOG_ENDUSER, "Found joystick \"%s\" with %i axis and %i buttons.", SDL_JoystickName(joy), nAxis, nButtons);
         for (int axis = 0; axis < nAxis; axis++)
         {
             if (!( (joy == 0) && ((axis == 0)||(axis==1)||(axis==2)) ))
@@ -83,17 +83,17 @@ InputEngine::InputEngine ()
                 SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
                 SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
             }
-            log->format (LOG_DEVELOPER, "Joystick axis #%i initialized. %f", getIDJoyAxis(joy, axis), SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->getValue());
+            log->__format (LOG_DEVELOPER, "Joystick axis #%i initialized. %f", getIDJoyAxis(joy, axis), SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->getValue());
         }
         for (int button = 0; button < nButtons; button++)
         {
             systemData->axisMap[getIDJoyButton (joy, button)] = new Axis;
             SystemData::getSystemDataPointer()->axisMap[getIDJoyButton (joy, button)]->setNewRawValue (1);
             SystemData::getSystemDataPointer()->axisMap[getIDJoyButton (joy, button)]->setNewRawValue (0);
-            log->format (LOG_DEVELOPER, "Joystick axis #%i initialized.", getIDJoyButton(joy, button));
+            log->__format (LOG_DEVELOPER, "Joystick axis #%i initialized.", getIDJoyButton(joy, button));
         }
     }
-    log->format (LOG_ENDUSER, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
+    log->__format (LOG_ENDUSER, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
@@ -124,45 +124,45 @@ int InputEngine::computeStep (void)
         switch (event.type)
         {
         case SDL_QUIT:
-            log->put (LOG_DEVELOPER, "New SDL_QUIT event: User wants to exit. Notifying to stop mainLoop...");
+            log->__format (LOG_DEVELOPER, "New SDL_QUIT event: User wants to exit. Notifying to stop mainLoop...");
             systemData->disableMainLoop ();
             break;
         case SDL_KEYUP:
             axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_KEYUP event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_KEYUP event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(0);
             break;
         case SDL_KEYDOWN:
             axisIDtoStr(getIDKeyboardKey (event.key.keysym.sym), tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_KEYDOWN event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_KEYDOWN event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (event.key.keysym.sym)]->setNewRawValue(1);
             break;
         case SDL_MOUSEMOTION:
             axisIDtoStr(getIDMouseAxis (0), tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
             axisIDtoStr(getIDMouseAxis (1), tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_MOUSEMOTION event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (0)]->setNewRawValue (event.motion.x);
             SystemData::getSystemDataPointer()->axisMap[getIDMouseAxis (1)]->setNewRawValue (-event.motion.y);
-            log->format (LOG_DEVELOPER, "Mouse movement: (%i, %i)", event.motion.x, -event.motion.y);
+            log->__format (LOG_DEVELOPER, "Mouse movement: (%i, %i)", event.motion.x, -event.motion.y);
             break;
         case SDL_JOYAXISMOTION:
             id = getIDJoyAxis (event.jaxis.which, event.jaxis.axis);
             axisIDtoStr(id, tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_JOYAXISMOTION event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_JOYAXISMOTION event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (event.jaxis.value);
-            log->format (LOG_DEVELOPER, "Joystick axis movement: (%i)", event.jaxis.value);
+            log->__format (LOG_DEVELOPER, "Joystick axis movement: (%i)", event.jaxis.value);
             break;
         case SDL_JOYBUTTONDOWN:
             id = getIDJoyButton (event.jbutton.which, event.jbutton.button);
             axisIDtoStr(id, tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_JOYBUTTONDOWN event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_JOYBUTTONDOWN event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (1);
             break;
         case SDL_JOYBUTTONUP:
             id = getIDJoyButton (event.jbutton.which, event.jbutton.button);
             axisIDtoStr(id, tmpString);
-            log->format (LOG_DEVELOPER, "New SDL_JOYBUTTONUP event: %s", tmpString.c_str());
+            log->__format (LOG_DEVELOPER, "New SDL_JOYBUTTONUP event: %s", tmpString.c_str());
             SystemData::getSystemDataPointer()->axisMap[id]->setNewRawValue (0);
             break;
         default:
@@ -212,10 +212,10 @@ void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
             if (name == "inputConfig")
             {
-                tmpLog->put (LOG_DEVELOPER, "Found the input engine config element.");
+                tmpLog->__format (LOG_DEVELOPER, "Found the input engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -230,12 +230,12 @@ void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
                         if (attribute == "localLogName")
                         {
                             assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
                     }
                 }
@@ -244,5 +244,5 @@ void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     delete tmpLog;
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->put (LOG_DEVELOPER, "All config has been parsed");
+    log->__format (LOG_DEVELOPER, "All config has been parsed");
 }

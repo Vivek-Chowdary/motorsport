@@ -14,7 +14,7 @@
 Gearbox::Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "GBX");
-    log->put (LOG_CCREATOR, "Starting to parse a gearbox node");
+    log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
     processXmlRootNode (n);
     processXmlGearListNode (n);
 }
@@ -44,7 +44,7 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
                 assignXmlString (nodeName, gearNode->getNodeName());
                 if (nodeName == "gear")
                 {
-                    log->put (LOG_CCREATOR, "Found a gear.");
+                    log->__format (LOG_CCREATOR, "Found a gear.");
                     GearboxGear * tmpGear = new GearboxGear (gearNode);
                     gearMap[tmpGear->getIndex()]=tmpGear;
   //                  tmpGear->setRefBody(body->bodyID);
@@ -57,7 +57,7 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
 GearboxGear::GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "GBG");
-    log->put (LOG_CCREATOR, "Starting to parse a gearbox gear node");
+    log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
     processXmlRootNode (n);
 }
 
@@ -77,19 +77,19 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "index")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
                 index = stoi (attribute);
             }
             if (attribute == "ratio")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the Gear Ratio: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the Gear Ratio: %s", attribute.c_str() );
                 ratio = stod (attribute);
             }
             if (attribute == "label")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
                 label = attribute;
             }
         }

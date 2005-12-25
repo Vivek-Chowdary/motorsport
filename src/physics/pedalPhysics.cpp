@@ -35,13 +35,13 @@ void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "angleRange")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the pedal angle range: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the pedal angle range: %s", attribute.c_str() );
                 angleRange = stod (attribute);
             }
             if (attribute == "id")
             {
                 assignXmlString (id, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the pedal identifier: %s", id.c_str() );
+                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", id.c_str() );
             }
         }
     }
@@ -97,6 +97,6 @@ void Pedal::stepPhysics ()
 
 double Pedal::getNormalizedAngle()
 {
-    log->format (LOG_CCREATOR, "Reading pedal \"%s\" angle: %f", id.c_str(), currentAngle );
+    log->__format (LOG_CCREATOR, "Reading pedal \"%s\" angle: %f", id.c_str(), currentAngle );
     return (currentAngle / angleRange);
 }

@@ -36,7 +36,7 @@ void Part::startPhysics (DOMNode * n)
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
         }
@@ -44,7 +44,7 @@ void Part::startPhysics (DOMNode * n)
     partID = dBodyCreate (World::getWorldPointer ()->worldID);
     if (mass <= 0)
     {
-        log->put (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
+        log->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
         mass = 100;
     }
     dMass dmass;
@@ -60,7 +60,7 @@ void Part::startPhysics (DOMNode * n)
                 if (name == "box")
                 {
                     shape = name;
-                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
                     Vector3d dimensions (1, 1, 1);
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
@@ -72,7 +72,7 @@ void Part::startPhysics (DOMNode * n)
                         if (attribute == "dimensions")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the part dimensions: %s", attribute.c_str() );
+                            log->__format (LOG_CCREATOR, "Found the part dimensions: %s", attribute.c_str() );
                             dimensions = Vector3d (attribute);
                         }
                     }
@@ -82,7 +82,7 @@ void Part::startPhysics (DOMNode * n)
                 if (name == "sphere")
                 {
                     shape = name;
-                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
                     double radius = 1;
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
@@ -94,7 +94,7 @@ void Part::startPhysics (DOMNode * n)
                         if (attribute == "radius")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
+                            log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
                             radius = stod (attribute);
                         }
                     }
@@ -104,7 +104,7 @@ void Part::startPhysics (DOMNode * n)
                 if (name == "cappedCylinder")
                 {
                     shape = name;
-                    log->format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
+                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
                     double radius = 1;
                     double length = 1;
                     int directionAxis = 3;
@@ -118,19 +118,19 @@ void Part::startPhysics (DOMNode * n)
                         if (attribute == "radius")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
+                            log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
                             radius = stod (attribute);
                         }
                         if (attribute == "length")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
+                            log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
                             length = stod (attribute);
                         }
                         if (attribute == "directionAxis")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
+                            log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
                             if (attribute == "x") directionAxis = 1;
                             if (attribute == "y") directionAxis = 2;
                             if (attribute == "z") directionAxis = 3;
@@ -142,7 +142,7 @@ void Part::startPhysics (DOMNode * n)
             }
         }
     }
-    if (shape == "none") log->put(LOG_ERROR, "No physics shape specified for this part.");
+    if (shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
     dGeomSetBody (partGeomID, partID);
     dBodySetMass (partID, &dmass);
 }
@@ -188,7 +188,7 @@ void Part::stepPhysics ()
     }
     const dReal * pos;
     pos = dBodyGetPosition(partID);
-    log->format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
+    log->__format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
 
 }
 

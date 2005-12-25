@@ -43,7 +43,7 @@ void Part::startGraphics (DOMNode * n)
             if (attribute == "mesh")
             {
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", mesh.c_str());
+                log->__format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", mesh.c_str());
             }
         }
     }

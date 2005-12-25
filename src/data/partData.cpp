@@ -41,7 +41,7 @@ Part::~Part ()
     stopGraphics ();
     stopInput ();
     
-    log->format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
+    log->__format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
     delete log;
 }
 
@@ -68,7 +68,7 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (name, n->getNodeName());
             if (name == "part")
             {
-                log->put (LOG_CCREATOR, "Found a part.");
+                log->__format (LOG_CCREATOR, "Found a part.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -81,27 +81,27 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         if (attribute == "name")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
                         }
                         if (attribute == "description")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the description: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the description: %s", attribute.c_str());
                         }
                         if (attribute == "author")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the author: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the author: %s", attribute.c_str());
                         }
                         if (attribute == "contact")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the contact information: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the contact information: %s", attribute.c_str());
                         }
                         if (attribute == "license")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->format (LOG_CCREATOR, "Found the license: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the license: %s", attribute.c_str());
                         }
                     }
                 }

@@ -16,7 +16,7 @@ class Pedal;
 Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "ENG");
-    log->put (LOG_CCREATOR, "Starting to parse an engine node");
+    log->__format (LOG_CCREATOR, "Starting to parse an engine node");
     processXmlRootNode (n);
 }
 

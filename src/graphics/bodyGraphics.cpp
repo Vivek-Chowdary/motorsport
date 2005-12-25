@@ -29,7 +29,7 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "mesh")
             {
                 assignXmlString (mesh, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
+                log->__format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
             }
         }
     }
@@ -45,10 +45,10 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     file.append(mesh);
     bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), file.c_str());
 
-    log->format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
+    log->__format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
     for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
     {
-        log->format (LOG_CCREATOR, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
+        log->__format (LOG_CCREATOR, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
     }
 
     bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());

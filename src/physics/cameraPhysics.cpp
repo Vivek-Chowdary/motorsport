@@ -23,7 +23,7 @@
 void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine(LOG_DEVELOPER, "CAM");
-    log->put (LOG_DEVELOPER, "Creating a camera");
+    log->__format (LOG_DEVELOPER, "Creating a camera");
     positionOffset = new Vector3d (0, 0, 0);
     targetOffset = new Vector3d (0, 0, 0);
     positionID = 0;
@@ -42,18 +42,18 @@ void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "index")
             {
                 assignXmlString (index, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the position index: %s", index.c_str());
+                log->__format (LOG_CCREATOR, "Found the position index: %s", index.c_str());
             }
             if (attribute == "position")
             {
                 assignXmlString (attribute, attNode->getValue()); 
-                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
+                log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                 *positionOffset = Vector3d(attribute);
             }
             if (attribute == "target")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the target: %s", attribute.c_str());
+                log->__format (LOG_CCREATOR, "Found the target: %s", attribute.c_str());
                 *targetOffset = Vector3d(attribute);
             }
         }

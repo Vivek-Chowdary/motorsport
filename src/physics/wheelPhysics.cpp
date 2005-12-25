@@ -45,25 +45,25 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "radius")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
                 radius = stod (attribute);
             }
             if (attribute == "width")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             if (attribute == "powered")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the wheel power transmission: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the wheel power transmission: %s", attribute.c_str() );
                 powered = stod (attribute);
             }
         }
@@ -167,14 +167,14 @@ void Wheel::stepPhysics ()
     const dReal * odeTorque = dBodyGetTorque (wheelID);
     Vector3d accumulatedTorque (odeTorque);
     // show acc torque
-    log->format(LOG_WARNING, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
+    log->__format(LOG_WARNING, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
     // compare it to our torque
     ///////////////////////////////////////////////////////////////////////
     
     // finally, apply the torques
     dBodyAddTorque (wheelID, tAxis.x, tAxis.y, tAxis.z);
 
-    log->format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
+    log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
     
     // zero the accumulators
     inputTorqueTransfer = 0;

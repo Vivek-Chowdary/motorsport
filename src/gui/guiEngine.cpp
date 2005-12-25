@@ -38,7 +38,7 @@ GuiEngine::GuiEngine ()
         delete xmlFile;
 
         // get the direction of the graphics data
-        log->put (LOG_DEVELOPER, "Setting up data pointers...");
+        log->__format (LOG_DEVELOPER, "Setting up data pointers...");
         systemData = SystemData::getSystemDataPointer ();
 
         // updating singleton pointer
@@ -53,7 +53,7 @@ GuiEngine::GuiEngine ()
 int GuiEngine::computeStep (void)
 //makes the graphics engine draw one frame
 {
-    log->put (LOG_DEVELOPER, "Doing an step...");
+    log->__format (LOG_DEVELOPER, "Doing an step...");
     //update all statistics every second
     static double lastRefreshTime = 0;
     if (SDL_GetTicks ()/1000.0 - lastRefreshTime >= 1)
@@ -78,7 +78,7 @@ int GuiEngine::computeStep (void)
 
     if (systemData->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
     {
-        log->put (LOG_ENDUSER, "Showing/hiding statistics on screen.");
+        log->__format (LOG_ENDUSER, "Showing/hiding statistics on screen.");
         showStatistics = !showStatistics;
         systemData->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
@@ -253,10 +253,10 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
             if (name == "guiConfig")
             {
-                tmpLog->put (LOG_DEVELOPER, "Found the gui engine config element.");
+                tmpLog->__format (LOG_DEVELOPER, "Found the gui engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -271,26 +271,26 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
 
                         if (attribute == "localLogName")
                         {
                             assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
 
                         }
                         if (attribute == "showStatistics")
                         {
                             assignXmlString (attribute, attNode->getValue ());
                             showStatistics = stob (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found whether to show the statistics or not: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found whether to show the statistics or not: %s", attribute.c_str());
                         }
                         if (attribute == "telemetryLines")
                         {
                             assignXmlString (attribute, attNode->getValue ());
                             telemetryLines = stoi (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the number of telemetry lines: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the number of telemetry lines: %s", attribute.c_str());
                         }
                     }
                 }
@@ -300,5 +300,5 @@ void GuiEngine::processXmlRootNode (DOMNode * n)
     delete tmpLog;
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->put (LOG_DEVELOPER, "All config has been parsed");
+    log->__format (LOG_DEVELOPER, "All config has been parsed");
 }

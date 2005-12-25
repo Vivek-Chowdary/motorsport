@@ -29,18 +29,18 @@ VehiclePosition::VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "index")
             {
                 assignXmlString (index, attNode->getValue ());
-                log->format (LOG_CCREATOR, "Found the position index: %s", index.c_str ());
+                log->__format (LOG_CCREATOR, "Found the position index: %s", index.c_str ());
             }
             if (attribute == "position")
             {
                 assignXmlString (attribute, attNode->getValue ());
-                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str ());
+                log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str ());
                 position = Vector3d(attribute);
             }
             if (attribute == "rotation")
             {
                 assignXmlString (attribute, attNode->getValue ());
-                log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str ());
+                log->__format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str ());
                 rotation = Quaternion(attribute);
             }
         }

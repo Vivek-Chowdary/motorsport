@@ -14,7 +14,7 @@
 Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "CLJ");
-    log->put (LOG_CCREATOR, "Starting to parse a clutch node");
+    log->__format (LOG_CCREATOR, "Starting to parse a clutch node");
     processXmlRootNode (n);
 }
 
@@ -47,7 +47,7 @@ void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "GTJ");
-    log->put (LOG_CCREATOR, "Starting to parse a gear joint node");
+    log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
@@ -79,7 +79,7 @@ void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "LSJ");
-    log->put (LOG_CCREATOR, "Starting to parse a gear joint node");
+    log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 

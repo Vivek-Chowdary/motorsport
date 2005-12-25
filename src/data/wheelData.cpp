@@ -18,7 +18,7 @@ int Wheel::instancesCount = 0;
 Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "WHE");
-    log->put (LOG_DEVELOPER, "Starting to parse a wheel node");
+    log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     processXmlRootNode (n);
 
     instancesCount++;
@@ -71,7 +71,7 @@ void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "index")
             {
                 assignXmlString (index, attNode->getValue());
-                log->format (LOG_DEVELOPER, "Found the index: %s", index.c_str());
+                log->__format (LOG_DEVELOPER, "Found the index: %s", index.c_str());
             }
         }
     }

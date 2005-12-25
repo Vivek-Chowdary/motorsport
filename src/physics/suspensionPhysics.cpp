@@ -42,31 +42,31 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "position")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
+                log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
                 position = Vector3d (attribute);
             }
             if (attribute == "rotation")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str());
+                log->__format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str());
                 rotation = Quaternion(attribute);
             }
             if (attribute == "springConstant")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the suspension spring constant: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the suspension spring constant: %s", attribute.c_str() );
                 springConstant = stod (attribute);
             }
             if (attribute == "dampingConstant")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the suspension damping constant: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the suspension damping constant: %s", attribute.c_str() );
                 dampingConstant = stod (attribute);
             }
             if (attribute == "steeringAngle")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the suspension max. steering angle: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the suspension max. steering angle: %s", attribute.c_str() );
                 steeringAngle = stod (attribute);
             }
         }
@@ -102,7 +102,7 @@ void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
     dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
     Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
     dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
-    log->format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+    log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
     
     // old kart suspension
     //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);

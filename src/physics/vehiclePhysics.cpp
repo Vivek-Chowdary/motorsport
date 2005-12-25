@@ -35,7 +35,7 @@ dBodyID Vehicle::getVehicleID()
 void Vehicle::setPosition (Vector3d position)
 {
     Vector3d posDiff = position - getPosition();
-    log->format (LOG_DEVELOPER, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
+    log->__format (LOG_DEVELOPER, "Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
     
     body->setPosition ( body->getPosition() + posDiff );
 
@@ -98,9 +98,9 @@ void Vehicle::placeWheelsOnSuspensions()
         std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
         if (wheelIter == wheelMap.end())
         {
-            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
+            log->__format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
-            log->format (LOG_DEVELOPER, "Placing wheel on suspension \"%s\"", suspIter->first.c_str());
+            log->__format (LOG_DEVELOPER, "Placing wheel on suspension \"%s\"", suspIter->first.c_str());
             wheelIter->second->applyRotation (suspIter->second->getInitialWheelRotation());
             wheelIter->second->setPosition (suspIter->second->getInitialWheelPosition());
         }
@@ -115,9 +115,9 @@ void Vehicle::boltWheelsToSuspensions()
         std::map < std::string, Wheel *>::iterator wheelIter =  wheelMap.find(suspIter->first);
         if (wheelIter == wheelMap.end())
         {
-            log->format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
+            log->__format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
-            log->format (LOG_DEVELOPER, "Bolting wheel to suspension \"%s\"", suspIter->first.c_str());
+            log->__format (LOG_DEVELOPER, "Bolting wheel to suspension \"%s\"", suspIter->first.c_str());
             suspIter->second->attach(*(wheelIter->second), *this);
         }
     }

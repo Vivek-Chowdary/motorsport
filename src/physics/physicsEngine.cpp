@@ -86,7 +86,7 @@ int PhysicsEngine::computeStep (void)
 //makes the graphics engine draw one frame
 {
     // mega-verbosity
-    log->put (LOG_DEVELOPER, "Doing an step: calculating a physics step");
+    log->__format (LOG_DEVELOPER, "Doing an step: calculating a physics step");
 
     int size = World::getWorldPointer ()->trackList[0]->partList.size ();
     for (int i = 0; i < size; i++)
@@ -136,7 +136,7 @@ int PhysicsEngine::computeStep (void)
     if (checkpointWasPassed && (!checkpointPassed))
     {
         GuiEngine::getGuiEnginePointer()->updateLapTime (time - lapTime);
-        log->format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", time-lapTime);
+        log->__format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", time-lapTime);
         lapTime = time;
     }
     checkpointWasPassed = checkpointPassed;
@@ -171,10 +171,10 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
             if (name == "physicsConfig")
             {
-                tmpLog->put (LOG_DEVELOPER, "Found the physics engine config element.");
+                tmpLog->__format (LOG_DEVELOPER, "Found the physics engine config element.");
                 if (n->hasAttributes ())
                 {
                     // get all the attributes of the node
@@ -189,31 +189,31 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
 
                         if (attribute == "localLogName")
                         {
                             assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
                         if (attribute == "frequency")
                         {
                             assignXmlString (attribute, attNode->getValue());
                             frequency = stod (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the frecuency: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the frecuency: %s", attribute.c_str());
                         }
                         if (attribute == "timeScale")
                         {
                             assignXmlString (attribute, attNode->getValue());
                             timeScale = stoi (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the time scale: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the time scale: %s", attribute.c_str());
                         }
                         if (attribute == "pauseStep")
                         {
                             assignXmlString (attribute, attNode->getValue());
                             pauseStep = stoi (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the pause step: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the pause step: %s", attribute.c_str());
                         }
                     }
                 }
@@ -224,10 +224,10 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
                         {
                             assignXmlString (name, n->getNodeName());
-                            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+                            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
                             if (name == "ode")
                             {
-                                tmpLog->put (LOG_DEVELOPER, "Found the ode config element.");
+                                tmpLog->__format (LOG_DEVELOPER, "Found the ode config element.");
                                 if (n->hasAttributes ())
                                 {
                                     // get all the attributes of the node
@@ -241,27 +241,27 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         if (attribute == "cfmValue")
                                         {
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_ENDUSER, "Found the constraint force mixing factor (CFM): %s", attribute.c_str());
+                                            tmpLog->__format (LOG_ENDUSER, "Found the constraint force mixing factor (CFM): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setCfmValue (stod (attribute));
-                                                tmpLog->format (LOG_DEVELOPER, "CFM set to %f", stod(attribute));
+                                                tmpLog->__format (LOG_DEVELOPER, "CFM set to %f", stod(attribute));
                                             }
                                         }
                                         if (attribute == "erpValue")
                                         {
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_ENDUSER, "Found the error reduction parameter (ERP): %s", attribute.c_str());
+                                            tmpLog->__format (LOG_ENDUSER, "Found the error reduction parameter (ERP): %s", attribute.c_str());
                                             if (attribute != "default")
                                             {
                                                 SystemData::getSystemDataPointer()->setErpValue (stod (attribute));
-                                                tmpLog->format (LOG_DEVELOPER, "ERP set to %f", stod(attribute));
+                                                tmpLog->__format (LOG_DEVELOPER, "ERP set to %f", stod(attribute));
                                             }
                                         }
                                         if (attribute == "stepType")
                                         {
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_ENDUSER, "Found the type of stepping to be used in ODE: %s", attribute.c_str());
+                                            tmpLog->__format (LOG_ENDUSER, "Found the type of stepping to be used in ODE: %s", attribute.c_str());
                                             if (attribute == "dWorldStep")
                                                 stepType = 1;
                                             if (attribute == "dWorldStepFast1")
@@ -270,7 +270,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         if (attribute == "dWorldStepFast1MaxIterations")
                                         {
                                             assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->format (LOG_ENDUSER, "Found the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
+                                            tmpLog->__format (LOG_ENDUSER, "Found the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
 
                                             dWorldStepFast1MaxIterations = stoi (attribute);
                                         }
@@ -287,15 +287,15 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // first of all start the logger (automatically logs the start of itself)
     log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
+    log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
 
     // get the direction of the graphics data
-    log->put (LOG_DEVELOPER, "Setting up data pointers...");
+    log->__format (LOG_DEVELOPER, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
 
-    log->put (LOG_DEVELOPER, "Setting physics data");
+    log->__format (LOG_DEVELOPER, "Setting physics data");
     systemData->setDesiredPhysicsFrequency(frequency);
     systemData->timeScale = timeScale;
     systemData->pauseStep = pauseStep;
-    log->format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
+    log->__format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
 }

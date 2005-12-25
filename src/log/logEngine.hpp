@@ -12,6 +12,8 @@
 #   include <string>
 #   include <fstream>
 #   include "xercesc_fwd.hpp"
+#define __format(X ,Y, ...) format((X), std::string(std::string(__FILE__) + ":%i: " + std::string((Y))).c_str(), __LINE__, ##__VA_ARGS__)
+#define __format2(X ,Y, ...) format((X), std::string("[" + std::string(__DATE__) + " " + std::string(__TIME__) + "]" + std::string(__FILE__) + ":%i: " + std::string((Y))).c_str(), __LINE__, ##__VA_ARGS__)
 
 //forward declarations
 class GuiEngine;
@@ -104,7 +106,6 @@ class LogEngine
         @param level level of the log message.
         @param textToLog message that is to be logged if its level is low enough.
     */
-    void put (LOG_LEVEL level, const char *textToLog);
     void format (LOG_LEVEL level, const char *textToLogFormat, ...);
     void telemetry (LOG_LEVEL level, const char *textToLogFormat, ...);
     void loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...);
@@ -117,6 +118,7 @@ class LogEngine
     */
     void log(const LOG_LEVEL level, const int mask, const char *textToLogFormat, ...);
 
+    void setName(const std::string & name);
 
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();

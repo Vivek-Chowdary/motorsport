@@ -103,11 +103,6 @@ void LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
     log (level, LOG_FILE, buffer);
 }
 
-void LogEngine::put (LOG_LEVEL level, const char *textToLog)
-{
-    log(level, LOG_FILE, textToLog);
-}
-
 const std::string LogEngine::GetLogLevelCode (LOG_LEVEL level)
 {
     switch (level)
@@ -139,7 +134,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
 
     // create line, add header
     std::stringstream logLine;
-    logLine << '(' << logName << ")(" << GetLogLevelCode (level) << "): ";
+    logLine << '(' << GetLogLevelCode (level) << ")(" << logName << "): ";
 
     // format string
     char buffer[2048];
@@ -201,12 +196,16 @@ LogEngine::~LogEngine ()
 
     if (numberOfLogEngines == 0)
     {
-        put (LOG_ENDUSER, "Closing logFile");
+        format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
 
 }
 
+void LogEngine::setName(const std::string & name)
+{
+    this->logName = name;
+}
 void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string fileName = "motorsport-default.log";
@@ -258,7 +257,7 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
         std::cerr << "ERROR: Logfile (" << fileName << ") could not be opened!\n";
         return;
     }
-    put (LOG_ENDUSER, "LogFile created");
+    format (LOG_ENDUSER, "LogFile created");
 }
 
 LOG_LEVEL stologlevel (const std::string & srcString)

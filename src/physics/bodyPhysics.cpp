@@ -38,37 +38,37 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "length")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body physics length: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body physics length: %s", attribute.c_str() );
                 length = stod (attribute);
             }
             if (attribute == "width")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body physics width: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body physics width: %s", attribute.c_str() );
                 width = stod (attribute);
             }
             if (attribute == "height")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body physics height: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body physics height: %s", attribute.c_str() );
                 height = stod (attribute);
             }
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
                 mass = stod (attribute);
             }
             if (attribute == "frontalArea")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body frontal area: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body frontal area: %s", attribute.c_str() );
                 frontalArea = stod (attribute);
             }
             if (attribute == "dragCoefficient")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the body drag coefficient: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the body drag coefficient: %s", attribute.c_str() );
                 dragCoefficient = stod (attribute);
             }
         }
@@ -176,5 +176,5 @@ void Body::stepPhysics ()
 
     dBodyAddForce (bodyID, force.x, force.y, force.z);
 
-    log->format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
+    log->__format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
 }

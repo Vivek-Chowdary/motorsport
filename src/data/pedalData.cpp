@@ -14,7 +14,7 @@
 Pedal::Pedal (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "PED");
-    log->put (LOG_CCREATOR, "Starting to parse a pedal node");
+    log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     processXmlRootNode (n);
     userDriver = false;
 }

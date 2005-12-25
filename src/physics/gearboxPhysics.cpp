@@ -40,13 +40,13 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "gearboxFriction")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the Gearbox Friction: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the Gearbox Friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             if (attribute == "gearboxInertia")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the Gearbox Inertia: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the Gearbox Inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
         }
@@ -88,7 +88,7 @@ void Gearbox::stepPhysics ()
         outputAngularVel = outputAngularVel + dt / 2 * (outputAngularAcc + (outputTorqueTransfer - 0.1*(outputAngularVel+outputAngularAcc*dt))/0.1);
     }
     
-    log->format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer, inputAngularVel, outputAngularVel);
+    log->__format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer, inputAngularVel, outputAngularVel);
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
 }
@@ -100,7 +100,7 @@ void Gearbox::gearUp() {
     if(currentGear > maxGear) currentGear = maxGear;
 
     gearRatio = gearMap[currentGear]->ratio;
-    log->format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
 }
 
 void Gearbox::gearDown() {
@@ -108,5 +108,5 @@ void Gearbox::gearDown() {
     if(currentGear < 0) currentGear = 0;
 
     gearRatio = gearMap[currentGear]->ratio;
-    log->format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
 }

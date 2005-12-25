@@ -40,25 +40,25 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             if (attribute == "torqueLinearMultiplier")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the engine torque linear multiplier: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the engine torque linear multiplier: %s", attribute.c_str() );
                 torqueLinearMultiplier = stod (attribute);
             }
             if (attribute == "engineInertia")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the engine inertia: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the engine inertia: %s", attribute.c_str() );
                 inertia = stod (attribute);
             }
             if (attribute == "engineFriction")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
                 friction = stod (attribute);
             }
             if (attribute == "angularVelLimit")
             {
                 assignXmlString (attribute, attNode->getValue());
-                log->format (LOG_CCREATOR, "Found the engine angular velocity limit: %s", attribute.c_str() );
+                log->__format (LOG_CCREATOR, "Found the engine angular velocity limit: %s", attribute.c_str() );
                 angularVelLimit = stod (attribute);
             }
         }
@@ -99,7 +99,7 @@ void Engine::stepPhysics ()
     inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
     angularAcc = (inputAngularVel-prevAngularVel)/ dt;
     outputAngularVel = inputAngularVel; */
-    log->format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
+    log->__format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;

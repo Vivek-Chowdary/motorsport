@@ -14,7 +14,7 @@
 FinalDrive::FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     log = new LogEngine (LOG_DEVELOPER, "FDM");
-    log->put (LOG_CCREATOR, "Starting to parse a FinalDrive Mass node");
+    log->__format (LOG_CCREATOR, "Starting to parse a FinalDrive Mass node");
     processXmlRootNode (n);
 }
 

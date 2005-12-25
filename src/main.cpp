@@ -47,12 +47,12 @@ int main (int argc, char **argv)
     delete xmlFile;
 
     // We declare the 'global' data and engines.
-    log->put (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
-    log->put (LOG_DEVELOPER, "Creating system data");
+    log->__format (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
+    log->__format (LOG_DEVELOPER, "Creating system data");
     new SystemData ();
-    log->put (LOG_DEVELOPER, "Creating graphics engine");
+    log->__format (LOG_DEVELOPER, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
-    log->put (LOG_DEVELOPER, "Creating gui engine");
+    log->__format (LOG_DEVELOPER, "Creating gui engine");
     GuiEngine *guiEngine = new GuiEngine ();
     guiEngine->showLoadscreen ();
     log->loadscreen (LOG_DEVELOPER, "Creating physics engine...");
@@ -67,19 +67,19 @@ int main (int argc, char **argv)
     SystemData *systemData = SystemData::getSystemDataPointer ();
 
     // We load the world data from hdd into memory.
-    log->put (LOG_ENDUSER, "( 2 ): Loading world data...");
+    log->__format (LOG_ENDUSER, "( 2 ): Loading world data...");
     log->loadscreen (LOG_CCREATOR, "Loading initial world data...");
     new World ("default.xml");
 
     // We start the main loop.
-    log->put (LOG_ENDUSER, "( 3 ): Starting simulation...");
+    log->__format (LOG_ENDUSER, "( 3 ): Starting simulation...");
     log->loadscreen (LOG_DEVELOPER, "Initializating main loop");
     systemData->statisticsTime = systemData->simulationTime = SDL_GetTicks() / 1000.0;
     log->loadscreen (LOG_DEVELOPER, "Enabling main loop");
     systemData->enableMainLoop ();
     log->loadscreen (LOG_ENDUSER, "Hiding load screen");
     guiEngine->hideLoadscreen();
-    log->put (LOG_DEVELOPER, "Starting main loop");
+    log->__format (LOG_DEVELOPER, "Starting main loop");
     while (systemData->isMainLoopEnabled ())
     {
         // Update current real loop time.
@@ -91,7 +91,7 @@ int main (int argc, char **argv)
             systemData->setCurrentPhysicsFrequency (systemData->physicsSteps);
             systemData->graphicsSteps = systemData->physicsSteps = 0;
             systemData->statisticsTime += 1;
-            log->format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->getCurrentPhysicsFrequency());
+            log->__format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->getCurrentPhysicsFrequency());
         }
         inputEngine->computeStep ();
         // Run the gui engine.
@@ -127,24 +127,24 @@ int main (int argc, char **argv)
             }
         }
     }
-    log->put (LOG_DEVELOPER, "Main loop finished");
+    log->__format (LOG_DEVELOPER, "Main loop finished");
 
     // We unload the world data from memory.
-    log->put (LOG_ENDUSER, "( 4 ): Unloading world data...");
-    log->put (LOG_CCREATOR, "Unloading world data");
+    log->__format (LOG_ENDUSER, "( 4 ): Unloading world data...");
+    log->__format (LOG_CCREATOR, "Unloading world data");
     delete World::getWorldPointer ();
 
     // We delete the 'global' data and engines.
-    log->put (LOG_ENDUSER, "( 5 ): Unloading engines and libraries...");
-    log->put (LOG_DEVELOPER, "Deleting graphics engine");
+    log->__format (LOG_ENDUSER, "( 5 ): Unloading engines and libraries...");
+    log->__format (LOG_DEVELOPER, "Deleting graphics engine");
     delete graphicsEngine;
-    log->put (LOG_DEVELOPER, "Deleting physics engine");
+    log->__format (LOG_DEVELOPER, "Deleting physics engine");
     delete physicsEngine;
-    log->put (LOG_DEVELOPER, "Deleting input engine");
+    log->__format (LOG_DEVELOPER, "Deleting input engine");
     delete inputEngine;
-    log->put (LOG_DEVELOPER, "Deleting gui engine");
+    log->__format (LOG_DEVELOPER, "Deleting gui engine");
     delete guiEngine;
-    log->put (LOG_DEVELOPER, "Deleting log engine");
+    log->__format (LOG_DEVELOPER, "Deleting log engine");
     delete log;
     stopSdl ();
 
@@ -156,7 +156,7 @@ void startSdl (LogEngine * log)
 {
     if (SDL_Init (SDL_INIT_EVERYTHING) < 0)
     {
-        log->format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError ());
+        log->__format (LOG_ERROR, "Couldn't initialize SDL: %s\n", SDL_GetError ());
     }
 }
 
@@ -170,27 +170,27 @@ void computeLogic (LogEngine * log)
     SystemData *systemData = SystemData::getSystemDataPointer ();
     if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: User wants to exit. Notifying to stop mainLoop...");
+        log->__format (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: User wants to exit. Notifying to stop mainLoop...");
         systemData->disableMainLoop ();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
+        log->__format (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
         systemData->setDesiredPhysicsFrequency(150.0);
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
+        log->__format (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
         systemData->setDesiredPhysicsFrequency(300.0);
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
+        log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
         systemData->decreaseDesiredPhysicsRate();
     }
     if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
     {
-        log->put (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
+        log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
         systemData->increaseDesiredPhysicsRate();
     }
 }
@@ -215,7 +215,7 @@ void recordVideoFrames ()
 LogEngine *processXmlRootNode (DOMNode * n)
 {
     LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XML");
-    tmpLog->put (LOG_DEVELOPER, "Assigning default values");
+    tmpLog->__format (LOG_DEVELOPER, "Assigning default values");
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "MAI";
     if (n)
@@ -224,10 +224,10 @@ LogEngine *processXmlRootNode (DOMNode * n)
         {
             std::string name;
             assignXmlString (name, n->getNodeName());
-            tmpLog->format (LOG_DEVELOPER, "Name: %s", name.c_str());
+            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
             if (name == "mainConfig")
             {
-                tmpLog->put (LOG_DEVELOPER, "Found the main config element.");
+                tmpLog->__format (LOG_DEVELOPER, "Found the main config element.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *pAttributes = n->getAttributes ();
@@ -241,23 +241,23 @@ LogEngine *processXmlRootNode (DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             localLogLevel = stologlevel (attribute);
-                            tmpLog->format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
                         }
                         if (attribute == "localLogName")
                         {
                             assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
                         }
                         if (attribute == "videoRecordTimestep")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found video recording timestep value: %s", attribute.c_str ());
+                            tmpLog->__format (LOG_ENDUSER, "Found video recording timestep value: %s", attribute.c_str ());
                             SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (attribute);
                         }
                         if (attribute == "dataDir")
                         {
                             assignXmlString (SystemData::getSystemDataPointer ()->dataDir, attNode->getValue());
-                            tmpLog->format (LOG_ENDUSER, "Found the data directory: %s", SystemData::getSystemDataPointer ()->dataDir.c_str());
+                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", SystemData::getSystemDataPointer ()->dataDir.c_str());
                         }
                     }
                 }
@@ -266,7 +266,7 @@ LogEngine *processXmlRootNode (DOMNode * n)
     }
     LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str ());
     delete tmpLog;
-    returnLog->put (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
-    returnLog->put (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
+    returnLog->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
+    returnLog->__format (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
     return returnLog;
 }
