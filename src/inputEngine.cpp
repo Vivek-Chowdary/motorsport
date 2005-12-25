@@ -24,7 +24,7 @@ InputEngine::InputEngine ()
 #ifdef MACOSX
     XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/inputConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("inputConfig.xml");
+    XmlFile *xmlFile = new XmlFile ("../cfg/inputConfig.xml");
 #endif    
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;

@@ -32,7 +32,7 @@ GraphicsEngine::GraphicsEngine ()
 #ifdef MACOSX
     XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/graphicsConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("graphicsConfig.xml");
+    XmlFile *xmlFile = new XmlFile ("../cfg/graphicsConfig.xml");
 #endif
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;

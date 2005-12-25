@@ -41,7 +41,7 @@ int main (int argc, char **argv)
 #ifdef MACOSX
     XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/mainConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("mainConfig.xml");
+    XmlFile *xmlFile = new XmlFile ("../cfg/mainConfig.xml");
 #endif
     LogEngine *log = processXmlRootNode (xmlFile->getRootNode ());
     delete xmlFile;

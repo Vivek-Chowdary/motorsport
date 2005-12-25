@@ -32,7 +32,7 @@ PhysicsEngine::PhysicsEngine ()
 #ifdef MACOSX
     XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/physicsConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("physicsConfig.xml");
+    XmlFile *xmlFile = new XmlFile ("../cfg/physicsConfig.xml");
 #endif
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;

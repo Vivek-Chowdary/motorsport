@@ -32,7 +32,7 @@ GuiEngine::GuiEngine ()
 #ifdef MACOSX
         XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/guiConfig.xml");
 #else
-        XmlFile *xmlFile = new XmlFile ("guiConfig.xml");
+        XmlFile *xmlFile = new XmlFile ("../cfg/guiConfig.xml");
 #endif
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;

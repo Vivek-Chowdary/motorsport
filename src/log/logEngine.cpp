@@ -37,7 +37,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
 #ifdef MACOSX
         XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/logConfig.xml");
 #else
-        XmlFile *xmlFile = new XmlFile ("logConfig.xml");
+        XmlFile *xmlFile = new XmlFile ("../cfg/logConfig.xml");
 #endif
         processXmlRootNode (xmlFile->getRootNode ());
         delete xmlFile;
