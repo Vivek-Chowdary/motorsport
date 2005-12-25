@@ -128,6 +128,7 @@ INCLUDE_DIRS := \
 	data \
 	log \
         tools \
+	common \
 	$(BASE_INCLUDE_DIR)/../local/include/ode \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
@@ -205,9 +206,10 @@ SOURCES := \
 	inputEngine.cpp \
 	log/logEngine.cpp \
 	physicsEngine.cpp \
-	tools/quaternion.cpp \
-        tools/axis.cpp \
-        tools/vector3d.cpp \
+	common/quaternion.cpp \
+        common/axis.cpp \
+        common/vector3d.cpp \
+        common/location.cpp \
 	tools/xmlParser.cpp \
 	system.cpp \
 	main.cpp \
@@ -224,7 +226,6 @@ SOURCES := \
         data/finalDrive.cpp \
         data/gearbox.cpp \
         data/track.cpp \
-        data/location.cpp \
         data/worldObject.cpp
 ###########################################
 
