@@ -7,22 +7,22 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#ifndef VEHICLEPOSITION_HPP
-#   define VEHICLEPOSITION_HPP
+#ifndef LOCATION_HPP
+#   define LOCATION_HPP
 #   include "tools/xercesc_fwd.hpp"
 #   include "vector3d.hpp"
 #   include <string>
 #   include "quaternion.hpp"
 
-class VehiclePosition
+class Location
 {
   private:
     Vector3d position;
     Quaternion rotation;
     std::string index;
   public:
-    VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n);
-    ~VehiclePosition ();
+    Location (XERCES_CPP_NAMESPACE::DOMNode * n);
+    ~Location ();
     Vector3d getPosition();
     Quaternion getRotation();
     std::string getIndex();

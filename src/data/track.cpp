@@ -16,7 +16,7 @@
 #include "camera.hpp"
 #include "part.hpp"
 #include "ode/ode.h"
-#include "vehiclePosition.hpp"
+#include "location.hpp"
 #include "world.hpp"
 #include "SDL.h"
 
@@ -226,7 +226,7 @@ void Track::processXmlRootNode (DOMNode * n)
                                         if (node2Name == "vehicle")
                                         {
                                             log->__format (LOG_CCREATOR, "Found a vehicle position.");
-                                            VehiclePosition * tmpVehicle = new VehiclePosition (n2);
+                                            Location * tmpVehicle = new Location (n2);
                                             vehiclePositionMap[tmpVehicle->getIndex()] = tmpVehicle;
                                         }
                                     }

@@ -224,7 +224,7 @@ SOURCES := \
         data/finalDrive.cpp \
         data/gearbox.cpp \
         data/track.cpp \
-        data/vehiclePosition.cpp \
+        data/location.cpp \
         data/worldObject.cpp
 ###########################################
 

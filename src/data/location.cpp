@@ -7,11 +7,11 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "vehiclePosition.hpp"
+#include "location.hpp"
 #include "xmlParser.hpp"
 #include "logEngine.hpp"
 
-VehiclePosition::VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n)
+Location::Location (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     LogEngine * log = new LogEngine (LOG_DEVELOPER, "VEP");
     if (n->hasAttributes ())
@@ -49,22 +49,22 @@ VehiclePosition::VehiclePosition (XERCES_CPP_NAMESPACE::DOMNode * n)
     delete log;
 }
 
-VehiclePosition::~VehiclePosition ()
+Location::~Location ()
 {
     // empty
 }
 
-Vector3d VehiclePosition::getPosition ()
+Vector3d Location::getPosition ()
 {
     return position;
 }
 
-Quaternion VehiclePosition::getRotation ()
+Quaternion Location::getRotation ()
 {
     return rotation;
 }
 
-std::string VehiclePosition::getIndex ()
+std::string Location::getIndex ()
 {
     return index;
 }

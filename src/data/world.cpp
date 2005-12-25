@@ -18,7 +18,7 @@
 #include "system.hpp"
 #include "camera.hpp"
 #include "vector3d.hpp"
-#include "data/vehiclePosition.hpp"
+#include "data/location.hpp"
 #include "SDL.h"
 
 World *World::worldPointer = NULL;
