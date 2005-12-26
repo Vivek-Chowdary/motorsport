@@ -18,7 +18,7 @@
 #include "vehicle.hpp"
 #include "camera.hpp"
 #include "xmlParser.hpp"
-#include "track.hpp"
+#include "area.hpp"
 #include "system.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
@@ -88,16 +88,16 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->__format (LOG_DEVELOPER, "Doing an step: calculating a physics step");
 
-    int size = World::getWorldPointer ()->trackList[0]->partList.size ();
+    int size = World::getWorldPointer ()->areaList[0]->partList.size ();
     for (int i = 0; i < size; i++)
     {
-        World::getWorldPointer()->trackList[0]->partList[i]->stepPhysics ();
+        World::getWorldPointer()->areaList[0]->partList[i]->stepPhysics ();
     }
 
-    int numberOfCameras = World::getWorldPointer ()->trackList[0]->cameraList.size ();
+    int numberOfCameras = World::getWorldPointer ()->areaList[0]->cameraList.size ();
     for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
     {
-        World::getWorldPointer ()->trackList[0]->cameraList[currentCamera]->stepPhysics ();
+        World::getWorldPointer ()->areaList[0]->cameraList[currentCamera]->stepPhysics ();
     }
     numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
     for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)

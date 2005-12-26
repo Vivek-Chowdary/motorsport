@@ -7,8 +7,8 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#ifndef TRACK_HPP
-#define TRACK_HPP
+#ifndef AREA_HPP
+#define AREA_HPP
 #include "ode/objects.h"
 #include "worldObject.hpp"
 #include <map>
@@ -25,10 +25,10 @@ class Part;
 class Location;
 class Camera;
 
-class Track : public WorldObject
+class Area : public WorldObject
 {
   private:
-    std::string relativeTrackDir;
+    std::string relativeAreaDir;
     // data
     std::string path;
     std::string name;
@@ -39,12 +39,12 @@ class Track : public WorldObject
     std::string license;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void Track::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
+    void Area::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
     
   public:
     // data
-    Track (const std::string & xmlFilename);
-    ~Track ();
+    Area (const std::string & xmlFilename);
+    ~Area ();
     std::map <std::string, Location * > vehiclePositionMap;
     std::vector < Part * > partList;
     std::vector < Camera * > cameraList;
@@ -54,7 +54,7 @@ class Track : public WorldObject
     void stepPhysics ();
     void stopPhysics ();*/
     dGeomID bodyGeomID;
-    dBodyID trackBodyID;
+    dBodyID areaBodyID;
 
     // graphics
 /*    void startGraphics (DOMNode * n);
@@ -62,8 +62,8 @@ class Track : public WorldObject
     void stopGraphics ();*/
     Ogre::SceneNode * planeNode;
     Ogre::Entity * planeEntity;
-    Ogre::Entity * trackEntity;
-    Ogre::SceneNode * trackNode;
+    Ogre::Entity * areaEntity;
+    Ogre::SceneNode * areaNode;
     void setCastShadows(bool castShadows);
     void setRenderDetail(int renderMode);
 };

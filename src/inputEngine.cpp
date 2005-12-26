@@ -13,7 +13,7 @@
 #include "system.hpp"
 #include "world.hpp"
 #include "log/logEngine.hpp"
-#include "track.hpp"
+#include "area.hpp"
 #include "camera.hpp"
 #include "part.hpp"
 #include "axis.hpp"
@@ -170,10 +170,10 @@ int InputEngine::computeStep (void)
         }
     }
 
-    int numTrackCams = World::getWorldPointer()->trackList[0]->cameraList.size();
-    for (int i=0; i < numTrackCams; i++)
+    int numAreaCams = World::getWorldPointer()->areaList[0]->cameraList.size();
+    for (int i=0; i < numAreaCams; i++)
     {
-        World::getWorldPointer()->trackList[0]->cameraList[i]->stepInput();
+        World::getWorldPointer()->areaList[0]->cameraList[i]->stepInput();
     }
     
  /* Be careful with this debugging code!! you need to have created all the axis you're going to debug!

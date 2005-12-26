@@ -213,7 +213,7 @@ SOURCES := \
 	vehicle/wheel.cpp \
 	vehicle/vehicle.cpp \
 	world/part.cpp \
-        world/track.cpp \
+        world/area.cpp \
 	world/world.cpp \
 	graphicsEngine.cpp \
 	guiEngine.cpp \

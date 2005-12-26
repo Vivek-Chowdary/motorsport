@@ -17,7 +17,7 @@
 
 //forward declaration
 class Camera;
-class Track;
+class Area;
 class Vehicle;
 
 class World : public WorldObject
@@ -28,7 +28,7 @@ class World : public WorldObject
     std::string name;
     std::string description;
     Camera * activeCamera;
-    int activeTrackCameraIndex;
+    int activeAreaCameraIndex;
     int activeVehicleCameraIndex;
     void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
     void World::processXmlVehicleListNode (XERCES_CPP_NAMESPACE::DOMNode * vehicleListNode);
@@ -43,14 +43,14 @@ class World : public WorldObject
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 
-    std::vector < Track * > trackList;
+    std::vector < Area * > areaList;
     std::vector < Vehicle * > vehicleList;
 
     void setActiveCamera (Camera * camera);
     Camera * getActiveCamera (void);
-    Camera * activeTrackCamera;
+    Camera * activeAreaCamera;
     Camera * activeVehicleCamera;
-    int getActiveTrackCameraIndex();
+    int getActiveAreaCameraIndex();
     int getActiveVehicleCameraIndex();
 };
 

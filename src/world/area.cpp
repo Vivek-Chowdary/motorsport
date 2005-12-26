@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "track.hpp"
+#include "area.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "tools/xmlParser.hpp"
@@ -22,24 +22,24 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
-Track::Track (const std::string & trackName)
-    :WorldObject(trackName)
+Area::Area (const std::string & areaName)
+    :WorldObject(areaName)
 {
-    relativeTrackDir = trackName;
-    std::string trackPath = Paths::track(trackName);
-    std::string trackXmlPath = Paths::trackXml(trackName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(trackPath, "FileSystem", trackName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(trackPath + "skybox.zip", "Zip", trackName);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(trackName);
-    log->loadscreen (LOG_ENDUSER, "Starting to load a track (%s)", trackXmlPath.c_str());
+    relativeAreaDir = areaName;
+    std::string areaPath = Paths::area(areaName);
+    std::string areaXmlPath = Paths::areaXml(areaName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath, "FileSystem", areaName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath + "skybox.zip", "Zip", areaName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(areaName);
+    log->loadscreen (LOG_ENDUSER, "Starting to load a area (%s)", areaXmlPath.c_str());
     double time = SDL_GetTicks()/1000.0;
-    XmlFile * xmlFile = new XmlFile (trackXmlPath.c_str());
+    XmlFile * xmlFile = new XmlFile (areaXmlPath.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a track (%s). %f seconds.", trackXmlPath.c_str(), (SDL_GetTicks()/1000.0 - time));
+    log->loadscreen (LOG_ENDUSER, "Finished loading a area (%s). %f seconds.", areaXmlPath.c_str(), (SDL_GetTicks()/1000.0 - time));
 }
 
-Track::~Track ()
+Area::~Area ()
 {
     // unload the parts from memory
     log->__format (LOG_DEVELOPER, "Unloading parts from memory...");
@@ -60,7 +60,7 @@ Track::~Track ()
     cameraList.clear ();
 }
 
-void Track::processXmlRootNode (DOMNode * n)
+void Area::processXmlRootNode (DOMNode * n)
 {
     name = "None";
     description = "None";
@@ -82,9 +82,9 @@ void Track::processXmlRootNode (DOMNode * n)
         {
             std::string nodeName;
             assignXmlString (nodeName, n->getNodeName());
-            if (nodeName == "track")
+            if (nodeName == "area")
             {
-                log->__format (LOG_CCREATOR, "Found a track.");
+                log->__format (LOG_CCREATOR, "Found a area.");
                 if (n->hasAttributes ())
                 {
                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -142,7 +142,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             assignXmlString (nodeName, n->getNodeName());
                             if (nodeName == "ground")
                             {
-                                log->__format (LOG_CCREATOR, "Found a track ground.");
+                                log->__format (LOG_CCREATOR, "Found a area ground.");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -173,7 +173,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "sky")
                             {
-                                log->__format (LOG_CCREATOR, "Found a track sky.");
+                                log->__format (LOG_CCREATOR, "Found a area sky.");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -205,7 +205,7 @@ void Track::processXmlRootNode (DOMNode * n)
                             }
                             if (nodeName == "parts")
                             {
-                                log->__format (LOG_CCREATOR, "Found a list of track parts.");
+                                log->__format (LOG_CCREATOR, "Found a list of area parts.");
                                 partListNode = n;
                             }
                             if (nodeName == "vehiclePositionList")
@@ -254,7 +254,7 @@ void Track::processXmlRootNode (DOMNode * n)
     }
     processXmlPartListNode(partListNode);
 
-    log->loadscreen (LOG_CCREATOR, "Creating the track ground");
+    log->loadscreen (LOG_CCREATOR, "Creating the area ground");
 
     log->__format (LOG_DEVELOPER, "Creating the ode plane");
     dCreatePlane (World::getWorldPointer()->spaceID, 0, 0, 1, groundHeight);
@@ -269,38 +269,38 @@ void Track::processXmlRootNode (DOMNode * n)
     planeEntity->setMaterialName(groundMaterialName.c_str());
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
-    trackBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
+    areaBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
 
-    // FIXME should be part of the world, not the track
-    log->loadscreen (LOG_CCREATOR, "Creating the track sky");
+    // FIXME should be part of the world, not the area
+    log->loadscreen (LOG_CCREATOR, "Creating the area sky");
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
     
-    log->loadscreen (LOG_CCREATOR, "Creating the track ground");
+    log->loadscreen (LOG_CCREATOR, "Creating the area ground");
     // declare ode mesh
     dTriMeshDataID ground = dGeomTriMeshDataCreate ();
     dGeomSetBody (dCreateTriMesh (World::getWorldPointer ()->spaceID, ground, 0, 0, 0), 0);
 
     if (mesh != "none")
     {
-        log->loadscreen (LOG_CCREATOR, "Creating loading the ogre track mesh");
-        trackEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", path + "/" + mesh);
-        Ogre::SceneNode * trackNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-        trackNode->attachObject (trackEntity);
-        trackNode->setScale (1, 1, 1);
-        trackNode->setPosition (0, 0, 0);
+        log->loadscreen (LOG_CCREATOR, "Creating loading the ogre area mesh");
+        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", path + "/" + mesh);
+        Ogre::SceneNode * areaNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
+        areaNode->attachObject (areaEntity);
+        areaNode->setScale (1, 1, 1);
+        areaNode->setPosition (0, 0, 0);
         Quaternion quat (0, 0, 0);
-        trackNode->setOrientation (quat.w, quat.x, quat.y, quat.z);
+        areaNode->setOrientation (quat.w, quat.x, quat.y, quat.z);
         size_t vertex_count, index_count;
         dVector3 * vertices;
         unsigned int *indices;
-        getMeshInformation (trackEntity->getMesh (), vertex_count, vertices, index_count, indices, trackNode->getPosition(), trackNode->getOrientation(), trackNode->getScale());
-        log->loadscreen (LOG_CCREATOR, "Building the ode track mesh");
+        getMeshInformation (areaEntity->getMesh (), vertex_count, vertices, index_count, indices, areaNode->getPosition(), areaNode->getOrientation(), areaNode->getScale());
+        log->loadscreen (LOG_CCREATOR, "Building the ode area mesh");
         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
         // dGeomTriMeshDataDestroy (ground);
     } else {
-        trackEntity = 0;
+        areaEntity = 0;
     }
 
     // create the checkpoint sphere
@@ -310,9 +310,9 @@ void Track::processXmlRootNode (DOMNode * n)
     
 }
 
-void Track::processXmlPartListNode(DOMNode * partListNode)
+void Area::processXmlPartListNode(DOMNode * partListNode)
 {
-    log->loadscreen (LOG_CCREATOR, "Creating track parts");
+    log->loadscreen (LOG_CCREATOR, "Creating area parts");
     // parse individual parts
     DOMNode * partNode;
     for (partNode = partListNode->getFirstChild (); partNode != 0; partNode = partNode->getNextSibling ())
@@ -355,13 +355,13 @@ void Track::processXmlPartListNode(DOMNode * partListNode)
         }
     }
 }
-void Track::setCastShadows(bool castShadows)
+void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);
-    if (trackEntity != 0) trackEntity->setCastShadows(castShadows);
+    if (areaEntity != 0) areaEntity->setCastShadows(castShadows);
 }
 
-void Track::setRenderDetail(int renderMode)
+void Area::setRenderDetail(int renderMode)
 {
     Ogre::SceneDetailLevel mode;
     switch (renderMode)
@@ -377,7 +377,7 @@ void Track::setRenderDetail(int renderMode)
         break;
     }
     planeEntity->setRenderDetail(mode);
-    if (trackEntity != 0) trackEntity->setRenderDetail(mode);
+    if (areaEntity != 0) areaEntity->setRenderDetail(mode);
 }
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)

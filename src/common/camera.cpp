@@ -19,7 +19,7 @@
 #include "xmlParser.hpp"
 #include "ode/ode.h"
 #include "log/logEngine.hpp"
-#include "track.hpp"
+#include "area.hpp"
 #include "vector3d.hpp"
 
 int Camera::instancesCount = 0;

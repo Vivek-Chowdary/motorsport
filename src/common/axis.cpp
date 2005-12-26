@@ -101,7 +101,7 @@ void axisIDtoStr (int axisID, std::string& destString)
 			    "Joystick #",
 			    "Joystick #",
 			    "Joystick #",
-			    "Track IR #", 
+			    "Area IR #", 
 			    "Unknown HID #" };
     
     const char* ElementName[] = { ", SDL key code #",
@@ -115,7 +115,7 @@ void axisIDtoStr (int axisID, std::string& destString)
 			    "unknown"};
 
     const char* SubTypeName[] = { "","","","","", "", 
-			      "hat #", ", trackball #", 
+			      "hat #", ", areaball #", 
 			      ""}; 
     
 
@@ -142,7 +142,7 @@ void axisIDtoStr (int axisID, std::string& destString)
 	  out << TypeName[deviceType];
 	  out << deviceNumber;
 	  out << SubTypeName[std::min(deviceNumber, 7)];
-	  out << subtype;                   // hat/trackball
+	  out << subtype;                   // hat/areaball
 	  out << ElementName[std::min(deviceType, 7)];
 	  out << axis;
 	  break;

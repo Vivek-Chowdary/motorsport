@@ -12,7 +12,7 @@
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "tools/xmlParser.hpp"
-#include "track.hpp"
+#include "area.hpp"
 #include "log/logEngine.hpp"
 #include "ode/ode.h"
 #include "system.hpp"
@@ -62,13 +62,13 @@ World::~World ()
     }
     vehicleList.clear ();
     
-    log->__format (LOG_DEVELOPER, "Unloading tracks from memory...");
-    size = trackList.size ();
+    log->__format (LOG_DEVELOPER, "Unloading areas from memory...");
+    size = areaList.size ();
     for (int i = 0; i < size; i++)
     {
-        delete trackList[i];
+        delete areaList[i];
     }
-    trackList.clear ();
+    areaList.clear ();
     
     log->__format (LOG_DEVELOPER, "Destroying ODE world");
     dSpaceDestroy (spaceID);
@@ -90,8 +90,8 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     double gravityY = 0.0;
     double gravityZ = 0.0;
     DOMNode * vehicleListNode = NULL;
-    bool useTrackCamera = true;    //if false, use vehicle camera
-    std::string trackDirectory = "testingGround";
+    bool useAreaCamera = true;    //if false, use vehicle camera
+    std::string areaDirectory = "testingGround";
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -120,10 +120,10 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                             assignXmlString (description, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the world description: %s", description.c_str());
                         }
-                        if (attribute == "useTrackCamera")
+                        if (attribute == "useAreaCamera")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            useTrackCamera = stob (attribute);
+                            useAreaCamera = stob (attribute);
                             log->__format (LOG_CCREATOR, "Found the selected world camera: %s camera", attribute.c_str());
                         }
                         if (attribute == "gravityX")
@@ -158,9 +158,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                 log->__format (LOG_CCREATOR, "Found the vehicle list");
                                 vehicleListNode = n;
                             }
-                            if (name == "track")
+                            if (name == "area")
                             {
-                                log->__format (LOG_CCREATOR, "Found a track");
+                                log->__format (LOG_CCREATOR, "Found a area");
                                 if (n->hasAttributes ())
                                 {
                                     DOMNamedNodeMap *attList = n->getAttributes ();
@@ -172,8 +172,8 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                                         assignXmlString (attribute, attNode->getName());
                                         if (attribute == "directory")
                                         {
-                                            assignXmlString (trackDirectory, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the track directory: %s", trackDirectory.c_str());
+                                            assignXmlString (areaDirectory, attNode->getValue());
+                                            log->__format (LOG_CCREATOR, "Found the area directory: %s", areaDirectory.c_str());
                                         }
                                     }
                                 }
@@ -207,21 +207,21 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
     dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
-    // load track (and its cameras)
-    log->loadscreen (LOG_CCREATOR, "Creating a track");
-    Track * track = new Track (trackDirectory);
-    //track->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
-    trackList.push_back (track);
+    // load area (and its cameras)
+    log->loadscreen (LOG_CCREATOR, "Creating a area");
+    Area * area = new Area (areaDirectory);
+    //area->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
+    areaList.push_back (area);
 
     // load all vehicles
     log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
     processXmlVehicleListNode (vehicleListNode);
 
     // initialize cameras (pointing to car 0 by default)
-    for (unsigned int i=0; i< trackList[0]->cameraList.size(); i++)
+    for (unsigned int i=0; i< areaList[0]->cameraList.size(); i++)
     {
-        trackList[0]->cameraList[i]->setPositionID( trackList[0]->trackBodyID );
-        trackList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
+        areaList[0]->cameraList[i]->setPositionID( areaList[0]->areaBodyID );
+        areaList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
     }
     for (unsigned int i=0; i< vehicleList[0]->cameraList.size(); i++)
     {
@@ -231,15 +231,15 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // set active camera
     log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
-    if (useTrackCamera)
+    if (useAreaCamera)
     {
-        //err... use... track camera, i guess.
-        setActiveCamera (trackList[0]->cameraList[0]);
+        //err... use... area camera, i guess.
+        setActiveCamera (areaList[0]->cameraList[0]);
     } else {
-        //don't use track camera: use vehicle camera
+        //don't use area camera: use vehicle camera
         setActiveCamera (vehicleList[0]->cameraList[0]);
     }
-    activeTrackCamera = trackList[0]->cameraList[0];
+    activeAreaCamera = areaList[0]->cameraList[0];
     activeVehicleCamera = vehicleList[0]->cameraList[0];
 }
 
@@ -256,10 +256,10 @@ Camera * World::getActiveCamera (void)
     return activeCamera;
 }
 
-int World::getActiveTrackCameraIndex()
+int World::getActiveAreaCameraIndex()
 {
     int camNumber = 0;
-    while ( activeTrackCamera != trackList[0]->cameraList[camNumber] )
+    while ( activeAreaCamera != areaList[0]->cameraList[camNumber] )
     {
         camNumber++;
     }
@@ -329,15 +329,15 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
                 vehicleList.push_back (tmpVehicle);
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
-                if (trackList[0]->vehiclePositionMap.count(vehicleStartPosition) == 0)
+                if (areaList[0]->vehiclePositionMap.count(vehicleStartPosition) == 0)
                 {
-                    log->__format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the track!", vehicleStartPosition.c_str());
+                    log->__format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the area!", vehicleStartPosition.c_str());
                 }
                 tmpVehicle->setPosition (Vector3d(0, 0, 0));
-                tmpVehicle->applyRotation ( trackList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
+                tmpVehicle->applyRotation ( areaList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting position");
-                tmpVehicle->setPosition (trackList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
+                tmpVehicle->setPosition (areaList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
             }
         }
     }

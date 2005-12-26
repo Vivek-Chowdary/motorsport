@@ -98,9 +98,9 @@ std::string Paths::vehicle(std::string vehicle)
 {
     return getDataDir("vehicles/" + vehicle + "/");
 }
-std::string Paths::track(std::string track)
+std::string Paths::area(std::string area)
 {
-    return getDataDir("tracks/" + track + "/");
+    return getDataDir("areas/" + area + "/");
 }
 std::string Paths::world(std::string world)
 {
@@ -115,9 +115,9 @@ std::string Paths::vehicleXml(std::string vehicle)
 {
     return Paths::vehicle(vehicle) + "vehicle.xml";
 }
-std::string Paths::trackXml(std::string track)
+std::string Paths::areaXml(std::string area)
 {
-    return Paths::track(track) + "track.xml";
+    return Paths::area(area) + "area.xml";
 }
 std::string Paths::worldXml(std::string world)
 {
@@ -135,9 +135,9 @@ std::string Paths::vehicles()
 {
     return Paths::getDataDir("vehicles/");
 }
-std::string Paths::tracks()
+std::string Paths::areas()
 {
-    return Paths::getDataDir("tracks/");
+    return Paths::getDataDir("areas/");
 }
 std::string Paths::parts()
 {

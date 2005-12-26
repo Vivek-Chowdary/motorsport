@@ -33,17 +33,17 @@ class Paths
     static void setCustomDataDir(std::string customDataDir);
     static std::string data();
     static std::string vehicles();
-    static std::string tracks();
+    static std::string areas();
     static std::string parts();
     static std::string gui();
     
     static std::string vehicle(std::string vehicle);
-    static std::string track(std::string track);
+    static std::string area(std::string area);
     static std::string world(std::string world);
     static std::string part(std::string part);
 
     static std::string vehicleXml(std::string vehicle);
-    static std::string trackXml(std::string track);
+    static std::string areaXml(std::string area);
     static std::string worldXml(std::string world);
     static std::string partXml(std::string part);
 };

@@ -14,7 +14,7 @@
 #endif
 #include "OgreNoMemoryMacros.h"
 #include "graphicsEngine.hpp"
-#include "track.hpp"
+#include "area.hpp"
 #include "camera.hpp"
 #include "part.hpp"
 #include "system.hpp"
@@ -79,7 +79,7 @@ void GraphicsEngine::setupResources ()
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::data(), "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::gui(), "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::vehicles(), "FileSystem", "General");
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::tracks(), "FileSystem", "General");
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::areas(), "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(Paths::parts(), "FileSystem", "General");
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 }
@@ -163,14 +163,14 @@ int GraphicsEngine::computeStep (void)
     if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
         int nextCam;
-        nextCam = World::getWorldPointer()->getActiveTrackCameraIndex()+1;
-        int maxCams = World::getWorldPointer()->trackList[0]->cameraList.size();
+        nextCam = World::getWorldPointer()->getActiveAreaCameraIndex()+1;
+        int maxCams = World::getWorldPointer()->areaList[0]->cameraList.size();
         if (nextCam >= maxCams )
         {
             nextCam = 0;
         }
-        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->trackList[0]->cameraList[nextCam]);
-        World::getWorldPointer()->activeTrackCamera = World::getWorldPointer()->trackList[0]->cameraList[nextCam];
+        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->areaList[0]->cameraList[nextCam]);
+        World::getWorldPointer()->activeAreaCamera = World::getWorldPointer()->areaList[0]->cameraList[nextCam];
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
@@ -192,17 +192,17 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update Ogre's parts positions with Ode's positions.
-    int numberOfCubes = World::getWorldPointer ()->trackList[0]->partList.size ();
+    int numberOfCubes = World::getWorldPointer ()->areaList[0]->partList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        World::getWorldPointer ()->trackList[0]->partList[currentCube]->stepGraphics ();
+        World::getWorldPointer ()->areaList[0]->partList[currentCube]->stepGraphics ();
     }
 
     // Update cameras positions (should be done in the fsx engine FIXME.
-    int numberOfCameras = World::getWorldPointer ()->trackList[0]->cameraList.size ();
+    int numberOfCameras = World::getWorldPointer ()->areaList[0]->cameraList.size ();
     for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
     {
-        World::getWorldPointer ()->trackList[0]->cameraList[currentCamera]->stepGraphics ();
+        World::getWorldPointer ()->areaList[0]->cameraList[currentCamera]->stepGraphics ();
     }
     numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
     for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
@@ -211,19 +211,19 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update infinite plane position according to vehicle position
-    Ogre::Vector3 trackPos (World::getWorldPointer()->trackList[0]->planeNode->getPosition());
+    Ogre::Vector3 areaPos (World::getWorldPointer()->areaList[0]->planeNode->getPosition());
     Vector3d vehiclePos (World::getWorldPointer()->vehicleList[0]->getPosition());
-    Vector3d diff (trackPos.x - vehiclePos.x, trackPos.y - vehiclePos.y, trackPos.z - vehiclePos.z);
+    Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
     const double tile = 1000.0 / 20.0;
-    if (diff.x > tile || diff.x < -tile) trackPos.x -= int ((diff.x) / (tile)) * (tile);
-    if (diff.y > tile || diff.y < -tile) trackPos.y -= int ((diff.y) / (tile)) * (tile);
-    World::getWorldPointer()->trackList[0]->planeNode->setPosition(trackPos);
+    if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);
+    if (diff.y > tile || diff.y < -tile) areaPos.y -= int ((diff.y) / (tile)) * (tile);
+    World::getWorldPointer()->areaList[0]->planeNode->setPosition(areaPos);
     
-    // Update track shadows state
-    World::getWorldPointer()->trackList[0]->setCastShadows(castTrackShadows);
+    // Update area shadows state
+    World::getWorldPointer()->areaList[0]->setCastShadows(castAreaShadows);
     
-    // Update track render mode
-    World::getWorldPointer ()->trackList[0]->setRenderDetail(trackRenderMode);
+    // Update area render mode
+    World::getWorldPointer ()->areaList[0]->setRenderDetail(areaRenderMode);
     
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();
@@ -248,9 +248,9 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     std::string localLogName = "GFX";
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
-    castTrackShadows = true;
+    castAreaShadows = true;
     vehicleRenderMode = Ogre::SDL_SOLID;
-    trackRenderMode = Ogre::SDL_SOLID;
+    areaRenderMode = Ogre::SDL_SOLID;
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -310,11 +310,11 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                             tmpLog->__format (LOG_ENDUSER, "Found the initial screenshot number: %s", attribute.c_str());
                             initialFrame = stoi (attribute);
                         }
-                        if (attribute == "castTrackShadows")
+                        if (attribute == "castAreaShadows")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found whether to cast track shadows or not: %s", attribute.c_str());
-                            castTrackShadows = stob (attribute);
+                            tmpLog->__format (LOG_ENDUSER, "Found whether to cast area shadows or not: %s", attribute.c_str());
+                            castAreaShadows = stob (attribute);
                         }
                         if (attribute == "vehicleRenderMode")
                         {
@@ -328,16 +328,16 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
                             if(attribute == "solid")
                                 vehicleRenderMode=3;
                         }
-                        if (attribute == "trackRenderMode")
+                        if (attribute == "areaRenderMode")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_CCREATOR, "Found the tracks rendering mode: %s", attribute.c_str());
+                            tmpLog->__format (LOG_CCREATOR, "Found the areas rendering mode: %s", attribute.c_str());
                             if(attribute == "points")
-                                trackRenderMode=1;
+                                areaRenderMode=1;
                             if(attribute == "wireframe")
-                                trackRenderMode=2;
+                                areaRenderMode=2;
                             if(attribute == "solid")
-                                trackRenderMode=3;
+                                areaRenderMode=3;
                         }
                     }
                 }

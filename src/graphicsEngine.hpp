@@ -18,7 +18,7 @@ namespace Ogre {
   class Root;
 }
 
-/** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, track, etc...).
+/** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, area, etc...).
  * @brief Manages everything related to the rendering process.
  */
 class GraphicsEngine
@@ -59,17 +59,17 @@ class GraphicsEngine
      */
     bool fullScreen;
     /** 
-     * @brief Specifies whether the track will cast shadows or not.
+     * @brief Specifies whether the area will cast shadows or not.
      */
-    bool castTrackShadows;
+    bool castAreaShadows;
     /** 
     * @brief Specifies how the vehicle will be rendered: 1=points, 2=wireframe, 3=solid.
      */
     int vehicleRenderMode;
     /** 
-     * @brief Specifies how the track will be rendered: 1=points, 2=wireframe, 3=solid.
+     * @brief Specifies how the area will be rendered: 1=points, 2=wireframe, 3=solid.
      */
-    int trackRenderMode;
+    int areaRenderMode;
     /** 
      * @brief The OGRE root element.
      */
