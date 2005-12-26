@@ -9,72 +9,42 @@
 
 #include "xmlParser.hpp"
 
-DOMCountErrorHandler::DOMCountErrorHandler ():
-
-fSawErrors (false)
-{
-}
-
-DOMCountErrorHandler::~DOMCountErrorHandler ()
-{
-}
-
+DOMCountErrorHandler::DOMCountErrorHandler () :fSawErrors (false) {}
+DOMCountErrorHandler::~DOMCountErrorHandler()                     {}
+void DOMCountErrorHandler::resetErrors () { fSawErrors = false; }
 bool DOMCountErrorHandler::handleError (const DOMError & domError)
 {
     fSawErrors = true;
     short errsev = domError.getSeverity ();
-
-    if (errsev == DOMError::DOM_SEVERITY_WARNING)
-        std::cout << "(XML Parser)" << "Warning at file: ";
-    if (errsev == DOMError::DOM_SEVERITY_ERROR)
-        std::cout << "(XML Parser)" << "Error at file: ";
-    if (errsev == DOMError::DOM_SEVERITY_FATAL_ERROR)
-        std::cout << "(XML Parser)" << "Fatal error at file: ";
-
-    std::cout << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << std::endl;
-    std::cout << "Message: " << StrX (domError.getMessage ()) << std::endl;
+    if (errsev == DOMError::DOM_SEVERITY_WARNING)     std::cout << "(XML Parser)" << "Warning at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_ERROR)       std::cout << "(XML Parser)" << "Error at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_FATAL_ERROR) std::cout << "(XML Parser)" << "Fatal error at file: ";
+    std::cout << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << std::endl << "Message: " << StrX (domError.getMessage ()) << std::endl;
     return true;
 }
-
-void DOMCountErrorHandler::resetErrors ()
-{
-    fSawErrors = false;
-}
-
 XmlFile::XmlFile (const char *xmlFileName)
 {
-    errorOccurred = false;
-    bool recognizeNEL = false;
+    error = false;
+    bool recognize = false;
     try
     {
         XMLPlatformUtils::Initialize ();
-        if (recognizeNEL)
-        {
-            XMLPlatformUtils::recognizeNEL (recognizeNEL);
-        }
+        if (recognize) XMLPlatformUtils::recognizeNEL (recognize);
     }
     catch (const XMLException & toCatch)
     {
         std::cout << "(XML Parser)" << "Error during initialization! : " << StrX (toCatch.getMessage ()) << std::endl;
-        errorOccurred = true;
+        error = true;
     }
-
     static const XMLCh gLS[] = { chLatin_L, chLatin_S, chNull };
     DOMImplementation *impl = DOMImplementationRegistry::getDOMImplementation (gLS);
     parser = ((DOMImplementationLS *) impl)->createDOMBuilder (DOMImplementationLS::MODE_SYNCHRONOUS, 0);
     DOMCountErrorHandler errorHandler;
-
     parser->setErrorHandler (&errorHandler);
     std::ifstream fin;
     errorHandler.resetErrors ();
     doc = 0;
-
 #ifdef WIN32
-/*    parser->setFeature (XMLUni::fgDOMNamespaces, false);
-    parser->setFeature (XMLUni::fgXercesSchema, false);
-    parser->setFeature (XMLUni::fgXercesSchemaFullChecking, false);
-    parser->setFeature (XMLUni::fgDOMDatatypeNormalization, false);
-    parser->setFeature (XMLUni::fgDOMValidateIfSchema, false);*/
 #else
     parser->setFeature (XMLUni::fgDOMNamespaces, false);
     parser->setFeature (XMLUni::fgXercesSchema, false);
@@ -82,37 +52,35 @@ XmlFile::XmlFile (const char *xmlFileName)
     parser->setFeature (XMLUni::fgDOMDatatypeNormalization, false);
     parser->setFeature (XMLUni::fgDOMValidateIfSchema, false);
 #endif
-
     try
     {
         parser->resetDocumentPool ();
         doc = parser->parseURI (xmlFileName);
-    } catch (const XMLException & toCatch)
+    }
+    catch (const XMLException & toCatch)
     {
         std::cout << "(XML Parser)" << "Error during parsing: " << xmlFileName << std::endl << "Exception message is: " << StrX (toCatch.getMessage ()) << std::endl;
-        errorOccurred = true;
-    } catch (const DOMException & toCatch)
+        error = true;
+    }
+    catch (const DOMException & toCatch)
     {
         const unsigned int maxChars = 2047;
         XMLCh errText[maxChars + 1];
         std::cout << "(XML Parser)" << "DOM Error during parsing: " << xmlFileName << std::endl << "DOMException code is: " << toCatch.code << std::endl;
-        if (DOMImplementation::loadDOMExceptionMsg (toCatch.code, errText, maxChars))
-        {
-            std::cout << "(XML Parser)" << "Message is: " << StrX (errText) << std::endl;
-        }
-        errorOccurred = true;
+        if (DOMImplementation::loadDOMExceptionMsg (toCatch.code, errText, maxChars)) std::cout << "(XML Parser)" << "Message is: " << StrX (errText) << std::endl;
+        error = true;
     }
     catch (...)
     {
         std::cout << "(XML Parser)" << "Unexpected exception during parsing: " << xmlFileName << std::endl;
-        errorOccurred = true;
+        error = true;
     }
-    if (!errorOccurred)
+    if (!error)
     {
         if (errorHandler.getSawErrors ())
         {
             std::cout << "(XML Parser)" << "Errors occurred, no output available" << std::endl;
-            errorOccurred = true;
+            error = true;
         }
     }
 }
@@ -120,13 +88,7 @@ XmlFile::XmlFile (const char *xmlFileName)
 DOMNode *XmlFile::getRootNode ()
 {
     DOMNode *returnNode = 0;
-    if (!errorOccurred)
-    {
-        if (doc)
-        {
-            returnNode = (DOMNode *) doc->getDocumentElement ();
-        }
-    }
+    if (!error) if (doc) returnNode = (DOMNode *) doc->getDocumentElement ();
     return returnNode;
 }
 
@@ -161,8 +123,7 @@ int stoi (const std::string & srcString)
 
 bool stob (const std::string & srcString)
 {
-    if (srcString == "false" || srcString == "0")
-        return false;
+    if (srcString == "false" || srcString == "0") return false;
     return true;
 }
 

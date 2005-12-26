@@ -126,7 +126,7 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)/xercesc \
 	vehicle \
-	environment \
+	world \
 	log \
         tools \
 	common \
@@ -227,10 +227,10 @@ SOURCES := \
 	vehicle/part.cpp \
 	vehicle/pedal.cpp \
 	vehicle/suspension.cpp \
-        environment/track.cpp \
+        world/track.cpp \
 	vehicle/vehicle.cpp \
 	vehicle/wheel.cpp \
-	environment/world.cpp
+	world/world.cpp
 ###########################################
 
 

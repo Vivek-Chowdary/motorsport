@@ -7,8 +7,8 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#ifndef DOM_PARSER_HPP
-#   define DOM_PARSER_HPP
+#ifndef XML_PARSER_HPP
+#define XML_PARSER_HPP
 #include "OgreNoMemoryMacros.h"
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
@@ -26,16 +26,16 @@
 #include <string.h>
 #include <stdlib.h>
 #if defined(XERCES_NEW_IOSTREAMS)
-#    include <fstream>
+#include <fstream>
 #else
-#    include <fstream.h>
+#include <fstream.h>
 #endif
 #include <xercesc/dom/DOMErrorHandler.hpp>
 #include <xercesc/util/XMLString.hpp>
 #if defined(XERCES_NEW_IOSTREAMS)
-#    include <iostream>
+#include <iostream>
 #else
-#    include <iostream.h>
+#include <iostream.h>
 #endif
 #include <sstream>
 #include <string>
@@ -45,57 +45,42 @@
 XERCES_CPP_NAMESPACE_USE
 class DOMCountErrorHandler:public DOMErrorHandler
 {
-  public:
-    DOMCountErrorHandler ();
-    ~DOMCountErrorHandler ();
-    bool getSawErrors () const;
-    bool handleError (const DOMError & domError);
-    void resetErrors ();
-  private:
-    DOMCountErrorHandler (const DOMCountErrorHandler &);
-    void operator= (const DOMCountErrorHandler &);
-    bool fSawErrors;
+    public:
+        DOMCountErrorHandler ();
+        ~DOMCountErrorHandler ();
+        bool getSawErrors () const;
+        bool handleError (const DOMError & domError);
+        void resetErrors ();
+    private:
+        DOMCountErrorHandler (const DOMCountErrorHandler &);
+        void operator= (const DOMCountErrorHandler &);
+        bool fSawErrors;
 };
 class StrX
 {
-  public:
-    StrX (const XMLCh * const toTranscode)
-    {
-        fLocalForm = XMLString::transcode (toTranscode);
-    }
-     ~StrX ()
-    {
-        XMLString::release (&fLocalForm);
-    }
-    const char *localForm () const
-    {
-        return fLocalForm;
-    }
-
-  private:
-    char *fLocalForm;
+    public:
+        StrX (const XMLCh * const toTranscode){fLocalForm = XMLString::transcode (toTranscode);}
+        ~StrX (){XMLString::release (&fLocalForm);}
+        const char *localForm () const {return fLocalForm;}
+    private:
+        char *fLocalForm;
 };
-
 inline XERCES_STD_QUALIFIER ostream & operator<< (XERCES_STD_QUALIFIER ostream & target, const StrX & toDump)
 {
     target << toDump.localForm ();
     return target;
 }
-
-inline bool DOMCountErrorHandler::getSawErrors () const
-{
-    return fSawErrors;
-}
+inline bool DOMCountErrorHandler::getSawErrors () const{return fSawErrors;}
 
 class XmlFile
 {
-    bool errorOccurred;
+    bool error;
     DOMBuilder * parser;
     XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc;
     public:
-        XmlFile (const char * xmlFileName);
-        ~XmlFile ();
-        DOMNode * getRootNode();
+    XmlFile (const char * xmlFileName);
+    ~XmlFile ();
+    DOMNode * getRootNode();
 };
 
 void assignXmlString (std::string & destString, const XMLCh * srcXmlString);
