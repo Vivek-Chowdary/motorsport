@@ -202,6 +202,9 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+        common/ogreObject.cpp \
+        common/odeObject.cpp \
+	world/part.cpp \
 	vehicle/body.cpp \
         vehicle/driveJoint.cpp \
         vehicle/driveMass.cpp \
@@ -212,7 +215,6 @@ SOURCES := \
 	vehicle/suspension.cpp \
 	vehicle/wheel.cpp \
 	vehicle/vehicle.cpp \
-	world/part.cpp \
         world/area.cpp \
 	world/world.cpp \
 	graphicsEngine.cpp \

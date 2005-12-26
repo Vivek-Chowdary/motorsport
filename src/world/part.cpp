@@ -41,22 +41,10 @@ Part::~Part ()
 
     stopPhysics ();
     stopGraphics ();
-    stopInput ();
     
     log->__format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
 }
 
-
-void Part::updateOgrePosition ()
-{
-    const dReal *temp = dBodyGetPosition (partID);  // need to allocate memory first??
-    partNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
-}
-void Part::updateOgreOrientation ()
-{
-    const dReal *temp = dBodyGetQuaternion (partID);    // need to allocate memory first??
-    partNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
-}
 
 void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
@@ -111,25 +99,33 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     startGraphics(partNode);
     startPhysics(partNode);
-    startInput ();
+    OgreObjectsIt g = ogreObjects.begin();
+    OdeObjectsIt d = odeObjects.begin();
+    g->second->setOdeReference(d->second);
 }
 
 void Part::stepGraphics ()
 {
-    updateOgrePosition ();
-    updateOgreOrientation ();
+    OgreObjectsIt i = ogreObjects.begin();
+    for(;i != ogreObjects.end(); i++)
+    {
+        i->second->stepGraphics();
+    }
 }
 
 void Part::stopGraphics ()
 {
-    // empty
+    OgreObjectsIt i = ogreObjects.begin();
+    for(;i != ogreObjects.end(); i++)
+    {
+        delete i->second;
+        i->second = NULL;
+        ogreObjects.erase(i);
+    }
 }
 
 void Part::startGraphics (DOMNode * n)
 {
-    std::string author = "Anonymous";
-    std::string contact = "None";
-    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     std::string mesh = "None";
     if (n->hasAttributes ())
     {
@@ -148,30 +144,18 @@ void Part::startGraphics (DOMNode * n)
         }
     }
     char number[256];
-    sprintf (number, "%i", instancesCount);
+    static int num = 0;
+    num++;
+    sprintf (number, "%i", num);
     std::string name (relativePartDir + " #");
     name.append(number);
     std::string meshPath = Paths::part(relativePartDir) + mesh;
-    partEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
-    partNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    partNode->attachObject (partEntity);
-}
-void Part::startInput ()
-{
-
-}
-
-void Part::stopInput ()
-{
-
-}
-void Part::stepInput ()
-{
-
+    OgreObject * ogreObject = new OgreObject(this, meshPath, name);
+    ogreObjects[name] = ogreObject;
 }
 void Part::startPhysics (DOMNode * n)
 {
-    double mass = -1;
+    OdeObjectData data;
     std::string author = "Anonymous";
     std::string contact = "None";
     std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
@@ -190,17 +174,10 @@ void Part::startPhysics (DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
-                mass = stod (attribute);
+                data.mass = stod (attribute);
             }
         }
     }
-    partID = dBodyCreate (World::getWorldPointer ()->worldID);
-    if (mass <= 0)
-    {
-        log->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
-        mass = 100;
-    }
-    dMass dmass;
     std::string shape = "none";
     for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
     {
@@ -212,9 +189,9 @@ void Part::startPhysics (DOMNode * n)
                 assignXmlString (name, n->getNodeName());
                 if (name == "box")
                 {
-                    shape = name;
+                    data.shape = name;
                     log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    Vector3d dimensions (1, 1, 1);
+                    data.dimensions = Vector3d (1, 1, 1);
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
@@ -226,17 +203,15 @@ void Part::startPhysics (DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the part dimensions: %s", attribute.c_str() );
-                            dimensions = Vector3d (attribute);
+                            data.dimensions = Vector3d (attribute);
                         }
                     }
-                    partGeomID = dCreateBox (World::getWorldPointer ()->spaceID, dimensions.x, dimensions.y, dimensions.z);
-                    dMassSetBoxTotal (&dmass, mass, dimensions.x, dimensions.y, dimensions.z);
                 }
                 if (name == "sphere")
                 {
-                    shape = name;
+                    data.shape = name;
                     log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    double radius = 1;
+                    data.radius = 1;
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
@@ -248,19 +223,17 @@ void Part::startPhysics (DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
-                            radius = stod (attribute);
+                            data.radius = stod (attribute);
                         }
                     }
-                    partGeomID = dCreateSphere (World::getWorldPointer ()->spaceID, radius);
-                    dMassSetSphereTotal (&dmass, mass, radius);
                 }
                 if (name == "cappedCylinder")
                 {
                     shape = name;
                     log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    double radius = 1;
-                    double length = 1;
-                    int directionAxis = 3;
+                    data.radius = 1;
+                    data.length = 1;
+                    data.directionAxis = 3;
                     DOMNamedNodeMap *attList = n->getAttributes ();
                     int nSize = attList->getLength ();
                     for (int i = 0; i < nSize; ++i)
@@ -272,54 +245,63 @@ void Part::startPhysics (DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
-                            radius = stod (attribute);
+                            data.radius = stod (attribute);
                         }
                         if (attribute == "length")
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
-                            length = stod (attribute);
+                            data.length = stod (attribute);
                         }
                         if (attribute == "directionAxis")
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
-                            if (attribute == "x") directionAxis = 1;
-                            if (attribute == "y") directionAxis = 2;
-                            if (attribute == "z") directionAxis = 3;
+                            if (attribute == "x") data.directionAxis = 1;
+                            if (attribute == "y") data.directionAxis = 2;
+                            if (attribute == "z") data.directionAxis = 3;
                         }
                     }
-                    partGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, length);
-                    dMassSetCappedCylinderTotal (&dmass, mass, directionAxis, radius, length);
                 }
             }
         }
     }
-    if (shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-    dGeomSetBody (partGeomID, partID);
-    dBodySetMass (partID, &dmass);
-}
-
-void Part::setPosition (Vector3d position)
-{
-    dBodySetPosition (partID, position.x, position.y, position.z);
-}
-
-void Part::setRotation (Quaternion rotation)
-{
-    dMatrix3 rot;
-    rotation.getOdeMatrix (rot);
-    dBodySetRotation (partID, rot);
+    if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
+    char number[256];
+    sprintf (number, "%i", instancesCount);
+    std::string name (relativePartDir + " #");
+    name.append(number);
+    OdeObject * odeObject = new OdeObject(this, data);
+    odeObjects[name] = odeObject;
 }
 
 void Part::stopPhysics ()
 {
-    dGeomDestroy (partGeomID);
-    dBodyDestroy (partID);
+    OdeObjectsIt i = odeObjects.begin();
+    for(;i != odeObjects.end(); i++)
+    {
+        delete i->second;
+        i->second = NULL;
+        odeObjects.erase(i);
+    }
+}
+
+void Part::setPosition (Vector3d position)
+{
+    OdeObjectsIt i = odeObjects.begin();
+    i->second->setPosition(position);
+}
+void Part::setRotation (Quaternion rotation)
+{
+    OdeObjectsIt i = odeObjects.begin();
+    i->second->setRotation(rotation);
 }
 
 void Part::stepPhysics ()
 {
+    dBodyID partID = NULL;
+    OdeObjectsIt i = odeObjects.begin();
+    partID = i->second->getBodyID();
     // //////////////simplified air friction (test)(should be forces!)
     dBodySetAngularVel (partID, (*(dReal *) (dBodyGetAngularVel (partID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 2)) * (dReal) (0.999));
     // ////////////////////////////////////simplified air friction
@@ -343,5 +325,6 @@ void Part::stepPhysics ()
     pos = dBodyGetPosition(partID);
     log->__format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
 
+    partID = NULL;
 }
 

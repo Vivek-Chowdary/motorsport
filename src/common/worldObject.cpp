@@ -26,3 +26,11 @@ WorldObject::~WorldObject ()
     delete log;
     log = NULL;
 }
+std::string WorldObject::getIdentifier()
+{
+    return identifier;
+}
+LogEngine * WorldObject::getLog()
+{
+    return log;
+}

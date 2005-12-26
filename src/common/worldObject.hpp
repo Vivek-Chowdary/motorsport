@@ -25,5 +25,7 @@ class WorldObject
   public:
     WorldObject (std::string identifier);
     ~WorldObject ();
+    std::string getIdentifier();
+    LogEngine * getLog();
 };
 #endif

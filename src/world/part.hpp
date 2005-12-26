@@ -10,9 +10,10 @@
 #ifndef PART_HPP
 #define PART_HPP
 #include <string>
-#include "ode/objects.h"
 #include "worldObject.hpp"
 #include "paths.hpp"
+#include "ogreObject.hpp"
+#include "odeObject.hpp"
 
 class Vector3d;
 class Quaternion;
@@ -25,10 +26,10 @@ class Part : public WorldObject
 {
   private:
     std::string relativePartDir;
+    OgreObjects ogreObjects;
+    OdeObjects odeObjects;
     // data
     static int instancesCount;
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     // physics
@@ -38,28 +39,14 @@ class Part : public WorldObject
     // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
-
-    // input
-    void startInput ();
-    void stopInput ();
   public:
-    // data
     Part (const std::string & partName);
     ~Part ();
 
-    // physics
-    void stepPhysics ();
-    dBodyID partID;
-    dGeomID partGeomID;
     void setPosition (Vector3d position);
     void setRotation (Quaternion rotation);
 
-    // graphics
+    void stepPhysics ();
     void stepGraphics ();
-    Ogre::Entity * partEntity;
-    Ogre::SceneNode * partNode;
-
-    // input
-    void stepInput ();
 };
 #endif
