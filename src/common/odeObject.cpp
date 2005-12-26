@@ -13,10 +13,11 @@
 #include "quaternion.hpp"
 #include "world.hpp"
 
-OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data)
+OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data, std::string identifier)
 {
     this->worldObject = worldObject;
-    geomID = NULL;
+    this->identifier = identifier;
+    std::string geomIdentifier = identifier + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     if (data.mass <= 0)
@@ -27,27 +28,81 @@ OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data)
     dMass dmass;
     if (data.shape == "box")
     {
-        geomID = dCreateBox (World::getWorldPointer ()->spaceID, data.dimensions.x, data.dimensions.y, data.dimensions.z);
+        geomIDs[geomIdentifier] = dCreateBox (World::getWorldPointer ()->spaceID, data.dimensions.x, data.dimensions.y, data.dimensions.z);
         dMassSetBoxTotal (&dmass, data.mass, data.dimensions.x, data.dimensions.y, data.dimensions.z);
     }
     if (data.shape == "sphere")
     {
-        geomID = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
+        geomIDs[geomIdentifier] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
         dMassSetSphereTotal (&dmass, data.mass, data.radius);
     }
     if (data.shape == "cappedCylinder")
     {
-        geomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
+        geomIDs[geomIdentifier] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
         dMassSetCappedCylinderTotal (&dmass, data.mass, data.directionAxis, data.radius, data.length);
     }
-    dGeomSetBody (geomID, bodyID);
+    dGeomSetBody (geomIDs[geomIdentifier], bodyID);
     dBodySetMass (bodyID, &dmass);
+}
+OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, std::string identifier)
+{
+    this->worldObject = worldObject;
+    this->identifier = identifier;
+    bodyID = NULL;
+    // create dBody
+    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    
+    // create transform spaces (in order to be able to 'offset' the collision geoms
+    geomIDs["GeomSpace(A)"] = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
+    geomIDs["GeomSpace(B)"] = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
+
+    // bind geoms with transformation spaces
+    dGeomTransformSetCleanup (geomIDs["GeomSpace(A)"], 1);
+    dGeomTransformSetCleanup (geomIDs["GeomSpace(B)"], 1);
+    
+    // create collision geoms
+    geomIDs["Geom(A)"] = dCreateBox (0, data.length, data.width, data.height / 2.0);
+    geomIDs["Geom(B)"] = dCreateBox (0, data.length / 2.0, data.width / 2.0, data.height / 2.0);
+
+    // insert collision geoms into transformation spaces
+    dGeomTransformSetGeom (geomIDs["GeomSpace(A)"], geomIDs["Geom(A)"]);
+    dGeomTransformSetGeom (geomIDs["GeomSpace(B)"], geomIDs["Geom(B)"]);
+
+    // apply offsets to the collision geoms
+    dGeomSetPosition (geomIDs["Geom(A)"], 0, 0, - data.height / 4.0);
+    dGeomSetPosition (geomIDs["Geom(B)"], -data.width / 6, 0, (data.height / 4.0) + 0.1);
+
+    // associate the dBody with the 2 collision geoms via the transformation spaces
+    dGeomSetBody (geomIDs["GeomSpace(A)"], bodyID);
+    dGeomSetBody (geomIDs["GeomSpace(B)"], bodyID);
+
+    // set dBody mass
+    dMass tmpMass;
+    dMassSetBoxTotal (&tmpMass, data.mass, data.length, data.width, data.height);
+    dBodySetMass (bodyID, &tmpMass);
+
+    // make sure it's initialized with correct values.
+    Quaternion finalRotation = Quaternion(0,0,0,0);
+    dMatrix3 rot;
+    finalRotation.getOdeMatrix (rot);
+    dBodySetRotation (bodyID, rot);
+    dBodySetPosition (bodyID, 0, 0 ,0);
+    dBodySetLinearVel  (bodyID, 0, 0, 0);
+    dBodySetAngularVel (bodyID, 0, 0, 0);
 }
 OdeObject::~OdeObject ()
 {
     //TODO: check if there's anything left to do here with ODE...
-    dGeomDestroy (geomID);
-    geomID = NULL;
+    worldObject->getLog()->__format (LOG_DEVELOPER, "Removing geoms");
+    GeomIDsIt i = geomIDs.begin();
+    for(;i != geomIDs.end(); i++)
+    {
+        worldObject->getLog()->__format (LOG_DEVELOPER, "Removing geom id=%s", i->first.c_str());
+        dGeomDestroy (i->second);
+        i->second = NULL;
+        geomIDs.erase(i);
+    }
+
     dBodyDestroy (bodyID);
     bodyID = NULL;
     this->worldObject = NULL;

@@ -21,12 +21,12 @@
         shadowTechnique = "SHADOWTYPE_STENCIL_MODULATIVE"
         __shadowTechnique = "SHADOWTYPE_STENCIL_ADDITIVE"
         ___shadowTechnique = "SHADOWTYPE_TEXTURE_MODULATIVE"
-        width = "1024"
-        height = "768"
+        width = "640"
+        height = "480"
         bpp = "0" 
         renderer = "OpenGL"
         defaultNumMipmaps = "5"
-        fullScreen = "1"
+        fullScreen = "0"
         >
     </ogre>
 </graphicsConfig>

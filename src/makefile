@@ -202,6 +202,7 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+        common/worldObject.cpp \
         common/ogreObject.cpp \
         common/odeObject.cpp \
 	world/part.cpp \
@@ -226,7 +227,6 @@ SOURCES := \
         common/axis.cpp \
         common/vector3d.cpp \
         common/location.cpp \
-        common/worldObject.cpp \
 	common/vehicleComponent.cpp \
 	common/camera.cpp \
 	tools/xmlParser.cpp \

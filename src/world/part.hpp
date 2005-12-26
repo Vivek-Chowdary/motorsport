@@ -26,8 +26,6 @@ class Part : public WorldObject
 {
   private:
     std::string relativePartDir;
-    OgreObjects ogreObjects;
-    OdeObjects odeObjects;
     // data
     static int instancesCount;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);

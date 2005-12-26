@@ -99,18 +99,12 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     startGraphics(partNode);
     startPhysics(partNode);
-    OgreObjectsIt g = ogreObjects.begin();
-    OdeObjectsIt d = odeObjects.begin();
-    g->second->setOdeReference(d->second);
+    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
 }
 
 void Part::stepGraphics ()
 {
-    OgreObjectsIt i = ogreObjects.begin();
-    for(;i != ogreObjects.end(); i++)
-    {
-        i->second->stepGraphics();
-    }
+    base->stepGraphics();
 }
 
 void Part::stopGraphics ()
@@ -126,7 +120,7 @@ void Part::stopGraphics ()
 
 void Part::startGraphics (DOMNode * n)
 {
-    std::string mesh = "None";
+    OgreObjectData data;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -138,8 +132,8 @@ void Part::startGraphics (DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "mesh")
             {
-                assignXmlString (mesh, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", mesh.c_str());
+                assignXmlString (data.meshPath, attNode->getValue());
+                log->__format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", data.meshPath.c_str());
             }
         }
     }
@@ -147,11 +141,10 @@ void Part::startGraphics (DOMNode * n)
     static int num = 0;
     num++;
     sprintf (number, "%i", num);
-    std::string name (relativePartDir + " #");
-    name.append(number);
-    std::string meshPath = Paths::part(relativePartDir) + mesh;
-    OgreObject * ogreObject = new OgreObject(this, meshPath, name);
-    ogreObjects[name] = ogreObject;
+    std::string id (relativePartDir + "(" + number + ")");
+    data.meshPath = Paths::part(relativePartDir) + data.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, data, id);
+    ogreObjects[id] = ogreObject;
 }
 void Part::startPhysics (DOMNode * n)
 {
@@ -269,10 +262,8 @@ void Part::startPhysics (DOMNode * n)
     if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
     char number[256];
     sprintf (number, "%i", instancesCount);
-    std::string name (relativePartDir + " #");
-    name.append(number);
-    OdeObject * odeObject = new OdeObject(this, data);
-    odeObjects[name] = odeObject;
+    std::string id (relativePartDir + "(" + number + ")");
+    odeObjects[id] = new OdeObject(this, data, id);
 }
 
 void Part::stopPhysics ()
@@ -288,20 +279,16 @@ void Part::stopPhysics ()
 
 void Part::setPosition (Vector3d position)
 {
-    OdeObjectsIt i = odeObjects.begin();
-    i->second->setPosition(position);
+    odeObjects.begin()->second->setPosition(position);
 }
 void Part::setRotation (Quaternion rotation)
 {
-    OdeObjectsIt i = odeObjects.begin();
-    i->second->setRotation(rotation);
+    odeObjects.begin()->second->setRotation(rotation);
 }
 
 void Part::stepPhysics ()
 {
-    dBodyID partID = NULL;
-    OdeObjectsIt i = odeObjects.begin();
-    partID = i->second->getBodyID();
+    dBodyID partID = odeObjects.begin()->second->getBodyID();
     // //////////////simplified air friction (test)(should be forces!)
     dBodySetAngularVel (partID, (*(dReal *) (dBodyGetAngularVel (partID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 2)) * (dReal) (0.999));
     // ////////////////////////////////////simplified air friction
@@ -324,7 +311,5 @@ void Part::stepPhysics ()
     const dReal * pos;
     pos = dBodyGetPosition(partID);
     log->__format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
-
-    partID = NULL;
 }
 

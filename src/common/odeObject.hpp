@@ -18,19 +18,26 @@
 
 class OdeObject;
 class OdeObjectData;
+class VehicleBodyOdeObjectData;
 class Quaternion;
+class WorldObject;
 
 typedef std::map <std::string, OdeObject *> OdeObjects;
 typedef std::map <std::string, OdeObject *>::iterator OdeObjectsIt;
+typedef std::map <std::string, dGeomID> GeomIDs;
+typedef std::map <std::string, dGeomID>::iterator GeomIDsIt;
+
 class OdeObject
 {
     protected:
         WorldObject * worldObject;
         dBodyID bodyID;
-        dGeomID geomID;
+        GeomIDs geomIDs;
+        std::string identifier;
 
     public:
-        OdeObject (WorldObject * worldObject, OdeObjectData data);
+        OdeObject (WorldObject * worldObject, OdeObjectData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, std::string identifier);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
@@ -58,5 +65,20 @@ class OdeObjectData
             directionAxis = 3;
         }
         ~OdeObjectData() {};
+};
+class VehicleBodyOdeObjectData
+{
+    public:
+        double length;
+        double width;
+        double height;
+        double mass;
+
+        VehicleBodyOdeObjectData()
+        {
+            mass = -1;
+            width = height = length = 1;
+        }
+        ~VehicleBodyOdeObjectData() {};
 };
 #endif

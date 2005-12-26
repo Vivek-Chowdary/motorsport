@@ -30,8 +30,6 @@ class Body : public WorldObject, public VehicleComponent
     // data
     static int instancesCount;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
     double dragCoefficient;
     double frontalArea;
 
@@ -49,22 +47,15 @@ class Body : public WorldObject, public VehicleComponent
 
     // physics
     void stepPhysics ();
-    dBodyID bodyID;
-    dGeomID bodyGeomID;
-    dGeomID bodyGeom2ID;
-    dGeomID geomSpace;
-    dGeomID geomSpace2;
-    void setPosition (Vector3d position);
     void applyRotation (Quaternion rotation);
     Vector3d getPosition ();
     Quaternion getRotation ();
+    void setRotation (Quaternion rotation);
+    void setPosition (Vector3d position);
+    dBodyID getBodyID ();
 
     // graphics
     void stepGraphics ();
-    class Ogre::Entity;
-    class Ogre::SceneNode;
-    Ogre::Entity * bodyEntity;
-    Ogre::SceneNode * bodyNode;
     void setRenderDetail(int renderMode);
 };
 #endif

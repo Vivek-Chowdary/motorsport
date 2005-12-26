@@ -333,7 +333,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                     log->__format (LOG_CCREATOR, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (wheelNode, this);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
-                    tmpWheel->setRefBody(body->bodyID);
+                    tmpWheel->setRefBody(body->getBodyID());
                 }
             }
         }
@@ -424,7 +424,7 @@ void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 }
 dBodyID Vehicle::getVehicleID()
 {
-    return body->bodyID;
+    return body->getBodyID();
 }
 
 void Vehicle::setPosition (Vector3d position)
@@ -572,9 +572,9 @@ void Vehicle::stepPhysics ()
     // print telemetry data
     if ( userDriver )
     {
-        const dReal * tmp = dBodyGetLinearVel(body->bodyID);
+        const dReal * tmp = dBodyGetLinearVel(body->getBodyID());
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        tmp = dBodyGetPosition(body->bodyID);
+        tmp = dBodyGetPosition(body->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearLabel().c_str(), distance);
     }

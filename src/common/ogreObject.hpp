@@ -20,9 +20,12 @@ namespace Ogre {
 }
 class OdeObject;
 class OgreObject;
+class OgreObjectData;
+class WorldObject;
 
 typedef std::map <std::string, OgreObject *> OgreObjects;
 typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
+
 class OgreObject
 {
     protected:
@@ -32,9 +35,19 @@ class OgreObject
         WorldObject * worldObject;
         std::string identifier;
     public:
-        OgreObject (WorldObject * worldObject, std::string meshPath, std::string identifier);
+        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string identifier);
         ~OgreObject ();
         void setOdeReference(OdeObject * odeObject);       
         void stepGraphics();
+};
+class OgreObjectData
+{
+    public:
+        std::string meshPath;
+        OgreObjectData()
+        {
+            meshPath = "none";
+        }
+        ~OgreObjectData() {};
 };
 #endif

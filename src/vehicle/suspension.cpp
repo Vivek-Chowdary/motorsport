@@ -142,7 +142,7 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
 {
     wheel.setSuspJoint (jointID);
-    dJointAttach (jointID, vehicle.body->bodyID, wheel.wheelID);
+    dJointAttach (jointID, vehicle.body->getBodyID(), wheel.wheelID);
 
     // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
 /*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);

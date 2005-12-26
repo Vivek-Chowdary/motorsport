@@ -38,25 +38,15 @@ Body::~Body ()
 }
 
 
-void Body::updateOgrePosition ()
-{
-    const dReal *temp = dBodyGetPosition (bodyID);  // need to allocate memory first??
-    bodyNode->setPosition (temp[0], temp[1], temp[2]);
-}
-void Body::updateOgreOrientation ()
-{
-    const dReal *temp = dBodyGetQuaternion (bodyID);    // need to allocate memory first??
-    bodyNode->setOrientation (temp[0], temp[1], temp[2], temp[3]);
-}
-
 void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     startPhysics (n);
     startGraphics (n);
+    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
 }
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    std::string mesh = "None";
+    OgreObjectData data;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -68,36 +58,25 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "mesh")
             {
-                assignXmlString (mesh, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", mesh.c_str());
+                assignXmlString (data.meshPath, attNode->getValue());
+                log->__format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", data.meshPath.c_str());
             }
         }
     }
     char number[256];
-    sprintf (number, "%i", instancesCount);
-    std::string name (mesh + " #");
-    name.append(number);
-
-    std::string vehicleDir = vehicle->getRelativeVehicleDir();
-    std::string meshPath = Paths::vehicle(vehicleDir) + mesh;
-    bodyEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
-    log->__format (LOG_CCREATOR, "Body mesh has %i submeshes", bodyEntity->getNumSubEntities());
-    for(unsigned int i = 0; i < bodyEntity->getNumSubEntities(); i++)
-    {
-        log->__format (LOG_CCREATOR, "Body submesh %i material: %s", i, bodyEntity->getSubEntity(i)->getMaterialName().c_str() );
-    }
-    bodyNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    bodyNode->attachObject (bodyEntity);
-    bodyEntity->setCastShadows(true);
-}
-void Body::stepGraphics ()
-{
-    updateOgrePosition ();
-    updateOgreOrientation ();
+    static int num = 0;
+    num++;
+    sprintf (number, "%i", num);
+    std::string id (vehicle->getIdentifier() + identifier + "(" + number + ")");
+    data.meshPath = Paths::vehicle(vehicle->getRelativeVehicleDir()) + data.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, data, id);
+    ogreObjects[id] = ogreObject;
 }
 
 void Body::setRenderDetail(int renderMode)
 {
+    //FIXME: access OgreObjects instances.
+    /*
     Ogre::SceneDetailLevel mode;
     switch (renderMode)
     {
@@ -112,6 +91,7 @@ void Body::setRenderDetail(int renderMode)
         break;
     }
     bodyEntity->setRenderDetail(mode);
+    */
 }
 void Body::stopGraphics ()
 {
@@ -119,10 +99,7 @@ void Body::stopGraphics ()
 }
 void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    double length = 1;
-    double width = 1;
-    double height = 1;
-    double mass = 1;
+    VehicleBodyOdeObjectData data;
     dragCoefficient = 0.3;
     frontalArea = 0;
     if (n->hasAttributes ())
@@ -138,25 +115,25 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the body physics length: %s", attribute.c_str() );
-                length = stod (attribute);
+                data.length = stod (attribute);
             }
             if (attribute == "width")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the body physics width: %s", attribute.c_str() );
-                width = stod (attribute);
+                data.width = stod (attribute);
             }
             if (attribute == "height")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the body physics height: %s", attribute.c_str() );
-                height = stod (attribute);
+                data.height = stod (attribute);
             }
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
-                mass = stod (attribute);
+                data.mass = stod (attribute);
             }
             if (attribute == "frontalArea")
             {
@@ -172,87 +149,63 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    // create dBody
-    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
-    
-    // create transform spaces (in order to be able to 'offset' the collision geoms
-    geomSpace = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
-    geomSpace2 = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
-
-    // bind geoms with transformation spaces
-    dGeomTransformSetCleanup (geomSpace, 1);
-    dGeomTransformSetCleanup (geomSpace2, 1);
-    
-    // create collision geoms
-    bodyGeomID = dCreateBox (0, length, width, height / 2.0);
-    bodyGeom2ID = dCreateBox (0, length / 2.0, width / 2.0, height / 2.0);
-
-    // insert collision geoms into transformation spaces
-    dGeomTransformSetGeom (geomSpace, bodyGeomID);
-    dGeomTransformSetGeom (geomSpace2, bodyGeom2ID);
-
-    // apply offsets to the collision geoms
-    dGeomSetPosition (bodyGeomID, 0, 0, - height / 4.0);
-    dGeomSetPosition (bodyGeom2ID, -width / 6, 0, (height / 4.0) + 0.1);
-
-    // associate the dBody with the 2 collision geoms via the transformation spaces
-    dGeomSetBody (geomSpace, bodyID);
-    dGeomSetBody (geomSpace2, bodyID);
-
-    // set dBody mass
-    dMass tmpMass;
-    dMassSetBoxTotal (&tmpMass, mass, length, width, height);
-    dBodySetMass (bodyID, &tmpMass);
-
-    // make sure it's initialized with correct values.
-    Quaternion finalRotation = Quaternion(0,0,0,0);
-    dMatrix3 rot;
-    finalRotation.getOdeMatrix (rot);
-    dBodySetRotation (bodyID, rot);
-    dBodySetPosition (bodyID, 0, 0 ,0);
-    dBodySetLinearVel  (bodyID, 0, 0, 0);
-    dBodySetAngularVel (bodyID, 0, 0, 0);
+    odeObjects[identifier] = new OdeObject(this, data, identifier);
 
     // set the air drag variables correctly
     if (frontalArea == 0)
     {
-        frontalArea = width * height * 0.6;
+        frontalArea = data.width * data.height * 0.6;
     }
 }
 
 void Body::setPosition (Vector3d position)
 {               
-    dBodySetPosition (bodyID, position.x, position.y, position.z);
+    odeObjects.begin()->second->setPosition(position);
 }
 Vector3d Body::getPosition ()
 {
-    const dReal *temp = dBodyGetPosition (bodyID);
-    return Vector3d (temp[0], temp[1], temp[2]);
+    return odeObjects.begin()->second->getPosition();
 }
 
 void Body::applyRotation (Quaternion rotation)
 {
+    //FIXME: could be wrongly coded.
+    /*
     setPosition ( rotation.rotateObject(getPosition()) );
     dMatrix3 rot;
     Quaternion finalRotation = rotation * getRotation();
     finalRotation.getOdeMatrix (rot);
     dBodySetRotation (bodyID, rot);
+    */
+    setPosition ( rotation.rotateObject(getPosition()) );
+    Quaternion finalRotation = rotation * getRotation();
+    setRotation (finalRotation);
 }
 Quaternion Body::getRotation ()
 {
-    const dReal *temp = dBodyGetQuaternion (bodyID);
-    return Quaternion (temp);
+    return odeObjects.begin()->second->getRotation();
+}
+void Body::setRotation (Quaternion rotation)
+{
+    odeObjects.begin()->second->setRotation(rotation);
 }
 
 void Body::stopPhysics ()
 {
-    dGeomDestroy (geomSpace);
-    dGeomDestroy (geomSpace2);
-    dBodyDestroy (bodyID);
+    //TODO: check if its necessary to remove anything. or put it in destructor
 }
 
+dBodyID Body::getBodyID ()
+{
+    return odeObjects.begin()->second->getBodyID();
+}
+void Body::stepGraphics ()
+{
+    base->stepGraphics();
+}
 void Body::stepPhysics ()
 {
+    dBodyID bodyID = getBodyID();
     if (this == World::getWorldPointer ()->vehicleList[0]->body)
     {
         double moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
