@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<track
+<area
     name = "Testing Ground"
-    description = "A simple track, featuring an infinite cement ground, and a clear sky. Located in the middle of a dry area surrounded by some small mountains."
+    description = "A simple area, featuring an infinite cement ground, and a clear sky. Located in the middle of a dry area surrounded by some small mountains."
     author = "STenyaK"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
@@ -131,4 +131,4 @@
             >
         </camera>
     </cameraList>
-</track>
+</area>
