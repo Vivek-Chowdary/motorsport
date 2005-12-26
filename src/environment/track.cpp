@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "data/track.hpp"
+#include "track.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "tools/xmlParser.hpp"

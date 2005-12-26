@@ -125,7 +125,8 @@ INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)/xercesc \
-	data \
+	vehicle \
+	environment \
 	log \
         tools \
 	common \
@@ -212,24 +213,24 @@ SOURCES := \
         common/location.cpp \
         common/worldObject.cpp \
 	common/vehicleComponent.cpp \
+	common/camera.cpp \
 	tools/xmlParser.cpp \
 	tools/paths.cpp \
 	system.cpp \
 	main.cpp \
-	data/body.cpp \
-	data/camera.cpp \
-        data/driveJoint.cpp \
-        data/driveMass.cpp \
-        data/engine.cpp \
-        data/finalDrive.cpp \
-        data/gearbox.cpp \
-	data/part.cpp \
-	data/pedal.cpp \
-	data/suspension.cpp \
-        data/track.cpp \
-	data/vehicle.cpp \
-	data/wheel.cpp \
-	data/world.cpp
+	vehicle/body.cpp \
+        vehicle/driveJoint.cpp \
+        vehicle/driveMass.cpp \
+        vehicle/engine.cpp \
+        vehicle/finalDrive.cpp \
+        vehicle/gearbox.cpp \
+	vehicle/part.cpp \
+	vehicle/pedal.cpp \
+	vehicle/suspension.cpp \
+        environment/track.cpp \
+	vehicle/vehicle.cpp \
+	vehicle/wheel.cpp \
+	environment/world.cpp
 ###########################################
 
 
@@ -300,7 +301,7 @@ $(TARGET) :$(OBJECTS)
 	@echo    "----------------------------------------------"
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o data/xmlParser.o log/fakeGuiEngine.o tools/vector3d.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o tools/xmlParser.o log/fakeGuiEngine.o tools/vector3d.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
