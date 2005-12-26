@@ -15,8 +15,8 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-Pedal::Pedal (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject("Pedal")
+Pedal::Pedal (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
+    :WorldObject("Pedal"), VehicleComponent(vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     processXmlRootNode (n);

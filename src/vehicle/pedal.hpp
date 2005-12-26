@@ -8,11 +8,12 @@
 \*****************************************************************************/
 
 #ifndef PEDAL_HPP
-#   define PEDAL_HPP
-#   include "tools/xercesc_fwd.hpp"
-#   include "worldObject.hpp"
+#define PEDAL_HPP
+#include "tools/xercesc_fwd.hpp"
+#include "worldObject.hpp"
+#include "vehicleComponent.hpp"
 
-class Pedal : public WorldObject
+class Pedal : public WorldObject, public VehicleComponent
 {
   private:
     // data
@@ -27,7 +28,7 @@ class Pedal : public WorldObject
     double currentAngle;
   public:
     // data
-    Pedal (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Pedal (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~Pedal ();
     void setUserDriver ();
     std::string getId();

@@ -22,7 +22,7 @@
 int Wheel::instancesCount = 0;
 
 Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :DriveMass("Wheel"),VehicleComponent(vehicle)
+    :DriveMass("Wheel", vehicle)
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     processXmlRootNode (n);

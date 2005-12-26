@@ -15,7 +15,7 @@
 #   include "wheel.hpp"
 #   include "tools/xercesc_fwd.hpp"
 
-class GearboxGear : public WorldObject
+class GearboxGear : public WorldObject, public VehicleComponent
 {
   public:
     double ratio;   
@@ -25,7 +25,7 @@ class GearboxGear : public WorldObject
 
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
-    GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n);
+    GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~GearboxGear ();
 
     int getIndex() { return index; } ;
@@ -49,7 +49,7 @@ class Gearbox : public DriveMass
     double gearRatio;
   public:
     // data
-    Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~Gearbox ();
     void setGear (int inputGear)      { currentGear = inputGear; };
     double getGearRatio()             { return gearMap[currentGear]->ratio; };

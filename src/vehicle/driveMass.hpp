@@ -8,15 +8,16 @@
 \*****************************************************************************/
 
 #ifndef DRIVE_HPP
-#   define DRIVE_HPP
-#   include "ode/objects.h"
-#   include "driveJoint.hpp"
-#   include "worldObject.hpp"
-#   include "tools/xercesc_fwd.hpp"
+#define DRIVE_HPP
+#include "ode/objects.h"
+#include "driveJoint.hpp"
+#include "worldObject.hpp"
+#include "tools/xercesc_fwd.hpp"
+#include "vehicleComponent.hpp"
 
 class DriveJoint;
 
-class DriveMass : public WorldObject
+class DriveMass : public WorldObject, public VehicleComponent
 {
   protected:
 //    static int instancesCount;
@@ -31,7 +32,7 @@ class DriveMass : public WorldObject
     
   public:
     // data
-    DriveMass (std::string identifier);
+    DriveMass (std::string identifier, Vehicle * vehicle);
     ~DriveMass ();
 
     // physics

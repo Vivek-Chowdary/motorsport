@@ -14,7 +14,6 @@
 #include "worldObject.hpp"
 #include "tools/xercesc_fwd.hpp"
 #include <string>
-#include "vehicleComponent.hpp"
 #include "paths.hpp"
 
 //forward declarations
@@ -24,9 +23,8 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
-class Vehicle;
 
-class Wheel : public DriveMass, public VehicleComponent
+class Wheel : public DriveMass
 {
   private:
     // data

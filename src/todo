@@ -1,4 +1,4 @@
-make all vehicle components derive from vehicle component
+move part to world
 make vehicle component constructors work with parsed XmlData objects
 make vehicle parse everything and create the XmlData objects
 refactorize the physics code

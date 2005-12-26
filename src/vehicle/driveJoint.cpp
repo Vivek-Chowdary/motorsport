@@ -15,22 +15,22 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-DriveJoint::DriveJoint (std::string identifier)
-    :WorldObject("DriveJoint" + identifier)
+DriveJoint::DriveJoint (std::string identifier, Vehicle * vehicle)
+    :WorldObject("DriveJoint" + identifier),VehicleComponent(vehicle)
 {
 }
 DriveJoint::~DriveJoint ()
 {
 }
-Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint("ClutchCLJ")
+Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
+    :DriveJoint("ClutchCLJ", vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a clutch node");
     processXmlRootNode (n);
 }
 
-Clutch::Clutch ()
-    :DriveJoint("ClutchTFR")
+Clutch::Clutch (Vehicle * vehicle)
+    :DriveJoint("ClutchTFR", vehicle)
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -54,15 +54,15 @@ void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
 }
 
-Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint("GearGTJ")
+Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
+    :DriveJoint("GearGTJ", vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
-Gear::Gear ()
-    :DriveJoint("GearTFJ")
+Gear::Gear (Vehicle * vehicle)
+    :DriveJoint("GearTFJ", vehicle)
 {
     ratio = 1.0;
     springConstant = 300.0;
@@ -85,15 +85,15 @@ void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
 }
 
-LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint("LSD-LSJ")
+LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
+    :DriveJoint("LSD-LSJ", vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
-LSD::LSD ()
-    :DriveJoint("LSD-LSJ")
+LSD::LSD (Vehicle * vehicle)
+    :DriveJoint("LSD-LSJ", vehicle)
 {
     ratio = 1.0;
     springConstant = 300.0;

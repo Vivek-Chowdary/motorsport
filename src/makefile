@@ -202,6 +202,19 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+	vehicle/body.cpp \
+        vehicle/driveJoint.cpp \
+        vehicle/driveMass.cpp \
+        vehicle/engine.cpp \
+        vehicle/finalDrive.cpp \
+        vehicle/gearbox.cpp \
+	vehicle/pedal.cpp \
+	vehicle/suspension.cpp \
+	vehicle/wheel.cpp \
+	vehicle/vehicle.cpp \
+	world/part.cpp \
+        world/track.cpp \
+	world/world.cpp \
 	graphicsEngine.cpp \
 	guiEngine.cpp \
 	inputEngine.cpp \
@@ -217,20 +230,7 @@ SOURCES := \
 	tools/xmlParser.cpp \
 	tools/paths.cpp \
 	system.cpp \
-	main.cpp \
-	vehicle/body.cpp \
-        vehicle/driveJoint.cpp \
-        vehicle/driveMass.cpp \
-        vehicle/engine.cpp \
-        vehicle/finalDrive.cpp \
-        vehicle/gearbox.cpp \
-	vehicle/part.cpp \
-	vehicle/pedal.cpp \
-	vehicle/suspension.cpp \
-        world/track.cpp \
-	vehicle/vehicle.cpp \
-	vehicle/wheel.cpp \
-	world/world.cpp
+	main.cpp
 ###########################################
 
 

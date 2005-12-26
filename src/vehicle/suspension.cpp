@@ -24,8 +24,8 @@
 
 int Suspension::instancesCount = 0;
 
-Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject("Suspension")
+Suspension::Suspension (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
+    :WorldObject("Suspension"), VehicleComponent(vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse the suspension node");
     processXmlRootNode (n);

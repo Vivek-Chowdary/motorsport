@@ -253,12 +253,12 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     processXmlPedalListNode(pedalListNode);
 
     body = new Body (bodyNode, this);
-    engine = new Engine (engineNode);
-    clutch = new Clutch (clutchNode);
-    gearbox = new Gearbox (gearboxNode);
-    finalDrive = new FinalDrive (finalDriveNode);
-    transfer = new Gear ();
-    rearDiff = new LSD ();
+    engine = new Engine (engineNode, this);
+    clutch = new Clutch (clutchNode, this);
+    gearbox = new Gearbox (gearboxNode, this);
+    finalDrive = new FinalDrive (finalDriveNode, this);
+    transfer = new Gear (this);
+    rearDiff = new LSD (this);
     
     log->loadscreen (LOG_CCREATOR, "Attaching the vehicle components together");
     clutch->setOutputPointer(gearbox);
@@ -310,7 +310,7 @@ void Vehicle::processXmlPedalListNode(DOMNode * pedalListNode)
                 if (nodeName == "pedal")
                 {
                     log->__format (LOG_CCREATOR, "Found a pedal.");
-                    Pedal * tmpPedal = new Pedal (pedalNode);
+                    Pedal * tmpPedal = new Pedal (pedalNode, this);
                     pedalMap[tmpPedal->getId()]=tmpPedal;
                 }
             }
@@ -354,7 +354,7 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                 if (nodeName == "unidimensional")
                 {
                     log->__format (LOG_CCREATOR, "Found a suspension.");
-                    Suspension * tmpSusp = new Suspension (suspNode);
+                    Suspension * tmpSusp = new Suspension (suspNode, this);
                     suspensionMap[tmpSusp->getIndex()]=tmpSusp;
                 }
             }

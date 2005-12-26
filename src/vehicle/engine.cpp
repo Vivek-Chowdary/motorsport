@@ -18,8 +18,8 @@
 
 class Pedal;
 
-Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass("Engine")
+Engine::Engine (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
+    :DriveMass("Engine", vehicle)
 {
     log->__format (LOG_CCREATOR, "Starting to parse an engine node");
     processXmlRootNode (n);

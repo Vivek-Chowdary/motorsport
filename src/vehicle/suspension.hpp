@@ -8,13 +8,14 @@
 \*****************************************************************************/
 
 #ifndef SUSPENSION_HPP
-#   define SUSPENSION_HPP
-#   include "ode/objects.h"
-#   include "worldObject.hpp"
-#   include "tools/xercesc_fwd.hpp"
-#   include <string>
-#   include "quaternion.hpp"
-#   include "vector3d.hpp"
+#define SUSPENSION_HPP
+#include "ode/objects.h"
+#include "worldObject.hpp"
+#include "tools/xercesc_fwd.hpp"
+#include <string>
+#include "quaternion.hpp"
+#include "vector3d.hpp"
+#include "vehicleComponent.hpp"
 
 //forward declarations
 namespace Ogre {
@@ -24,7 +25,7 @@ namespace Ogre {
 class Vehicle;
 class Wheel;
 
-class Suspension : public WorldObject
+class Suspension : public WorldObject, public VehicleComponent
 {
   private:
     // data
@@ -44,7 +45,7 @@ class Suspension : public WorldObject
     void stopPhysics ();
   public:
     // data
-    Suspension (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Suspension (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
     ~Suspension ();
     std::string getIndex();
     void attach (Wheel & wheel, Vehicle & vehicle);
