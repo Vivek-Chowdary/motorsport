@@ -24,8 +24,8 @@
 
 int Camera::instancesCount = 0;
 
-Camera::Camera (XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject("Camera")
+Camera::Camera (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject(container, name)
 {
     instancesCount ++;
     processXmlRootNode (n);

@@ -13,12 +13,11 @@
 #include "driveMass.hpp"
 #include "worldObject.hpp"
 #include "tools/xercesc_fwd.hpp"
-#include "vehicleComponent.hpp"
 
 class DriveMass;
 class Pedal;
 
-class DriveJoint : public WorldObject, public VehicleComponent
+class DriveJoint : public WorldObject
 {
   protected:
     // data
@@ -40,7 +39,7 @@ class DriveJoint : public WorldObject, public VehicleComponent
         
   public:
     // data
-    DriveJoint (std::string identifier, Vehicle * vehicle);
+    DriveJoint (WorldObject * container, std::string name);
     ~DriveJoint ();
     void enable () { enabled = 1; } ;
     void disable () { enabled = 0; } ;
@@ -71,8 +70,8 @@ class Clutch : public DriveJoint
     void stopPhysics ();
   public:
     // data
-    Clutch (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle);
-    Clutch (Vehicle * vehicle);
+    Clutch (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Clutch (WorldObject * container, std::string name);
     ~Clutch ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void setClutchPedal(Pedal * pedal);
@@ -96,8 +95,8 @@ class Gear : public DriveJoint
 
   public:
     // data
-    Gear (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
-    Gear (Vehicle * vehicle);
+    Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Gear (WorldObject * container, std::string name);
     ~Gear ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
@@ -126,8 +125,8 @@ class LSD : public DriveJoint
 
   public:
     // data
-    LSD (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
-    LSD (Vehicle * vehicle);
+    LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    LSD (WorldObject * container, std::string name);
     ~LSD ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void setOutputPointer2 (DriveMass *output)   { outputDrive2 = output; } ;

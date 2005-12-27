@@ -62,7 +62,7 @@ class Vehicle : public WorldObject
   public:
     // data
     std::string getRelativeVehicleDir();
-    Vehicle (const std::string & vehicleName);
+    Vehicle (WorldObject * container, std::string name);
     ~Vehicle ();
     Body * body;
     Engine * engine;

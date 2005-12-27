@@ -21,22 +21,31 @@ typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
 class OdeObject;
 typedef std::map <std::string, OdeObject *> OdeObjects;
 typedef std::map <std::string, OdeObject *>::iterator OdeObjectsIt;
+class WorldObject;
+typedef std::map <std::string, WorldObject *> WorldObjects;
+typedef std::map <std::string, WorldObject *>::iterator WorldObjectsIt;
 
 class WorldObject
 {
   private:
-    WorldObject ();
-    void construct (std::string identifier);
+    static unsigned int instancesCount;
+    static WorldObjects worldObjects;
+    void construct (std::string id);
   protected:
     LogEngine * log;
     WorldObject * base;
-    std::string identifier;
+    WorldObject * container;
+    std::string id;
+    std::string name;
     OgreObjects ogreObjects;
     OdeObjects odeObjects;
   public:
-    WorldObject (std::string identifier);
+    static void logAll();
+    WorldObject (WorldObject * container, const std::string & name);
     ~WorldObject ();
-    std::string getIdentifier();
+    std::string getId();
+    std::string getName();
+    std::string getFullName();
     LogEngine * getLog();
     void WorldObject::stepGraphics ();
 };

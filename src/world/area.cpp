@@ -22,15 +22,14 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
-Area::Area (const std::string & areaName)
-    :WorldObject(areaName)
+Area::Area (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
-    relativeAreaDir = areaName;
-    std::string areaPath = Paths::area(areaName);
-    std::string areaXmlPath = Paths::areaXml(areaName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath, "FileSystem", areaName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath + "skybox.zip", "Zip", areaName);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(areaName);
+    std::string areaPath = Paths::area(name);
+    std::string areaXmlPath = Paths::areaXml(name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath, "FileSystem", name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath + "skybox.zip", "Zip", name);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(name);
     log->loadscreen (LOG_ENDUSER, "Starting to load a area (%s)", areaXmlPath.c_str());
     double time = SDL_GetTicks()/1000.0;
     XmlFile * xmlFile = new XmlFile (areaXmlPath.c_str());
@@ -240,7 +239,7 @@ void Area::processXmlRootNode (DOMNode * n)
                                         if (node2Name == "camera")
                                         {
                                             log->__format (LOG_CCREATOR, "Found a camera.");
-                                            Camera * tmpCam = new Camera (n2);
+                                            Camera * tmpCam = new Camera (this, "Camera", n2);
                                             cameraList.push_back (tmpCam);
                                         }
                                     }
@@ -347,7 +346,7 @@ void Area::processXmlPartListNode(DOMNode * partListNode)
                     }
                 }
             }
-            Part * partPointer = new Part (nodeName);
+            Part * partPointer = new Part (this, nodeName);
             partPointer->setPosition (position);
             partPointer->setRotation (rotation);
             partList.push_back (partPointer);

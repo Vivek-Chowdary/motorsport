@@ -8,14 +8,16 @@
 \*****************************************************************************/
 
 #ifndef LOG_ENGINE_HPP
-#   define LOG_ENGINE_HPP
-#   include <string>
-#   include <fstream>
-#   include "xercesc_fwd.hpp"
-#define __format(X ,Y, ...) format((X), std::string(std::string(__FILE__) + ":%i: " + std::string((Y))).c_str(), __LINE__, ##__VA_ARGS__)
+#define LOG_ENGINE_HPP
+#include <string>
+#include <map>
+#include <fstream>
+#include "xercesc_fwd.hpp"
+#define __format(X ,Y, ...) format((X), std::string("[%s:%3i] " + std::string((Y))).c_str(),__FILE__, __LINE__, ##__VA_ARGS__)
 
 //forward declarations
 class GuiEngine;
+#define MAX_SOURCE_FILENAME_LENGTH 28
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
@@ -45,12 +47,17 @@ struct LogConfig
   LOG_MASK mask;      // !< Where should we send the log
 };
 
+class LogEngine;
+typedef std::map <std::string, LogEngine *> LogEngines;
+typedef std::map <std::string, LogEngine *>::iterator LogEnginesIt;
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
 */
 class LogEngine
 {
     private:
+    static unsigned int instancesCount;
+    static LogEngines logEngines;
     // / Indicates how much information will be stored in this log instance.
     /** Indicates the level of verbosity of the log. All log messages with a number higher to this one will be discarded, and therefore not writen to the log file.
     */
@@ -67,10 +74,6 @@ class LogEngine
     /** Indiactes how much information will be stored in the log file, regardless of a higher level for current instance.
     */
     static LOG_LEVEL globalLevel;
-    // / Stores the number of log engine instances.
-    /** Stores the number of log engine instances that have been created. This number is increased or decreased everytime a log engine is created or deleted.
-    */
-    static int numberOfLogEngines;
     // / Amount of chars allocated for log message conversion.
     /** Indicates how many chars will be allocated for performing the conversion between the original printf-like format, to the final char* text.
     */
@@ -84,10 +87,11 @@ class LogEngine
     // / Called by the generic XML parser; it loads configuration data from a file.
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
+    static void logAll();
     // / Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.
         @param localLevel level of verbosity of this log.
-        @param name 3 characters with an identifier for the log.
+        @param name 3 characters with an id for the log.
     */
       LogEngine (LOG_LEVEL localLevel, const std::string & name);
     // / Deletes the log engine, closing the log file if needed.

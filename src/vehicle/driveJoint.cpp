@@ -15,22 +15,22 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-DriveJoint::DriveJoint (std::string identifier, Vehicle * vehicle)
-    :WorldObject("DriveJoint" + identifier),VehicleComponent(vehicle)
+DriveJoint::DriveJoint (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
 }
 DriveJoint::~DriveJoint ()
 {
 }
-Clutch::Clutch (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
-    :DriveJoint("ClutchCLJ", vehicle)
+Clutch::Clutch (WorldObject * container, std::string name,XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a clutch node");
     processXmlRootNode (n);
 }
 
-Clutch::Clutch (Vehicle * vehicle)
-    :DriveJoint("ClutchTFR", vehicle)
+Clutch::Clutch (WorldObject * container, std::string name)
+    :DriveJoint(container, name)
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -54,15 +54,15 @@ void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
 }
 
-Gear::Gear (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
-    :DriveJoint("GearGTJ", vehicle)
+Gear::Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
-Gear::Gear (Vehicle * vehicle)
-    :DriveJoint("GearTFJ", vehicle)
+Gear::Gear (WorldObject * container, std::string name)
+    :DriveJoint(container, name)
 {
     ratio = 1.0;
     springConstant = 300.0;
@@ -85,15 +85,15 @@ void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startPhysics (n);
 }
 
-LSD::LSD (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :DriveJoint("LSD-LSJ", vehicle)
+LSD::LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveJoint(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
     processXmlRootNode (n);
 }
 
-LSD::LSD (Vehicle * vehicle)
-    :DriveJoint("LSD-LSJ", vehicle)
+LSD::LSD (WorldObject * container, std::string name)
+    :DriveJoint(container, name)
 {
     ratio = 1.0;
     springConstant = 300.0;

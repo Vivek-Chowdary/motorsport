@@ -30,15 +30,14 @@
 
 int Vehicle::instancesCount = 0;
 
-Vehicle::Vehicle (const std::string & vehicleName)
-    :WorldObject(vehicleName)
+Vehicle::Vehicle (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
-    relativeVehicleDir = vehicleName;
-    std::string vehiclePath = Paths::vehicle(vehicleName);
-    std::string vehicleXmlPath = Paths::vehicleXml(vehicleName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath, "FileSystem", "vehicles - " + vehicleName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath + "skybox.zip", "Zip", "vehicles - " + vehicleName);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + vehicleName);
+    std::string vehiclePath = Paths::vehicle(name);
+    std::string vehicleXmlPath = Paths::vehicleXml(name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath, "FileSystem", "vehicles - " + name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath + "skybox.zip", "Zip", "vehicles - " + name);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + name);
     log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", vehicleXmlPath.c_str());
     double time = SDL_GetTicks()/1000.0;
     XmlFile * xmlFile = new XmlFile (vehicleXmlPath.c_str());
@@ -252,13 +251,13 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     
     processXmlPedalListNode(pedalListNode);
 
-    body = new Body (bodyNode, this);
-    engine = new Engine (engineNode, this);
-    clutch = new Clutch (clutchNode, this);
-    gearbox = new Gearbox (gearboxNode, this);
-    finalDrive = new FinalDrive (finalDriveNode, this);
-    transfer = new Gear (this);
-    rearDiff = new LSD (this);
+    body = new Body (this, "Body", bodyNode);
+    engine = new Engine (this, "Engine", engineNode);
+    clutch = new Clutch (this, "Clutch", clutchNode);
+    gearbox = new Gearbox (this, "Gearbox", gearboxNode);
+    finalDrive = new FinalDrive (this, "FinalDrive", finalDriveNode);
+    transfer = new Gear (this, "Transfer");
+    rearDiff = new LSD (this, "RearDiff");
     
     log->loadscreen (LOG_CCREATOR, "Attaching the vehicle components together");
     clutch->setOutputPointer(gearbox);
@@ -310,7 +309,7 @@ void Vehicle::processXmlPedalListNode(DOMNode * pedalListNode)
                 if (nodeName == "pedal")
                 {
                     log->__format (LOG_CCREATOR, "Found a pedal.");
-                    Pedal * tmpPedal = new Pedal (pedalNode, this);
+                    Pedal * tmpPedal = new Pedal (this, "Pedal", pedalNode);
                     pedalMap[tmpPedal->getId()]=tmpPedal;
                 }
             }
@@ -331,7 +330,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                 if (nodeName == "wheel")
                 {
                     log->__format (LOG_CCREATOR, "Found a wheel.");
-                    Wheel * tmpWheel = new Wheel (wheelNode, this);
+                    Wheel * tmpWheel = new Wheel (this, "Wheel", wheelNode);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
                     tmpWheel->setRefBody(body->getBodyID());
                 }
@@ -354,7 +353,7 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                 if (nodeName == "unidimensional")
                 {
                     log->__format (LOG_CCREATOR, "Found a suspension.");
-                    Suspension * tmpSusp = new Suspension (suspNode, this);
+                    Suspension * tmpSusp = new Suspension (this, "Suspensions", suspNode);
                     suspensionMap[tmpSusp->getIndex()]=tmpSusp;
                 }
             }
@@ -376,7 +375,7 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
                 if (nodeName == "camera")
                 {
                     log->__format (LOG_CCREATOR, "Found a camera.");
-                    Camera * tmpCam = new Camera (cameraNode);
+                    Camera * tmpCam = new Camera (this, "Camera", cameraNode);
                     cameraList.push_back (tmpCam);
                 }
             }

@@ -22,13 +22,15 @@
 
 std::fstream LogEngine::logFile;
 LOG_LEVEL LogEngine::globalLevel = LOG_ENDUSER;
-int LogEngine::numberOfLogEngines = 0;
 int LogEngine::textBuffer = 128;
+
+unsigned int LogEngine::instancesCount = 0;
+LogEngines LogEngine::logEngines;
 
 LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
 {
     // open the file for writing in rewrite mode if necessary.
-    if ((numberOfLogEngines == 0) || (!logFile.is_open ()))
+    if ((instancesCount == 0) || (!logFile.is_open ()))
     {
         std::cout << "Creating first LogEngine instance (" << name << "). Reading LogEngine config file..." << std::endl;
 #ifdef MACOSX
@@ -40,10 +42,42 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
         delete xmlFile;
     }
     // increase logEngines counter
-    numberOfLogEngines++;
-    format (LOG_DEVELOPER, "Start of logging for this engine. There's %i log engine[s] now.", numberOfLogEngines);
+    instancesCount++;
+
+    const int numberStringSize = 64;
+    char numberString[numberStringSize];
+    snprintf (numberString, numberStringSize, "%i", instancesCount);
+    logEngines.insert( std::pair< std::string, LogEngine* >(std::string("LOG#") + numberString + "#." + name, this) );
+    format (LOG_DEVELOPER, "New log engine instance.");
 
     return;
+}
+LogEngine::~LogEngine ()
+{
+    LogEnginesIt i = logEngines.begin();
+    for(;i != logEngines.end(); i++)
+    {
+        if (this == i->second) i->second = NULL;;
+        if (this == i->second) logEngines.erase(i);
+    }
+    format (LOG_DEVELOPER, "Log engine instance deleted.", instancesCount);
+
+    //TODO: replace with if map.empty()
+    if (instancesCount == 0)
+    {
+        format (LOG_ENDUSER, "Closing logFile");
+        logFile.close ();
+    }
+}
+
+void LogEngine::logAll()
+{
+    LogEngine log (LOG_DEVELOPER, "LogEngines");
+    LogEnginesIt i = logEngines.begin();
+    for(;i != logEngines.end(); i++)
+    {
+        i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s", i->first.c_str());
+    }
 }
 
 void LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
@@ -131,7 +165,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
 
     // create line, add header
     std::stringstream logLine;
-    logLine << '(' << GetLogLevelCode (level) << ")(" << logName << "): ";
+    logLine << GetLogLevelCode (level) << " " << logName << " ";
 
     // format string
     char buffer[2048];
@@ -182,19 +216,6 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     if (level == LOG_ERROR)
     {
         exit (1);
-    }
-}
-
-LogEngine::~LogEngine ()
-{
-    // decrease number of logEngines
-    numberOfLogEngines--;
-    format (LOG_DEVELOPER, "End of logging for this engine. There's %i log engine[s] left now.", numberOfLogEngines);
-
-    if (numberOfLogEngines == 0)
-    {
-        format (LOG_ENDUSER, "Closing logFile");
-        logFile.close ();
     }
 }
 

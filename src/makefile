@@ -227,7 +227,6 @@ SOURCES := \
         common/axis.cpp \
         common/vector3d.cpp \
         common/location.cpp \
-	common/vehicleComponent.cpp \
 	common/camera.cpp \
 	tools/xmlParser.cpp \
 	tools/paths.cpp \

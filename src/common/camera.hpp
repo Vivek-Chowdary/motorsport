@@ -41,7 +41,7 @@ class Camera : public WorldObject
     // input
     void stopInput ();
   public:
-    Camera (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Camera (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Camera ();
     void updateOgreRotation ();
     Vector3d updateOgrePosition ();

@@ -28,20 +28,20 @@ World *World::getWorldPointer ()
     if (worldPointer == 0)
     {
         std::cout << "WARNING: Auto-creating a default world!" << std::endl;
-        worldPointer = new World("default");
+        worldPointer = new World(NULL, "default");
     }
     return (worldPointer);
 }
 
-World::World (std::string worldName)
-    :WorldObject(worldName)
+World::World (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
     if (worldPointer != 0)
     {
         delete this;
     } else {
         worldPointer = this;
-        std::string worldXmlPath = Paths::worldXml(worldName);
+        std::string worldXmlPath = Paths::worldXml(name);
         log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", worldXmlPath.c_str());
         double time = SDL_GetTicks()/1000.0;
         XmlFile* xmlFile = new XmlFile (worldXmlPath.c_str());
@@ -209,7 +209,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // load area (and its cameras)
     log->loadscreen (LOG_CCREATOR, "Creating a area");
-    Area * area = new Area (areaDirectory);
+    Area * area = new Area (this, areaDirectory);
     //area->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     areaList.push_back (area);
 
@@ -321,7 +321,7 @@ void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
                     }
                 }
                 log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-                Vehicle * tmpVehicle = new Vehicle (vehicleDirectory);
+                Vehicle * tmpVehicle = new Vehicle (this, vehicleDirectory);
                 if (driver == "user" )
                 {
                     tmpVehicle->setUserDriver();

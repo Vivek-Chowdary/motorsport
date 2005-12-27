@@ -48,7 +48,7 @@ class Wheel : public DriveMass
     void stopGraphics ();
   public:
     // data
-    Wheel (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
+    Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Wheel ();
     std::string getIndex();
     void setRefBody(dBodyID inputID) { bodyID = inputID; };

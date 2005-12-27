@@ -14,8 +14,8 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-Gearbox::Gearbox (XERCES_CPP_NAMESPACE::DOMNode * n,Vehicle * vehicle)
-    :DriveMass("Gearbox",vehicle)
+Gearbox::Gearbox (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
     processXmlRootNode (n);
@@ -47,7 +47,7 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
                 if (nodeName == "gear")
                 {
                     log->__format (LOG_CCREATOR, "Found a gear.");
-                    GearboxGear * tmpGear = new GearboxGear (gearNode, vehicle);
+                    GearboxGear * tmpGear = new GearboxGear (this, "Gear", gearNode);
                     gearMap[tmpGear->getIndex()]=tmpGear;
   //                  tmpGear->setRefBody(body->bodyID);
                 }
@@ -56,8 +56,8 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
     }
 }
 
-GearboxGear::GearboxGear (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :WorldObject("GearboxGear"),VehicleComponent(vehicle)
+GearboxGear::GearboxGear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
     processXmlRootNode (n);

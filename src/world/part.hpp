@@ -25,25 +25,16 @@ namespace Ogre {
 class Part : public WorldObject
 {
   private:
-    std::string relativePartDir;
-    // data
-    static int instancesCount;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-
-    // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    Part (const std::string & partName);
+    Part (WorldObject * container, const std::string & name);
     ~Part ();
-
     void setPosition (Vector3d position);
     void setRotation (Quaternion rotation);
-
     void stepPhysics ();
     void stepGraphics ();
 };

@@ -31,7 +31,7 @@ class Engine : public DriveMass
     Pedal * gasPedal;
   public:
     // data
-    Engine (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
+    Engine (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Engine ();
     void setGasPedal (Pedal * pedal);
 

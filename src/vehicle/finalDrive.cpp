@@ -15,8 +15,8 @@
 #include "ode/ode.h"
 #include "SDL/SDL_keysym.h"
 
-FinalDrive::FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :DriveMass("DriveMassFDM", vehicle)
+FinalDrive::FinalDrive (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a FinalDrive Mass node");
     processXmlRootNode (n);

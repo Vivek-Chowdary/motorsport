@@ -21,7 +21,7 @@ class FinalDrive : public DriveMass
   public:
 
     // data
-    FinalDrive (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
+    FinalDrive (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~FinalDrive ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 

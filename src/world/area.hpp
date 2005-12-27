@@ -43,7 +43,7 @@ class Area : public WorldObject
     
   public:
     // data
-    Area (const std::string & xmlFilename);
+    Area (WorldObject * container, std::string name);
     ~Area ();
     std::map <std::string, Location * > vehiclePositionMap;
     std::vector < Part * > partList;

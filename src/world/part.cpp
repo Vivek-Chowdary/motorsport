@@ -18,31 +18,22 @@
 #include "area.hpp"
 #include "SDL/SDL_keysym.h"
 
-int Part::instancesCount = 0;
-
-Part::Part (const std::string & partName)
-    :WorldObject(partName)
+Part::Part (WorldObject * container, const std::string & name)
+    :WorldObject(container, name)
 {
-    relativePartDir = partName;   
-    std::string partPath = Paths::part(partName);
-    std::string partXmlPath = Paths::partXml(partName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(partPath, "FileSystem", "Parts - " + partName);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("Parts - " + partName);
+    std::string partPath = Paths::part(name);
+    std::string partXmlPath = Paths::partXml(name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(partPath, "FileSystem", "parts." + name);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("parts." + name);
     XmlFile * xmlFile = new XmlFile (partXmlPath.c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-
-    instancesCount++;
 }
 
 Part::~Part ()
 {
-    instancesCount--;
-
     stopPhysics ();
     stopGraphics ();
-    
-    log->__format(LOG_DEVELOPER, "Removed a part. %i left.", instancesCount);
 }
 
 
@@ -137,12 +128,7 @@ void Part::startGraphics (DOMNode * n)
             }
         }
     }
-    char number[256];
-    static int num = 0;
-    num++;
-    sprintf (number, "%i", num);
-    std::string id (relativePartDir + "(" + number + ")");
-    data.meshPath = Paths::part(relativePartDir) + data.meshPath;
+    data.meshPath = Paths::part(name) + data.meshPath;
     OgreObject * ogreObject = new OgreObject(this, data, id);
     ogreObjects[id] = ogreObject;
 }
@@ -260,9 +246,6 @@ void Part::startPhysics (DOMNode * n)
         }
     }
     if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-    char number[256];
-    sprintf (number, "%i", instancesCount);
-    std::string id (relativePartDir + "(" + number + ")");
     odeObjects[id] = new OdeObject(this, data, id);
 }
 

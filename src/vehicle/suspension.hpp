@@ -15,7 +15,6 @@
 #include <string>
 #include "quaternion.hpp"
 #include "vector3d.hpp"
-#include "vehicleComponent.hpp"
 
 //forward declarations
 namespace Ogre {
@@ -25,7 +24,7 @@ namespace Ogre {
 class Vehicle;
 class Wheel;
 
-class Suspension : public WorldObject, public VehicleComponent
+class Suspension : public WorldObject
 {
   private:
     // data
@@ -45,7 +44,7 @@ class Suspension : public WorldObject, public VehicleComponent
     void stopPhysics ();
   public:
     // data
-    Suspension (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
+    Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Suspension ();
     std::string getIndex();
     void attach (Wheel & wheel, Vehicle & vehicle);

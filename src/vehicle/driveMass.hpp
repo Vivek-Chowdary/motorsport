@@ -13,11 +13,10 @@
 #include "driveJoint.hpp"
 #include "worldObject.hpp"
 #include "tools/xercesc_fwd.hpp"
-#include "vehicleComponent.hpp"
 
 class DriveJoint;
 
-class DriveMass : public WorldObject, public VehicleComponent
+class DriveMass : public WorldObject
 {
   protected:
 //    static int instancesCount;
@@ -32,7 +31,7 @@ class DriveMass : public WorldObject, public VehicleComponent
     
   public:
     // data
-    DriveMass (std::string identifier, Vehicle * vehicle);
+    DriveMass (WorldObject * container, std::string name);
     ~DriveMass ();
 
     // physics

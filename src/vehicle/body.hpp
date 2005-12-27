@@ -11,7 +11,6 @@
 #define BODY_HPP
 #include "ode/objects.h"
 #include "worldObject.hpp"
-#include "vehicleComponent.hpp"
 #include "tools/xercesc_fwd.hpp"
 #include "vector3d.hpp"
 #include "paths.hpp"
@@ -24,28 +23,19 @@ namespace Ogre {
 class Quaternion;
 class Vehicle;
 
-class Body : public WorldObject, public VehicleComponent
+class Body : public WorldObject
 {
   private:
-    // data
-    static int instancesCount;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     double dragCoefficient;
     double frontalArea;
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-
-    // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    // data
-    Body (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle);
+    Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Body ();
-
-    // physics
     void stepPhysics ();
     void applyRotation (Quaternion rotation);
     Vector3d getPosition ();
@@ -53,9 +43,6 @@ class Body : public WorldObject, public VehicleComponent
     void setRotation (Quaternion rotation);
     void setPosition (Vector3d position);
     dBodyID getBodyID ();
-
-    // graphics
-    void stepGraphics ();
     void setRenderDetail(int renderMode);
 };
 #endif

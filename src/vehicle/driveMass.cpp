@@ -9,8 +9,8 @@
 
 #include "driveMass.hpp"
 
-DriveMass::DriveMass (std::string identifier, Vehicle * vehicle)
-    :WorldObject("DriveMass" + identifier),VehicleComponent(vehicle)
+DriveMass::DriveMass (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
     inertia = 0.0;
     friction = 0.0;

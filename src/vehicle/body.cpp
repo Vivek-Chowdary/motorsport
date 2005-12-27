@@ -20,19 +20,14 @@
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
 
-int Body::instancesCount = 0;
-
-Body::Body (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :WorldObject("Body"),VehicleComponent(vehicle)
+Body::Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :WorldObject(container, name)
 {
     processXmlRootNode (n);
-    instancesCount++;
 }
 
 Body::~Body ()
 {
-    instancesCount--;
-
     stopPhysics ();
     stopGraphics ();
 }
@@ -63,12 +58,7 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    char number[256];
-    static int num = 0;
-    num++;
-    sprintf (number, "%i", num);
-    std::string id (vehicle->getIdentifier() + identifier + "(" + number + ")");
-    data.meshPath = Paths::vehicle(vehicle->getRelativeVehicleDir()) + data.meshPath;
+    data.meshPath = Paths::vehicle(container->getName()) + data.meshPath;
     OgreObject * ogreObject = new OgreObject(this, data, id);
     ogreObjects[id] = ogreObject;
 }
@@ -149,7 +139,7 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    odeObjects[identifier] = new OdeObject(this, data, identifier);
+    odeObjects[id] = new OdeObject(this, data, id);
 
     // set the air drag variables correctly
     if (frontalArea == 0)
@@ -198,10 +188,6 @@ void Body::stopPhysics ()
 dBodyID Body::getBodyID ()
 {
     return odeObjects.begin()->second->getBodyID();
-}
-void Body::stepGraphics ()
-{
-    base->stepGraphics();
 }
 void Body::stepPhysics ()
 {

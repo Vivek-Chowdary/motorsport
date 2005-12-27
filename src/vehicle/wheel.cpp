@@ -21,17 +21,15 @@
 
 int Wheel::instancesCount = 0;
 
-Wheel::Wheel (XERCES_CPP_NAMESPACE::DOMNode * n, Vehicle * vehicle)
-    :DriveMass("Wheel", vehicle)
+Wheel::Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
+    :DriveMass(container, name)
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     processXmlRootNode (n);
-    instancesCount++;
 }
 
 Wheel::~Wheel ()
 {
-    instancesCount--;
     stopPhysics ();
     stopGraphics ();
 }
@@ -116,14 +114,8 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    char number[256];
-    sprintf (number, "%i", instancesCount);
-    std::string name ("Wheel #");
-    name.append(number);
-    
-    std::string vehicleDir = vehicle->getRelativeVehicleDir();
-    std::string meshPath = Paths::vehicle(vehicleDir) + mesh;
-    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (name.c_str(), meshPath.c_str());
+    std::string meshPath = Paths::vehicle(container->getName()) + mesh;
+    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id.c_str(), meshPath.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
     log->__format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());

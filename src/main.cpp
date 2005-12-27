@@ -69,7 +69,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->__format (LOG_ENDUSER, "( 2 ): Loading world data...");
     log->loadscreen (LOG_CCREATOR, "Loading initial world data...");
-    new World ("default");
+    new World (NULL, "default");
 
     // We start the main loop.
     log->__format (LOG_ENDUSER, "( 3 ): Starting simulation...");
@@ -148,6 +148,10 @@ int main (int argc, char **argv)
     delete log;
     stopSdl ();
 
+    //FIXME: uncomment later on
+    //WorldObject::logAll();
+    //LogEngine::logAll();
+    
     // We go back to the OS.
     return (0);
 }
