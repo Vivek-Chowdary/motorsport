@@ -128,9 +128,9 @@ void Part::startGraphics (DOMNode * n)
             }
         }
     }
-    data.meshPath = Paths::part(name) + data.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, data, id);
-    ogreObjects[id] = ogreObject;
+    data.meshPath = Paths::part(getName()) + data.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, data, getId());
+    ogreObjects[getId()] = ogreObject;
 }
 void Part::startPhysics (DOMNode * n)
 {
@@ -246,7 +246,7 @@ void Part::startPhysics (DOMNode * n)
         }
     }
     if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-    odeObjects[id] = new OdeObject(this, data, id);
+    odeObjects[getId()] = new OdeObject(this, data, getId());
 }
 
 void Part::stopPhysics ()

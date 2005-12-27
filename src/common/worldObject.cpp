@@ -59,6 +59,10 @@ std::string WorldObject::getName()
 {
     return name;
 }
+void WorldObject::setName(std::string name)
+{
+    this->name = name;
+}
 std::string WorldObject::getFullName()
 {
     if (container == NULL) return name;

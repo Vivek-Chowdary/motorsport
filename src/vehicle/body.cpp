@@ -59,8 +59,8 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     data.meshPath = Paths::vehicle(container->getName()) + data.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, data, id);
-    ogreObjects[id] = ogreObject;
+    OgreObject * ogreObject = new OgreObject(this, data, getId());
+    ogreObjects[getId()] = ogreObject;
 }
 
 void Body::setRenderDetail(int renderMode)
@@ -139,7 +139,7 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    odeObjects[id] = new OdeObject(this, data, id);
+    odeObjects[getId()] = new OdeObject(this, data, getId());
 
     // set the air drag variables correctly
     if (frontalArea == 0)

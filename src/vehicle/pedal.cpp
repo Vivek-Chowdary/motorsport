@@ -62,8 +62,9 @@ void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
             if (attribute == "id")
             {
-                assignXmlString (name, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", name.c_str() );
+                assignXmlString (attribute, attNode->getValue());
+                setName(attribute);
+                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", getName().c_str() );
             }
         }
     }
@@ -78,7 +79,7 @@ void Pedal::stepPhysics ()
     currentAngle = 0;
     if ( userDriver )
     {
-        if (id == "gasPedal")
+        if (getName() == "gasPedal")
         {
             currentAngle = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue();
             if (currentAngle == 0) {
@@ -90,7 +91,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (id == "brakePedal")
+        } else if (getName() == "brakePedal")
         {
             currentAngle = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue();
             if (currentAngle == 0) {
@@ -102,7 +103,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (id == "clutchPedal")
+        } else if (getName() == "clutchPedal")
         {
             currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
             if (currentAngle == 0) {
@@ -119,6 +120,6 @@ void Pedal::stepPhysics ()
 
 double Pedal::getNormalizedAngle()
 {
-    log->__format (LOG_CCREATOR, "Reading pedal \"%s\" angle: %f", id.c_str(), currentAngle );
+    log->__format (LOG_CCREATOR, "Reading pedal \"%s\" angle: %f", getName().c_str(), currentAngle );
     return (currentAngle / angleRange);
 }

@@ -113,7 +113,7 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
         }
     }
     std::string meshPath = Paths::vehicle(container->getName()) + mesh;
-    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id.c_str(), meshPath.c_str());
+    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (getId().c_str(), meshPath.c_str());
     wheelEntity->setRenderDetail(renderMode);
 
     log->__format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());

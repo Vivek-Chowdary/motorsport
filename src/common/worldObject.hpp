@@ -30,12 +30,12 @@ class WorldObject
   private:
     static unsigned int instancesCount;
     static WorldObjects worldObjects;
+    std::string id;
+    std::string name;
   protected:
     LogEngine * log;
     WorldObject * base;
     WorldObject * container;
-    std::string id;
-    std::string name;
     OgreObjects ogreObjects;
     OdeObjects odeObjects;
   public:
@@ -44,6 +44,7 @@ class WorldObject
     ~WorldObject ();
     std::string getId();
     std::string getName();
+    void setName(std::string name);
     std::string getFullName();
     LogEngine * getLog();
     void WorldObject::stepGraphics ();

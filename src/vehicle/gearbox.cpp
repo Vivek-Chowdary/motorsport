@@ -95,7 +95,7 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
-                name = attribute;
+                setName (attribute);
             }
         }
     }
