@@ -59,6 +59,7 @@ World::~World ()
     for (int i = 0; i < size; i++)
     {
         delete vehicleList[i];
+        vehicleList[i] = NULL;
     }
     vehicleList.clear ();
     
@@ -67,6 +68,7 @@ World::~World ()
     for (int i = 0; i < size; i++)
     {
         delete areaList[i];
+        areaList[i] = 0;
     }
     areaList.clear ();
     

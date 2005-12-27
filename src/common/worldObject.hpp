@@ -15,6 +15,8 @@
 #include "odeObject.hpp"
 
 //forward declatations
+class Quaternion;
+class Vector3d;
 class OgreObject;
 typedef std::map <std::string, OgreObject *> OgreObjects;
 typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
@@ -40,15 +42,23 @@ class WorldObject
         OgreObjects ogreObjects;
         OdeObjects odeObjects;
     public:
-        static void logAll();
         WorldObject (WorldObject * container, const std::string & name);
         virtual ~WorldObject ();
         std::string getId();
         std::string getName();
         void setName(std::string name);
         std::string getFullName();
+
+        static void logAll();
         LogEngine * getLog();
+
         void WorldObject::stepGraphics ();
+
         OdeObject * getMainOdeObject();
+        
+        Vector3d getPosition ();
+        Quaternion getRotation ();
+        void setPosition (Vector3d position);
+        void setRotation (Quaternion rotation);
 };
 #endif

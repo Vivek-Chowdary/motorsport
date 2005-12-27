@@ -28,8 +28,6 @@ Body::Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOM
 
 Body::~Body ()
 {
-    stopPhysics ();
-    stopGraphics ();
 }
 
 
@@ -63,30 +61,6 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
     ogreObjects[getId()] = ogreObject;
 }
 
-void Body::setRenderDetail(int renderMode)
-{
-    //FIXME: access OgreObjects instances.
-    /*
-    Ogre::SceneDetailLevel mode;
-    switch (renderMode)
-    {
-    case 1:
-        mode = Ogre::SDL_POINTS;
-        break;
-    case 2:
-        mode = Ogre::SDL_WIREFRAME;
-        break;
-    case 3:
-        mode = Ogre::SDL_SOLID;
-        break;
-    }
-    bodyEntity->setRenderDetail(mode);
-    */
-}
-void Body::stopGraphics ()
-{
-    // empty
-}
 void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     VehicleBodyOdeObjectData data;
@@ -148,15 +122,6 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 }
 
-void Body::setPosition (Vector3d position)
-{               
-    odeObjects.begin()->second->setPosition(position);
-}
-Vector3d Body::getPosition ()
-{
-    return odeObjects.begin()->second->getPosition();
-}
-
 void Body::applyRotation (Quaternion rotation)
 {
     //FIXME: could be wrongly coded.
@@ -171,27 +136,10 @@ void Body::applyRotation (Quaternion rotation)
     Quaternion finalRotation = rotation * getRotation();
     setRotation (finalRotation);
 }
-Quaternion Body::getRotation ()
-{
-    return odeObjects.begin()->second->getRotation();
-}
-void Body::setRotation (Quaternion rotation)
-{
-    odeObjects.begin()->second->setRotation(rotation);
-}
 
-void Body::stopPhysics ()
-{
-    //TODO: check if its necessary to remove anything. or put it in destructor
-}
-
-dBodyID Body::getBodyID ()
-{
-    return odeObjects.begin()->second->getBodyID();
-}
 void Body::stepPhysics ()
 {
-    dBodyID bodyID = getBodyID();
+    dBodyID bodyID = getMainOdeObject()->getBodyID();
     if (this == World::getWorldPointer ()->vehicleList[0]->body)
     {
         double moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;

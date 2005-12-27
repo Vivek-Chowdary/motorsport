@@ -27,15 +27,10 @@ class Part : public WorldObject
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopGraphics ();
   public:
     Part (WorldObject * container, const std::string & name);
     ~Part ();
-    void setPosition (Vector3d position);
-    void setRotation (Quaternion rotation);
     void stepPhysics ();
-    void stepGraphics ();
 };
 #endif

@@ -41,11 +41,13 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
 }
 OgreObject::~OgreObject ()
 {
+    worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
     node->detachObject(entity);
     if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" still attached somewhere!.", entity->getName().c_str());
     SystemData::getSystemDataPointer()->ogreSceneManager->removeEntity (entity);
     entity = NULL;
 
+    worldObject->getLog()->__format (LOG_DEVELOPER, "Removing node id=%s", node->getName().c_str());
     SystemData::getSystemDataPointer()->ogreSceneManager->destroySceneNode (node->getName());
     node = NULL;   
 

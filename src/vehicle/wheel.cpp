@@ -28,7 +28,6 @@ Wheel::Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::D
 
 Wheel::~Wheel ()
 {
-    stopPhysics ();
 }
 
 
@@ -148,15 +147,11 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 void Wheel::applyRotation (Quaternion rotation)
 {
-    getMainOdeObject()->setPosition ( rotation.rotateObject(getMainOdeObject()->getPosition()) );
+    setPosition ( rotation.rotateObject(getPosition()) );
     dMatrix3 rot;
     Quaternion finalRotation = rotation * getMainOdeObject()->getRotation();
     finalRotation.getOdeMatrix (rot);
     dBodySetRotation (getMainOdeObject()->getBodyID(), rot);
-}
-
-void Wheel::stopPhysics ()
-{
 }
 
 void Wheel::stepPhysics ()

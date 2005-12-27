@@ -52,7 +52,7 @@
         <vehicle
             index = "paceCar"
             position = "23 12.5 2"
-            rotation = "0 0 15"
+            rotation = "15 0 45"
             >
         </vehicle>
         <vehicle

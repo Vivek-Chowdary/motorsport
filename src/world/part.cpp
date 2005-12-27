@@ -32,8 +32,6 @@ Part::Part (WorldObject * container, const std::string & name)
 
 Part::~Part ()
 {
-    stopPhysics ();
-    stopGraphics ();
 }
 
 
@@ -91,22 +89,6 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     startGraphics(partNode);
     startPhysics(partNode);
     ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
-}
-
-void Part::stepGraphics ()
-{
-    base->stepGraphics();
-}
-
-void Part::stopGraphics ()
-{
-    OgreObjectsIt i = ogreObjects.begin();
-    for(;i != ogreObjects.end(); i++)
-    {
-        delete i->second;
-        i->second = NULL;
-        ogreObjects.erase(i);
-    }
 }
 
 void Part::startGraphics (DOMNode * n)
@@ -247,26 +229,6 @@ void Part::startPhysics (DOMNode * n)
     }
     if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
     odeObjects[getId()] = new OdeObject(this, data, getId());
-}
-
-void Part::stopPhysics ()
-{
-    OdeObjectsIt i = odeObjects.begin();
-    for(;i != odeObjects.end(); i++)
-    {
-        delete i->second;
-        i->second = NULL;
-        odeObjects.erase(i);
-    }
-}
-
-void Part::setPosition (Vector3d position)
-{
-    odeObjects.begin()->second->setPosition(position);
-}
-void Part::setRotation (Quaternion rotation)
-{
-    odeObjects.begin()->second->setRotation(rotation);
 }
 
 void Part::stepPhysics ()

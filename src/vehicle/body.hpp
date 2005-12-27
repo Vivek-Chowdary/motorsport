@@ -38,11 +38,6 @@ class Body : public WorldObject
     ~Body ();
     void stepPhysics ();
     void applyRotation (Quaternion rotation);
-    Vector3d getPosition ();
-    Quaternion getRotation ();
-    void setRotation (Quaternion rotation);
-    void setPosition (Vector3d position);
     dBodyID getBodyID ();
-    void setRenderDetail(int renderMode);
 };
 #endif

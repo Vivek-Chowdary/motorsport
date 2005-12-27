@@ -8,6 +8,8 @@
 \*****************************************************************************/
 
 #include "worldObject.hpp"
+#include "quaternion.hpp"
+#include "vector3d.hpp"
 
 unsigned int WorldObject::instancesCount = 0;
 WorldObjects WorldObject::worldObjects;
@@ -33,6 +35,20 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 }
 WorldObject::~WorldObject ()
 {
+    OgreObjectsIt i = ogreObjects.begin();
+    for(;i != ogreObjects.end(); i++)
+    {
+        delete i->second;
+        i->second = NULL;
+        ogreObjects.erase(i);
+    }
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        delete j->second;
+        j->second = NULL;
+        odeObjects.erase(j);
+    }
     worldObjects.erase(this->id);
     delete log;
     log = NULL;
@@ -77,8 +93,24 @@ void WorldObject::stepGraphics ()
         i->second->stepGraphics();
     }
 }
+void WorldObject::setPosition (Vector3d position)
+{               
+    odeObjects.begin()->second->setPosition(position);
+}
+Vector3d WorldObject::getPosition ()
+{
+    return odeObjects.begin()->second->getPosition();
+}
+Quaternion WorldObject::getRotation ()
+{
+    return odeObjects.begin()->second->getRotation();
+}
 OdeObject * WorldObject::getMainOdeObject()
 {
     if (odeObjects.empty()) return NULL;
     return odeObjects.begin()->second;
+}
+void WorldObject::setRotation (Quaternion rotation)
+{
+    odeObjects.begin()->second->setRotation(rotation);
 }

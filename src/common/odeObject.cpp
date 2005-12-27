@@ -56,9 +56,9 @@ OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, 
     geomIDs["GeomSpace(A)"] = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
     geomIDs["GeomSpace(B)"] = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
 
-    // bind geoms with transformation spaces
-    dGeomTransformSetCleanup (geomIDs["GeomSpace(A)"], 1);
-    dGeomTransformSetCleanup (geomIDs["GeomSpace(B)"], 1);
+    // avoid ODE removing objects itself. transform geoms now must be manually removed
+    dGeomTransformSetCleanup (geomIDs["GeomSpace(A)"], 0);
+    dGeomTransformSetCleanup (geomIDs["GeomSpace(B)"], 0);
     
     // create collision geoms
     geomIDs["Geom(A)"] = dCreateBox (0, data.length, data.width, data.height / 2.0);

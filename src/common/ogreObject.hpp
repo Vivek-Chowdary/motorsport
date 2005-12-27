@@ -49,5 +49,23 @@ class OgreObjectData
             meshPath = "none";
         }
         ~OgreObjectData() {};
-};
+}  /////TODO///////////////look down!! ---v
+
+/*void Body::setRenderDetail(int renderMode) {
+    Ogre::SceneDetailLevel mode;
+    switch (renderMode)
+    {
+    case 1:
+        mode = Ogre::SDL_POINTS;
+        break;
+    case 2:
+        mode = Ogre::SDL_WIREFRAME;
+        break;
+    case 3:
+        mode = Ogre::SDL_SOLID;
+        break;
+    }
+    bodyEntity->setRenderDetail(mode);
+}
+*/;
 #endif

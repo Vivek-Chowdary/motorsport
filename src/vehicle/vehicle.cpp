@@ -48,29 +48,51 @@ Vehicle::Vehicle (WorldObject * container, std::string name)
 
 Vehicle::~Vehicle ()
 {
-    stopPhysics ();
-    stopGraphics ();
+    log->__format(LOG_DEVELOPER, "Deleting body");
     delete body; 
+    body = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting engine");
     delete engine;
+    engine = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting clutch");
     delete clutch;
+    clutch = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting transfer");
     delete transfer;
+    transfer = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting rearDiff");
     delete rearDiff;
+    rearDiff = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting gearbox");
     delete gearbox;
+    gearbox = NULL;
+    log->__format(LOG_DEVELOPER, "Deleting finalDrive");
     delete finalDrive;
-    std::map < std::string, Suspension * >::const_iterator suspIter;
+    finalDrive = NULL;
+    
+    log->__format(LOG_DEVELOPER, "Deleting suspensions");
+    std::map < std::string, Suspension * >::iterator suspIter;
     for (suspIter=suspensionMap.begin(); suspIter != suspensionMap.end(); suspIter++)
     {
         delete suspIter->second;
+        suspIter->second = NULL;
+        suspensionMap.erase(suspIter);
     }
-    std::map < std::string, Wheel * >::const_iterator wheelIter;
+    log->__format(LOG_DEVELOPER, "Deleting wheels");
+    std::map < std::string, Wheel * >::iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
         delete wheelIter->second;
+        wheelIter->second = NULL;
+        wheelMap.erase(wheelIter);
     }
-    std::map < std::string, Pedal * >::const_iterator pedalIter;
+    log->__format(LOG_DEVELOPER, "Deleting pedals");
+    std::map < std::string, Pedal * >::iterator pedalIter;
     for (pedalIter=pedalMap.begin(); pedalIter != pedalMap.end(); pedalIter++)
     {
         delete pedalIter->second;
+        pedalIter->second = NULL;
+        pedalMap.erase(pedalIter);
     }
 }
 void Vehicle::setUserDriver ()
@@ -314,7 +336,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                     log->__format (LOG_CCREATOR, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (this, "Wheel", wheelNode);
                     wheelMap[tmpWheel->getIndex()]=tmpWheel;
-                    tmpWheel->setRefBody(body->getBodyID());
+                    tmpWheel->setRefBody(body->getMainOdeObject()->getBodyID());
                 }
             }
         }
@@ -364,9 +386,6 @@ void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
         }
     }
 }
-void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-}
 
 void Vehicle::stepGraphics ()
 {
@@ -389,7 +408,8 @@ void Vehicle::stepGraphics ()
 
 void Vehicle::setRenderDetail(int renderMode)
 {
-    body->setRenderDetail(renderMode);
+    //TODO
+    //body->setRenderDetail(renderMode);
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
@@ -397,16 +417,13 @@ void Vehicle::setRenderDetail(int renderMode)
     }
 }
 
-void Vehicle::stopGraphics ()
-{
-}
 void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     // empty
 }
 dBodyID Vehicle::getVehicleID()
 {
-    return body->getBodyID();
+    return body->getMainOdeObject()->getBodyID();
 }
 
 void Vehicle::setPosition (Vector3d position)
@@ -461,10 +478,6 @@ void Vehicle::applyRotation (Quaternion rotation)
 Quaternion Vehicle::getRotation ()
 {
     return body->getRotation();
-}
-
-void Vehicle::stopPhysics ()
-{
 }
 
 void Vehicle::placeWheelsOnSuspensions()
@@ -554,9 +567,9 @@ void Vehicle::stepPhysics ()
     // print telemetry data
     if ( userDriver )
     {
-        const dReal * tmp = dBodyGetLinearVel(body->getBodyID());
+        const dReal * tmp = dBodyGetLinearVel(body->getMainOdeObject()->getBodyID());
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        tmp = dBodyGetPosition(body->getBodyID());
+        tmp = dBodyGetPosition(body->getMainOdeObject()->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, engine->getOutputAngularVel(), finalDrive->getInputAngularVel(), wheelMap["RearRight"]->getInputAngularVel(), wheelMap["RearLeft"]->getInputAngularVel(), gearbox->getCurrentGearName().c_str(), distance);
     }
