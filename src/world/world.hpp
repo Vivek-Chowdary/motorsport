@@ -8,12 +8,12 @@
 \*****************************************************************************/
 
 #ifndef WORLD_HPP
-#   define WORLD_HPP
-#   include "SDL/SDL_types.h"
-#   include "ode/objects.h"
-#   include <vector>
-#   include <string>
-#   include "worldObject.hpp"
+#define WORLD_HPP
+#include "SDL/SDL_types.h"
+#include "ode/objects.h"
+#include <vector>
+#include <string>
+#include "worldObject.hpp"
 
 //forward declaration
 class Camera;

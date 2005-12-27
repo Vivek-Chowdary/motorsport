@@ -40,11 +40,6 @@ Suspension::~Suspension ()
     stopPhysics ();
 }
 
-std::string Suspension::getIndex()
-{
-    return index;
-}
-
 void Suspension::setUserDriver ()
 {
     userDriver = true;
@@ -52,7 +47,6 @@ void Suspension::setUserDriver ()
 
 void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    index.assign ("Unknown");
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -73,8 +67,9 @@ void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "index")
                         {
-                            assignXmlString (index, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the index: %s", index.c_str());
+                            assignXmlString (attribute, attNode->getValue());
+                            log->__format (LOG_CCREATOR, "Found the index: %s", attribute.c_str());
+                            setName(attribute);
                         }
                     }
                 }
@@ -139,10 +134,13 @@ void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     dJointAttach (jointID, 0, 0);
 }
 
-void Suspension::attach (Wheel & wheel, Vehicle & vehicle)
+void Suspension::attach (Wheel & wheel, Vehicle * vehicle)
 {
     wheel.setSuspJoint (jointID);
-    dJointAttach (jointID, vehicle.body->getBodyID(), wheel.wheelID);
+    /*
+    Vehicle * vehiclea = dynamic_cast<Vehicle*>(container);
+    */
+    dJointAttach (jointID, vehicle->body->getBodyID(), wheel.wheelID);
 
     // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
 /*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);

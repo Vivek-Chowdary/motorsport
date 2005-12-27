@@ -35,11 +35,9 @@ class CameraPosition;
 class Vehicle : public WorldObject
 {
   private:
-    static int instancesCount;
-    std::string relativeVehicleDir;
-    std::string name;
     bool userDriver;
     int revision;
+    std::string longName;
     std::string description;
     std::string author;
     std::string contact;
@@ -56,7 +54,6 @@ class Vehicle : public WorldObject
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    std::string getRelativeVehicleDir();
     Vehicle (WorldObject * container, std::string name);
     ~Vehicle ();
     Body * body;

@@ -28,8 +28,6 @@
 #include "quaternion.hpp"
 
 
-int Vehicle::instancesCount = 0;
-
 Vehicle::Vehicle (WorldObject * container, std::string name)
     :WorldObject(container, name)
 {
@@ -46,16 +44,12 @@ Vehicle::Vehicle (WorldObject * container, std::string name)
     log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", vehicleXmlPath.c_str(), SDL_GetTicks()/1000.0 - time);
 
     userDriver = false;
-    instancesCount++;
 }
 
 Vehicle::~Vehicle ()
 {
-    instancesCount--;
-
     stopPhysics ();
     stopGraphics ();
-
     delete body; 
     delete engine;
     delete clutch;
@@ -79,11 +73,6 @@ Vehicle::~Vehicle ()
         delete pedalIter->second;
     }
 }
-std::string Vehicle::getRelativeVehicleDir()
-{
-    return relativeVehicleDir;
-}
-
 void Vehicle::setUserDriver ()
 {
     userDriver = true;
@@ -112,8 +101,8 @@ void Vehicle::setUserDriver ()
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    name = "None";
     revision = 0;
+    longName = "None";
     description = "None";
     author = "Anonymous";
     contact = "None";
@@ -154,8 +143,8 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         }
                         if (attribute == "name")
                         {
-                            assignXmlString (name, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", name.c_str());
+                            assignXmlString (longName, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", longName.c_str());
                         }
                         if (attribute == "revision")
                         {
@@ -354,7 +343,7 @@ void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
                 {
                     log->__format (LOG_CCREATOR, "Found a suspension.");
                     Suspension * tmpSusp = new Suspension (this, "Suspensions", suspNode);
-                    suspensionMap[tmpSusp->getIndex()]=tmpSusp;
+                    suspensionMap[tmpSusp->getName()]=tmpSusp;
                 }
             }
         }
@@ -388,6 +377,7 @@ void Vehicle::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 void Vehicle::stepGraphics ()
 {
+    base->stepGraphics();
     body->stepGraphics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     //FIXME: uncomment when suspensions have graphics representation
@@ -512,7 +502,7 @@ void Vehicle::boltWheelsToSuspensions()
             log->__format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
             log->__format (LOG_DEVELOPER, "Bolting wheel to suspension \"%s\"", suspIter->first.c_str());
-            suspIter->second->attach(*(wheelIter->second), *this);
+            suspIter->second->attach(*(wheelIter->second), this);
         }
     }
 }

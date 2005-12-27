@@ -15,6 +15,7 @@
 #include <string>
 #include "quaternion.hpp"
 #include "vector3d.hpp"
+#include "vehicle.hpp"
 
 //forward declarations
 namespace Ogre {
@@ -28,7 +29,6 @@ class Suspension : public WorldObject
 {
   private:
     static int instancesCount;
-    std::string index;
     dJointID jointID;
     Quaternion rotation;
     Vector3d position;
@@ -42,8 +42,7 @@ class Suspension : public WorldObject
   public:
     Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Suspension ();
-    std::string getIndex();
-    void attach (Wheel & wheel, Vehicle & vehicle);
+    void attach (Wheel & wheel, Vehicle * vehicle);
     void setUserDriver ();
     void stepPhysics ();
     Vector3d getInitialWheelPosition ();

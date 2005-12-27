@@ -14,7 +14,7 @@ WorldObjects WorldObject::worldObjects;
 
 WorldObject::WorldObject (WorldObject * container, const std::string & name)
 {
-    this->base = this;
+    this->base = dynamic_cast<WorldObject *>(this);
     this->name = name;
     this->container = container;
 

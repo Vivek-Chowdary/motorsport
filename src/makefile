@@ -59,7 +59,7 @@ LD := g++
 CC := gcc
 CXX := g++
 #CXX := ccache g++
-CFLAGS := -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
+CFLAGS := -fmessage-length=0 -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
 CXXFLAGS := $(CFLAGS)
 ###########################################
 
