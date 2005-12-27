@@ -18,14 +18,13 @@
 class GearboxGear : public WorldObject
 {
   public:
-    double ratio;   
     bool enabled;
-    int index;
-    std::string label;
+    double ratio;   
+    int number;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     GearboxGear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~GearboxGear ();
-    int getIndex() { return index; } ;
+    int getNumber() { return number; } ;
     double getRatio() { return ratio; } ;
     bool isEnabled() { return enabled; } ;
 }; 
@@ -45,7 +44,7 @@ class Gearbox : public DriveMass
     ~Gearbox ();
     void setGear (int inputGear)      { currentGear = inputGear; };
     double getGearRatio()             { return gearMap[currentGear]->ratio; };
-    std::string getCurrentGearLabel() { return gearMap[currentGear]->label; };
+    std::string getCurrentGearName() { return gearMap[currentGear]->getName(); };
     int getCurrentGearIndex()         { return currentGear; };
     void stepPhysics ();
     void gearUp ();

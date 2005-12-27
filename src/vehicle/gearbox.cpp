@@ -48,7 +48,7 @@ void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
                 {
                     log->__format (LOG_CCREATOR, "Found a gear.");
                     GearboxGear * tmpGear = new GearboxGear (this, "Gear", gearNode);
-                    gearMap[tmpGear->getIndex()]=tmpGear;
+                    gearMap[tmpGear->getNumber()]=tmpGear;
   //                  tmpGear->setRefBody(body->bodyID);
                 }
             }
@@ -69,7 +69,7 @@ GearboxGear::~GearboxGear()
 void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     ratio = 1.0;
-    index = 0;
+    number = 0;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -83,7 +83,7 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
-                index = stoi (attribute);
+                number = stoi (attribute);
             }
             if (attribute == "ratio")
             {
@@ -95,7 +95,7 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
-                label = attribute;
+                name = attribute;
             }
         }
     }
@@ -186,7 +186,7 @@ void Gearbox::gearUp() {
     if(currentGear > maxGear) currentGear = maxGear;
 
     gearRatio = gearMap[currentGear]->ratio;
-    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->getName().c_str()); 
 }
 
 void Gearbox::gearDown() {
@@ -194,5 +194,5 @@ void Gearbox::gearDown() {
     if(currentGear < 0) currentGear = 0;
 
     gearRatio = gearMap[currentGear]->ratio;
-    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->label.c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->getName().c_str()); 
 }
