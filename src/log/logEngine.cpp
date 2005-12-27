@@ -32,7 +32,7 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
     // open the file for writing in rewrite mode if necessary.
     if ((instancesCount == 0) || (!logFile.is_open ()))
     {
-        std::cout << "Creating first LogEngine instance (" << name << "). Reading LogEngine config file..." << std::endl;
+        std::cout << "Starting log engine...";
 #ifdef MACOSX
         XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/logConfig.xml");
 #else
@@ -219,7 +219,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     }
 }
 
-void LogEngine::setName(const std::string & name)
+void LogEngine::setName(std::string name)
 {
     this->logName = name;
 }
@@ -227,7 +227,6 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     std::string fileName = "motorsport-default.log";
     globalLevel = LOG_DEVELOPER;
-    std::cout << "Reading LogEngine configuration..." << std::endl;
     if (n)
     {
         if (n->getNodeType () == DOMNode::ELEMENT_NODE)
@@ -265,16 +264,16 @@ void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     } else {
-        std::cerr << "ERROR: could not read LogEngine configuration values! Using default values." << std::endl;
+        std::cerr << std::endl << "ERROR: Could not read Log Engine configuration. Using default values!" << std::endl;
     }
-    std::cout << "Log messages will all be recorded in: " << fileName << std::endl;
+    std::cout << " [Ok : \"" << fileName << "\"]" << std::endl;
     logFile.open (fileName.c_str (), std::fstream::out);
     if (!logFile.good ())
     {
-        std::cerr << "ERROR: Logfile (" << fileName << ") could not be opened!\n";
+        std::cerr << "ERROR: Log file \"" << fileName << "\" could not be opened!\n";
         return;
     }
-    format (LOG_ENDUSER, "LogFile created");
+    format (LOG_ENDUSER, "Start of logs.");
 }
 
 LOG_LEVEL stologlevel (const std::string & srcString)

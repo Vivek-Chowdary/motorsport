@@ -28,7 +28,6 @@ class Camera;
 class Area : public WorldObject
 {
     private:
-        std::string longName;
         std::string description;
         std::string author;
         std::string contact;

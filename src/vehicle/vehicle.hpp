@@ -36,7 +36,6 @@ class Vehicle : public WorldObject
 {
   private:
     bool userDriver;
-    std::string longName;
     std::string description;
     std::string author;
     std::string contact;

@@ -35,6 +35,8 @@ class WorldObject
         static WorldObjects worldObjects;
         std::string id;
         std::string name;
+        std::string path;
+        std::string xmlPath;
     protected:
         LogEngine * log;
         WorldObject * base;
@@ -46,8 +48,12 @@ class WorldObject
         virtual ~WorldObject ();
         std::string getId();
         std::string getName();
-        void setName(std::string name);
         std::string getFullName();
+        std::string getPath();
+        std::string getXmlPath();
+        void setName(std::string name);
+        void setPath(std::string path);
+        void setXmlPath(std::string xmlPath);
 
         static void logAll();
         LogEngine * getLog();

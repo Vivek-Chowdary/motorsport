@@ -79,7 +79,7 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "index")
+            if (attribute == "number")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
@@ -91,7 +91,7 @@ void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                 log->__format (LOG_CCREATOR, "Found the Gear Ratio: %s", attribute.c_str() );
                 ratio = stod (attribute);
             }
-            if (attribute == "label")
+            if (attribute == "name")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );

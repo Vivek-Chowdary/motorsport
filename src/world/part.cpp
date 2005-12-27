@@ -21,11 +21,11 @@
 Part::Part (WorldObject * container, const std::string & name)
     :WorldObject(container, name)
 {
-    std::string partPath = Paths::part(name);
-    std::string partXmlPath = Paths::partXml(name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(partPath, "FileSystem", "parts." + name);
+    setPath(Paths::part(name));
+    setXmlPath(Paths::partXml(name));
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "parts." + name);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("parts." + name);
-    XmlFile * xmlFile = new XmlFile (partXmlPath.c_str());
+    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
 }
@@ -110,7 +110,7 @@ void Part::startGraphics (DOMNode * n)
             }
         }
     }
-    data.meshPath = Paths::part(getName()) + data.meshPath;
+    data.meshPath = getPath() + data.meshPath;
     OgreObject * ogreObject = new OgreObject(this, data, getId());
     ogreObjects[getId()] = ogreObject;
 }

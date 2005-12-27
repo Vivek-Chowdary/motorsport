@@ -40,14 +40,16 @@ World::World (WorldObject * container, std::string name)
     {
         delete this;
     } else {
+        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
         worldPointer = this;
-        std::string worldXmlPath = Paths::worldXml(name);
-        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", worldXmlPath.c_str());
+        setPath(Paths::world(name));
+        setXmlPath(Paths::worldXml(name));
+        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
         double time = SDL_GetTicks()/1000.0;
-        XmlFile* xmlFile = new XmlFile (worldXmlPath.c_str());
+        XmlFile* xmlFile = new XmlFile (getXmlPath().c_str());
         processXmlRootNode (xmlFile->getRootNode());
         delete xmlFile;
-        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", worldXmlPath.c_str(), SDL_GetTicks()/1000.0 - time);
+        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", getXmlPath().c_str(), SDL_GetTicks()/1000.0 - time);
     }
 }
 
@@ -86,7 +88,6 @@ World::~World ()
 
 void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    longName = "none";
     description = "none";
     double gravityX = 0.0;
     double gravityY = 0.0;
@@ -114,8 +115,9 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            assignXmlString (longName, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", longName.c_str());
+                            assignXmlString (attribute, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", attribute.c_str());
+                            setName(attribute);
                         }
                         if (attribute == "description")
                         {

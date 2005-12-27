@@ -16,14 +16,15 @@ bool DOMCountErrorHandler::handleError (const DOMError & domError)
 {
     fSawErrors = true;
     short errsev = domError.getSeverity ();
-    if (errsev == DOMError::DOM_SEVERITY_WARNING)     std::cout << "(XML Parser)" << "Warning at file: ";
-    if (errsev == DOMError::DOM_SEVERITY_ERROR)       std::cout << "(XML Parser)" << "Error at file: ";
-    if (errsev == DOMError::DOM_SEVERITY_FATAL_ERROR) std::cout << "(XML Parser)" << "Fatal error at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_WARNING)     std::cout << "(XmlParser)" << "Warning at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_ERROR)       std::cout << "(XmlParser)" << "Error at file: ";
+    if (errsev == DOMError::DOM_SEVERITY_FATAL_ERROR) std::cout << "(XmlParser)" << "Fatal error at file: ";
     std::cout << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << std::endl << "Message: " << StrX (domError.getMessage ()) << std::endl;
     return true;
 }
-XmlFile::XmlFile (const char *xmlFileName)
+XmlFile::XmlFile (std::string xmlFileName)
 {
+    //std::cout << "Loading " << xmlFileName << std::endl;
     error = false;
     bool recognize = false;
     try
@@ -33,7 +34,7 @@ XmlFile::XmlFile (const char *xmlFileName)
     }
     catch (const XMLException & toCatch)
     {
-        std::cout << "(XML Parser)" << "Error during initialization! : " << StrX (toCatch.getMessage ()) << std::endl;
+        std::cout << "(XmlParser)" << "Error during initialization! : " << StrX (toCatch.getMessage ()) << std::endl;
         error = true;
     }
     static const XMLCh gLS[] = { chLatin_L, chLatin_S, chNull };
@@ -55,31 +56,31 @@ XmlFile::XmlFile (const char *xmlFileName)
     try
     {
         parser->resetDocumentPool ();
-        doc = parser->parseURI (xmlFileName);
+        doc = parser->parseURI (xmlFileName.c_str());
     }
     catch (const XMLException & toCatch)
     {
-        std::cout << "(XML Parser)" << "Error during parsing: " << xmlFileName << std::endl << "Exception message is: " << StrX (toCatch.getMessage ()) << std::endl;
+        std::cout << "(XmlParser)" << "Error during parsing: " << xmlFileName << std::endl << "Exception message is: " << StrX (toCatch.getMessage ()) << std::endl;
         error = true;
     }
     catch (const DOMException & toCatch)
     {
         const unsigned int maxChars = 2047;
         XMLCh errText[maxChars + 1];
-        std::cout << "(XML Parser)" << "DOM Error during parsing: " << xmlFileName << std::endl << "DOMException code is: " << toCatch.code << std::endl;
-        if (DOMImplementation::loadDOMExceptionMsg (toCatch.code, errText, maxChars)) std::cout << "(XML Parser)" << "Message is: " << StrX (errText) << std::endl;
+        std::cout << "(XmlParser)" << "DOM Error during parsing: " << xmlFileName << std::endl << "DOMException code is: " << toCatch.code << std::endl;
+        if (DOMImplementation::loadDOMExceptionMsg (toCatch.code, errText, maxChars)) std::cout << "(XmlParser)" << "Message is: " << StrX (errText) << std::endl;
         error = true;
     }
     catch (...)
     {
-        std::cout << "(XML Parser)" << "Unexpected exception during parsing: " << xmlFileName << std::endl;
+        std::cout << "(XmlParser)" << "Unexpected exception during parsing: " << xmlFileName << std::endl;
         error = true;
     }
     if (!error)
     {
         if (errorHandler.getSawErrors ())
         {
-            std::cout << "(XML Parser)" << "Errors occurred, no output available" << std::endl;
+            std::cout << "(XmlParser)" << "Errors occurred, no output available" << std::endl;
             error = true;
         }
     }

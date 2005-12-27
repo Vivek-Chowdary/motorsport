@@ -31,17 +31,17 @@
 Vehicle::Vehicle (WorldObject * container, std::string name)
     :WorldObject(container, name)
 {
-    std::string vehiclePath = Paths::vehicle(name);
-    std::string vehicleXmlPath = Paths::vehicleXml(name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath, "FileSystem", "vehicles - " + name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(vehiclePath + "skybox.zip", "Zip", "vehicles - " + name);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles - " + name);
-    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", vehicleXmlPath.c_str());
+    setPath(Paths::vehicle(name));
+    setXmlPath(Paths::vehicleXml(name));
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "vehicles." + name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath()+"skybox.zip","Zip","vehicles."+name);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles." + name);
+    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", getXmlPath().c_str());
     double time = SDL_GetTicks()/1000.0;
-    XmlFile * xmlFile = new XmlFile (vehicleXmlPath.c_str());
+    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", vehicleXmlPath.c_str(), SDL_GetTicks()/1000.0 - time);
+    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", getXmlPath().c_str(), SDL_GetTicks()/1000.0 - time);
 
     userDriver = false;
 }
@@ -101,7 +101,7 @@ void Vehicle::setUserDriver ()
     log->log (LOG_ENDUSER, LOG_TELEMETRY, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 
     // engage neutral gear
-    gearbox->setGear(1);
+    gearbox->setGear(2);
 
     // spread the news to the necessary (input-able) vehicle parts
     std::map < std::string, Suspension * >::const_iterator suspIter;
@@ -123,7 +123,6 @@ void Vehicle::setUserDriver ()
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    longName = "None";
     description = "None";
     author = "Anonymous";
     contact = "None";
@@ -164,8 +163,9 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         }
                         if (attribute == "name")
                         {
-                            assignXmlString (longName, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", longName.c_str());
+                            assignXmlString (attribute, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
+                            setName(attribute);
                         }
                         if (attribute == "description")
                         {
@@ -335,7 +335,7 @@ void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
                 {
                     log->__format (LOG_CCREATOR, "Found a wheel.");
                     Wheel * tmpWheel = new Wheel (this, "Wheel", wheelNode);
-                    wheelMap[tmpWheel->getIndex()]=tmpWheel;
+                    wheelMap[tmpWheel->getName()]=tmpWheel;
                     tmpWheel->setRefBody(body->getMainOdeObject()->getBodyID());
                 }
             }

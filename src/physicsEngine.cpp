@@ -164,7 +164,7 @@ void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     int stepType = 1;
     int dWorldStepFast1MaxIterations = 100;
 
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
+    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
     if (n)
     {
         if (n->getNodeType () == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE)

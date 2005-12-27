@@ -74,13 +74,14 @@ inline bool DOMCountErrorHandler::getSawErrors () const{return fSawErrors;}
 
 class XmlFile
 {
-    bool error;
-    DOMBuilder * parser;
-    XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc;
+    private:
+        bool error;
+        DOMBuilder * parser;
+        XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc;
     public:
-    XmlFile (const char * xmlFileName);
-    ~XmlFile ();
-    DOMNode * getRootNode();
+        XmlFile (std::string xmlFileName);
+        ~XmlFile ();
+        DOMNode * getRootNode();
 };
 
 void assignXmlString (std::string & destString, const XMLCh * srcXmlString);

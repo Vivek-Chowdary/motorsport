@@ -30,11 +30,6 @@ Wheel::~Wheel ()
 {
 }
 
-
-std::string Wheel::getIndex()
-{
-    return index;
-}
 void Wheel::setBrakePedal (Pedal * pedal)
 {
     brakePedal = pedal;
@@ -42,7 +37,6 @@ void Wheel::setBrakePedal (Pedal * pedal)
 
 void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    index.assign ("Unknown");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -52,10 +46,11 @@ void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "index")
+            if (attribute == "name")
             {
-                assignXmlString (index, attNode->getValue());
-                log->__format (LOG_DEVELOPER, "Found the index: %s", index.c_str());
+                assignXmlString (attribute, attNode->getValue());
+                log->__format (LOG_DEVELOPER, "Found the name: %s", attribute.c_str());
+                setName(attribute);
             }
         }
     }
@@ -87,7 +82,7 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    data.meshPath = Paths::vehicle(container->getName()) + data.meshPath;
+    data.meshPath = getPath() + data.meshPath;
     OgreObject * ogreObject = new OgreObject(this, data, getId());
     ogreObjects[getId()] = ogreObject;
 }
@@ -196,7 +191,7 @@ void Wheel::stepPhysics ()
     // finally, apply the torques
     dBodyAddTorque (getMainOdeObject()->getBodyID(), tAxis.x, tAxis.y, tAxis.z);
 
-    log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
+    log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",getName().c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
     
     // zero the accumulators
     inputTorqueTransfer = 0;

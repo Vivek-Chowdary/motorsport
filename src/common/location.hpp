@@ -19,13 +19,13 @@ class Location
   private:
     Vector3d position;
     Quaternion rotation;
-    std::string index;
+    std::string name;
   public:
     Location (XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Location ();
     Vector3d getPosition();
     Quaternion getRotation();
-    std::string getIndex();
+    std::string getName();
 };
 
 #endif

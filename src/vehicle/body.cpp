@@ -40,6 +40,7 @@ void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     OgreObjectData data;
+    log->__format (LOG_CCREATOR, "Body thingy gfx about to be parsed");
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -56,7 +57,8 @@ void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    data.meshPath = Paths::vehicle(container->getName()) + data.meshPath;
+    log->__format (LOG_CCREATOR, "Body thingy gfx parsed!");
+    data.meshPath = getPath() + data.meshPath;
     OgreObject * ogreObject = new OgreObject(this, data, getId());
     ogreObjects[getId()] = ogreObject;
 }

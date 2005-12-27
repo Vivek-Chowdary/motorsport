@@ -25,17 +25,17 @@ void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &
 Area::Area (WorldObject * container, std::string name)
     :WorldObject(container, name)
 {
-    std::string areaPath = Paths::area(name);
-    std::string areaXmlPath = Paths::areaXml(name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath, "FileSystem", name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(areaPath + "skybox.zip", "Zip", name);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup(name);
-    log->loadscreen (LOG_ENDUSER, "Starting to load a area (%s)", areaXmlPath.c_str());
+    setPath(Paths::area(name));
+    setXmlPath(Paths::areaXml(name));
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "areas." + name);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath() + "skybox.zip", "Zip", "areas."+name);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("areas." + name);
+    log->loadscreen (LOG_ENDUSER, "Starting to load a area (%s)", getXmlPath().c_str());
     double time = SDL_GetTicks()/1000.0;
-    XmlFile * xmlFile = new XmlFile (areaXmlPath.c_str());
+    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a area (%s). %f seconds.", areaXmlPath.c_str(), (SDL_GetTicks()/1000.0 - time));
+    log->loadscreen (LOG_ENDUSER, "Finished loading a area (%s). %f seconds.", getXmlPath().c_str(), (SDL_GetTicks()/1000.0 - time));
 }
 
 Area::~Area ()
@@ -61,7 +61,6 @@ Area::~Area ()
 
 void Area::processXmlRootNode (DOMNode * n)
 {
-    longName = "None";
     description = "None";
     author = "Anonymous";
     contact = "None";
@@ -95,8 +94,9 @@ void Area::processXmlRootNode (DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            assignXmlString (longName, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", longName.c_str());
+                            assignXmlString (attribute, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
+                            setName(attribute);
                         }
                         if (attribute == "description")
                         {
@@ -221,7 +221,7 @@ void Area::processXmlRootNode (DOMNode * n)
                                         {
                                             log->__format (LOG_CCREATOR, "Found a vehicle position.");
                                             Location * tmpVehicle = new Location (n2);
-                                            vehiclePositionMap[tmpVehicle->getIndex()] = tmpVehicle;
+                                            vehiclePositionMap[tmpVehicle->getName()] = tmpVehicle;
                                         }
                                     }
                                 }

@@ -1,4 +1,3 @@
-put aplly rotation in worldObject if possible
 recode the name, id, path, longnames thingies.
 make vehicle component constructors work with parsed XmlData objects
 make vehicle parse everything and create the XmlData objects
@@ -6,3 +5,5 @@ refactorize the physics code
 refactorize the input code
 refactorize user driver agent or whatever
 refactorize the system.hpp data into other classes.
+recode singletons
+check what headers are really necessary, which can be replaced with forward declarations, ...

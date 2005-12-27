@@ -218,7 +218,7 @@ void recordVideoFrames ()
 
 LogEngine *processXmlRootNode (DOMNode * n)
 {
-    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XML Parser");
+    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
     tmpLog->__format (LOG_DEVELOPER, "Assigning default values");
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "MAI";

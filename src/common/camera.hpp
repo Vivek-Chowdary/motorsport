@@ -23,7 +23,6 @@ class Camera : public WorldObject
 {
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    std::string index;
     bool isFree;
 
     dBodyID positionID;

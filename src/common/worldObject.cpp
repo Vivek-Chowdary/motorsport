@@ -19,6 +19,16 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
     this->base = dynamic_cast<WorldObject *>(this);
     this->name = name;
     this->container = container;
+    if (container == NULL)
+    {
+        this->path = "/unknownPath/";
+        this->xmlPath = path + "unknownFilepath";
+    }
+    else
+    {
+        this->path = container->getPath();
+        this->xmlPath = container->getPath();
+    }
 
     const int numberStringSize = 64;
     char numberString[numberStringSize];
@@ -75,11 +85,28 @@ std::string WorldObject::getName()
 void WorldObject::setName(std::string name)
 {
     this->name = name;
+    log->setName(getFullName());
 }
 std::string WorldObject::getFullName()
 {
     if (container == NULL) return name;
     return container->getFullName() + "." + name;
+}
+std::string WorldObject::getPath()
+{
+    return path;
+}
+void WorldObject::setPath(std::string path)
+{
+    this->path = path;;
+}
+std::string WorldObject::getXmlPath()
+{
+    return xmlPath;
+}
+void WorldObject::setXmlPath(std::string xmlPath)
+{
+    this->xmlPath = xmlPath;
 }
 LogEngine * WorldObject::getLog()
 {

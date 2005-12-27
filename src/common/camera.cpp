@@ -144,7 +144,6 @@ void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     targetOffset = new Vector3d (0, 0, 0);
     positionID = 0;
     targetID = 0;
-    index = "0";
     isFree = false;
     if (n->hasAttributes ())
     {
@@ -155,10 +154,11 @@ void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName());
-            if (attribute == "index")
+            if (attribute == "name")
             {
-                assignXmlString (index, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the position index: %s", index.c_str());
+                assignXmlString (attribute, attNode->getValue());
+                setName(attribute);
+                log->__format (LOG_CCREATOR, "Found the position name: %s", attribute.c_str());
             }
             if (attribute == "position")
             {

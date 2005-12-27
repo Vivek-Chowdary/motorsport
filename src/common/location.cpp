@@ -18,7 +18,7 @@ Location::Location (XERCES_CPP_NAMESPACE::DOMNode * n)
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
         int nSize = attList->getLength ();
-        index = "0";
+        name = "unknown";
         position.x = position.y = position.z = 0;
         rotation.x = rotation.y = rotation.z = 0;
         for (int i = 0; i < nSize; ++i)
@@ -26,10 +26,10 @@ Location::Location (XERCES_CPP_NAMESPACE::DOMNode * n)
             DOMAttr *attNode = (DOMAttr *) attList->item (i);
             std::string attribute;
             assignXmlString (attribute, attNode->getName ());
-            if (attribute == "index")
+            if (attribute == "name")
             {
-                assignXmlString (index, attNode->getValue ());
-                log->__format (LOG_CCREATOR, "Found the position index: %s", index.c_str ());
+                assignXmlString (name, attNode->getValue ());
+                log->__format (LOG_CCREATOR, "Found the position name: %s", name.c_str ());
             }
             if (attribute == "position")
             {
@@ -64,7 +64,7 @@ Quaternion Location::getRotation ()
     return rotation;
 }
 
-std::string Location::getIndex ()
+std::string Location::getName ()
 {
-    return index;
+    return name;
 }

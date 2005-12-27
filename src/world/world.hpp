@@ -24,7 +24,6 @@ class World : public WorldObject
 {
   private:
     static World *worldPointer;
-    std::string longName;
     std::string description;
     Camera * activeCamera;
     int activeAreaCameraIndex;

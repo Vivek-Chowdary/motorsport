@@ -60,10 +60,10 @@ void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         DOMAttr *attNode = (DOMAttr *) attList->item (i);
                         std::string attribute;
                         assignXmlString (attribute, attNode->getName());
-                        if (attribute == "index")
+                        if (attribute == "name")
                         {
                             assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the index: %s", attribute.c_str());
+                            log->__format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
                             setName(attribute);
                         }
                     }

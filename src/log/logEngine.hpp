@@ -17,7 +17,6 @@
 
 //forward declarations
 class GuiEngine;
-#define MAX_SOURCE_FILENAME_LENGTH 28
 
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
@@ -116,7 +115,7 @@ class LogEngine
     */
     void log(const LOG_LEVEL level, const int mask, const char *textToLogFormat, ...);
 
-    void setName(const std::string & name);
+    void setName(std::string name);
 
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();
