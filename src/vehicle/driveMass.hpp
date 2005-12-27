@@ -19,7 +19,6 @@ class DriveJoint;
 class DriveMass : public WorldObject
 {
   protected:
-//    static int instancesCount;
     double inertia;
     double friction;
     double inputAngularVel;
@@ -28,13 +27,9 @@ class DriveMass : public WorldObject
     double outputAngularVel;
     double outputTorqueTransfer;
     double inputTorqueTransfer;
-    
   public:
-    // data
     DriveMass (WorldObject * container, std::string name);
     ~DriveMass ();
-
-    // physics
     double getInputTorque ()             { return inputTorqueTransfer; } ;
     double getOutputTorque ()            { return outputTorqueTransfer; } ;
     double getInputAngularVel ()         { return inputAngularVel; } ;

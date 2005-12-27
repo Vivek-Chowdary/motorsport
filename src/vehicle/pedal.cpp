@@ -39,16 +39,10 @@ void Pedal::setUserDriver ()
     userDriver = true;
 }
 
-std::string Pedal::getId()
-{
-    return id;
-}
-
 void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     angleRange = 180;
     currentAngle = 0.0;
-    id = "none";
     if (n->hasAttributes ())
     {
         // get all the attributes of the node
@@ -68,8 +62,8 @@ void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
             if (attribute == "id")
             {
-                assignXmlString (id, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", id.c_str() );
+                assignXmlString (name, attNode->getValue());
+                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", name.c_str() );
             }
         }
     }

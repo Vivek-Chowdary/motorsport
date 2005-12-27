@@ -19,8 +19,6 @@
 #include "pedal.hpp"
 #include "vehicle.hpp"
 
-int Wheel::instancesCount = 0;
-
 Wheel::Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
     :DriveMass(container, name)
 {

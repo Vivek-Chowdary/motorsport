@@ -310,7 +310,7 @@ void Vehicle::processXmlPedalListNode(DOMNode * pedalListNode)
                 {
                     log->__format (LOG_CCREATOR, "Found a pedal.");
                     Pedal * tmpPedal = new Pedal (this, "Pedal", pedalNode);
-                    pedalMap[tmpPedal->getId()]=tmpPedal;
+                    pedalMap[tmpPedal->getName()]=tmpPedal;
                 }
             }
         }

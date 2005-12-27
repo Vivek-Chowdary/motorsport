@@ -27,7 +27,6 @@ class Wheel;
 class Suspension : public WorldObject
 {
   private:
-    // data
     static int instancesCount;
     std::string index;
     dJointID jointID;
@@ -38,25 +37,16 @@ class Suspension : public WorldObject
     double steeringAngle;
     bool userDriver;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
   public:
-    // data
     Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Suspension ();
     std::string getIndex();
     void attach (Wheel & wheel, Vehicle & vehicle);
     void setUserDriver ();
-
-    // physics
     void stepPhysics ();
-//    void setPosition (Vector3d position);
-//    Vector3d getPosition ();
     Vector3d getInitialWheelPosition ();
-//    void applyRotation (Quaternion rotation);
-//    Quaternion getRotation ();
     Quaternion getInitialWheelRotation ();
 };
 #endif

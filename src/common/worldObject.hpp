@@ -30,7 +30,6 @@ class WorldObject
   private:
     static unsigned int instancesCount;
     static WorldObjects worldObjects;
-    void construct (std::string id);
   protected:
     LogEngine * log;
     WorldObject * base;

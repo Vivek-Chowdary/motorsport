@@ -20,32 +20,24 @@ class Pedal;
 class DriveJoint : public WorldObject
 {
   protected:
-    // data
-//    static int instancesCount;
     double inputAngularVel;
     double outputAngularVel;
     double ratio;
     double outputTorqueTransfer;
     double inputTorqueTransfer;
-    double relAngle;       // delta angle (radians) between the connected masses
-                           //     accounting for the gear ratio 
+    double relAngle;       // delta angle (radians) between the connected masses accounting for the gear ratio 
     double prevRelAngle;
     double relAngularVel;
     double prevRelAngularVel;
     DriveMass *inputDrive;
     DriveMass *outputDrive;
-
     bool enabled;
-        
   public:
-    // data
     DriveJoint (WorldObject * container, std::string name);
     ~DriveJoint ();
     void enable () { enabled = 1; } ;
     void disable () { enabled = 0; } ;
     bool isEnabled () { return enabled; } ;
-     
-    // physics
     double getOutputTorque ()               { return outputTorqueTransfer; } ;
     double getInputTorque ()                { return inputTorqueTransfer; } ;
     double getRelAngle ()                   { return relAngle; } ;
@@ -56,11 +48,7 @@ class DriveJoint : public WorldObject
 class Clutch : public DriveJoint
 {
   private:
-    // data
-    static int instancesCount;
     Pedal * clutchPedal;
-
-    // physics
     double coeffStaticFriction;
     double coeffDynamicFriction;
     double maxTorqueTransfer;
@@ -69,49 +57,34 @@ class Clutch : public DriveJoint
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
   public:
-    // data
     Clutch (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     Clutch (WorldObject * container, std::string name);
     ~Clutch ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void setClutchPedal(Pedal * pedal);
-
-    // physics
     void stepPhysics ();
 };
 
 class Gear : public DriveJoint
 {
   private:
-    // data
-    static int instancesCount;
-
-    // physics
     double ratio;
     double springConstant;
     double dampConstant;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-
   public:
-    // data
     Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     Gear (WorldObject * container, std::string name);
     ~Gear ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-
-    // physics
     void stepPhysics ();
 };
 
 class LSD : public DriveJoint
 {
   private:
-    // data
-    static int instancesCount;
     DriveMass *outputDrive2;
-
-    // physics
     double outputsRelAngle;
     double prevOutputsRelAngle;
     double outputsRelAngularVel;
@@ -122,16 +95,12 @@ class LSD : public DriveJoint
     double limitedSlipClutchFriction;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-
   public:
-    // data
     LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     LSD (WorldObject * container, std::string name);
     ~LSD ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void setOutputPointer2 (DriveMass *output)   { outputDrive2 = output; } ;
-    
-    // physics
     void stepPhysics ();
 };
 

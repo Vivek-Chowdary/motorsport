@@ -15,24 +15,16 @@
 class Pedal : public WorldObject
 {
   private:
-    // data
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     bool userDriver;
-    std::string id;
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
     double angleRange;
     double currentAngle;
   public:
-    // data
     Pedal (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Pedal ();
     void setUserDriver ();
-    std::string getId();
-
-    // physics
     void stepPhysics ();
     double getNormalizedAngle();
 };

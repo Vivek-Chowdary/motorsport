@@ -49,18 +49,13 @@ class Vehicle : public WorldObject
     void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
     void processXmlPedalListNode(XERCES_CPP_NAMESPACE::DOMNode * pedalListNode);
     void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
     void placeWheelsOnSuspensions();
     void boltWheelsToSuspensions();
-
-    // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    // data
     std::string getRelativeVehicleDir();
     Vehicle (WorldObject * container, std::string name);
     ~Vehicle ();
@@ -76,8 +71,6 @@ class Vehicle : public WorldObject
     std::map < std::string, Pedal * > pedalMap;
     std::vector < Camera * > cameraList;
     void setUserDriver ();
-
-    // physics
     void stepPhysics ();
     void setPosition (Vector3d position);
     void applyRotation (Quaternion rotation);
@@ -85,8 +78,6 @@ class Vehicle : public WorldObject
     Quaternion getRotation ();
     double getOutputTorque ();
     dBodyID getVehicleID();
-
-    // graphics
     void setRenderDetail(int renderMode);
     void stepGraphics ();
 };

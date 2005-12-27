@@ -27,8 +27,6 @@ namespace Ogre {
 class Wheel : public DriveMass
 {
   private:
-    // data
-    static int instancesCount;
     bool userDriver;
     std::string index;
     double powered;
@@ -38,16 +36,11 @@ class Wheel : public DriveMass
     void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Pedal * brakePedal;
-    
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-    
-    // graphics
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    // data
     Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Wheel ();
     std::string getIndex();
@@ -55,8 +48,6 @@ class Wheel : public DriveMass
     void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);
-    
-    // physics
     void stepPhysics ();
     dBodyID wheelID;
     dGeomID wheelGeomID;
@@ -65,8 +56,6 @@ class Wheel : public DriveMass
     void applyRotation (Quaternion rotation);
     Quaternion getRotation ();
     double getInputAngularVel();
-    
-    // graphics
     void stepGraphics ();
     class Ogre::Entity;
     class Ogre::SceneNode;
