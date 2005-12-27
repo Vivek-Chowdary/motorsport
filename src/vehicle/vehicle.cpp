@@ -101,7 +101,6 @@ void Vehicle::setUserDriver ()
 
 void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    revision = 0;
     longName = "None";
     description = "None";
     author = "Anonymous";
@@ -145,12 +144,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             assignXmlString (longName, attNode->getValue());
                             log->loadscreen (LOG_CCREATOR, "Found the name: %s", longName.c_str());
-                        }
-                        if (attribute == "revision")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the revision number: %s", attribute.c_str());
-                            revision = stoi(attribute);
                         }
                         if (attribute == "description")
                         {
@@ -400,7 +393,7 @@ void Vehicle::setRenderDetail(int renderMode)
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
-        wheelIter->second->setRenderDetail(renderMode);
+        // wheelIter->second->setRenderDetail(renderMode);
     }
 }
 
@@ -426,7 +419,7 @@ void Vehicle::setPosition (Vector3d position)
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); ++wheelIter)
     {
-        wheelIter->second->setPosition ( wheelIter->second->getPosition() + posDiff );
+        wheelIter->second->getMainOdeObject()->setPosition ( wheelIter->second->getMainOdeObject()->getPosition() + posDiff );
     }
 
     std::map < std::string, Suspension * >::const_iterator suspIter;
@@ -486,7 +479,7 @@ void Vehicle::placeWheelsOnSuspensions()
         }else{
             log->__format (LOG_DEVELOPER, "Placing wheel on suspension \"%s\"", suspIter->first.c_str());
             wheelIter->second->applyRotation (suspIter->second->getInitialWheelRotation());
-            wheelIter->second->setPosition (suspIter->second->getInitialWheelPosition());
+            wheelIter->second->getMainOdeObject()->setPosition (suspIter->second->getInitialWheelPosition());
         }
     }
 }

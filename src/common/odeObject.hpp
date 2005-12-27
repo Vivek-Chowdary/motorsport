@@ -19,6 +19,7 @@
 class OdeObject;
 class OdeObjectData;
 class VehicleBodyOdeObjectData;
+class VehicleWheelOdeObjectData;
 class Quaternion;
 class WorldObject;
 
@@ -38,6 +39,7 @@ class OdeObject
     public:
         OdeObject (WorldObject * worldObject, OdeObjectData data, std::string identifier);
         OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, VehicleWheelOdeObjectData data, std::string identifier);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
@@ -80,5 +82,18 @@ class VehicleBodyOdeObjectData
             width = height = length = 1;
         }
         ~VehicleBodyOdeObjectData() {};
+};
+class VehicleWheelOdeObjectData
+{
+    public:
+        double radius;
+        double width;
+        double mass;
+
+        VehicleWheelOdeObjectData()
+        {
+            mass = width = radius = 0;
+        }
+        ~VehicleWheelOdeObjectData() {};
 };
 #endif

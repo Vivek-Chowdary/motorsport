@@ -37,7 +37,7 @@ void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
     startPhysics (n);
     startGraphics (n);
-    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
+    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {

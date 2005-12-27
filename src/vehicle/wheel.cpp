@@ -29,20 +29,8 @@ Wheel::Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::D
 Wheel::~Wheel ()
 {
     stopPhysics ();
-    stopGraphics ();
 }
 
-
-void Wheel::updateOgrePosition ()
-{
-    const dReal *temp = dBodyGetPosition (wheelID);  // need to allocate memory first??
-    wheelNode->setPosition (*(temp + 0), *(temp + 1), *(temp + 2));
-}
-void Wheel::updateOgreOrientation ()
-{
-    const dReal *temp = dBodyGetQuaternion (wheelID);    // need to allocate memory first??
-    wheelNode->setOrientation (*(temp + 0), *(temp + 1), *(temp + 2), *(temp + 3));
-}
 
 std::string Wheel::getIndex()
 {
@@ -74,6 +62,7 @@ void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
     startPhysics (n);
     startGraphics (n);
+    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 
 void Wheel::setUserDriver ()
@@ -82,8 +71,7 @@ void Wheel::setUserDriver ()
 }
 void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    std::string mesh = "None";
-    Ogre::SceneDetailLevel renderMode = Ogre::SDL_SOLID;
+    OgreObjectData data;
     if (n->hasAttributes ())
     {
         DOMNamedNodeMap *attList = n->getAttributes ();
@@ -95,69 +83,19 @@ void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
             assignXmlString (attribute, attNode->getName());
             if (attribute == "mesh")
             {
-                assignXmlString (mesh, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel graphics mesh filename: %s", mesh.c_str());
-            }
-            if (attribute == "renderMode")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel rendering mode: %s", attribute.c_str());
-
-                if(attribute == "points")
-                    renderMode=Ogre::SDL_POINTS;
-                if(attribute == "wireframe")
-                    renderMode=Ogre::SDL_WIREFRAME;
-                if(attribute == "solid")
-                    renderMode=Ogre::SDL_SOLID;
+                assignXmlString (data.meshPath, attNode->getValue());
+                log->__format (LOG_CCREATOR, "Found the wheel graphics mesh filename: %s", data.meshPath.c_str());
             }
         }
     }
-    std::string meshPath = Paths::vehicle(container->getName()) + mesh;
-    wheelEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (getId().c_str(), meshPath.c_str());
-    wheelEntity->setRenderDetail(renderMode);
-
-    log->__format (LOG_CCREATOR, "Wheel mesh has %i submeshes", wheelEntity->getNumSubEntities());
-    for(unsigned int i = 0; i < wheelEntity->getNumSubEntities(); i++)
-    {
-        log->__format (LOG_CCREATOR, "Wheel submesh %i material: %s", i, wheelEntity->getSubEntity(i)->getMaterialName().c_str() );
-    }
-
-    wheelNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-    wheelNode->attachObject (wheelEntity);
-}
-void Wheel::stepGraphics ()
-{
-    updateOgrePosition ();
-    updateOgreOrientation ();
+    data.meshPath = Paths::vehicle(container->getName()) + data.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, data, getId());
+    ogreObjects[getId()] = ogreObject;
 }
 
-void Wheel::setRenderDetail(int renderMode)
-{
-    Ogre::SceneDetailLevel mode;
-    switch (renderMode)
-    {
-    case 1:
-        mode = Ogre::SDL_POINTS;
-        break;
-    case 2:
-        mode = Ogre::SDL_WIREFRAME;
-        break;
-    case 3:
-    default:
-        mode = Ogre::SDL_SOLID;
-        break;
-    }
-    wheelEntity->setRenderDetail(mode);
-}
-void Wheel::stopGraphics ()
-{
-    // empty
-}
 void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    double mass = 0.0;
-    double radius = 0.0;
-    double width = 0.0;
+    VehicleWheelOdeObjectData data;
     powered = 0;
     inputAngularVel = 0.0;
     outputAngularVel = 0.0;
@@ -183,19 +121,19 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
-                radius = stod (attribute);
+                data.radius = stod (attribute);
             }
             if (attribute == "width")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
-                width = stod (attribute);
+                data.width = stod (attribute);
             }
             if (attribute == "mass")
             {
                 assignXmlString (attribute, attNode->getValue());
                 log->__format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
-                mass = stod (attribute);
+                data.mass = stod (attribute);
             }
             if (attribute == "powered")
             {
@@ -205,59 +143,20 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-    dMass tmpMass;
-//    dMassSetCylinderTotal (&tmpMass, mass, 3, radius, width);
-    dMassSetParameters (&tmpMass, mass,
-                         0, 0, 0,
-                         0.237, 0.237, 0.409,
-                         0, 0, 0);
-
-    wheelID = dBodyCreate (World::getWorldPointer ()->worldID);
-    wheelGeomID = dCreateCCylinder (World::getWorldPointer ()->spaceID, radius, width);
-    dBodySetLinearVel  (wheelID, 0, 0, 0);
-    dBodySetAngularVel (wheelID, 0, 0, 0);
-
-    dGeomSetBody (wheelGeomID, wheelID);
-    dBodySetMass (wheelID, &tmpMass);
-//    setPosition (Vector3d (0, 0, 0) );
-//    setRotation (Vector3d (0, 0, 0) );
-    
-//    if(powered) {
-//        dBodySetFiniteRotationMode (wheelID, 1);
-//    }
-//    dBodySetFiniteRotationMode (wheelID, 1);
-}
-
-void Wheel::setPosition (Vector3d position)
-{               
-    dBodySetPosition (wheelID, position.x, position.y, position.z);
-}
-
-Vector3d Wheel::getPosition ()
-{
-    const dReal *temp = dBodyGetPosition (wheelID);
-    return Vector3d (temp[0], temp[1], temp[2]);
+    odeObjects[getId()] = new OdeObject(this, data, getId());
 }
 
 void Wheel::applyRotation (Quaternion rotation)
 {
-    setPosition ( rotation.rotateObject(getPosition()) );
+    getMainOdeObject()->setPosition ( rotation.rotateObject(getMainOdeObject()->getPosition()) );
     dMatrix3 rot;
-    Quaternion finalRotation = rotation * getRotation();
+    Quaternion finalRotation = rotation * getMainOdeObject()->getRotation();
     finalRotation.getOdeMatrix (rot);
-    dBodySetRotation (wheelID, rot);
-}
-
-Quaternion Wheel::getRotation ()
-{
-    const dReal *temp = dBodyGetQuaternion (wheelID);
-    return Quaternion (temp);
+    dBodySetRotation (getMainOdeObject()->getBodyID(), rot);
 }
 
 void Wheel::stopPhysics ()
 {
-    dGeomDestroy (wheelGeomID);
-    dBodyDestroy (wheelID);
 }
 
 void Wheel::stepPhysics ()
@@ -301,7 +200,7 @@ void Wheel::stepPhysics ()
     // use feedback thingy in ODE in order to find out torques
     ///////////////////////////////////////////////////////////////////////
     // get accumulated torque
-    const dReal * odeTorque = dBodyGetTorque (wheelID);
+    const dReal * odeTorque = dBodyGetTorque (getMainOdeObject()->getBodyID());
     Vector3d accumulatedTorque (odeTorque);
     // show acc torque
     log->__format(LOG_WARNING, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
@@ -309,7 +208,7 @@ void Wheel::stepPhysics ()
     ///////////////////////////////////////////////////////////////////////
     
     // finally, apply the torques
-    dBodyAddTorque (wheelID, tAxis.x, tAxis.y, tAxis.z);
+    dBodyAddTorque (getMainOdeObject()->getBodyID(), tAxis.x, tAxis.y, tAxis.z);
 
     log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",index.c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
     

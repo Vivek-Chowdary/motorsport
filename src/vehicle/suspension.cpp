@@ -135,7 +135,7 @@ void Suspension::attach (WorldObject * base, WorldObject * object)
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
     wheel->setSuspJoint (jointID);
-    dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), wheel->wheelID);
+    dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
     // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
 /*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
@@ -143,16 +143,16 @@ void Suspension::attach (WorldObject * base, WorldObject * object)
       dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
 */
     // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
-    dBodySetFiniteRotationMode(wheel->wheelID, 1);
-    dBodySetFiniteRotationAxis(wheel->wheelID, 0, 0, 1);
+    dBodySetFiniteRotationMode(object->getMainOdeObject()->getBodyID(), 1);
+    dBodySetFiniteRotationAxis(object->getMainOdeObject()->getBodyID(), 0, 0, 1);
 
     double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
-    Vector3d wPosition = wheel->getPosition();
+    Vector3d wPosition = wheel->getMainOdeObject()->getPosition();
     dJointSetHinge2Anchor (jointID, wPosition.x, wPosition.y, wPosition.z);
     
-    Quaternion wRotation = wheel->getRotation();
+    Quaternion wRotation = wheel->getMainOdeObject()->getRotation();
     Vector3d rAxis1 = wRotation.rotateObject(Vector3d(0, 1, 0));
     dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
     Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));

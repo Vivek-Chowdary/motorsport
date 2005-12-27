@@ -32,14 +32,11 @@ class Wheel : public DriveMass
     double powered;
     dBodyID bodyID;
     dJointID suspJointID;
-    void updateOgrePosition ();
-    void updateOgreOrientation ();
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Pedal * brakePedal;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopGraphics ();
   public:
     Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Wheel ();
@@ -49,18 +46,10 @@ class Wheel : public DriveMass
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);
     void stepPhysics ();
-    dBodyID wheelID;
-    dGeomID wheelGeomID;
     void setPosition (Vector3d position);
     Vector3d getPosition ();
     void applyRotation (Quaternion rotation);
     Quaternion getRotation ();
     double getInputAngularVel();
-    void stepGraphics ();
-    class Ogre::Entity;
-    class Ogre::SceneNode;
-    Ogre::Entity * wheelEntity;
-    Ogre::SceneNode * wheelNode;
-    void setRenderDetail(int renderMode);
 };
 #endif

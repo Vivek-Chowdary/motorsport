@@ -90,6 +90,29 @@ OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, 
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
+OdeObject::OdeObject (WorldObject * worldObject, VehicleWheelOdeObjectData data, std::string identifier)
+{
+    this->worldObject = worldObject;
+    this->identifier = identifier;
+    std::string geomIdentifier = identifier + ",Geom(unique)";
+    bodyID = NULL;
+    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    if (data.mass <= 0)
+    {
+        worldObject->getLog()->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
+        data.mass = 100;
+    }
+    dMass dmass;
+    dMassSetParameters (&dmass, data.mass,
+                         0, 0, 0,
+                         0.237, 0.237, 0.409,
+                         0, 0, 0);
+    geomIDs[geomIdentifier] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
+    dBodySetLinearVel  (bodyID, 0, 0, 0);
+    dBodySetAngularVel (bodyID, 0, 0, 0);
+    dGeomSetBody (geomIDs[geomIdentifier], bodyID);
+    dBodySetMass (bodyID, &dmass);
+}
 OdeObject::~OdeObject ()
 {
     //TODO: check if there's anything left to do here with ODE...
@@ -126,7 +149,7 @@ Vector3d OdeObject::getPosition()
 Quaternion OdeObject::getRotation()
 {
     const dReal * tmp = dBodyGetQuaternion (bodyID);
-    return Quaternion(tmp[0], tmp[1], tmp[2], tmp[3]);
+    return Quaternion(tmp);
 }
 dBodyID OdeObject::getBodyID()
 {

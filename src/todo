@@ -1,5 +1,5 @@
-allow several meshes?
-refactorize the graphics code: ogreObject. unique index.
+put getPosition and everything in worldObject
+recode the name, id, path, longnames thingies.
 make vehicle component constructors work with parsed XmlData objects
 make vehicle parse everything and create the XmlData objects
 refactorize the physics code
