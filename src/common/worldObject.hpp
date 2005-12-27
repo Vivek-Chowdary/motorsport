@@ -8,8 +8,8 @@
 \*****************************************************************************/
 
 #ifndef WORLDOBJECT_HPP
-#   define WORLDOBJECT_HPP
-#   include "tools/xercesc_fwd.hpp"
+#define WORLDOBJECT_HPP
+#include "tools/xercesc_fwd.hpp"
 #include "log/logEngine.hpp"
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
@@ -27,26 +27,28 @@ typedef std::map <std::string, WorldObject *>::iterator WorldObjectsIt;
 
 class WorldObject
 {
-  private:
-    static unsigned int instancesCount;
-    static WorldObjects worldObjects;
-    std::string id;
-    std::string name;
-  protected:
-    LogEngine * log;
-    WorldObject * base;
-    WorldObject * container;
-    OgreObjects ogreObjects;
-    OdeObjects odeObjects;
-  public:
-    static void logAll();
-    WorldObject (WorldObject * container, const std::string & name);
-    ~WorldObject ();
-    std::string getId();
-    std::string getName();
-    void setName(std::string name);
-    std::string getFullName();
-    LogEngine * getLog();
-    void WorldObject::stepGraphics ();
+    private:
+        virtual void hack(){};
+        static unsigned int instancesCount;
+        static WorldObjects worldObjects;
+        std::string id;
+        std::string name;
+    protected:
+        LogEngine * log;
+        WorldObject * base;
+        WorldObject * container;
+        OgreObjects ogreObjects;
+        OdeObjects odeObjects;
+    public:
+        static void logAll();
+        WorldObject (WorldObject * container, const std::string & name);
+        virtual ~WorldObject ();
+        std::string getId();
+        std::string getName();
+        void setName(std::string name);
+        std::string getFullName();
+        LogEngine * getLog();
+        void WorldObject::stepGraphics ();
+        OdeObject * getMainOdeObject();
 };
 #endif

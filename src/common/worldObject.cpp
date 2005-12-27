@@ -33,11 +33,7 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 }
 WorldObject::~WorldObject ()
 {
-    WorldObjectsIt i = worldObjects.begin();
-    for(;i != worldObjects.end(); i++)
-    {
-        if (this == i->second) worldObjects.erase(i);
-    }
+    worldObjects.erase(this->id);
     delete log;
     log = NULL;
     base = NULL;
@@ -48,6 +44,7 @@ void WorldObject::logAll()
     WorldObjectsIt i = worldObjects.begin();
     for(;i != worldObjects.end(); i++)
     {
+        if (i->second != NULL)
         log.__format(LOG_DEVELOPER, "WorldObject id#%s.\t Full name: %s", i->second->getId().c_str(), i->second->getFullName().c_str());
     }
 }
@@ -79,4 +76,9 @@ void WorldObject::stepGraphics ()
     {
         i->second->stepGraphics();
     }
+}
+OdeObject * WorldObject::getMainOdeObject()
+{
+    if (odeObjects.empty()) return NULL;
+    return odeObjects.begin()->second;
 }

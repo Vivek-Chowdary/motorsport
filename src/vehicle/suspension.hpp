@@ -41,7 +41,7 @@ class Suspension : public WorldObject
   public:
     Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Suspension ();
-    void attach (Wheel & wheel, Vehicle * vehicle);
+    void attach (WorldObject * base, WorldObject * object);
     void setUserDriver ();
     void stepPhysics ();
     Vector3d getInitialWheelPosition ();

@@ -502,7 +502,7 @@ void Vehicle::boltWheelsToSuspensions()
             log->__format (LOG_ERROR, "No \"%s\" wheel was found!", suspIter->first.c_str());
         }else{
             log->__format (LOG_DEVELOPER, "Bolting wheel to suspension \"%s\"", suspIter->first.c_str());
-            suspIter->second->attach(*(wheelIter->second), this);
+            suspIter->second->attach(body, wheelIter->second);
         }
     }
 }

@@ -1,3 +1,4 @@
+allow several meshes?
 refactorize the graphics code: ogreObject. unique index.
 make vehicle component constructors work with parsed XmlData objects
 make vehicle parse everything and create the XmlData objects
