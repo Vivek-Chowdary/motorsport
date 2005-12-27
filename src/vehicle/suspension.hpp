@@ -28,7 +28,6 @@ class Wheel;
 class Suspension : public WorldObject
 {
   private:
-    static int instancesCount;
     dJointID jointID;
     Quaternion rotation;
     Vector3d position;

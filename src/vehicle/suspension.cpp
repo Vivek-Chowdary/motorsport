@@ -22,21 +22,16 @@
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
 
-int Suspension::instancesCount = 0;
-
 Suspension::Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
     :WorldObject(container, name)
 {
     log->__format (LOG_CCREATOR, "Starting to parse the suspension node");
     processXmlRootNode (n);
-
     userDriver = false;
-    instancesCount++;
 }
 
 Suspension::~Suspension ()
 {
-    instancesCount--;
     stopPhysics ();
 }
 

@@ -22,23 +22,16 @@ class Vector3d;
 class Camera : public WorldObject
 {
   private:
-    // data
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    static int instancesCount;
     std::string index;
     bool isFree;
 
-    // physics 
     dBodyID positionID;
     Vector3d * positionOffset;
     dBodyID targetID;
     Vector3d * targetOffset;
     void stopPhysics();
-
-    // graphics
     void stopGraphics ();
-
-    // input
     void stopInput ();
   public:
     Camera (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
@@ -46,19 +39,13 @@ class Camera : public WorldObject
     void updateOgreRotation ();
     Vector3d updateOgrePosition ();
     Vector3d updateOgreTarget ();
-
-    // physics
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics();
     void setPositionID (dBodyID positionID);
     void setTargetID (dBodyID targetID);
-
-    // graphics
     void startGraphics ();
     void stepGraphics ();
     Ogre::Camera * ogreCamera;
-
-    // input
     void startInput ();
     void stepInput ();
 };

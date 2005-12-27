@@ -22,12 +22,9 @@
 #include "area.hpp"
 #include "vector3d.hpp"
 
-int Camera::instancesCount = 0;
-
 Camera::Camera (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
     :WorldObject(container, name)
 {
-    instancesCount ++;
     processXmlRootNode (n);
 }
 
@@ -40,7 +37,6 @@ void Camera::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
 Camera::~Camera ()
 {
-    instancesCount--;
     stopGraphics();
     stopInput();
     stopPhysics();
@@ -88,10 +84,7 @@ Vector3d Camera::updateOgreTarget ()
 
 void Camera::startGraphics ()
 {
-    char name[20];
-    sprintf (name, "Camera%i", instancesCount);
-
-    ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (name);
+    ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (getId());
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     ogreCamera->setNearClipDistance (0.100);
 //    ogreCamera->setAutoAspectRatio(true);
