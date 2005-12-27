@@ -37,7 +37,5 @@ class Body : public WorldObject
     Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Body ();
     void stepPhysics ();
-    void applyRotation (Quaternion rotation);
-    dBodyID getBodyID ();
 };
 #endif

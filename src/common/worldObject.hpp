@@ -60,5 +60,6 @@ class WorldObject
         Quaternion getRotation ();
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
+        void applyRotation (Quaternion rotation);
 };
 #endif

@@ -3,7 +3,7 @@
     localLogLevel = "LOG_DEVELOPER"
     localLogName = "PhysicsEngine"
     frequency = "300"
-    timeScale = "20"
+    timeScale = "1"
     pauseStep = "0"
     >
     <ode

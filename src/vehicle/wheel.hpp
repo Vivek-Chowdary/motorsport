@@ -46,7 +46,6 @@ class Wheel : public DriveMass
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);
     void stepPhysics ();
-    void applyRotation (Quaternion rotation);
     double getInputAngularVel();
 };
 #endif

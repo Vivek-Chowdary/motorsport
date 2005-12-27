@@ -145,15 +145,6 @@ void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     odeObjects[getId()] = new OdeObject(this, data, getId());
 }
 
-void Wheel::applyRotation (Quaternion rotation)
-{
-    setPosition ( rotation.rotateObject(getPosition()) );
-    dMatrix3 rot;
-    Quaternion finalRotation = rotation * getMainOdeObject()->getRotation();
-    finalRotation.getOdeMatrix (rot);
-    dBodySetRotation (getMainOdeObject()->getBodyID(), rot);
-}
-
 void Wheel::stepPhysics ()
 {
     prevAngularVel = inputAngularVel;

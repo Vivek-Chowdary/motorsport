@@ -85,6 +85,11 @@ LogEngine * WorldObject::getLog()
 {
     return log;
 }
+OdeObject * WorldObject::getMainOdeObject()
+{
+    if (odeObjects.empty()) return NULL;
+    return odeObjects.begin()->second;
+}
 void WorldObject::stepGraphics ()
 {
     OgreObjectsIt i = ogreObjects.begin();
@@ -105,12 +110,13 @@ Quaternion WorldObject::getRotation ()
 {
     return odeObjects.begin()->second->getRotation();
 }
-OdeObject * WorldObject::getMainOdeObject()
-{
-    if (odeObjects.empty()) return NULL;
-    return odeObjects.begin()->second;
-}
 void WorldObject::setRotation (Quaternion rotation)
 {
     odeObjects.begin()->second->setRotation(rotation);
+}
+void WorldObject::applyRotation (Quaternion rotation)
+{
+    setPosition ( rotation.rotateObject(odeObjects.begin()->second->getPosition()) );
+    Quaternion finalRotation = rotation * odeObjects.begin()->second->getRotation();
+    odeObjects.begin()->second->setRotation (finalRotation);
 }

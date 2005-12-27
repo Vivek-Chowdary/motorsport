@@ -122,21 +122,6 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 }
 
-void Body::applyRotation (Quaternion rotation)
-{
-    //FIXME: could be wrongly coded.
-    /*
-    setPosition ( rotation.rotateObject(getPosition()) );
-    dMatrix3 rot;
-    Quaternion finalRotation = rotation * getRotation();
-    finalRotation.getOdeMatrix (rot);
-    dBodySetRotation (bodyID, rot);
-    */
-    setPosition ( rotation.rotateObject(getPosition()) );
-    Quaternion finalRotation = rotation * getRotation();
-    setRotation (finalRotation);
-}
-
 void Body::stepPhysics ()
 {
     dBodyID bodyID = getMainOdeObject()->getBodyID();
