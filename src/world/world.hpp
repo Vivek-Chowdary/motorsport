@@ -23,9 +23,8 @@ class Vehicle;
 class World : public WorldObject
 {
   private:
-    // data
     static World *worldPointer;
-    std::string name;
+    std::string longName;
     std::string description;
     Camera * activeCamera;
     int activeAreaCameraIndex;
@@ -33,7 +32,6 @@ class World : public WorldObject
     void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
     void World::processXmlVehicleListNode (XERCES_CPP_NAMESPACE::DOMNode * vehicleListNode);
   public:
-    // data
     static World *getWorldPointer ();
     World (WorldObject * container, std::string name);
     ~World ();
@@ -47,7 +45,7 @@ class World : public WorldObject
     std::vector < Vehicle * > vehicleList;
 
     void setActiveCamera (Camera * camera);
-    Camera * getActiveCamera (void);
+    Camera * getActiveCamera ();
     Camera * activeAreaCamera;
     Camera * activeVehicleCamera;
     int getActiveAreaCameraIndex();

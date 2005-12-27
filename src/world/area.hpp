@@ -18,8 +18,8 @@
 
 //forward declatation
 namespace Ogre {
-  class Entity;
-  class SceneNode;
+    class Entity;
+    class SceneNode;
 };
 class Part;
 class Location;
@@ -27,44 +27,30 @@ class Camera;
 
 class Area : public WorldObject
 {
-  private:
-    std::string relativeAreaDir;
-    // data
-    std::string path;
-    std::string name;
-    int revision;
-    std::string description;
-    std::string author;
-    std::string contact;
-    std::string license;
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void Area::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
-    
-  public:
-    // data
-    Area (WorldObject * container, std::string name);
-    ~Area ();
-    std::map <std::string, Location * > vehiclePositionMap;
-    std::vector < Part * > partList;
-    std::vector < Camera * > cameraList;
+    private:
+        std::string longName;
+        std::string description;
+        std::string author;
+        std::string contact;
+        std::string license;
+        void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+        void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+        void Area::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
+    public:
+        Area (WorldObject * container, std::string name);
+        ~Area ();
+        std::map <std::string, Location * > vehiclePositionMap;
+        std::vector < Part * > partList;
+        std::vector < Camera * > cameraList;
 
-    // physics
-/*    void startPhysics (DOMNode * n);
-    void stepPhysics ();
-    void stopPhysics ();*/
-    dGeomID bodyGeomID;
-    dBodyID areaBodyID;
+        dGeomID bodyGeomID;
+        dBodyID areaBodyID;
 
-    // graphics
-/*    void startGraphics (DOMNode * n);
-    void stepGraphics ();
-    void stopGraphics ();*/
-    Ogre::SceneNode * planeNode;
-    Ogre::Entity * planeEntity;
-    Ogre::Entity * areaEntity;
-    Ogre::SceneNode * areaNode;
-    void setCastShadows(bool castShadows);
-    void setRenderDetail(int renderMode);
+        Ogre::SceneNode * planeNode;
+        Ogre::Entity * planeEntity;
+        Ogre::Entity * areaEntity;
+        Ogre::SceneNode * areaNode;
+        void setCastShadows(bool castShadows);
+        void setRenderDetail(int renderMode);
 };
 #endif

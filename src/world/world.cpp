@@ -84,8 +84,8 @@ World::~World ()
 
 void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 {
-    name.assign ("None");
-    description.assign ("None");
+    longName = "none";
+    description = "none";
     double gravityX = 0.0;
     double gravityY = 0.0;
     double gravityZ = 0.0;
@@ -112,8 +112,8 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            assignXmlString (name, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", name.c_str());
+                            assignXmlString (longName, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", longName.c_str());
                         }
                         if (attribute == "description")
                         {

@@ -61,7 +61,7 @@ Area::~Area ()
 
 void Area::processXmlRootNode (DOMNode * n)
 {
-    name = "None";
+    longName = "None";
     description = "None";
     author = "Anonymous";
     contact = "None";
@@ -95,8 +95,8 @@ void Area::processXmlRootNode (DOMNode * n)
                         assignXmlString (attribute, attNode->getName());
                         if (attribute == "name")
                         {
-                            assignXmlString (name, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", name.c_str());
+                            assignXmlString (longName, attNode->getValue());
+                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", longName.c_str());
                         }
                         if (attribute == "description")
                         {
@@ -284,7 +284,7 @@ void Area::processXmlRootNode (DOMNode * n)
     if (mesh != "none")
     {
         log->loadscreen (LOG_CCREATOR, "Creating loading the ogre area mesh");
-        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", path + "/" + mesh);
+        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", Paths::area(getName()) + mesh);
         Ogre::SceneNode * areaNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
         areaNode->attachObject (areaEntity);
         areaNode->setScale (1, 1, 1);
