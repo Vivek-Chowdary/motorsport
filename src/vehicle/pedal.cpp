@@ -60,11 +60,11 @@ void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
                 log->__format (LOG_CCREATOR, "Found the pedal angle range: %s", attribute.c_str() );
                 angleRange = stod (attribute);
             }
-            if (attribute == "id")
+            if (attribute == "name")
             {
                 assignXmlString (attribute, attNode->getValue());
+                log->__format (LOG_CCREATOR, "Found the pedal name: %s", attribute.c_str() );
                 setName(attribute);
-                log->__format (LOG_CCREATOR, "Found the pedal identifier: %s", getName().c_str() );
             }
         }
     }

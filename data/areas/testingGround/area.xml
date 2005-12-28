@@ -50,49 +50,49 @@
     <vehiclePositionList        comment="Rotation values are euler angles!"
         >
         <vehicle
-            index = "paceCar"
+            name = "paceCar"
             position = "23 12.5 2"
             rotation = "15 0 45"
             >
         </vehicle>
         <vehicle
-            index = "grid01"
+            name = "grid01"
             position = "15 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid02"
+            name = "grid02"
             position = "10 10 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid03"
+            name = "grid03"
             position = "5 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid04"
+            name = "grid04"
             position = "0 10 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid05"
+            name = "grid05"
             position = "-5 15 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "grid06"
+            name = "grid06"
             position = "-10 10 2"
             rotation = "0 0 0"
             >
         </vehicle>
         <vehicle
-            index = "parking01"
+            name = "parking01"
             position = "-20 -10 2"
             rotation = "0 0 90"
             >
@@ -101,31 +101,31 @@
     <cameraList
         >
         <camera
-            index = "driver"
+            name = "driver"
             position = "30 10 1.7"
             target = "0.1 0.5 0.4"
             >
         </camera>
         <camera
-            index = "wheel"
+            name = "wheel"
             position = "20 -15 0.2"
             target = "1.44 -0.86 -0.4"
             >
         </camera>
         <camera
-            index = "bodyCenter"
+            name = "bodyCenter"
             position = "-10 -5 2"
             target = "0 0 0"
             >
         </camera>
         <camera
-            index = "helicopter"
+            name = "helicopter"
             position = "0 0 70"
             target = "0 0 0"
             >
         </camera>
         <camera
-            index = "frontGrill"
+            name = "frontGrill"
             position = "20 0 0.1"
             target = "2.23 0 -0.1"
             >

@@ -1,6 +1,6 @@
-recode the name, id, path, longnames thingies.
 make vehicle component constructors work with parsed XmlData objects
 make vehicle parse everything and create the XmlData objects
+refactorize the world and area (ground, sky, ...)
 refactorize the physics code
 refactorize the input code
 refactorize user driver agent or whatever
