@@ -187,7 +187,6 @@ int GraphicsEngine::computeStep (void)
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
     for (int currentVehicle = 0; currentVehicle < numberOfVehicles; currentVehicle++)
     {
-        World::getWorldPointer ()->vehicleList[currentVehicle]->setRenderDetail(vehicleRenderMode);
         World::getWorldPointer ()->vehicleList[currentVehicle]->stepGraphics ();
     }
 

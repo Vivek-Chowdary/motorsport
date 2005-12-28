@@ -41,7 +41,7 @@ class Camera : public WorldObject
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics();
     void setPositionID (dBodyID positionID);
-    void setTargetID (dBodyID targetID);
+    void setTarget (OdeObject * odeObject);
     void startGraphics ();
     void stepGraphics ();
     Ogre::Camera * ogreCamera;

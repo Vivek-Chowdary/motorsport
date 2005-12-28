@@ -40,7 +40,6 @@ Clutch::Clutch (WorldObject * container, std::string name)
 
 Clutch::~Clutch ()
 {
-    stopPhysics ();
 }
 
 void Clutch::setClutchPedal(Pedal * pedal)
@@ -77,7 +76,6 @@ Gear::Gear (WorldObject * container, std::string name)
 
 Gear::~Gear ()
 {
-    stopPhysics ();
 }
 
 void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -113,7 +111,6 @@ LSD::LSD (WorldObject * container, std::string name)
 
 LSD::~LSD ()
 {
-    stopPhysics ();
 }
 
 void LSD::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
@@ -157,10 +154,6 @@ void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-}
-
-void Clutch::stopPhysics ()
-{
 }
 
 void Clutch::stepPhysics ()
@@ -235,10 +228,6 @@ void Gear::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 }
 
-void Gear::stopPhysics ()
-{
-}
-
 void Gear::stepPhysics ()
 {
   if(enabled) {
@@ -307,10 +296,6 @@ void LSD::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-}
-
-void LSD::stopPhysics ()
-{
 }
 
 void LSD::stepPhysics ()

@@ -295,7 +295,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     // this helps brake the vehicle (since it's not user-controlled by default and would roll around freely otherwise)
     gearbox->setGear(2);
 
-    startPhysics(NULL);
     stepGraphics();
 }
 
@@ -406,24 +405,9 @@ void Vehicle::stepGraphics ()
     }
 }
 
-void Vehicle::setRenderDetail(int renderMode)
+OdeObject * Vehicle::getMainOdeObject()
 {
-    //TODO
-    //body->setRenderDetail(renderMode);
-    std::map < std::string, Wheel * >::const_iterator wheelIter;
-    for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
-    {
-        // wheelIter->second->setRenderDetail(renderMode);
-    }
-}
-
-void Vehicle::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    // empty
-}
-dBodyID Vehicle::getVehicleID()
-{
-    return body->getMainOdeObject()->getBodyID();
+    return body->getMainOdeObject();
 }
 
 void Vehicle::setPosition (Vector3d position)

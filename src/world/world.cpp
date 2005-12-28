@@ -225,12 +225,12 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     for (unsigned int i=0; i< areaList[0]->cameraList.size(); i++)
     {
         areaList[0]->cameraList[i]->setPositionID( areaList[0]->areaBodyID );
-        areaList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
+        areaList[0]->cameraList[i]->setTarget( vehicleList[0]->getMainOdeObject());
     }
     for (unsigned int i=0; i< vehicleList[0]->cameraList.size(); i++)
     {
-        vehicleList[0]->cameraList[i]->setPositionID( vehicleList[0]->getVehicleID() );
-        vehicleList[0]->cameraList[i]->setTargetID( vehicleList[0]->getVehicleID() );
+        vehicleList[0]->cameraList[i]->setPositionID( vehicleList[0]->getMainOdeObject()->getBodyID());
+        vehicleList[0]->cameraList[i]->setTarget( vehicleList[0]->getMainOdeObject() );
     }
 
     // set active camera

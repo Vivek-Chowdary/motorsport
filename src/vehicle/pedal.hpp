@@ -18,7 +18,6 @@ class Pedal : public WorldObject
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     bool userDriver;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
     double angleRange;
     double currentAngle;
   public:

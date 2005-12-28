@@ -23,6 +23,5 @@ class FinalDrive : public DriveMass
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
-    void stopPhysics ();
 };
 #endif

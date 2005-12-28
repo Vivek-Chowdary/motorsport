@@ -25,7 +25,6 @@ Pedal::Pedal (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::D
 
 Pedal::~Pedal ()
 {
-    stopPhysics ();
 }
 
 
@@ -70,9 +69,6 @@ void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     }
 }
 
-void Pedal::stopPhysics ()
-{
-}
 
 void Pedal::stepPhysics ()
 {

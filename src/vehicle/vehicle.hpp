@@ -49,7 +49,6 @@ class Vehicle : public WorldObject
     void stopPhysics ();
     void placeWheelsOnSuspensions();
     void boltWheelsToSuspensions();
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
     Vehicle (WorldObject * container, std::string name);
@@ -72,8 +71,7 @@ class Vehicle : public WorldObject
     Vector3d getPosition ();
     Quaternion getRotation ();
     double getOutputTorque ();
-    dBodyID getVehicleID();
-    void setRenderDetail(int renderMode);
+    OdeObject * getMainOdeObject();
     void stepGraphics ();
 };
 #endif

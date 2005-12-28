@@ -28,20 +28,17 @@ class Wheel : public DriveMass
 {
   private:
     bool userDriver;
-    std::string index;
     double powered;
-    dBodyID bodyID;
+    dBodyID baseID;
     dJointID suspJointID;
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Pedal * brakePedal;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
     Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     ~Wheel ();
-    std::string getIndex();
-    void setRefBody(dBodyID inputID) { bodyID = inputID; };
+    void setRefBody(dBodyID inputID) { baseID = inputID; };
     void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);

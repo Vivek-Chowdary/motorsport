@@ -35,7 +35,6 @@ class Gearbox : public DriveMass
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void processXmlGearListNode(XERCES_CPP_NAMESPACE::DOMNode * GearListNode);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
     std::map < int, GearboxGear *> gearMap;
     int currentGear;
     double gearRatio;

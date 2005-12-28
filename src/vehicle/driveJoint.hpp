@@ -55,7 +55,6 @@ class Clutch : public DriveJoint
     double lockedParam;
     bool locked;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
   public:
     Clutch (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     Clutch (WorldObject * container, std::string name);
@@ -72,7 +71,6 @@ class Gear : public DriveJoint
     double springConstant;
     double dampConstant;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
   public:
     Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     Gear (WorldObject * container, std::string name);
@@ -94,7 +92,6 @@ class LSD : public DriveJoint
     double dampConstant;
     double limitedSlipClutchFriction;
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
   public:
     LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
     LSD (WorldObject * container, std::string name);

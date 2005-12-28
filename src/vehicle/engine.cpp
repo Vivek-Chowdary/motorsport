@@ -27,7 +27,6 @@ Engine::Engine (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE:
 
 Engine::~Engine ()
 {
-    stopPhysics ();
 }
 
 
@@ -88,10 +87,6 @@ void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-}
-
-void Engine::stopPhysics ()
-{
 }
 
 void Engine::stepPhysics ()

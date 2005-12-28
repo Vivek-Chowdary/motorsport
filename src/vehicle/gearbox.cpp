@@ -24,7 +24,6 @@ Gearbox::Gearbox (WorldObject * container, std::string name, XERCES_CPP_NAMESPAC
 
 Gearbox::~Gearbox ()
 {
-    stopPhysics ();
 }
 
 
@@ -137,10 +136,6 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-}
-
-void Gearbox::stopPhysics ()
-{
 }
 
 void Gearbox::stepPhysics ()

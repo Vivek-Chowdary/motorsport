@@ -24,7 +24,6 @@ FinalDrive::FinalDrive (WorldObject * container, std::string name, XERCES_CPP_NA
 
 FinalDrive::~FinalDrive ()
 {
-    stopPhysics ();
 }
 
 
@@ -74,10 +73,6 @@ void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
             }
         }
     }
-}
-
-void FinalDrive::stopPhysics ()
-{
 }
 
 void FinalDrive::stepPhysics ()

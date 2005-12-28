@@ -20,7 +20,6 @@ class Engine : public DriveMass
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void stopPhysics ();
     double torqueLinearMultiplier;
     double telemetryTorque;
     double angularVelLimit;
