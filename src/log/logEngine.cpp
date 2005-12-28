@@ -48,8 +48,6 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
     char numberString[numberStringSize];
     snprintf (numberString, numberStringSize, "%i", instancesCount);
     logEngines.insert( std::pair< std::string, LogEngine* >(std::string("LOG#") + numberString + "#." + name, this) );
-    format (LOG_DEVELOPER, "New log engine instance.");
-
     return;
 }
 LogEngine::~LogEngine ()
@@ -60,10 +58,8 @@ LogEngine::~LogEngine ()
         if (this == i->second) i->second = NULL;;
         if (this == i->second) logEngines.erase(i);
     }
-    format (LOG_DEVELOPER, "Log engine instance deleted.", instancesCount);
-
     //TODO: replace with if map.empty()
-    if (instancesCount == 0)
+    if (logEngines.empty())
     {
         format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();

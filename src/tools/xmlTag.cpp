@@ -8,13 +8,16 @@
 \*****************************************************************************/
 
 #include "xmlTag.hpp"
+#include "SDL.h"
 
 XmlTag::XmlTag(std::string xmlFilePath)
 {
+    double time = SDL_GetTicks()/1000.0;
     this->filePath = xmlFilePath;
     XmlFile * xmlFile = new XmlFile (filePath);
     construct(NULL, xmlFile->getRootNode());
     delete xmlFile;
+    log->__format(LOG_ENDUSER, "\"%s\" parsed in %f seconds.", xmlFilePath.c_str(), SDL_GetTicks()/1000.0 - time);
 }
 XmlTag::XmlTag(XmlTag * parent, DOMNode * n)
 {

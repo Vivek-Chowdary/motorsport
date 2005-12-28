@@ -26,6 +26,7 @@
 #include "SDL.h"
 #include "SDL/SDL_keysym.h"
 #include "quaternion.hpp"
+#include "xmlTag.hpp"
 
 
 Vehicle::Vehicle (WorldObject * container, std::string name)
@@ -36,12 +37,11 @@ Vehicle::Vehicle (WorldObject * container, std::string name)
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "vehicles." + name);
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath()+"skybox.zip","Zip","vehicles."+name);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles." + name);
+
     log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", getXmlPath().c_str());
-    double time = SDL_GetTicks()/1000.0;
     XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
     processXmlRootNode (xmlFile->getRootNode());
     delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a vehicle (%s). %f seconds.", getXmlPath().c_str(), SDL_GetTicks()/1000.0 - time);
 
     userDriver = false;
 }
