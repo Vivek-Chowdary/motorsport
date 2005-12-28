@@ -202,6 +202,7 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+	tools/xmlTag.cpp \
         common/worldObject.cpp \
         common/ogreObject.cpp \
         common/odeObject.cpp \
