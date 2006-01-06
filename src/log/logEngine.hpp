@@ -12,7 +12,6 @@
 #include <string>
 #include <map>
 #include <fstream>
-#include "xercesc_fwd.hpp"
 #define __format(X ,Y, ...) format((X), std::string("[%s:%3i] " + std::string((Y))).c_str(),__FILE__, __LINE__, ##__VA_ARGS__)
 
 //forward declarations
@@ -83,8 +82,6 @@ class LogEngine
 	@return code as a short c-string.
     */
     const std::string GetLogLevelCode (LOG_LEVEL level);
-    // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
     static void logAll();
     // / Creates a new log engine, creating the log file if needed.

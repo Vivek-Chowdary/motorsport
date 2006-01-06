@@ -7,7 +7,6 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "xercesc_fwd.hpp"
 #include "SDL/SDL.h"
 #include <string>
 
@@ -64,8 +63,6 @@ class GuiEngine
     void addLoadscreenLine (const std::string & line);
     void updateLapTime (double time);
     void updateTime (double time);
-    // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 
     static GuiEngine *getGuiEnginePointer();
 };

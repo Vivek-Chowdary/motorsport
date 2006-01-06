@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "logEngine.hpp"
+class LogEngine;
 #include "ode/objects.h"
 
 /// Manages everything related to the simulated world data.
@@ -48,7 +48,4 @@ class PhysicsEngine
     /** Updates all the simulated world state, including physic movements (collision detection and correction, physic forces...), world events, and other issues.
     */
     int computeStep (void);
-
-    // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };

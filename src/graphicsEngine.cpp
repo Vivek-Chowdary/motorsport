@@ -18,24 +18,13 @@
 #include "camera.hpp"
 #include "part.hpp"
 #include "system.hpp"
-#include "xmlParser.hpp"
 #include "Ogre.h"
 #include "OgreConfigFile.h"
-#include "log/logEngine.hpp"
 #include "world.hpp"
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
-
-GraphicsEngine::GraphicsEngine ()
-{
-#ifdef MACOSX
-    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/graphicsConfig.xml");
-#else
-    XmlFile *xmlFile = new XmlFile ("../cfg/graphicsConfig.xml");
-#endif
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
-}
+#include "logEngine.hpp"
+#include "paths.hpp"
 
 void GraphicsEngine::manualInitialize (const std::string & renderer)
 {
@@ -241,8 +230,13 @@ GraphicsEngine::~GraphicsEngine (void)
     delete log;
 }
 
-void GraphicsEngine::processXmlRootNode (DOMNode * n)
+GraphicsEngine::GraphicsEngine ()
 {
+#ifdef MACOSX
+    XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/graphicsConfig.xml");
+#else
+    XmlTag * tag = new XmlTag ("../cfg/graphicsConfig.xml");
+#endif
     LOG_LEVEL localLogLevel = LOG_DEVELOPER;
     std::string localLogName = "GFX";
     screenshotFilename.assign ("frame%i.jpg");
@@ -266,202 +260,52 @@ void GraphicsEngine::processXmlRootNode (DOMNode * n)
     int defaultNumMipMaps = 5;
     fullScreen = false;
 
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-            if (name == "graphicsConfig")
-            {
-                tmpLog->__format (LOG_DEVELOPER, "Found the graphics engine config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "localLogLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            localLogLevel = stologlevel (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
-                        }
-                        if (attribute == "localLogName")
-                        {
-                            assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
-                        }
-                        if (attribute == "screenshotFile")
-                        {
-                            assignXmlString (screenshotFilename, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the screenshot filename: %s", screenshotFilename.c_str());
-                        }
-                        if (attribute == "initialScreenshotFileNumber")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the initial screenshot number: %s", attribute.c_str());
-                            initialFrame = stoi (attribute);
-                        }
-                        if (attribute == "castAreaShadows")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found whether to cast area shadows or not: %s", attribute.c_str());
-                            castAreaShadows = stob (attribute);
-                        }
-                        if (attribute == "vehicleRenderMode")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_CCREATOR, "Found the vehicles rendering mode: %s", attribute.c_str());
-                            
-                            if(attribute == "points")
-                                vehicleRenderMode=1;
-                            if(attribute == "wireframe")
-                                vehicleRenderMode=2;
-                            if(attribute == "solid")
-                                vehicleRenderMode=3;
-                        }
-                        if (attribute == "areaRenderMode")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_CCREATOR, "Found the areas rendering mode: %s", attribute.c_str());
-                            if(attribute == "points")
-                                areaRenderMode=1;
-                            if(attribute == "wireframe")
-                                areaRenderMode=2;
-                            if(attribute == "solid")
-                                areaRenderMode=3;
-                        }
-                    }
-                }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-                {
-                    if (n)
-                    {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (name, n->getNodeName());
-                            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-                            if (name == "ogre")
-                            {
-                                tmpLog->__format (LOG_DEVELOPER, "Found the ogre config element.");
-                                if (n->hasAttributes ())
-                                {
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        #ifdef WIN32
-                                        if (attribute == "windowsPluginsDir")
-                                        #else
-                                        if (attribute == "linuxPluginsDir")
-                                        #endif
-                                        {
-                                            assignXmlString (ogrePluginsDir, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the ogre plugins directory: %s", ogrePluginsDir.c_str());
-                                        }
-                                        if (attribute == "sceneManager")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the scene manager type: %s", attribute.c_str());
+    log = new LogEngine (LOG_DEVELOPER, "GraphicsEngine");
 
-                                            if (attribute == "ST_GENERIC")
-                                                sceneManager = Ogre::ST_GENERIC;
-                                            if (attribute == "ST_EXTERIOR_CLOSE")
-                                                sceneManager = Ogre::ST_EXTERIOR_CLOSE;
-                                            if (attribute == "ST_EXTERIOR_FAR")
-                                                sceneManager = Ogre::ST_EXTERIOR_FAR;
-                                            if (attribute == "ST_EXTERIOR_REAL_FAR")
-                                                sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
-                                            if (attribute == "ST_INTERIOR")
-                                                sceneManager = Ogre::ST_INTERIOR;
-                                        }
-                                        if (attribute == "anisotropy")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the anisotropy level: %s", attribute.c_str());
-                                            anisotropy = stoi (attribute);
-                                        }
-                                        if (attribute == "filtering")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the texture filtering level: %s", attribute.c_str());
-                                            if (attribute == "TFO_NONE")
-                                                filtering = Ogre::TFO_NONE;
-                                            if (attribute == "TFO_BILINEAR")
-                                                filtering = Ogre::TFO_BILINEAR;
-                                            if (attribute == "TFO_TRILINEAR")
-                                                filtering = Ogre::TFO_TRILINEAR;
-                                            if (attribute == "TFO_ANISOTROPIC")
-                                                filtering = Ogre::TFO_ANISOTROPIC;
-                                        }
-                                        if (attribute == "shadowTechnique")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the texture filtering level: %s", attribute.c_str());
-                                            if (attribute == "SHADOWTYPE_NONE")
-                                                shadowTechnique = Ogre::SHADOWTYPE_NONE;    
-                                            if (attribute == "SHADOWTYPE_STENCIL_MODULATIVE") 
-                                                shadowTechnique = Ogre::SHADOWTYPE_STENCIL_MODULATIVE;
-                                            if (attribute == "SHADOWTYPE_STENCIL_ADDITIVE")
-                                                shadowTechnique = Ogre::SHADOWTYPE_STENCIL_ADDITIVE;
-                                            if (attribute == "SHADOWTYPE_TEXTURE_MODULATIVE")
-                                                shadowTechnique = Ogre::SHADOWTYPE_TEXTURE_MODULATIVE;
-                                        }
-                                        if (attribute == "width")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the resolution width value: %s", attribute.c_str());
-                                            width = stoi (attribute);
-                                        }
-                                        if (attribute == "height")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the resolution height value: %s", attribute.c_str());
-                                            height = stoi (attribute);
-                                        }
-                                        if (attribute == "bpp")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the resolution bpp value: %s", attribute.c_str());
-                                            bpp = stoi (attribute);
-                                        }
-                                        if (attribute == "renderer")
-                                        {
-                                            assignXmlString (renderer, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the renderer type: %s", renderer.c_str());
-                                        }
-                                        if (attribute == "defaultNumMipmaps")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the default number of mipmaps: %s", attribute.c_str());
-                                            defaultNumMipMaps = stoi (attribute);
-                                        }
-                                        if (attribute == "fullScreen")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the fullscreen option: %s", attribute.c_str());
-                                            fullScreen = stob (attribute);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+    if (tag->getName() == "graphicsConfig")
+    {
+        screenshotFilename = tag->getAttribute("screenshotFile");
+        initialFrame = stoi(tag->getAttribute("initialScreenshotFileNumber"));
+        castAreaShadows = stob(tag->getAttribute("castAreaShadows"));
+        if ( tag->getAttribute("vehicleRenderMode") == "points") vehicleRenderMode = 1;
+        if ( tag->getAttribute("vehicleRenderMode") == "wireframe") vehicleRenderMode = 2;
+        if ( tag->getAttribute("vehicleRenderMode") == "solid") vehicleRenderMode = 3;
+        if ( tag->getAttribute("areaRenderMode") == "points") vehicleRenderMode = 1;
+        if ( tag->getAttribute("areaRenderMode") == "wireframe") vehicleRenderMode = 2;
+        if ( tag->getAttribute("areaRenderMode") == "solid") vehicleRenderMode = 3;
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "ogre")
+            {
+                #ifdef WIN32
+                ogrePluginsDir = t->getAttribute("windowsPluginsDir");
+                #else
+                ogrePluginsDir = t->getAttribute("linuxPluginsDir");
+                #endif
+                anisotropy = stoi(t->getAttribute("anisotropy"));
+                width = stoi(t->getAttribute("width"));
+                height = stoi(t->getAttribute("height"));
+                bpp = stoi(t->getAttribute("bpp"));
+                renderer = t->getAttribute("renderer");
+                defaultNumMipMaps = stoi(t->getAttribute("defaultNumMipmaps"));
+                fullScreen = stod(t->getAttribute("fullScreen"));
+                if (t->getAttribute("sceneManager") == "ST_GENERIC") sceneManager = Ogre::ST_GENERIC;
+                if (t->getAttribute("sceneManager") == "ST_EXTERIOR_CLOSE") sceneManager = Ogre::ST_EXTERIOR_CLOSE;
+                if (t->getAttribute("sceneManager") == "ST_EXTERIOR_FAR") sceneManager = Ogre::ST_EXTERIOR_FAR;
+                if (t->getAttribute("sceneManager") == "ST_EXTERIOR_REAL_FAR") sceneManager = Ogre::ST_EXTERIOR_REAL_FAR;
+                if (t->getAttribute("sceneManager") == "ST_INTERIOR") sceneManager = Ogre::ST_INTERIOR;
+                if (t->getAttribute("filtering") == "TFO_NONE") filtering = Ogre::TFO_NONE;
+                if (t->getAttribute("filtering") == "TFO_BILINEAR") filtering = Ogre::TFO_BILINEAR;
+                if (t->getAttribute("filtering") == "TFO_TRILINEAR") filtering = Ogre::TFO_TRILINEAR;
+                if (t->getAttribute("filtering") == "TFO_ANISOTROPIC") filtering = Ogre::TFO_ANISOTROPIC;
+                if (t->getAttribute("shadowTechnique") == "SHADOWTYPE_NONE") shadowTechnique = Ogre::SHADOWTYPE_NONE;
+                if (t->getAttribute("shadowTechnique") == "SHADOWTYPE_STENCIL_MODULATIVE") shadowTechnique = Ogre::SHADOWTYPE_STENCIL_MODULATIVE;
+                if (t->getAttribute("shadowTechnique") == "SHADOWTYPE_STENCIL_ADDITIVE") shadowTechnique = Ogre::SHADOWTYPE_STENCIL_ADDITIVE;
+                if (t->getAttribute("shadowTechnique") == "SHADOWTYPE_TEXTURE_MODULATIVE") shadowTechnique = Ogre::SHADOWTYPE_TEXTURE_MODULATIVE;
             }
         }
     }
-    delete tmpLog;
+    delete tag;
 
     log = new LogEngine (localLogLevel, localLogName.c_str());
     log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");

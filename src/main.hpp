@@ -8,9 +8,7 @@
 \*****************************************************************************/
 
 #ifndef MAIN_HPP
-#   define MAIN_HPP
-#   include "tools/xercesc_fwd.hpp"
-#include "tools/paths.hpp"
+#define MAIN_HPP
 
 //forward declarations
 class LogEngine;
@@ -35,13 +33,4 @@ void computeLogic (LogEngine * log);
  * @brief If video recording is enabled, it checks whether the screen should be recorded to hard disk and does it if necessary.
  */
 void recordVideoFrames ();
-/** 
- * @brief Process the main configuration file.
- * 
- * @param node The main configuration node, which should be named "mainConfig".
- * 
- * @return A correctly initialized log engine, to be used in all the main function.
- */
-LogEngine * processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * node);
-
 #endif

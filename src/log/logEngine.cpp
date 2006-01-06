@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <xmlParser.hpp>
+#include <xmlTag.hpp>
 #include "system.hpp"
 
 //TODO use iostreams for file management/writing
@@ -34,12 +34,30 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
     {
         std::cout << "Starting log engine...";
 #ifdef MACOSX
-        XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/logConfig.xml");
+        XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/logConfig.xml", false);
 #else
-        XmlFile *xmlFile = new XmlFile ("../cfg/logConfig.xml");
+        XmlTag * tag = new XmlTag ("../cfg/logConfig.xml", false);
 #endif
-        processXmlRootNode (xmlFile->getRootNode ());
-        delete xmlFile;
+        std::string fileName;
+        globalLevel = LOG_DEVELOPER;
+        if (tag->getName() == "logConfig")
+        {
+            globalLevel = stologlevel(tag->getAttribute("globalLevel"));
+            fileName = tag->getAttribute("fileName");
+            textBuffer = stoi(tag->getAttribute("textBuffer"));
+        } else {
+            std::cerr << std::endl << "ERROR: Could not read Log Engine configuration. Using default values!" << std::endl;
+            fileName = "motorsport-default.log";
+        }
+        std::cout << " [Ok : \"" << fileName << "\"]" << std::endl;
+        logFile.open (fileName.c_str (), std::fstream::out);
+        if (!logFile.good ())
+        {
+            std::cerr << "ERROR: Log file \"" << fileName << "\" could not be opened!\n";
+            return;
+        }
+        format (LOG_ENDUSER, "Start of logs.");
+        delete tag;
     }
     // increase logEngines counter
     instancesCount++;
@@ -218,58 +236,6 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
 void LogEngine::setName(std::string name)
 {
     this->logName = name;
-}
-void LogEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    std::string fileName = "motorsport-default.log";
-    globalLevel = LOG_DEVELOPER;
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName ());
-            if (name == "logConfig")
-            {
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName ());
-                        if (attribute == "globalLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue ());
-                            globalLevel = stologlevel (attribute);
-                        }
-                        if (attribute == "fileName")
-                        {
-                            assignXmlString (fileName, attNode->getValue ());
-                        }
-                        if (attribute == "textBuffer")
-                        {
-                            assignXmlString (attribute, attNode->getValue ());
-                            textBuffer = stoi (attribute);
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        std::cerr << std::endl << "ERROR: Could not read Log Engine configuration. Using default values!" << std::endl;
-    }
-    std::cout << " [Ok : \"" << fileName << "\"]" << std::endl;
-    logFile.open (fileName.c_str (), std::fstream::out);
-    if (!logFile.good ())
-    {
-        std::cerr << "ERROR: Log file \"" << fileName << "\" could not be opened!\n";
-        return;
-    }
-    format (LOG_ENDUSER, "Start of logs.");
 }
 
 LOG_LEVEL stologlevel (const std::string & srcString)

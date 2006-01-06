@@ -8,8 +8,6 @@
 \*****************************************************************************/
 
 #include <string>
-#include "xercesc_fwd.hpp"
-#include "paths.hpp"
 
 //forward declarations
 class SystemData;
@@ -98,10 +96,4 @@ class GraphicsEngine
      * @brief Tells Ogre where to find resources.
      */
     void setupResources ();
-    /** 
-     * @brief Called by the generic XML parser; it loads configuration data from a file.
-     * 
-     * @param n The xml node, named "graphicsConfig".
-     */
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
 };

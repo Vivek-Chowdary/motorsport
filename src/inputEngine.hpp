@@ -7,9 +7,6 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "SDL/SDL_types.h"
-#include "xercesc_fwd.hpp"
-
 //forward declatation
 class SystemData;
 class LogEngine;
@@ -39,8 +36,6 @@ class InputEngine
     /** Processes all user input events since last call, transforming them into modifications to the world data.
     */
     int computeStep (void);
-    // / Called by the generic XML parser; it loads configuration data from a file.
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void clearLogicEventAxis ();
     void clearGraphicsEventAxis ();
 };

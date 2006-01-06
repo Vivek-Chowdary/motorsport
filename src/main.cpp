@@ -8,11 +8,10 @@
 \*****************************************************************************/
 
 #include "main.hpp"
-
 #include "SDL/SDL.h"
 #include "world.hpp"            // contains the IDF for the simulated/virtual world data
 #include "system.hpp"           // contains the IDF for the system data
-#include "log/logEngine.hpp"    // allows to easily log actions
+#include "logEngine.hpp"    // allows to easily log actions
 #include "inputEngine.hpp"      // process the queue of input events
 #include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
 #include "physicsEngine.hpp"    // calculates the physics of the world data
@@ -22,9 +21,10 @@
 #   include "windows.h"
 #endif
 #include <string>
-#include "tools/xmlParser.hpp"
+#include "xmlTag.hpp"
 #include <iostream>
 #include "SDL/SDL_keysym.h"
+#include "tools/paths.hpp"
 
 int main (int argc, char **argv)
 {
@@ -39,12 +39,17 @@ int main (int argc, char **argv)
 
     // We start the main log engine.
 #ifdef MACOSX
-    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/mainConfig.xml");
+    XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/mainConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("../cfg/mainConfig.xml");
+    XmlTag * tag = new XmlTag ("../cfg/mainConfig.xml");
 #endif
-    LogEngine *log = processXmlRootNode (xmlFile->getRootNode ());
-    delete xmlFile;
+    LogEngine * log = new LogEngine (LOG_DEVELOPER, "MainProgram");
+    if (tag->getName() == "mainConfig")
+    {
+        SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (tag->getAttribute("videoRecordTimestep"));
+        Paths::setCustomDataDir(tag->getAttribute("dataDir"));
+    }
+    delete tag;
 
     // We declare the 'global' data and engines.
     log->__format (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
@@ -214,64 +219,4 @@ void recordVideoFrames ()
         takeShot--;
     }
     time += SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
-}
-
-LogEngine *processXmlRootNode (DOMNode * n)
-{
-    LogEngine *tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
-    tmpLog->__format (LOG_DEVELOPER, "Assigning default values");
-    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
-    std::string localLogName = "MAI";
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-            if (name == "mainConfig")
-            {
-                tmpLog->__format (LOG_DEVELOPER, "Found the main config element.");
-                if (n->hasAttributes ())
-                {
-                    DOMNamedNodeMap *pAttributes = n->getAttributes ();
-                    int nSize = pAttributes->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) pAttributes->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "localLogLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            localLogLevel = stologlevel (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
-                        }
-                        if (attribute == "localLogName")
-                        {
-                            assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
-                        }
-                        if (attribute == "videoRecordTimestep")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found video recording timestep value: %s", attribute.c_str ());
-                            SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (attribute);
-                        }
-                        if (attribute == "dataDir")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the data directory: %s", attribute.c_str());
-                            Paths::setCustomDataDir(attribute);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    LogEngine *returnLog = new LogEngine (localLogLevel, localLogName.c_str ());
-    delete tmpLog;
-    returnLog->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
-    returnLog->__format (LOG_DEVELOPER, "Unloading temporary parsing data from memory...");
-    return returnLog;
 }

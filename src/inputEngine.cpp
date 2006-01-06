@@ -8,8 +8,8 @@
 \*****************************************************************************/
 
 #include "inputEngine.hpp"
+#include "SDL/SDL_types.h"
 #include "SDL/SDL.h"
-#include "xmlParser.hpp"
 #include "system.hpp"
 #include "world.hpp"
 #include "log/logEngine.hpp"
@@ -22,12 +22,12 @@
 InputEngine::InputEngine ()
 {
 #ifdef MACOSX
-    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/inputConfig.xml");
+    XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/inputConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("../cfg/inputConfig.xml");
+    XmlTag * tag = new XmlTag ("../cfg/inputConfig.xml");
 #endif    
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+    delete tag;
+    log = new LogEngine (LOG_DEVELOPER, "InputEngine");
 
     log->__format (LOG_DEVELOPER, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
@@ -199,50 +199,4 @@ InputEngine::~InputEngine (void)
 {
     // finally stop the log engine
     delete log;
-}
-
-void InputEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
-    std::string localLogName = "INP";
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-            if (name == "inputConfig")
-            {
-                tmpLog->__format (LOG_DEVELOPER, "Found the input engine config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "localLogLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            localLogLevel = stologlevel (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
-                        }
-                        if (attribute == "localLogName")
-                        {
-                            assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
-                        }
-                    }
-                }
-            }
-        }
-    }
-    delete tmpLog;
-    log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->__format (LOG_DEVELOPER, "All config has been parsed");
 }

@@ -26,7 +26,7 @@ typedef std::vector <XmlTag *>::iterator TagsIt;
 class XmlTag
 {
     private:
-        void construct(XmlTag * parent, DOMNode * n);
+        void construct(XmlTag * parent, DOMNode * n, bool logging);
         std::string filePath;
         std::string name;
         XmlTag * parent;
@@ -34,9 +34,12 @@ class XmlTag
         XmlAttributesBool attributesRead;
         Tags tags;
         LogEngine * log;
+        double initTime;
     public:
         XmlTag (std::string xmlFilePath);
         XmlTag (XmlTag * parent, DOMNode * n);
+        XmlTag (std::string xmlFilePath, bool logging);
+        XmlTag (XmlTag * parent, DOMNode * n, bool logging);
         ~XmlTag (); 
         std::string getName();
         std::string getFullName();

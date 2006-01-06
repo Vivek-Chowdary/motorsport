@@ -8,12 +8,12 @@
 \*****************************************************************************/
 
 #include "guiEngine.hpp"
-#include "xmlParser.hpp"
 #include "SDL/SDL.h"
 #include "system.hpp"
 #include "logEngine.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
+#include "xmlTag.hpp"
 using namespace Ogre;
 
 GuiEngine *GuiEngine::guiEnginePointer = NULL;
@@ -30,12 +30,19 @@ GuiEngine::GuiEngine ()
         delete this;
     } else {
 #ifdef MACOSX
-        XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/guiConfig.xml");
+        XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/guiConfig.xml");
 #else
-        XmlFile *xmlFile = new XmlFile ("../cfg/guiConfig.xml");
+        XmlTag * tag = new XmlTag ("../cfg/guiConfig.xml");
 #endif
-        processXmlRootNode (xmlFile->getRootNode());
-        delete xmlFile;
+        showStatistics = true;
+        log = new LogEngine (LOG_DEVELOPER, "GuiEngine");
+
+        if (tag->getName() == "guiConfig")
+        {
+            showStatistics = stob(tag->getAttribute("showStatistics"));
+            telemetryLines = stoi(tag->getAttribute("telemetryLines"));
+        }
+        delete tag;
 
         // get the direction of the graphics data
         log->__format (LOG_DEVELOPER, "Setting up data pointers...");
@@ -239,66 +246,4 @@ GuiEngine::~GuiEngine (void)
 {
     // finally stop the log engine
     delete log;
-}
-
-void GuiEngine::processXmlRootNode (DOMNode * n)
-{
-    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
-    std::string localLogName = "GUI";
-    showStatistics = true;
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-            if (name == "guiConfig")
-            {
-                tmpLog->__format (LOG_DEVELOPER, "Found the gui engine config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "localLogLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            localLogLevel = stologlevel (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
-                        }
-
-                        if (attribute == "localLogName")
-                        {
-                            assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
-
-                        }
-                        if (attribute == "showStatistics")
-                        {
-                            assignXmlString (attribute, attNode->getValue ());
-                            showStatistics = stob (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found whether to show the statistics or not: %s", attribute.c_str());
-                        }
-                        if (attribute == "telemetryLines")
-                        {
-                            assignXmlString (attribute, attNode->getValue ());
-                            telemetryLines = stoi (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the number of telemetry lines: %s", attribute.c_str());
-                        }
-                    }
-                }
-            }
-        }
-    }
-    delete tmpLog;
-
-    log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->__format (LOG_DEVELOPER, "All config has been parsed");
 }

@@ -8,7 +8,7 @@
 \*****************************************************************************/
 
 #include "physicsEngine.hpp"
-
+#include "logEngine.hpp"
 #include "SDL.h"
 #include "math.h"
 #include "system.hpp"
@@ -17,7 +17,7 @@
 #include "part.hpp"
 #include "vehicle.hpp"
 #include "camera.hpp"
-#include "xmlParser.hpp"
+#include "xmlTag.hpp"
 #include "area.hpp"
 #include "system.hpp"
 #include "Ogre.h"
@@ -30,12 +30,46 @@ PhysicsEngine::PhysicsEngine ()
   : stepType(0), dWorldStepFast1MaxIterations(0) 
 {
 #ifdef MACOSX
-    XmlFile *xmlFile = new XmlFile ("motorsport.app/Contents/Resources/physicsConfig.xml");
+    XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/physicsConfig.xml");
 #else
-    XmlFile *xmlFile = new XmlFile ("../cfg/physicsConfig.xml");
+    XmlTag * tag = new XmlTag ("../cfg/physicsConfig.xml");
 #endif
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+    double frequency = 250.0;
+    int timeScale = 1;
+    int pauseStep = 0;
+    SystemData::getSystemDataPointer()->setCfmValue (-1);
+    SystemData::getSystemDataPointer()->setErpValue (-1);
+    int stepType = 1;
+    int dWorldStepFast1MaxIterations = 100;
+
+    log = new LogEngine (LOG_DEVELOPER, "PhysicsEngine");
+    if (tag->getName() == "physicsConfig")
+    {
+        frequency = stod(tag->getAttribute("frequency"));
+        timeScale = stoi(tag->getAttribute("timeScale"));
+        pauseStep = stoi(tag->getAttribute("pauseStep"));
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "ode")
+            {
+                if (t->getAttribute("cfmValue") != "default") SystemData::getSystemDataPointer()->setCfmValue(stod(t->getAttribute("cfmValue")));
+                if (t->getAttribute("erpValue") != "default") SystemData::getSystemDataPointer()->setErpValue(stod(t->getAttribute("erpValue")));
+                if (t->getAttribute("stepType") == "dWorldStep") stepType = 1;
+                if (t->getAttribute("stepType") == "dWorldStepFast1") stepType = 2;
+                dWorldStepFast1MaxIterations = stoi (t->getAttribute("dWorldStepFast1MaxIterations"));
+            }
+        }
+    }
+    // get the direction of the graphics data
+    log->__format (LOG_DEVELOPER, "Setting up data pointers...");
+    systemData = SystemData::getSystemDataPointer ();
+
+    log->__format (LOG_DEVELOPER, "Setting physics data");
+    systemData->setDesiredPhysicsFrequency(frequency);
+    systemData->timeScale = timeScale;
+    systemData->pauseStep = pauseStep;
+    log->__format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
+    delete tag;
 }
 
 
@@ -150,152 +184,4 @@ PhysicsEngine::~PhysicsEngine (void)
 
     // finally stop the log engine
     delete log;
-}
-
-void PhysicsEngine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    LOG_LEVEL localLogLevel = LOG_DEVELOPER;
-    std::string localLogName = "FSX" ;
-    double frequency = 250.0;
-    int timeScale = 1;
-    int pauseStep = 0;
-    SystemData::getSystemDataPointer()->setCfmValue (-1);
-    SystemData::getSystemDataPointer()->setErpValue (-1);
-    int stepType = 1;
-    int dWorldStepFast1MaxIterations = 100;
-
-    LogEngine * tmpLog = new LogEngine (LOG_DEVELOPER, "XmlParser");
-    if (n)
-    {
-        if (n->getNodeType () == XERCES_CPP_NAMESPACE::DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-            if (name == "physicsConfig")
-            {
-                tmpLog->__format (LOG_DEVELOPER, "Found the physics engine config element.");
-                if (n->hasAttributes ())
-                {
-                    // get all the attributes of the node
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "localLogLevel")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            localLogLevel = stologlevel (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the local log level: %s", attribute.c_str());
-                        }
-
-                        if (attribute == "localLogName")
-                        {
-                            assignXmlString (localLogName, attNode->getValue());
-                            tmpLog->__format (LOG_ENDUSER, "Found the log name: %s", localLogName.c_str());
-                        }
-                        if (attribute == "frequency")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            frequency = stod (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the frecuency: %s", attribute.c_str());
-                        }
-                        if (attribute == "timeScale")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            timeScale = stoi (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the time scale: %s", attribute.c_str());
-                        }
-                        if (attribute == "pauseStep")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            pauseStep = stoi (attribute);
-                            tmpLog->__format (LOG_ENDUSER, "Found the pause step: %s", attribute.c_str());
-                        }
-                    }
-                }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-                {
-                    if (n)
-                    {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (name, n->getNodeName());
-                            tmpLog->__format (LOG_DEVELOPER, "Name: %s", name.c_str());
-                            if (name == "ode")
-                            {
-                                tmpLog->__format (LOG_DEVELOPER, "Found the ode config element.");
-                                if (n->hasAttributes ())
-                                {
-                                    // get all the attributes of the node
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "cfmValue")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the constraint force mixing factor (CFM): %s", attribute.c_str());
-                                            if (attribute != "default")
-                                            {
-                                                SystemData::getSystemDataPointer()->setCfmValue (stod (attribute));
-                                                tmpLog->__format (LOG_DEVELOPER, "CFM set to %f", stod(attribute));
-                                            }
-                                        }
-                                        if (attribute == "erpValue")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the error reduction parameter (ERP): %s", attribute.c_str());
-                                            if (attribute != "default")
-                                            {
-                                                SystemData::getSystemDataPointer()->setErpValue (stod (attribute));
-                                                tmpLog->__format (LOG_DEVELOPER, "ERP set to %f", stod(attribute));
-                                            }
-                                        }
-                                        if (attribute == "stepType")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the type of stepping to be used in ODE: %s", attribute.c_str());
-                                            if (attribute == "dWorldStep")
-                                                stepType = 1;
-                                            if (attribute == "dWorldStepFast1")
-                                                stepType = 2;
-                                        }
-                                        if (attribute == "dWorldStepFast1MaxIterations")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            tmpLog->__format (LOG_ENDUSER, "Found the max. number of iterations to be calculated with dWorldStepFast1: %s", attribute.c_str());
-
-                                            dWorldStepFast1MaxIterations = stoi (attribute);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    delete tmpLog;
-
-    // first of all start the logger (automatically logs the start of itself)
-    log = new LogEngine (localLogLevel, localLogName.c_str());
-    log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
-
-    // get the direction of the graphics data
-    log->__format (LOG_DEVELOPER, "Setting up data pointers...");
-    systemData = SystemData::getSystemDataPointer ();
-
-    log->__format (LOG_DEVELOPER, "Setting physics data");
-    systemData->setDesiredPhysicsFrequency(frequency);
-    systemData->timeScale = timeScale;
-    systemData->pauseStep = pauseStep;
-    log->__format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
 }

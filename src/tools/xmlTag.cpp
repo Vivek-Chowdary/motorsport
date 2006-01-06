@@ -12,37 +12,77 @@
 
 XmlTag::XmlTag(std::string xmlFilePath)
 {
-    double time = SDL_GetTicks()/1000.0;
+    initTime = SDL_GetTicks()/1000.0;
     this->filePath = xmlFilePath;
     XmlFile * xmlFile = new XmlFile (filePath);
-    construct(NULL, xmlFile->getRootNode());
+    construct(NULL, xmlFile->getRootNode(), true);
     delete xmlFile;
-    log->__format(LOG_ENDUSER, "\"%s\" parsed in %f seconds.", xmlFilePath.c_str(), SDL_GetTicks()/1000.0 - time);
+}
+XmlTag::XmlTag(std::string xmlFilePath, bool logging)
+{
+    initTime = SDL_GetTicks()/1000.0;
+    this->filePath = xmlFilePath;
+    XmlFile * xmlFile = new XmlFile (filePath);
+    construct(NULL, xmlFile->getRootNode(), logging);
+    delete xmlFile;
 }
 XmlTag::XmlTag(XmlTag * parent, DOMNode * n)
 {
     this->filePath = "";
-    construct(parent, n);
+    construct(parent, n, true);
 }
-void XmlTag::construct(XmlTag * parent, DOMNode * n)
+XmlTag::XmlTag(XmlTag * parent, DOMNode * n, bool logging)
+{
+    this->filePath = "";
+    construct(parent, n, logging);
+}
+void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
 {
     this->parent = parent;
     this->name = "unknown";
     if (parent == NULL)
     {
-        this->log = new LogEngine (LOG_DEVELOPER, "XmlTag");
+        if (logging)
+        {
+            this->log = new LogEngine (LOG_DEVELOPER, "XmlTag");
+        }
+        else
+        {
+           this->log = NULL;
+        }
     }
     else
     {
-        this->log = parent->log;
+        if (logging)
+        {
+            this->log = parent->log;
+        }
     }
 
-    if (n == NULL) log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
-    if (n->getNodeType() != DOMNode::ELEMENT_NODE) log->__format(LOG_ERROR, "This (%s) is not a tag!", getFullName().c_str());
+    if (n == NULL)
+    {
+        if (logging)
+        {
+           log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
+        }
+    }
+    if (n->getNodeType() != DOMNode::ELEMENT_NODE)
+    {
+        if (logging)
+        {
+           log->__format(LOG_ERROR, "This (%s) is not a tag!", getFullName().c_str());
+        }
+    }
     assignXmlString (name, n->getNodeName());
 
     //fill tag attributes map
-    if (!n->hasAttributes()) log->__format(LOG_WARNING, "No attributes in this tag (%s)!", getFullName().c_str() );
+    if (!n->hasAttributes())
+    {
+        if (logging)
+        {
+            log->__format(LOG_WARNING, "No attributes in this tag (%s)!", getFullName().c_str() );
+        }
+    }
     else
     {
         std::string attributeName = "";
@@ -80,7 +120,17 @@ XmlTag::~XmlTag()
 {
     for (AttributesBoolIt i = attributesRead.begin(); i != attributesRead.end(); i++)
     {
-        if (!(i->second)) log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
+        if (!(i->second))
+        {
+            if (log)
+            {
+                log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
+            }
+            else
+            {
+                std::cout << std::endl << " Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!";
+            }
+        }
     }
 
     for (TagsIt i = tags.begin(); i != tags.end(); i++)
@@ -90,7 +140,11 @@ XmlTag::~XmlTag()
     tags.clear();
     if (parent == NULL) 
     {
-        delete log;
+        if (log)
+        {
+            log->__format(LOG_ENDUSER, "\"%s\" parsed in %f seconds.", filePath.c_str(), SDL_GetTicks()/1000.0 - initTime);
+            delete log;
+        }
     }
     log = NULL;
     parent = NULL;
@@ -99,7 +153,14 @@ std::string XmlTag::getAttribute(std::string attributeName)
 {
     if (attributes.find(attributeName) == attributes.end())
     {
-        log->__format(LOG_ERROR, "Attempted to read non-existent attribute \"%s\" in tag \"%s\"", attributeName.c_str(), getFullName().c_str());
+        if (log)
+        {
+            log->__format(LOG_ERROR, "Attempted to read non-existent attribute \"%s\" in tag \"%s\"", attributeName.c_str(), getFullName().c_str());
+        }
+        else
+        {
+            std::cout << std::endl << " Error! Attempted to read non-existent attribute \"" << attributeName << "\" in tag \"" << getFullName() << "\".";
+        }
         return "";
     }
     attributesRead[attributeName] = true;
@@ -113,7 +174,7 @@ XmlTag * XmlTag::getTag(int tagNumber)
 {
     if (tagNumber > (nTags()-1) || tagNumber < 0)
     {
-        //log->__format(LOG_ERROR, "Attempted to read non-existent tag #%s in tag \"%s\"", tagNumber, getFullName().c_str());
+        //if (logging) log->__format(LOG_ERROR, "Attempted to read non-existent tag #%s in tag \"%s\"", tagNumber, getFullName().c_str());
         return NULL;
     }
     return tags[tagNumber];

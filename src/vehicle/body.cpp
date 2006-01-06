@@ -47,13 +47,9 @@ Body::Body (WorldObject * container, XmlTag * tag)
     {
         frontalArea = data.width * data.height * 0.6;
     }
-
-    /////////////////////////////////////////////////////////////////////
     ogreData.meshPath = getPath() + ogreData.meshPath;
     OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
     ogreObjects[getId()] = ogreObject;
-
-    ///////////////////////////////////////////////////////////////////////////
     ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 
