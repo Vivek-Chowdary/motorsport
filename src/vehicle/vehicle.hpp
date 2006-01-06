@@ -8,12 +8,13 @@
 \*****************************************************************************/
 
 #ifndef VEHICLE_HPP
-#   define VEHICLE_HPP
-#   include <string>
-#   include <map>
-#   include <vector>
-#   include "worldObject.hpp"
-#   include "ode/objects.h"
+#define VEHICLE_HPP
+#include <string>
+#include <map>
+#include <vector>
+#include "worldObject.hpp"
+#include "ode/objects.h"
+#include "xmlTag.hpp"
 
 //forward declarations
 class Body;
@@ -40,18 +41,14 @@ class Vehicle : public WorldObject
     std::string author;
     std::string contact;
     std::string license;
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void processXmlWheelListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
-    void processXmlSuspensionListNode(XERCES_CPP_NAMESPACE::DOMNode * wheelListNode);
-    void processXmlPedalListNode(XERCES_CPP_NAMESPACE::DOMNode * pedalListNode);
-    void processXmlCameraListNode(XERCES_CPP_NAMESPACE::DOMNode * cameraListNode);
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void construct (XmlTag * tag);
     void stopPhysics ();
     void placeWheelsOnSuspensions();
     void boltWheelsToSuspensions();
     void stopGraphics ();
   public:
-    Vehicle (WorldObject * container, std::string name);
+    Vehicle (WorldObject * container, std::string vehicleName);
+    Vehicle (WorldObject * container, XmlTag * tag);
     ~Vehicle ();
     Body * body;
     Engine * engine;

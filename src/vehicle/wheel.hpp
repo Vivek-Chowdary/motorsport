@@ -31,12 +31,9 @@ class Wheel : public DriveMass
     double powered;
     dBodyID baseID;
     dJointID suspJointID;
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Pedal * brakePedal;
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
-    Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Wheel (WorldObject * container, XmlTag * tag);
     ~Wheel ();
     void setRefBody(dBodyID inputID) { baseID = inputID; };
     void setSuspJoint(dJointID injointID) { suspJointID = injointID; };

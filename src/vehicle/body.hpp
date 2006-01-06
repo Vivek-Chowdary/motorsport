@@ -26,15 +26,12 @@ class Vehicle;
 class Body : public WorldObject
 {
   private:
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     double dragCoefficient;
     double frontalArea;
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopGraphics ();
   public:
-    Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Body (WorldObject * container, XmlTag * tag);
     ~Body ();
     void stepPhysics ();
 };

@@ -15,11 +15,17 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-Pedal::Pedal (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject(container, name)
+Pedal::Pedal (WorldObject * container, XmlTag * tag)
+    :WorldObject(container, "pedal")
 {
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
-    processXmlRootNode (n);
+    angleRange = 180;
+    currentAngle = 0.0;
+    if (tag->getName() == "pedal")
+    {
+        setName (     tag->getAttribute("name"));
+        angleRange = stod (tag->getAttribute("angleRange"));
+    }
     userDriver = false;
 }
 
@@ -28,47 +34,10 @@ Pedal::~Pedal ()
 }
 
 
-void Pedal::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-
 void Pedal::setUserDriver ()
 {
     userDriver = true;
 }
-
-void Pedal::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    angleRange = 180;
-    currentAngle = 0.0;
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "angleRange")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the pedal angle range: %s", attribute.c_str() );
-                angleRange = stod (attribute);
-            }
-            if (attribute == "name")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the pedal name: %s", attribute.c_str() );
-                setName(attribute);
-            }
-        }
-    }
-}
-
 
 void Pedal::stepPhysics ()
 {

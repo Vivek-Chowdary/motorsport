@@ -22,15 +22,24 @@ DriveJoint::DriveJoint (WorldObject * container, std::string name)
 DriveJoint::~DriveJoint ()
 {
 }
-Clutch::Clutch (WorldObject * container, std::string name,XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint(container, name)
+Clutch::Clutch (WorldObject * container, XmlTag * tag)
+    :DriveJoint(container, "clutch")
 {
-    log->__format (LOG_CCREATOR, "Starting to parse a clutch node");
-    processXmlRootNode (n);
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
+    lockedParam = 1;
+     
+    if (tag->getName() == "clutch")
+    {
+        setName (     tag->getAttribute("name"));
+        coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
+        coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
+        maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
+    }
 }
 
-Clutch::Clutch (WorldObject * container, std::string name)
-    :DriveJoint(container, name)
+Clutch::Clutch (WorldObject * container)
+    :DriveJoint(container, "clutch")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -48,20 +57,27 @@ void Clutch::setClutchPedal(Pedal * pedal)
 }
 
 
-void Clutch::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+
+Gear::Gear (WorldObject * container, XmlTag * tag)
+    :DriveJoint(container, "gear")
 {
-    startPhysics (n);
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
+    ratio = 1.0;
+    springConstant = 1000;
+    relAngle = 0.0;
+      
+    if (tag->getName() == "gear")
+    {
+        setName (     tag->getAttribute("name"));
+        //coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
+        //coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
+        //maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
+    }
 }
 
-Gear::Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint(container, name)
-{
-    log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
-    processXmlRootNode (n);
-}
-
-Gear::Gear (WorldObject * container, std::string name)
-    :DriveJoint(container, name)
+Gear::Gear (WorldObject * container)
+    :DriveJoint(container, "gear")
 {
     ratio = 1.0;
     springConstant = 300.0;
@@ -78,20 +94,26 @@ Gear::~Gear ()
 {
 }
 
-void Gear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+LSD::LSD (WorldObject * container, XmlTag * tag)
+    :DriveJoint(container, "lsd")
 {
-    startPhysics (n);
+    outputTorqueTransfer = 0.0;
+    inputTorqueTransfer = 0.0;
+    ratio = 1.0;
+    springConstant = 1000;
+    relAngle = 0.0;
+      
+    if (tag->getName() == "vehicle")
+    {
+        setName (     tag->getAttribute("name"));
+        //coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
+        //coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
+        //maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
+    }
 }
 
-LSD::LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveJoint(container, name)
-{
-    log->__format (LOG_CCREATOR, "Starting to parse a gear joint node");
-    processXmlRootNode (n);
-}
-
-LSD::LSD (WorldObject * container, std::string name)
-    :DriveJoint(container, name)
+LSD::LSD (WorldObject * container)
+    :DriveJoint(container, "lsd")
 {
     ratio = 1.0;
     springConstant = 300.0;
@@ -111,49 +133,6 @@ LSD::LSD (WorldObject * container, std::string name)
 
 LSD::~LSD ()
 {
-}
-
-void LSD::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-void Clutch::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    outputTorqueTransfer = 0.0;
-    inputTorqueTransfer = 0.0;
-    lockedParam = 1;
-     
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "coeffStaticFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
-                coeffStaticFriction = stod (attribute);
-            }
-            if (attribute == "coeffDynamicFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
-                coeffDynamicFriction = stod (attribute);
-            }
-            if (attribute == "maxTorqueTransfer")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
-                maxTorqueTransfer = stod (attribute);
-            }
-        }
-    }
 }
 
 void Clutch::stepPhysics ()
@@ -186,63 +165,25 @@ void Clutch::stepPhysics ()
     }
 }
 
-
-void Gear::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    outputTorqueTransfer = 0.0;
-    inputTorqueTransfer = 0.0;
-    ratio = 1.0;
-    springConstant = 1000;
-    relAngle = 0.0;
-      
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "coeffStaticFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
-//                coeffStaticFriction = stod (attribute);
-            }
-            if (attribute == "coeffDynamicFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
-//                coeffDynamicFriction = stod (attribute);
-            }
-            if (attribute == "maxTorqueTransfer")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
-//                maxTorqueTransfer = stod (attribute);
-            }
-        }
-    }
-}
-
 void Gear::stepPhysics ()
-{
+{ 
   if(enabled) {
     double dt;
     dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    log->__format(LOG_DEVELOPER, "testttttttttt");
     prevRelAngle = relAngle;
     prevRelAngularVel = relAngularVel;
+    log->__format(LOG_DEVELOPER, "testttttttttt");
 
     relAngularVel = inputDrive->getOutputAngularVel()/ratio - outputDrive->getInputAngularVel();
 
+    log->__format(LOG_DEVELOPER, "testttttttttt");
     // trapezoidal integration
     relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
 
 //    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
     
+    log->__format(LOG_DEVELOPER, "testttttttttt");
     outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
         
     inputTorqueTransfer = -1*outputTorqueTransfer/ratio;
@@ -255,47 +196,6 @@ void Gear::stepPhysics ()
   else {
     relAngle = 0;
   }
-}
-
-void LSD::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    outputTorqueTransfer = 0.0;
-    inputTorqueTransfer = 0.0;
-    ratio = 1.0;
-    springConstant = 1000;
-    relAngle = 0.0;
-      
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "coeffStaticFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch static coefficient of friction: %s", attribute.c_str() );
-//                coeffStaticFriction = stod (attribute);
-            }
-            if (attribute == "coeffDynamicFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch dynamic coefficient of friction: %s", attribute.c_str() );
-//                coeffDynamicFriction = stod (attribute);
-            }
-            if (attribute == "maxTorqueTransfer")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the clutch maximum torque transfer: %s", attribute.c_str() );
-//                maxTorqueTransfer = stod (attribute);
-            }
-        }
-    }
 }
 
 void LSD::stepPhysics ()

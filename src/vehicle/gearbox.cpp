@@ -14,94 +14,10 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-Gearbox::Gearbox (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass(container, name)
+Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
+    :DriveMass(container, "gearbox")
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
-    processXmlRootNode (n);
-    processXmlGearListNode (n);
-}
-
-Gearbox::~Gearbox ()
-{
-}
-
-
-void Gearbox::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-
-void Gearbox::processXmlGearListNode(DOMNode * gearListNode)
-{
-    if (gearListNode != 0)
-    {
-        DOMNode * gearNode;
-        for (gearNode = gearListNode->getFirstChild (); gearNode != 0; gearNode = gearNode->getNextSibling ())
-        {
-            if (gearNode->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string nodeName;
-                assignXmlString (nodeName, gearNode->getNodeName());
-                if (nodeName == "gear")
-                {
-                    log->__format (LOG_CCREATOR, "Found a gear.");
-                    GearboxGear * tmpGear = new GearboxGear (this, "Gear", gearNode);
-                    gearMap[tmpGear->getNumber()]=tmpGear;
-  //                  tmpGear->setRefBody(body->bodyID);
-                }
-            }
-        }
-    }
-}
-
-GearboxGear::GearboxGear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject(container, name)
-{
-    log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
-    processXmlRootNode (n);
-}
-
-GearboxGear::~GearboxGear()
-{
-}
-void GearboxGear::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    ratio = 1.0;
-    number = 0;
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "number")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the Gear Index: %s", attribute.c_str() );
-                number = stoi (attribute);
-            }
-            if (attribute == "ratio")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the Gear Ratio: %s", attribute.c_str() );
-                ratio = stod (attribute);
-            }
-            if (attribute == "name")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the Gear Label: %s", attribute.c_str() );
-                setName (attribute);
-            }
-        }
-    }
-}
-
-void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     friction = 0.01;
@@ -113,31 +29,44 @@ void Gearbox::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     gearRatio = 0.0;
     currentGear = 0;
     
-    if (n->hasAttributes ())
+    if (tag->getName() == "gearbox")
     {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
+        setName (     tag->getAttribute("name"));
+        friction = stod (tag->getAttribute("gearboxFriction"));
+        inertia = stod (tag->getAttribute("gearboxInertia"));
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "gearboxFriction")
+            if (t->getName() == "gear")
             {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the Gearbox Friction: %s", attribute.c_str() );
-                friction = stod (attribute);
-            }
-            if (attribute == "gearboxInertia")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the Gearbox Inertia: %s", attribute.c_str() );
-                inertia = stod (attribute);
+                GearboxGear * tmp = new GearboxGear (this, t);
+                gearMap[tmp->getNumber()] = tmp;
             }
         }
     }
 }
 
+Gearbox::~Gearbox ()
+{
+}
+
+
+GearboxGear::GearboxGear (WorldObject * container, XmlTag * tag)
+    :WorldObject(container, "gearboxGear")
+{
+    log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
+    ratio = 1.0;
+    number = 0;
+    if (tag->getName() == "gear")
+    {
+        setName (     tag->getAttribute("name"));
+        number = stoi (tag->getAttribute("number"));
+        ratio = stod (tag->getAttribute("ratio"));
+    }
+}
+
+GearboxGear::~GearboxGear()
+{
+}
 void Gearbox::stepPhysics ()
 {
     double dt;

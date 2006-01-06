@@ -173,7 +173,7 @@ int InputEngine::computeStep (void)
     int numAreaCams = World::getWorldPointer()->areaList[0]->cameraList.size();
     for (int i=0; i < numAreaCams; i++)
     {
-        World::getWorldPointer()->areaList[0]->cameraList[i]->stepInput();
+        //World::getWorldPointer()->areaList[0]->cameraList[i]->stepInput();
     }
     
  /* Be careful with this debugging code!! you need to have created all the axis you're going to debug!

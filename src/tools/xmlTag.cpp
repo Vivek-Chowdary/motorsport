@@ -57,6 +57,7 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n)
             if ( (attributeName != "") && (attributeData != "") )
             {
                 attributes[attributeName] = attributeData;
+                attributesRead[attributeName] = false;
             }
         }
     }
@@ -77,16 +78,31 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n)
 }
 XmlTag::~XmlTag()
 {
+    for (AttributesBoolIt i = attributesRead.begin(); i != attributesRead.end(); i++)
+    {
+        if (!(i->second)) log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
+    }
+
+    for (TagsIt i = tags.begin(); i != tags.end(); i++)
+    {
+        delete (*i);
+    }
+    tags.clear();
     if (parent == NULL) 
     {
         delete log;
     }
     log = NULL;
     parent = NULL;
-    //TODO destroy childs and atts
 }
 std::string XmlTag::getAttribute(std::string attributeName)
 {
+    if (attributes.find(attributeName) == attributes.end())
+    {
+        log->__format(LOG_ERROR, "Attempted to read non-existent attribute \"%s\" in tag \"%s\"", attributeName.c_str(), getFullName().c_str());
+        return "";
+    }
+    attributesRead[attributeName] = true;
     return attributes[attributeName];
 }
 int XmlTag::nTags()
@@ -95,6 +111,11 @@ int XmlTag::nTags()
 }
 XmlTag * XmlTag::getTag(int tagNumber)
 {
+    if (tagNumber > (nTags()-1) || tagNumber < 0)
+    {
+        //log->__format(LOG_ERROR, "Attempted to read non-existent tag #%s in tag \"%s\"", tagNumber, getFullName().c_str());
+        return NULL;
+    }
     return tags[tagNumber];
 }
 std::string XmlTag::getFullName()

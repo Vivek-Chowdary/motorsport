@@ -54,12 +54,10 @@ class Clutch : public DriveJoint
     double maxTorqueTransfer;
     double lockedParam;
     bool locked;
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
   public:
-    Clutch (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
-    Clutch (WorldObject * container, std::string name);
+    Clutch (WorldObject * container, XmlTag * tag);
+    Clutch (WorldObject * container);
     ~Clutch ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void setClutchPedal(Pedal * pedal);
     void stepPhysics ();
 };
@@ -70,12 +68,12 @@ class Gear : public DriveJoint
     double ratio;
     double springConstant;
     double dampConstant;
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void startPhysics (XmlTag * tag);
   public:
-    Gear (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
-    Gear (WorldObject * container, std::string name);
+    Gear (WorldObject * container, XmlTag * tag);
+    Gear (WorldObject * container);
     ~Gear ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlRootNode (XmlTag * tag);
     void stepPhysics ();
 };
 
@@ -91,12 +89,12 @@ class LSD : public DriveJoint
     double springConstant;
     double dampConstant;
     double limitedSlipClutchFriction;
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void startPhysics (XmlTag * tag);
   public:
-    LSD (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
-    LSD (WorldObject * container, std::string name);
+    LSD (WorldObject * container, XmlTag * tag);
+    LSD (WorldObject * container);
     ~LSD ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
+    void processXmlRootNode (XmlTag * tag);
     void setOutputPointer2 (DriveMass *output)   { outputDrive2 = output; } ;
     void stepPhysics ();
 };

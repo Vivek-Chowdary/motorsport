@@ -82,7 +82,7 @@ void LogEngine::loadscreen (LOG_LEVEL level, const char *textToLogFormat, ...)
     if (level > globalLevel || level > logLevel)
         return;
 
-    char buffer[1024];
+    char buffer[2048];
     va_list arglist;
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
@@ -100,7 +100,7 @@ void LogEngine::telemetry (LOG_LEVEL level, const char *textToLogFormat, ...)
     if (level > globalLevel || level > logLevel)
         return;
 
-    char buffer[1024];
+    char buffer[2048];
     va_list arglist;
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)
@@ -118,7 +118,7 @@ void LogEngine::format (LOG_LEVEL level, const char *textToLogFormat, ...)
     if (level > globalLevel || level > logLevel)
         return;
 
-    char buffer[1024];
+    char buffer[2048];
     va_list arglist;
     va_start (arglist, textToLogFormat);
 #if defined( _STLPORT_VERSION ) || !defined(WIN32)

@@ -7,6 +7,7 @@
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <body
+        name = "body"
         mesh = "body.mesh"
         length = "4.66"
         width = "2.08"
@@ -36,6 +37,7 @@
         </pedal>
     </pedalList>
     <engine
+        name = "v8 engine"
         torqueLinearMultiplier = "246"
         engineInertia = "0.4"
         engineFriction = "0.1"
@@ -44,6 +46,7 @@
         >
     </engine>
     <clutch
+        name = "clutch"
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
         maxTorqueTransfer = "260"
@@ -58,6 +61,7 @@
         >
     </shiftDownPaddle>
     <gearbox
+        name = "gearbox"
         gearboxFriction = "0.01"
         gearboxInertia = "0.2"
         >
@@ -104,19 +108,20 @@
 	  	>
 	  </gear>	
     </gearbox>
-    <diff
+    <finalDrive
+        name = "final drive"
         diffInertia = "0.1"
         diffFriction = "0.001"
         finalDriveRatio = "3.6"
         >
-    </diff>
+    </finalDrive>
     <steeringWheel
         inputAxis = "normalizedRelativeRotation"
         maxAngle = "900"
         >
     </steeringWheel>
     <suspensionList>
-        <unidimensional
+        <suspension.unidimensional
             name = "FrontRight"
             springConstant =  "80500"
             dampingConstant = "2000"
@@ -124,8 +129,8 @@
             rotation = "-92.5 0 0"
             steeringAngle = "+80"
             >
-        </unidimensional>
-        <unidimensional
+        </suspension.unidimensional>
+        <suspension.unidimensional
             name = "FrontLeft"
             springConstant =  "80500"
             dampingConstant = "2000"
@@ -133,8 +138,8 @@
             rotation = "+92.5 0 0"
             steeringAngle = "-80"
             >
-        </unidimensional>
-        <unidimensional
+        </suspension.unidimensional>
+        <suspension.unidimensional
             name = "RearRight"
             springConstant =  "80900"
             dampingConstant = "2000"
@@ -142,8 +147,8 @@
             rotation = "-91 0 0"
             steeringAngle = "0"
             >
-        </unidimensional>
-        <unidimensional
+        </suspension.unidimensional>
+        <suspension.unidimensional
             name = "RearLeft"
             springConstant =  "80900"
             dampingConstant = "2000"
@@ -151,7 +156,7 @@
             rotation = "+91 0 0"
             steeringAngle = "0"
             >
-        </unidimensional>
+        </suspension.unidimensional>
     </suspensionList>
     <wheelList>
         <wheel

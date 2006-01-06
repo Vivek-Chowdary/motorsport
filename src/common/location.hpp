@@ -8,11 +8,12 @@
 \*****************************************************************************/
 
 #ifndef LOCATION_HPP
-#   define LOCATION_HPP
-#   include "tools/xercesc_fwd.hpp"
-#   include "vector3d.hpp"
-#   include <string>
-#   include "quaternion.hpp"
+#define LOCATION_HPP
+#include "tools/xercesc_fwd.hpp"
+#include "vector3d.hpp"
+#include <string>
+#include "quaternion.hpp"
+#include "xmlTag.hpp"
 
 class Location
 {
@@ -21,7 +22,7 @@ class Location
     Quaternion rotation;
     std::string name;
   public:
-    Location (XERCES_CPP_NAMESPACE::DOMNode * n);
+    Location (XmlTag * tag);
     ~Location ();
     Vector3d getPosition();
     Quaternion getRotation();

@@ -18,14 +18,12 @@ class Pedal;
 class Engine : public DriveMass
 {
   private:
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     double torqueLinearMultiplier;
     double telemetryTorque;
     double angularVelLimit;
     Pedal * gasPedal;
   public:
-    Engine (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Engine (WorldObject * container, XmlTag * tag);
     ~Engine ();
     void setGasPedal (Pedal * pedal);
     void stepPhysics ();

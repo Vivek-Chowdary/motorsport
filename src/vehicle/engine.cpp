@@ -18,11 +18,23 @@
 
 class Pedal;
 
-Engine::Engine (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass(container, name)
+Engine::Engine (WorldObject * container, XmlTag * tag)
+    :DriveMass(container, "engine")
 {
+    inputAngularVel = 0.0;
+    prevAngularVel = 0.0;
+    outputAngularVel = 0.0;
+    angularAcc = 0.0;
     log->__format (LOG_CCREATOR, "Starting to parse an engine node");
-    processXmlRootNode (n);
+    if (tag->getName() == "engine")
+    {
+        setName (tag->getAttribute("name"));
+        torqueLinearMultiplier = stod (tag->getAttribute("torqueLinearMultiplier"));
+        inertia = stod (tag->getAttribute("engineInertia"));
+        friction = stod (tag->getAttribute("engineFriction"));
+        angularVelLimit = stod (tag->getAttribute("angularVelLimit"));
+
+    }
 }
 
 Engine::~Engine ()
@@ -30,63 +42,9 @@ Engine::~Engine ()
 }
 
 
-void Engine::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-
 void Engine::setGasPedal (Pedal * pedal)
 {
     gasPedal = pedal;
-}
-
-void Engine::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    torqueLinearMultiplier = 0.0001;
-    friction = 0.1;
-    inertia = 1.0;
-    inputAngularVel = 0.0;
-    prevAngularVel = 0.0;
-    outputAngularVel = 0.0;
-    angularAcc = 0.0;
-    angularVelLimit = 700;
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "torqueLinearMultiplier")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the engine torque linear multiplier: %s", attribute.c_str() );
-                torqueLinearMultiplier = stod (attribute);
-            }
-            if (attribute == "engineInertia")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the engine inertia: %s", attribute.c_str() );
-                inertia = stod (attribute);
-            }
-            if (attribute == "engineFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the engine friction: %s", attribute.c_str() );
-                friction = stod (attribute);
-            }
-            if (attribute == "angularVelLimit")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the engine angular velocity limit: %s", attribute.c_str() );
-                angularVelLimit = stod (attribute);
-            }
-        }
-    }
 }
 
 void Engine::stepPhysics ()

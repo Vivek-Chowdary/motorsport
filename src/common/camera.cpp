@@ -22,23 +22,29 @@
 #include "area.hpp"
 #include "vector3d.hpp"
 
-Camera::Camera (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject(container, name)
+Camera::Camera (WorldObject * container, XmlTag * tag)
+    :WorldObject(container, "camera")
 {
-    processXmlRootNode (n);
-}
-
-void Camera::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startGraphics ();
-    startPhysics (n);
-    startInput ();
+    ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (getId());
+    ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
+    ogreCamera->setNearClipDistance (0.100);
+//    ogreCamera->setAutoAspectRatio(true);
+    log->__format (LOG_DEVELOPER, "Creating a camera");
+    positionOffset = new Vector3d (0, 0, 0);
+    targetOffset = new Vector3d (0, 0, 0);
+    positionID = 0;
+    targetID = 0;
+    isFree = false;
+    if (tag->getName() == "camera")
+    {
+        setName (     tag->getAttribute("name"));
+        *positionOffset = Vector3d (tag->getAttribute("position"));
+        *targetOffset = Vector3d (tag->getAttribute("target"));
+    }
 }
 
 Camera::~Camera ()
 {
-    stopGraphics();
-    stopInput();
     stopPhysics();
 }
 
@@ -82,14 +88,6 @@ Vector3d Camera::updateOgreTarget ()
     return Vector3d (pos.x, pos.y, pos.z);
 }
 
-void Camera::startGraphics ()
-{
-    ogreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera (getId());
-    ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
-    ogreCamera->setNearClipDistance (0.100);
-//    ogreCamera->setAutoAspectRatio(true);
-}
-
 void Camera::stepGraphics ()
 {
     updateOgreRotation();
@@ -116,63 +114,6 @@ void Camera::stepGraphics ()
         }
         ogreCamera->setFOVy (newFov);
         // ogreCamera->setLodBias (1.0);
-    }
-}
-
-void Camera::stopGraphics ()
-{
-
-}
-void Camera::startInput ()
-{
-
-}
-
-void Camera::stepInput ()
-{
-
-}
-
-void Camera::stopInput ()
-{
-
-}
-void Camera::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    log->__format (LOG_DEVELOPER, "Creating a camera");
-    positionOffset = new Vector3d (0, 0, 0);
-    targetOffset = new Vector3d (0, 0, 0);
-    positionID = 0;
-    targetID = 0;
-    isFree = false;
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "name")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                setName(attribute);
-                log->__format (LOG_CCREATOR, "Found the position name: %s", attribute.c_str());
-            }
-            if (attribute == "position")
-            {
-                assignXmlString (attribute, attNode->getValue()); 
-                log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
-                *positionOffset = Vector3d(attribute);
-            }
-            if (attribute == "target")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the target: %s", attribute.c_str());
-                *targetOffset = Vector3d(attribute);
-            }
-        }
     }
 }
 

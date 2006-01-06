@@ -32,11 +32,9 @@ class Area : public WorldObject
         std::string author;
         std::string contact;
         std::string license;
-        void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-        void processXmlCameraNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-        void Area::processXmlPartListNode(XERCES_CPP_NAMESPACE::DOMNode * partListNode);
+        void construct (XmlTag * tag);
     public:
-        Area (WorldObject * container, std::string name);
+        Area (WorldObject * container, std::string areaName);
         ~Area ();
         std::map <std::string, Location * > vehiclePositionMap;
         std::vector < Part * > partList;

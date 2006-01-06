@@ -22,11 +22,28 @@
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
 
-Suspension::Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject(container, name)
+Suspension::Suspension (WorldObject * container, XmlTag * tag)
+    :WorldObject(container, "suspension")
 {
     log->__format (LOG_CCREATOR, "Starting to parse the suspension node");
-    processXmlRootNode (n);
+    springConstant = 0;
+    dampingConstant = 0;
+    steeringAngle = 0.0;
+    position = Vector3d (0, 0, 0);
+    rotation = Quaternion (1, 0, 0, 0);
+    if (tag->getName() == "suspension.unidimensional")
+    {
+        setName (     tag->getAttribute("name"));
+        position = Vector3d (tag->getAttribute("position"));
+        rotation = Quaternion (tag->getAttribute("rotation"));
+        springConstant = stod(tag->getAttribute("springConstant"));
+        dampingConstant = stod(tag->getAttribute("dampingConstant"));
+        steeringAngle = stod(tag->getAttribute("steeringAngle"));
+    }
+    
+//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
+    dJointAttach (jointID, 0, 0);
     userDriver = false;
 }
 
@@ -38,95 +55,6 @@ Suspension::~Suspension ()
 void Suspension::setUserDriver ()
 {
     userDriver = true;
-}
-
-void Suspension::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string nodeName;
-            assignXmlString (nodeName, n->getNodeName());
-            if (nodeName == "unidimensional")
-            {
-                log->__format (LOG_CCREATOR, "Found an unidimensional suspension.");
-                if (n->hasAttributes ())
-                {
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
-                            setName(attribute);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    startPhysics (n);
-}
-void Suspension::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    springConstant = 0;
-    dampingConstant = 0;
-    steeringAngle = 0.0;
-    position = Vector3d (0, 0, 0);
-    rotation = Quaternion (1, 0, 0, 0);
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "position")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
-                position = Vector3d (attribute);
-            }
-            if (attribute == "rotation")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the rotation: %s", attribute.c_str());
-                rotation = Quaternion(attribute);
-            }
-            if (attribute == "springConstant")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the suspension spring constant: %s", attribute.c_str() );
-                springConstant = stod (attribute);
-            }
-            if (attribute == "dampingConstant")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the suspension damping constant: %s", attribute.c_str() );
-                dampingConstant = stod (attribute);
-            }
-            if (attribute == "steeringAngle")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the suspension max. steering angle: %s", attribute.c_str() );
-                steeringAngle = stod (attribute);
-            }
-        }
-    }
-    
-//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
-    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
-    dJointAttach (jointID, 0, 0);
 }
 
 void Suspension::attach (WorldObject * base, WorldObject * object)

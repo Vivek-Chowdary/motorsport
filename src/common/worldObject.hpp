@@ -13,6 +13,7 @@
 #include "log/logEngine.hpp"
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
+#include "xmlTag.hpp"
 
 //forward declatations
 class Quaternion;

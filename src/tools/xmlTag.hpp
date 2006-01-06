@@ -18,6 +18,8 @@
 class XmlTag;
 typedef std::map <std::string, std::string> XmlAttributes;
 typedef std::map <std::string, std::string>::iterator AttributesIt;
+typedef std::map <std::string, bool> XmlAttributesBool;
+typedef std::map <std::string, bool>::iterator AttributesBoolIt;
 typedef std::vector <XmlTag *> Tags;
 typedef std::vector <XmlTag *>::iterator TagsIt;
 
@@ -29,6 +31,7 @@ class XmlTag
         std::string name;
         XmlTag * parent;
         XmlAttributes attributes;
+        XmlAttributesBool attributesRead;
         Tags tags;
         LogEngine * log;
     public:

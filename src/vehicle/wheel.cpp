@@ -19,11 +19,36 @@
 #include "pedal.hpp"
 #include "vehicle.hpp"
 
-Wheel::Wheel (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass(container, name)
+Wheel::Wheel (WorldObject * container, XmlTag * tag)
+    :DriveMass(container, "wheel")
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
-    processXmlRootNode (n);
+    VehicleWheelOdeObjectData data;
+    OgreObjectData ogreData;
+    powered = 0;
+    inputAngularVel = 0.0;
+    outputAngularVel = 0.0;
+    prevAngularVel = 0.0;
+    angularAcc = 0.0;
+    inputTorqueTransfer = 0.0;
+    outputTorqueTransfer = 0.0;
+    inertia = 1.0;
+    friction = 0.1;
+    if (tag->getName() == "wheel")
+    {
+        setName (     tag->getAttribute("name"));
+        data.radius = stod(tag->getAttribute("radius"));
+        data.width = stod(tag->getAttribute("width"));
+        data.mass = stod(tag->getAttribute("mass"));
+        powered = stod(tag->getAttribute("powered"));
+        ogreData.meshPath = tag->getAttribute("mesh");
+    }
+     
+    odeObjects[getId()] = new OdeObject(this, data, getId());
+    ogreData.meshPath = getPath() + ogreData.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+    ogreObjects[getId()] = ogreObject;
+    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 
 Wheel::~Wheel ()
@@ -35,111 +60,10 @@ void Wheel::setBrakePedal (Pedal * pedal)
     brakePedal = pedal;
 }
 
-void Wheel::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "name")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_DEVELOPER, "Found the name: %s", attribute.c_str());
-                setName(attribute);
-            }
-        }
-    }
-    startPhysics (n);
-    startGraphics (n);
-    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
-}
-
 void Wheel::setUserDriver ()
 {
     userDriver = true;
 }
-void Wheel::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    OgreObjectData data;
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "mesh")
-            {
-                assignXmlString (data.meshPath, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel graphics mesh filename: %s", data.meshPath.c_str());
-            }
-        }
-    }
-    data.meshPath = getPath() + data.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, data, getId());
-    ogreObjects[getId()] = ogreObject;
-}
-
-void Wheel::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    VehicleWheelOdeObjectData data;
-    powered = 0;
-    inputAngularVel = 0.0;
-    outputAngularVel = 0.0;
-    prevAngularVel = 0.0;
-    angularAcc = 0.0;
-    inputTorqueTransfer = 0.0;
-    outputTorqueTransfer = 0.0;
-    inertia = 1.0;
-    friction = 0.1;
-     
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "radius")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel physics radius: %s", attribute.c_str() );
-                data.radius = stod (attribute);
-            }
-            if (attribute == "width")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel physics width: %s", attribute.c_str() );
-                data.width = stod (attribute);
-            }
-            if (attribute == "mass")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel physics mass: %s", attribute.c_str() );
-                data.mass = stod (attribute);
-            }
-            if (attribute == "powered")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the wheel power transmission: %s", attribute.c_str() );
-                powered = stod (attribute);
-            }
-        }
-    }
-    odeObjects[getId()] = new OdeObject(this, data, getId());
-}
-
 void Wheel::stepPhysics ()
 {
     prevAngularVel = inputAngularVel;
@@ -184,7 +108,7 @@ void Wheel::stepPhysics ()
     const dReal * odeTorque = dBodyGetTorque (baseID);
     Vector3d accumulatedTorque (odeTorque);
     // show acc torque
-    log->__format(LOG_WARNING, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
+    log->__format(LOG_DEVELOPER, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
     // compare it to our torque
     ///////////////////////////////////////////////////////////////////////
     

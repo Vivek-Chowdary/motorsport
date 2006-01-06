@@ -18,10 +18,8 @@ class FinalDrive : public DriveMass
     double finalDriveRatio;
     DriveJoint *outputJoint2; 
   public:
-    FinalDrive (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    FinalDrive (WorldObject * container, XmlTag * tag);
     ~FinalDrive ();
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stepPhysics ();
 };
 #endif

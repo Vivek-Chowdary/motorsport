@@ -11,7 +11,7 @@
     <ground
         height = "0.0"
         materialName = "groundMaterial"
-        _mesh = "ground.mesh"
+        mesh = "none"
         >
     </ground>
     <sky

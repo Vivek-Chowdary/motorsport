@@ -60,6 +60,7 @@ void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
                         {
                             assignXmlString (attribute, attNode->getValue());
                             log->__format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
+                            setName(attribute);
                         }
                         if (attribute == "description")
                         {

@@ -33,7 +33,7 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
     entity->setCastShadows(true);
     for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
     {
-        worldObject->getLog()->__format(LOG_WARNING, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
+        worldObject->getLog()->__format(LOG_CCREATOR, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
     }
     node = static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild());
     node->attachObject (entity);

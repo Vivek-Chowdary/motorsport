@@ -26,22 +26,19 @@
 #include "SDL.h"
 #include "SDL/SDL_keysym.h"
 #include "quaternion.hpp"
-#include "xmlTag.hpp"
 
-
-Vehicle::Vehicle (WorldObject * container, std::string name)
-    :WorldObject(container, name)
+Vehicle::Vehicle (WorldObject * container, std::string vehicleName)
+    :WorldObject(container, vehicleName)
 {
-    setPath(Paths::vehicle(name));
-    setXmlPath(Paths::vehicleXml(name));
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "vehicles." + name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath()+"skybox.zip","Zip","vehicles."+name);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles." + name);
+    setPath(Paths::vehicle(vehicleName));
+    setXmlPath(Paths::vehicleXml(vehicleName));
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "vehicles." + vehicleName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath()+"skybox.zip","Zip","vehicles."+vehicleName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("vehicles." + vehicleName);
 
-    log->loadscreen (LOG_ENDUSER, "Starting to load a vehicle (%s)", getXmlPath().c_str());
-    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+    XmlTag * tag = new XmlTag (getXmlPath());
+    construct (tag);
+    delete tag;
 
     userDriver = false;
 }
@@ -121,149 +118,73 @@ void Vehicle::setUserDriver ()
     }
 }
 
-void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+void Vehicle::construct (XmlTag * tag)
 {
-    description = "None";
-    author = "Anonymous";
-    contact = "None";
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
-    DOMNode * bodyNode = 0;
-    DOMNode * engineNode = 0;
-    DOMNode * clutchNode = 0;
-    DOMNode * gearboxNode = 0;
-    DOMNode * finalDriveNode = 0;
-    DOMNode * wheelListNode = 0;
-    DOMNode * suspListNode = 0; //suspension
-    DOMNode * cameraListNode = 0;
-    DOMNode * pedalListNode = 0;
-
-    if (n)
+    if (tag->getName() == "vehicle")
     {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        setName (     tag->getAttribute("name"));
+        description = tag->getAttribute("description");
+        author =      tag->getAttribute("author");
+        contact =     tag->getAttribute("contact");
+        license =     tag->getAttribute("license");
+
+        rearDiff   = new LSD        (this);
+        transfer   = new Gear       (this);
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            std::string nodeName;
-            assignXmlString (nodeName, n->getNodeName());
-            if (nodeName == "vehicle")
+            if (t->getName() == "body")       body       = new Body       (this, t);
+            //if (t->getName() == "body.path")  body       = new Body       (this, t->getAttribute("path"));
+            if (t->getName() == "engine")     engine     = new Engine     (this, t);
+            if (t->getName() == "clutch")     clutch     = new Clutch     (this, t);
+            if (t->getName() == "gearbox")    gearbox    = new Gearbox    (this, t);
+            if (t->getName() == "finalDrive") finalDrive = new FinalDrive (this, t);
+            if (t->getName() == "pedalList")
             {
-                log->__format (LOG_CCREATOR, "Found a vehicle.");
-                if (n->hasAttributes ())
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
                 {
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
+                    if (u->getName() == "pedal")
                     {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "position")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the position: %s", attribute.c_str());
-                            Vector3d position(attribute);
-                        }
-                        if (attribute == "name")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
-                            setName(attribute);
-                        }
-                        if (attribute == "description")
-                        {
-                            assignXmlString (description, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the description: %s", description.c_str());
-                        }
-                        if (attribute == "author")
-                        {
-                            assignXmlString (author, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the author: %s", author.c_str());
-                        }
-                        if (attribute == "contact")
-                        {
-                            assignXmlString (contact, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the author contact information: %s", contact.c_str());
-                        }
-                        if (attribute == "license")
-                        {
-                            assignXmlString (license, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the license: %s", license.c_str());
-                        }
+                        Pedal * tmp = new Pedal (this, u);
+                        pedalMap[tmp->getName()] = tmp;
                     }
                 }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
+            }
+            if (t->getName() == "wheelList")
+            {
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
                 {
-                    if (n)
+                    if (u->getName() == "wheel")
                     {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (nodeName, n->getNodeName());
-                            if (nodeName == "body")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a body.");
-                                bodyNode = n;
-                            }
-                            if (nodeName == "engine")
-                            {
-                                log->__format (LOG_CCREATOR, "Found an engine.");
-                                engineNode = n;
-                            }
-                            if (nodeName == "clutch")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a clutch.");
-                                clutchNode = n;
-                            }
-                            if (nodeName == "gearbox")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a gearbox.");
-                                gearboxNode = n;
-                            }
-                            if (nodeName == "diff")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a diff.");
-                                finalDriveNode = n;
-                            }
-                            if (nodeName == "wheelList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a wheel list.");
-                                wheelListNode = n;
-                            }
-                            if (nodeName == "pedalList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a pedal list.");
-                                pedalListNode = n;
-                            }
-                            if (nodeName == "suspensionList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a suspension list.");
-                                suspListNode = n;
-                            }
-                            if (nodeName == "cameraList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a camera list.");
-                                cameraListNode = n;
-                            }
-                        }
+                        Wheel * tmp = new Wheel (this, u);
+                        wheelMap[tmp->getName()] = tmp;
+                    }
+                }
+            }
+            if (t->getName() == "suspensionList")
+            {
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
+                {
+                    if (u->getName() == "suspension.unidimensional")
+                    {
+                        Suspension * tmp = new Suspension (this, u);
+                        suspensionMap[tmp->getName()] = tmp;
+                    }
+                }
+            }
+            if (t->getName() == "cameraList")
+            {
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
+                {
+                    if (u->getName() == "camera")
+                    {
+                        Camera * tmp = new Camera(this, u);
+                        cameraList.push_back(tmp);
                     }
                 }
             }
         }
     }
 
-    log->loadscreen (LOG_CCREATOR, "Creating the vehicle cameras");
-    processXmlCameraListNode(cameraListNode);
-
-    log->loadscreen (LOG_CCREATOR, "Creating the vehicle components");
-    
-    processXmlPedalListNode(pedalListNode);
-
-    body = new Body (this, "Body", bodyNode);
-    engine = new Engine (this, "Engine", engineNode);
-    clutch = new Clutch (this, "Clutch", clutchNode);
-    gearbox = new Gearbox (this, "Gearbox", gearboxNode);
-    finalDrive = new FinalDrive (this, "FinalDrive", finalDriveNode);
-    transfer = new Gear (this, "Transfer");
-    rearDiff = new LSD (this, "RearDiff");
-    
-    log->loadscreen (LOG_CCREATOR, "Attaching the vehicle components together");
     clutch->setOutputPointer(gearbox);
     transfer->setOutputPointer(finalDrive);
     
@@ -271,8 +192,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     transfer->setInputPointer(gearbox);
     rearDiff->setInputPointer(finalDrive);
         
-    processXmlSuspensionListNode(suspListNode);
-    processXmlWheelListNode(wheelListNode);
     placeWheelsOnSuspensions();
     boltWheelsToSuspensions();
 
@@ -284,6 +203,7 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     std::map < std::string, Wheel * >::const_iterator wheelIter;
     for (wheelIter=wheelMap.begin(); wheelIter != wheelMap.end(); wheelIter++)
     {
+        wheelIter->second->setRefBody(body->getMainOdeObject()->getBodyID());
         wheelIter->second->setBrakePedal(pedalMap["brakePedal"]);;
     }
 
@@ -296,94 +216,6 @@ void Vehicle::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
     gearbox->setGear(2);
 
     stepGraphics();
-}
-
-void Vehicle::processXmlPedalListNode(DOMNode * pedalListNode)
-{
-    if (pedalListNode != 0)
-    {
-        DOMNode * pedalNode;
-        for (pedalNode = pedalListNode->getFirstChild (); pedalNode != 0; pedalNode = pedalNode->getNextSibling ())
-        {
-            if (pedalNode->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string nodeName;
-                assignXmlString (nodeName, pedalNode->getNodeName());
-                if (nodeName == "pedal")
-                {
-                    log->__format (LOG_CCREATOR, "Found a pedal.");
-                    Pedal * tmpPedal = new Pedal (this, "Pedal", pedalNode);
-                    pedalMap[tmpPedal->getName()]=tmpPedal;
-                }
-            }
-        }
-    }
-}
-void Vehicle::processXmlWheelListNode(DOMNode * wheelListNode)
-{
-    if (wheelListNode != 0)
-    {
-        DOMNode * wheelNode;
-        for (wheelNode = wheelListNode->getFirstChild (); wheelNode != 0; wheelNode = wheelNode->getNextSibling ())
-        {
-            if (wheelNode->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string nodeName;
-                assignXmlString (nodeName, wheelNode->getNodeName());
-                if (nodeName == "wheel")
-                {
-                    log->__format (LOG_CCREATOR, "Found a wheel.");
-                    Wheel * tmpWheel = new Wheel (this, "Wheel", wheelNode);
-                    wheelMap[tmpWheel->getName()]=tmpWheel;
-                    tmpWheel->setRefBody(body->getMainOdeObject()->getBodyID());
-                }
-            }
-        }
-    }
-}
-
-void Vehicle::processXmlSuspensionListNode(DOMNode * suspListNode)
-{
-    if (suspListNode != 0)
-    {
-        DOMNode * suspNode;
-        for (suspNode = suspListNode->getFirstChild (); suspNode != 0; suspNode = suspNode->getNextSibling ())
-        {
-            if (suspNode->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string nodeName;
-                assignXmlString (nodeName, suspNode->getNodeName());
-                if (nodeName == "unidimensional")
-                {
-                    log->__format (LOG_CCREATOR, "Found a suspension.");
-                    Suspension * tmpSusp = new Suspension (this, "Suspensions", suspNode);
-                    suspensionMap[tmpSusp->getName()]=tmpSusp;
-                }
-            }
-        }
-    }
-}
-
-void Vehicle::processXmlCameraListNode(DOMNode * cameraListNode)
-{
-    if (cameraListNode != 0)
-    {
-        DOMNode * cameraNode;
-        for (cameraNode = cameraListNode->getFirstChild (); cameraNode != 0; cameraNode = cameraNode->getNextSibling ())
-        {
-            if (cameraNode->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string nodeName;
-                assignXmlString (nodeName, cameraNode->getNodeName());
-                if (nodeName == "camera")
-                {
-                    log->__format (LOG_CCREATOR, "Found a camera.");
-                    Camera * tmpCam = new Camera (this, "Camera", cameraNode);
-                    cameraList.push_back (tmpCam);
-                }
-            }
-        }
-    }
 }
 
 void Vehicle::stepGraphics ()
@@ -524,6 +356,7 @@ void Vehicle::stepPhysics ()
     for (int i = 0; i<freq; i++){
 // higher rate code continues below... */
     // step torque transfer components first
+
     clutch->stepPhysics();
     transfer->stepPhysics();
     rearDiff->stepPhysics();

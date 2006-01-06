@@ -15,23 +15,8 @@
 #include "ode/ode.h"
 #include "SDL/SDL_keysym.h"
 
-FinalDrive::FinalDrive (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :DriveMass(container, name)
-{
-    log->__format (LOG_CCREATOR, "Starting to parse a FinalDrive Mass node");
-    processXmlRootNode (n);
-}
-
-FinalDrive::~FinalDrive ()
-{
-}
-
-
-void FinalDrive::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-}
-void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
+FinalDrive::FinalDrive (WorldObject * container, XmlTag * tag)
+    :DriveMass(container, "finalDrive")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -42,37 +27,17 @@ void FinalDrive::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     inertia = 0.1;
     friction = 0.001;
     
-    if (n->hasAttributes ())
+    if (tag->getName() == "finalDrive")
     {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "diffFriction")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the differential friction: %s", attribute.c_str() );
-                friction = stod (attribute);
-            }
-            if (attribute == "diffInertia")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the differential inertia: %s", attribute.c_str() );
-                inertia = stod (attribute);
-            }
-            if (attribute == "finalDriveRatio")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the final drive ratio: %s", attribute.c_str() );
-                finalDriveRatio = stod (attribute);
-            }
-        }
+        setName (     tag->getAttribute("name"));
+        friction = stod (tag->getAttribute("diffFriction"));
+        inertia = stod (tag->getAttribute("diffInertia"));
+        finalDriveRatio = stod (tag->getAttribute("finalDriveRatio"));
     }
+}
+
+FinalDrive::~FinalDrive ()
+{
 }
 
 void FinalDrive::stepPhysics ()

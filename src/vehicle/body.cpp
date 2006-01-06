@@ -20,101 +20,26 @@
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
 
-Body::Body (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n)
-    :WorldObject(container, name)
+Body::Body (WorldObject * container, XmlTag * tag)
+    :WorldObject(container, "body")
 {
-    processXmlRootNode (n);
-}
-
-Body::~Body ()
-{
-}
-
-
-void Body::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    startPhysics (n);
-    startGraphics (n);
-    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
-}
-void Body::startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    OgreObjectData data;
-    log->__format (LOG_CCREATOR, "Body thingy gfx about to be parsed");
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "mesh")
-            {
-                assignXmlString (data.meshPath, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body graphics mesh filename: %s", data.meshPath.c_str());
-            }
-        }
-    }
-    log->__format (LOG_CCREATOR, "Body thingy gfx parsed!");
-    data.meshPath = getPath() + data.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, data, getId());
-    ogreObjects[getId()] = ogreObject;
-}
-
-void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    VehicleBodyOdeObjectData data;
     dragCoefficient = 0.3;
     frontalArea = 0;
-    if (n->hasAttributes ())
+    VehicleBodyOdeObjectData data;
+    OgreObjectData ogreData;
+
+    if (tag->getName() == "body")
     {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "length")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body physics length: %s", attribute.c_str() );
-                data.length = stod (attribute);
-            }
-            if (attribute == "width")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body physics width: %s", attribute.c_str() );
-                data.width = stod (attribute);
-            }
-            if (attribute == "height")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body physics height: %s", attribute.c_str() );
-                data.height = stod (attribute);
-            }
-            if (attribute == "mass")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body physics mass: %s", attribute.c_str() );
-                data.mass = stod (attribute);
-            }
-            if (attribute == "frontalArea")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body frontal area: %s", attribute.c_str() );
-                frontalArea = stod (attribute);
-            }
-            if (attribute == "dragCoefficient")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the body drag coefficient: %s", attribute.c_str() );
-                dragCoefficient = stod (attribute);
-            }
-        }
+        setName (     tag->getAttribute("name"));
+        data.length = stod (tag->getAttribute("length"));
+        data.width = stod (tag->getAttribute("width"));
+        data.height = stod (tag->getAttribute("height"));
+        data.mass = stod (tag->getAttribute("mass"));
+        frontalArea = stod (tag->getAttribute("frontalArea"));
+        dragCoefficient = stod (tag->getAttribute("dragCoefficient"));
+        ogreData.meshPath = tag->getAttribute("mesh");
     }
+
     odeObjects[getId()] = new OdeObject(this, data, getId());
 
     // set the air drag variables correctly
@@ -122,6 +47,18 @@ void Body::startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n)
     {
         frontalArea = data.width * data.height * 0.6;
     }
+
+    /////////////////////////////////////////////////////////////////////
+    ogreData.meshPath = getPath() + ogreData.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+    ogreObjects[getId()] = ogreObject;
+
+    ///////////////////////////////////////////////////////////////////////////
+    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
+}
+
+Body::~Body ()
+{
 }
 
 void Body::stepPhysics ()

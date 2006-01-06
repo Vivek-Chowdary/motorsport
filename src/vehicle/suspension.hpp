@@ -35,11 +35,9 @@ class Suspension : public WorldObject
     double dampingConstant;
     double steeringAngle;
     bool userDriver;
-    void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void stopPhysics ();
   public:
-    Suspension (WorldObject * container, std::string name, XERCES_CPP_NAMESPACE::DOMNode * n);
+    Suspension (WorldObject * container, XmlTag * tag);
     ~Suspension ();
     void attach (WorldObject * base, WorldObject * object);
     void setUserDriver ();

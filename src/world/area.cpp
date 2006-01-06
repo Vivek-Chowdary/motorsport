@@ -22,20 +22,17 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
-Area::Area (WorldObject * container, std::string name)
-    :WorldObject(container, name)
+Area::Area (WorldObject * container, std::string areaName)
+    :WorldObject(container, areaName)
 {
-    setPath(Paths::area(name));
-    setXmlPath(Paths::areaXml(name));
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "areas." + name);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath() + "skybox.zip", "Zip", "areas."+name);
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("areas." + name);
-    log->loadscreen (LOG_ENDUSER, "Starting to load a area (%s)", getXmlPath().c_str());
-    double time = SDL_GetTicks()/1000.0;
-    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
-    log->loadscreen (LOG_ENDUSER, "Finished loading a area (%s). %f seconds.", getXmlPath().c_str(), (SDL_GetTicks()/1000.0 - time));
+    setPath(Paths::area(areaName));
+    setXmlPath(Paths::areaXml(areaName));
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "areas." + areaName);
+    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath() + "skybox.zip", "Zip", "areas."+areaName);
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("areas." + areaName);
+    XmlTag * tag = new XmlTag (getXmlPath());
+    construct (tag);
+    delete tag;
 }
 
 Area::~Area ()
@@ -59,12 +56,8 @@ Area::~Area ()
     cameraList.clear ();
 }
 
-void Area::processXmlRootNode (DOMNode * n)
+void Area::construct (XmlTag * tag)
 {
-    description = "None";
-    author = "Anonymous";
-    contact = "None";
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
     Vector3d checkpointPosition (0, 0, 0);
     double checkpointRadius = 5;
     double groundHeight = 0.0;
@@ -73,185 +66,69 @@ void Area::processXmlRootNode (DOMNode * n)
     std::string skyMaterialName = "skyboxMaterial";
     double skyDistance = 5000.0;
     bool skyDrawFirst = true;
-    DOMNode * partListNode = 0;
-    if (n)
+
+    if (tag->getName() == "area")
     {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        setName (     tag->getAttribute("name"));
+        description = tag->getAttribute("description");
+        author =      tag->getAttribute("author");
+        contact =     tag->getAttribute("contact");
+        license =     tag->getAttribute("license");
+        checkpointPosition = Vector3d (tag->getAttribute("checkpointPosition"));
+        checkpointRadius = stod(tag->getAttribute("checkpointRadius"));
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            std::string nodeName;
-            assignXmlString (nodeName, n->getNodeName());
-            if (nodeName == "area")
+            if (t->getName() == "ground")
             {
-                log->__format (LOG_CCREATOR, "Found a area.");
-                if (n->hasAttributes ())
+                groundHeight = stod (t->getAttribute("height"));
+                groundMaterialName = t->getAttribute("materialName");
+                mesh = t->getAttribute("mesh");
+            }
+            if (t->getName() == "sky")
+            {
+                skyMaterialName = t->getAttribute("materialName");
+                skyDistance = stod(t->getAttribute("distance"));
+                skyDrawFirst = stob (t->getAttribute("drawFirst"));
+            }
+            if (t->getName() == "parts")
+            {
+                Vector3d position(0,0,0);
+                Quaternion rotation(1,0,0,0);
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
                 {
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
+                    position = Vector3d (u->getAttribute("position"));
+                    rotation = Quaternion (u->getAttribute("rotation"));
+                    Part * tmp = new Part (this, u->getName());
+                    tmp->setPosition (position);
+                    tmp->setRotation (rotation);
+                    partList.push_back (tmp);
+                    tmp->stepGraphics();
+                }
+            }
+            if (t->getName() == "vehiclePositionList")
+            {
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
+                {
+                    if (u->getName() == "vehicle")
                     {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
-                            setName(attribute);
-                        }
-                        if (attribute == "description")
-                        {
-                            assignXmlString (description, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the description: %s", description.c_str());
-                        }
-                        if (attribute == "author")
-                        {
-                            assignXmlString (author, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the author: %s", author.c_str());
-                        }
-                        if (attribute == "contact")
-                        {
-                            assignXmlString (contact, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the contact information: %s", contact.c_str());
-                        }
-                        if (attribute == "license")
-                        {
-                            assignXmlString (license, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the license: %s", license.c_str());
-                        }
-                        if (attribute == "checkpointPosition")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the checkpoint position: %s", attribute.c_str());
-                            checkpointPosition = Vector3d (attribute);
-                        }
-                        if (attribute == "checkpointRadius")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the checkpoint radius: %s", attribute.c_str());
-                            checkpointRadius = stod (attribute);
-                        }
+                        Location * tmp = new Location (u);
+                        vehiclePositionMap[tmp->getName()] = tmp;
                     }
                 }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
+            }
+            if (t->getName() == "cameraList")
+            {
+                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
                 {
-                    if (n)
+                    if (u->getName() == "camera")
                     {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (nodeName, n->getNodeName());
-                            if (nodeName == "ground")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a area ground.");
-                                if (n->hasAttributes ())
-                                {
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "height")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the ground height: %s", attribute.c_str());
-                                            groundHeight = stod (attribute);
-                                        }
-                                        if (attribute == "materialName")
-                                        {
-                                            assignXmlString (groundMaterialName, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the ground material name: %s", groundMaterialName.c_str());
-                                        }
-                                        if (attribute == "mesh")
-                                        {
-                                            assignXmlString (mesh, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the ground mesh file name: %s", mesh.c_str());
-                                        }
-                                    }
-                                }
-                            }
-                            if (nodeName == "sky")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a area sky.");
-                                if (n->hasAttributes ())
-                                {
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "materialName")
-                                        {
-                                            assignXmlString (skyMaterialName, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the sky material name: %s", skyMaterialName.c_str());
-                                        }
-                                        if (attribute == "distance")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the sky distance: %s", attribute.c_str());
-                                            skyDistance = stod (attribute);
-                                        }
-                                        if (attribute == "drawFirst")
-                                        {
-                                            assignXmlString (attribute, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found whether to draw the sky first: %s", attribute.c_str());
-                                            skyDrawFirst = stob (attribute);
-                                        }
-                                    }
-                                }
-                            }
-                            if (nodeName == "parts")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a list of area parts.");
-                                partListNode = n;
-                            }
-                            if (nodeName == "vehiclePositionList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a list of vehicle positions.");
-                                DOMNode * n2;
-                                for (n2 = n->getFirstChild (); n2 != 0; n2 = n2->getNextSibling ())
-                                {
-                                    if (n2->getNodeType () == DOMNode::ELEMENT_NODE)
-                                    {
-                                        std::string node2Name;
-                                        assignXmlString (node2Name, n2->getNodeName());
-                                        if (node2Name == "vehicle")
-                                        {
-                                            log->__format (LOG_CCREATOR, "Found a vehicle position.");
-                                            Location * tmpVehicle = new Location (n2);
-                                            vehiclePositionMap[tmpVehicle->getName()] = tmpVehicle;
-                                        }
-                                    }
-                                }
-                            }
-                            if (nodeName == "cameraList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a list of cameras.");
-                                DOMNode* n2;
-                                for (n2 = n->getFirstChild (); n2 != 0; n2 = n2->getNextSibling ())
-                                {
-                                    if (n2->getNodeType () == DOMNode::ELEMENT_NODE)
-                                    {
-                                        std::string node2Name;
-                                        assignXmlString (node2Name, n2->getNodeName());
-                                        if (node2Name == "camera")
-                                        {
-                                            log->__format (LOG_CCREATOR, "Found a camera.");
-                                            Camera * tmpCam = new Camera (this, "Camera", n2);
-                                            cameraList.push_back (tmpCam);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        Camera * tmp = new Camera (this, u);
+                        cameraList.push_back(tmp);
                     }
                 }
             }
         }
     }
-    processXmlPartListNode(partListNode);
 
     log->loadscreen (LOG_CCREATOR, "Creating the area ground");
 
@@ -306,54 +183,8 @@ void Area::processXmlRootNode (DOMNode * n)
     dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);
     dGeomSetBody (checkpointID, 0);
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
-    
 }
 
-void Area::processXmlPartListNode(DOMNode * partListNode)
-{
-    log->loadscreen (LOG_CCREATOR, "Creating area parts");
-    // parse individual parts
-    DOMNode * partNode;
-    for (partNode = partListNode->getFirstChild (); partNode != 0; partNode = partNode->getNextSibling ())
-    {
-        if (partNode->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string nodeName;
-            assignXmlString (nodeName, partNode->getNodeName());
-            log->__format (LOG_CCREATOR, "Found a part of type \"%s\".", nodeName.c_str());
-            Vector3d position(0, 0, 0);
-            Quaternion rotation(0, 0, 0);
-            if (partNode->hasAttributes ())
-            {
-                DOMNamedNodeMap *attList = partNode->getAttributes ();
-                int nSize = attList->getLength ();
-                for (int i = 0; i < nSize; ++i)
-                {
-                    DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                    std::string attribute;
-                    assignXmlString (attribute, attNode->getName());
-                    if (attribute == "position")
-                    {
-                        assignXmlString (attribute, attNode->getValue());
-                        log->__format (LOG_CCREATOR, "Found the part position: %s", attribute.c_str());
-                        position = Vector3d (attribute);
-                    }
-                    if (attribute == "rotation")
-                    {
-                        assignXmlString (attribute, attNode->getValue());
-                        log->__format (LOG_CCREATOR, "Found the part rotation: %s", attribute.c_str());
-                        rotation = Quaternion (attribute);
-                    }
-                }
-            }
-            Part * partPointer = new Part (this, nodeName);
-            partPointer->setPosition (position);
-            partPointer->setRotation (rotation);
-            partList.push_back (partPointer);
-            partPointer->stepGraphics();
-        }
-    }
-}
 void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);
