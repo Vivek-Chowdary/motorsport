@@ -28,8 +28,8 @@ class World : public WorldObject
     Camera * activeCamera;
     int activeAreaCameraIndex;
     int activeVehicleCameraIndex;
-    void processXmlRootNode(XERCES_CPP_NAMESPACE::DOMNode * n);
-    void World::processXmlVehicleListNode (XERCES_CPP_NAMESPACE::DOMNode * vehicleListNode);
+    void processXmlVehicleListNode (XmlTag * tag);
+    void processXmlRootNode (XmlTag * tag);
   public:
     static World *getWorldPointer ();
     World (WorldObject * container, std::string name);

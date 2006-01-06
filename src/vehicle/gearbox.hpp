@@ -8,12 +8,9 @@
 \*****************************************************************************/
 
 #ifndef GEARBOX_HPP
-#   define GEARBOX_HPP
-#   include <string>
-#   include <map>
-#   include "driveMass.hpp"
-#   include "wheel.hpp"
-#   include "tools/xercesc_fwd.hpp"
+#define GEARBOX_HPP
+#include "driveMass.hpp"
+#include "wheel.hpp"
 
 class GearboxGear : public WorldObject
 {

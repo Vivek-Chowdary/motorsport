@@ -7,8 +7,6 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
 #include "pedal.hpp"
 #include "engine.hpp"
 #include "world.hpp"

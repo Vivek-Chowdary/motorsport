@@ -8,7 +8,6 @@
 \*****************************************************************************/
 
 #include "location.hpp"
-#include "xmlParser.hpp"
 #include "logEngine.hpp"
 
 Location::Location (XmlTag * tag)

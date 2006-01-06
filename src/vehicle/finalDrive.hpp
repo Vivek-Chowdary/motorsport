@@ -8,9 +8,8 @@
 \*****************************************************************************/
 
 #ifndef FINALDRIVE_HPP
-#   define FINALDRIVE_HPP
-#   include "driveMass.hpp"
-#   include "tools/xercesc_fwd.hpp"
+#define FINALDRIVE_HPP
+#include "driveMass.hpp"
 
 class FinalDrive : public DriveMass
 {

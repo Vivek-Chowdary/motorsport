@@ -12,7 +12,6 @@
 #include "ode/objects.h"
 #include "driveJoint.hpp"
 #include "worldObject.hpp"
-#include "tools/xercesc_fwd.hpp"
 
 class DriveJoint;
 

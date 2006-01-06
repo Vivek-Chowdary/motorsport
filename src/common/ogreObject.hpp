@@ -9,7 +9,6 @@
 
 #ifndef OGREOBJECT_HPP
 #define OGREOBJECT_HPP
-#include "tools/xercesc_fwd.hpp"
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
 #include <map>

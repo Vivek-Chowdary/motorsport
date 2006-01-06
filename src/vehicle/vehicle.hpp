@@ -9,8 +9,6 @@
 
 #ifndef VEHICLE_HPP
 #define VEHICLE_HPP
-#include <string>
-#include <map>
 #include <vector>
 #include "worldObject.hpp"
 #include "ode/objects.h"

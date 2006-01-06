@@ -8,8 +8,6 @@
 \*****************************************************************************/
 
 #include "engine.hpp"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"

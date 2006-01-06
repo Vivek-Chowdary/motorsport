@@ -9,10 +9,8 @@
 
 #ifndef DRIVEJOINT_HPP
 #define DRIVEJOINT_HPP
-#include "ode/objects.h"
 #include "driveMass.hpp"
 #include "worldObject.hpp"
-#include "tools/xercesc_fwd.hpp"
 
 class DriveMass;
 class Pedal;

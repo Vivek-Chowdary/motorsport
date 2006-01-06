@@ -8,8 +8,6 @@
 \*****************************************************************************/
 
 #include "driveJoint.hpp"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
@@ -170,20 +168,16 @@ void Gear::stepPhysics ()
   if(enabled) {
     double dt;
     dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
-    log->__format(LOG_DEVELOPER, "testttttttttt");
     prevRelAngle = relAngle;
     prevRelAngularVel = relAngularVel;
-    log->__format(LOG_DEVELOPER, "testttttttttt");
 
     relAngularVel = inputDrive->getOutputAngularVel()/ratio - outputDrive->getInputAngularVel();
 
-    log->__format(LOG_DEVELOPER, "testttttttttt");
     // trapezoidal integration
     relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
 
 //    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
     
-    log->__format(LOG_DEVELOPER, "testttttttttt");
     outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
         
     inputTorqueTransfer = -1*outputTorqueTransfer/ratio;

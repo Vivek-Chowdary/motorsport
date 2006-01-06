@@ -11,8 +11,6 @@
 #include "vehicle.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
 #include "body.hpp"
 #include "engine.hpp"
 #include "driveJoint.hpp"

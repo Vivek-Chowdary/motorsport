@@ -4,8 +4,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://motorsport-sim.org mainConfig.xsd"
 
-    localLogLevel = "LOG_DEVELOPER"
-    localLogName = "MainApp"
     _videoRecordTimestep = "40" _="1000 / 40 = 25 frames per second"
     videoRecordTimestep = "0"
     dataDir="../data"

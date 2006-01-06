@@ -9,11 +9,12 @@
 
 #ifndef WORLDOBJECT_HPP
 #define WORLDOBJECT_HPP
-#include "tools/xercesc_fwd.hpp"
-#include "log/logEngine.hpp"
+#include "logEngine.hpp"
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
 #include "xmlTag.hpp"
+#include <string>
+#include <map>
 
 //forward declatations
 class Quaternion;

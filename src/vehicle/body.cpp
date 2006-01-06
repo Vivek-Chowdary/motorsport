@@ -8,10 +8,8 @@
 \*****************************************************************************/
 
 #include "body.hpp"
-#include "xmlParser.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "log/logEngine.hpp"
 #include "system.hpp"
 #include "world.hpp"
 #include "axis.hpp"

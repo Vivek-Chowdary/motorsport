@@ -9,7 +9,6 @@
 
 #ifndef ODEOBJECT_HPP
 #define ODEOBJECT_HPP
-#include "tools/xercesc_fwd.hpp"
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
 #include "ode/objects.h"

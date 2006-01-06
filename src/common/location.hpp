@@ -9,7 +9,6 @@
 
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
-#include "tools/xercesc_fwd.hpp"
 #include "vector3d.hpp"
 #include <string>
 #include "quaternion.hpp"

@@ -12,8 +12,6 @@
 #include "ode/objects.h"
 #include "driveMass.hpp"
 #include "worldObject.hpp"
-#include "tools/xercesc_fwd.hpp"
-#include <string>
 #include "paths.hpp"
 
 //forward declarations

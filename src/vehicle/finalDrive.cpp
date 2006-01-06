@@ -8,8 +8,6 @@
 \*****************************************************************************/
 
 #include "finalDrive.hpp"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
 #include "world.hpp"
 #include "system.hpp"
 #include "ode/ode.h"

@@ -11,7 +11,7 @@
 #include "vehicle.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "tools/xmlParser.hpp"
+#include "xmlTag.hpp"
 #include "area.hpp"
 #include "log/logEngine.hpp"
 #include "ode/ode.h"
@@ -45,11 +45,9 @@ World::World (WorldObject * container, std::string name)
         setPath(Paths::world(name));
         setXmlPath(Paths::worldXml(name));
         log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
-        double time = SDL_GetTicks()/1000.0;
-        XmlFile* xmlFile = new XmlFile (getXmlPath().c_str());
-        processXmlRootNode (xmlFile->getRootNode());
-        delete xmlFile;
-        log->loadscreen (LOG_ENDUSER, "Finished loading the world (%s). %f seconds.", getXmlPath().c_str(), SDL_GetTicks()/1000.0 - time);
+        XmlTag * tag = new XmlTag (getXmlPath().c_str());
+        processXmlRootNode (tag);
+        delete tag;
     }
 }
 
@@ -86,108 +84,37 @@ World::~World ()
 }
 
 
-void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
+void World::processXmlRootNode (XmlTag * tag)
 {
     description = "none";
     double gravityX = 0.0;
     double gravityY = 0.0;
     double gravityZ = 0.0;
-    DOMNode * vehicleListNode = NULL;
+    XmlTag * vehicleListTag = NULL;
     bool useAreaCamera = true;    //if false, use vehicle camera
     std::string areaDirectory = "testingGround";
-    if (n)
+
+    if (tag->getName() == "world")
     {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
+        setName(tag->getAttribute("name"));
+        description = tag->getAttribute("description");
+        useAreaCamera = stob(tag->getAttribute("useAreaCamera"));
+        gravityX = stod(tag->getAttribute("gravityX"));
+        gravityY = stod(tag->getAttribute("gravityY"));
+        gravityZ = stod(tag->getAttribute("gravityZ"));
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            if (name == "world")
+            if (t->getName() == "vehicleList")
             {
-                log->__format (LOG_CCREATOR, "Found a world.");
-                if (n->hasAttributes ())
-                {
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the world name: %s", attribute.c_str());
-                            setName(attribute);
-                        }
-                        if (attribute == "description")
-                        {
-                            assignXmlString (description, attNode->getValue());
-                            log->loadscreen (LOG_CCREATOR, "Found the world description: %s", description.c_str());
-                        }
-                        if (attribute == "useAreaCamera")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            useAreaCamera = stob (attribute);
-                            log->__format (LOG_CCREATOR, "Found the selected world camera: %s camera", attribute.c_str());
-                        }
-                        if (attribute == "gravityX")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            gravityX = stod (attribute);
-                            log->__format (LOG_CCREATOR, "Found the world gravity X module: %s m/s^2", attribute.c_str());
-                        }
-                        if (attribute == "gravityY")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            gravityY = stod (attribute);
-                            log->__format (LOG_CCREATOR, "Found the world gravity Y module: %s m/s^2", attribute.c_str());
-                        }
-                        if (attribute == "gravityZ")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            gravityZ = stod (attribute);
-                            log->__format (LOG_CCREATOR, "Found the world gravity Z module: %s m/s^2", attribute.c_str());
-                        }
-                    }
-                }
-                for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-                {
-                    if (n)
-                    {
-                        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-                        {
-                            assignXmlString (name, n->getNodeName());
-                            if (name == "vehicleList")
-                            {
-                                log->__format (LOG_CCREATOR, "Found the vehicle list");
-                                vehicleListNode = n;
-                            }
-                            if (name == "area")
-                            {
-                                log->__format (LOG_CCREATOR, "Found a area");
-                                if (n->hasAttributes ())
-                                {
-                                    DOMNamedNodeMap *attList = n->getAttributes ();
-                                    int nSize = attList->getLength ();
-                                    for (int i = 0; i < nSize; ++i)
-                                    {
-                                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                                        std::string attribute;
-                                        assignXmlString (attribute, attNode->getName());
-                                        if (attribute == "directory")
-                                        {
-                                            assignXmlString (areaDirectory, attNode->getValue());
-                                            log->__format (LOG_CCREATOR, "Found the area directory: %s", areaDirectory.c_str());
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                vehicleListTag = t;
+            }
+            if (t->getName() == "area")
+            {
+                areaDirectory = t->getAttribute("directory");
             }
         }
     }
+    
     log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
     log->loadscreen (LOG_DEVELOPER, "Creating ODE world");
     dRandSetSeed(0);
@@ -219,7 +146,7 @@ void World::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
 
     // load all vehicles
     log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
-    processXmlVehicleListNode (vehicleListNode);
+    processXmlVehicleListNode (vehicleListTag);
 
     // initialize cameras (pointing to car 0 by default)
     for (unsigned int i=0; i< areaList[0]->cameraList.size(); i++)
@@ -280,50 +207,21 @@ int World::getActiveVehicleCameraIndex()
     return camNumber;
 }
 
-void World::processXmlVehicleListNode (DOMNode * vehicleListNode)
+void World::processXmlVehicleListNode (XmlTag * tag)
 {
-    if (vehicleListNode != 0)
+    if (tag->getName() == "vehicleList")
     {
-        log->__format (LOG_CCREATOR, "Processing vehicle list");
-        DOMNode * vNode;
-        for (vNode = vehicleListNode->getFirstChild (); vNode != 0; vNode = vNode->getNextSibling ())
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            std::string name;
-            assignXmlString (name, vNode->getNodeName());
-            int nVehicles = 0;
-            if (name == "vehicle")
+            if (t->getName() == "vehicle")
             {
-                nVehicles++;
-                log->__format (LOG_CCREATOR, "Found vehicle #%i", nVehicles);
                 std::string vehicleDirectory = "mosp1";
                 std::string vehicleStartPosition = "grid01";   //first 'grid' position
                 std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
-                if (vNode->hasAttributes ())
-                {
-                    DOMNamedNodeMap *attList = vNode->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "directory")
-                        {
-                            assignXmlString (vehicleDirectory, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the vehicle directory: %s", vehicleDirectory.c_str());
-                        }
-                        if (attribute == "driver")
-                        {
-                            assignXmlString (driver, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the vehicle driver: %s", driver.c_str());
-                        }
-                        if (attribute == "startPosition")
-                        {
-                            assignXmlString (vehicleStartPosition, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the vehicle start position index: %s", vehicleStartPosition.c_str());
-                        }
-                    }
-                }
+                vehicleDirectory = t->getAttribute("directory");
+                driver = t->getAttribute("driver");
+                vehicleStartPosition = t->getAttribute("startPosition");
+
                 log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
                 Vehicle * tmpVehicle = new Vehicle (this, vehicleDirectory);
                 if (driver == "user" )

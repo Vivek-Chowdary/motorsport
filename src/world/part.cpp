@@ -10,8 +10,8 @@
 #include "part.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
-#include "xmlParser.hpp"
-#include "log/logEngine.hpp"
+#include "xmlTag.hpp"
+#include "logEngine.hpp"
 #include "system.hpp"
 #include "ode/ode.h"
 #include "world.hpp"
@@ -25,211 +25,48 @@ Part::Part (WorldObject * container, const std::string & name)
     setXmlPath(Paths::partXml(name));
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "parts." + name);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("parts." + name);
-    XmlFile * xmlFile = new XmlFile (getXmlPath().c_str());
-    processXmlRootNode (xmlFile->getRootNode());
-    delete xmlFile;
+    XmlTag * tag = new XmlTag (getXmlPath().c_str());
+    OgreObjectData ogreData;
+    OdeObjectData data;
+    std::string shape = "none";
+    if (tag->getName() == "part")
+    {
+        setName(tag->getAttribute("name"));
+        ogreData.meshPath = tag->getAttribute("mesh");
+        data.mass = stod(tag->getAttribute("mass"));
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            data.shape = t->getName();
+            if (data.shape == "box")
+            {
+                data.dimensions = Vector3d(t->getAttribute("dimensions"));
+            }
+            if (data.shape == "sphere")
+            {
+                data.radius = stod(t->getAttribute("radius"));
+            }
+            if (data.shape == "cappedCylinder")
+            {
+                data.radius = stod(t->getAttribute("radius"));
+                data.length = stod(t->getAttribute("length"));
+                if (t->getAttribute("directionAxis") == "x") data.directionAxis = 1;
+                if (t->getAttribute("directionAxis") == "y") data.directionAxis = 2;
+                if (t->getAttribute("directionAxis") == "z") data.directionAxis = 3;
+            }
+        }
+    }
+    ogreData.meshPath = getPath() + ogreData.meshPath;
+    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+    ogreObjects[getId()] = ogreObject;
+
+    if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
+    odeObjects[getId()] = new OdeObject(this, data, getId());
+    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
+    delete tag;
 }
 
 Part::~Part ()
 {
-}
-
-
-void Part::processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n)
-{
-    DOMNode * partNode = n;
-    if (n)
-    {
-        if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-        {
-            std::string name;
-            assignXmlString (name, n->getNodeName());
-            if (name == "part")
-            {
-                log->__format (LOG_CCREATOR, "Found a part.");
-                if (n->hasAttributes ())
-                {
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "name")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the name: %s", attribute.c_str());
-                            setName(attribute);
-                        }
-                        if (attribute == "description")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the description: %s", attribute.c_str());
-                        }
-                        if (attribute == "author")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the author: %s", attribute.c_str());
-                        }
-                        if (attribute == "contact")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the contact information: %s", attribute.c_str());
-                        }
-                        if (attribute == "license")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the license: %s", attribute.c_str());
-                        }
-                    }
-                }
-            }
-        }
-    }
-    startGraphics(partNode);
-    startPhysics(partNode);
-    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
-}
-
-void Part::startGraphics (DOMNode * n)
-{
-    OgreObjectData data;
-    if (n->hasAttributes ())
-    {
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "mesh")
-            {
-                assignXmlString (data.meshPath, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the part graphics mesh filename: %s", data.meshPath.c_str());
-            }
-        }
-    }
-    data.meshPath = getPath() + data.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, data, getId());
-    ogreObjects[getId()] = ogreObject;
-}
-void Part::startPhysics (DOMNode * n)
-{
-    OdeObjectData data;
-    std::string author = "Anonymous";
-    std::string contact = "None";
-    std::string license = "Creative Commons Attribution-NonCommercial-ShareAlike License";
-    if (n->hasAttributes ())
-    {
-        // get all the attributes of the node
-        DOMNamedNodeMap *attList = n->getAttributes ();
-        int nSize = attList->getLength ();
-
-        for (int i = 0; i < nSize; ++i)
-        {
-            DOMAttr *attNode = (DOMAttr *) attList->item (i);
-            std::string attribute;
-            assignXmlString (attribute, attNode->getName());
-            if (attribute == "mass")
-            {
-                assignXmlString (attribute, attNode->getValue());
-                log->__format (LOG_CCREATOR, "Found the part physics mass: %s", attribute.c_str() );
-                data.mass = stod (attribute);
-            }
-        }
-    }
-    std::string shape = "none";
-    for (n = n->getFirstChild (); n != 0; n = n->getNextSibling ())
-    {
-        if (n)
-        {
-            if (n->getNodeType () == DOMNode::ELEMENT_NODE)
-            {
-                std::string name;
-                assignXmlString (name, n->getNodeName());
-                if (name == "box")
-                {
-                    data.shape = name;
-                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    data.dimensions = Vector3d (1, 1, 1);
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "dimensions")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the part dimensions: %s", attribute.c_str() );
-                            data.dimensions = Vector3d (attribute);
-                        }
-                    }
-                }
-                if (name == "sphere")
-                {
-                    data.shape = name;
-                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    data.radius = 1;
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "radius")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
-                            data.radius = stod (attribute);
-                        }
-                    }
-                }
-                if (name == "cappedCylinder")
-                {
-                    shape = name;
-                    log->__format (LOG_CCREATOR, "Found the part physics shape: %s.", name.c_str());
-                    data.radius = 1;
-                    data.length = 1;
-                    data.directionAxis = 3;
-                    DOMNamedNodeMap *attList = n->getAttributes ();
-                    int nSize = attList->getLength ();
-                    for (int i = 0; i < nSize; ++i)
-                    {
-                        DOMAttr *attNode = (DOMAttr *) attList->item (i);
-                        std::string attribute;
-                        assignXmlString (attribute, attNode->getName());
-                        if (attribute == "radius")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the part radius: %s", attribute.c_str() );
-                            data.radius = stod (attribute);
-                        }
-                        if (attribute == "length")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
-                            data.length = stod (attribute);
-                        }
-                        if (attribute == "directionAxis")
-                        {
-                            assignXmlString (attribute, attNode->getValue());
-                            log->__format (LOG_CCREATOR, "Found the part length: %s", attribute.c_str() );
-                            if (attribute == "x") data.directionAxis = 1;
-                            if (attribute == "y") data.directionAxis = 2;
-                            if (attribute == "z") data.directionAxis = 3;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-    odeObjects[getId()] = new OdeObject(this, data, getId());
 }
 
 void Part::stepPhysics ()
@@ -258,4 +95,3 @@ void Part::stepPhysics ()
     pos = dBodyGetPosition(partID);
     log->__format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
 }
-

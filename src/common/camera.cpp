@@ -16,7 +16,6 @@
 #include "world.hpp"
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
-#include "xmlParser.hpp"
 #include "ode/ode.h"
 #include "log/logEngine.hpp"
 #include "area.hpp"

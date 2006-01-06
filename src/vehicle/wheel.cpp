@@ -8,7 +8,6 @@
 \*****************************************************************************/
 
 #include "wheel.hpp"
-#include "xmlParser.hpp"
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "log/logEngine.hpp"

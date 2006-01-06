@@ -1,7 +1,5 @@
 <?xml version="1.0"?>
 <physicsConfig
-    localLogLevel = "LOG_DEVELOPER"
-    localLogName = "PhysicsEngine"
     frequency = "300"
     timeScale = "1"
     pauseStep = "0"

@@ -9,7 +9,6 @@
 
 #ifndef PEDAL_HPP
 #define PEDAL_HPP
-#include "tools/xercesc_fwd.hpp"
 #include "worldObject.hpp"
 
 class Pedal : public WorldObject

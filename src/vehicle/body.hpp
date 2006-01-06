@@ -9,9 +9,7 @@
 
 #ifndef BODY_HPP
 #define BODY_HPP
-#include "ode/objects.h"
 #include "worldObject.hpp"
-#include "tools/xercesc_fwd.hpp"
 #include "vector3d.hpp"
 #include "paths.hpp"
 

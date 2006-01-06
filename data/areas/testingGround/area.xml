@@ -47,7 +47,7 @@
             >
         </cube>
     </parts>
-    <vehiclePositionList        comment="Rotation values are euler angles!"
+    <vehiclePositionList
         >
         <vehicle
             name = "paceCar"

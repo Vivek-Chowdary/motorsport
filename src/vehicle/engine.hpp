@@ -8,10 +8,9 @@
 \*****************************************************************************/
 
 #ifndef ENGINE_HPP
-#   define ENGINE_HPP
-#   include "driveMass.hpp"
-#   include "driveJoint.hpp"
-#   include "tools/xercesc_fwd.hpp"
+#define ENGINE_HPP
+#include "driveMass.hpp"
+#include "driveJoint.hpp"
 
 class Pedal;
 
