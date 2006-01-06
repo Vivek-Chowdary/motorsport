@@ -1,6 +1,6 @@
-make world objects be a container of world objects, or have a map of every of the world objects it has
 check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
 refactorize the world and area (ground, sky, ...)
+redefine vehicle.xml format, so that it allows links between objects.
 allow objects to be created from an xml file, not just xml tag
 refactorize the physics code
 refactorize the input code

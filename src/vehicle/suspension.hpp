@@ -20,8 +20,6 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
-class Vehicle;
-class Wheel;
 
 class Suspension : public WorldObject
 {
@@ -40,7 +38,10 @@ class Suspension : public WorldObject
     void attach (WorldObject * base, WorldObject * object);
     void setUserDriver ();
     void stepPhysics ();
+    dJointID getJointID();
     Vector3d getInitialWheelPosition ();
     Quaternion getInitialWheelRotation ();
 };
+
 #endif
+

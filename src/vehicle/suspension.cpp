@@ -60,7 +60,7 @@ void Suspension::attach (WorldObject * base, WorldObject * object)
     Wheel * wheel = dynamic_cast<Wheel*>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSuspJoint (jointID);
+    wheel->setSusp(this);
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
     // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
@@ -166,4 +166,9 @@ void Suspension::stepPhysics ()
     double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
+}
+
+dJointID Suspension::getJointID()
+{
+    return jointID;
 }

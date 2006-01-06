@@ -17,6 +17,7 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 #include "vehicle.hpp"
+#include "suspension.hpp"
 
 Wheel::Wheel (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "wheel")
@@ -68,8 +69,8 @@ void Wheel::stepPhysics ()
     prevAngularVel = inputAngularVel;
 
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-    inputAngularVel = dJointGetHinge2Angle2Rate (suspJointID)*powered*-1;
-    //inputAngularVel = dJointGetHingeAngleRate (suspJointID); // old kart suspension code
+    inputAngularVel = dJointGetHinge2Angle2Rate (baseSuspension->getJointID())*powered*-1;
+    //inputAngularVel = dJointGetHingeAngleRate (baseSuspension->getJointID()); // old kart suspension code
 
     // calculate angular acceleration      
     angularAcc = (inputAngularVel-prevAngularVel)/SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
@@ -79,7 +80,7 @@ void Wheel::stepPhysics ()
 
     // first, get the axis of the suspension
     dVector3 odeTAxis;
-    dJointGetHinge2Axis2 (suspJointID, odeTAxis);
+    dJointGetHinge2Axis2 (baseSuspension->getJointID(), odeTAxis);
     Vector3d tAxis (odeTAxis);
 
     // accumulate torques:
@@ -104,7 +105,7 @@ void Wheel::stepPhysics ()
     // use feedback thingy in ODE in order to find out torques
     ///////////////////////////////////////////////////////////////////////
     // get accumulated torque
-    const dReal * odeTorque = dBodyGetTorque (baseID);
+    const dReal * odeTorque = dBodyGetTorque (baseObject->getBodyID());
     Vector3d accumulatedTorque (odeTorque);
     // show acc torque
     log->__format(LOG_DEVELOPER, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);

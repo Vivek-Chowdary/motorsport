@@ -21,20 +21,21 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
+class Suspension;
 
 class Wheel : public DriveMass
 {
   private:
     bool userDriver;
     double powered;
-    dBodyID baseID;
-    dJointID suspJointID;
+    OdeObject *  baseObject;
+    Suspension * baseSuspension;
     Pedal * brakePedal;
   public:
     Wheel (WorldObject * container, XmlTag * tag);
     ~Wheel ();
-    void setRefBody(dBodyID inputID) { baseID = inputID; };
-    void setSuspJoint(dJointID injointID) { suspJointID = injointID; };
+    void setRefObject(OdeObject * object) { baseObject = object; };
+    void setSusp(Suspension * suspension) { baseSuspension = suspension; };
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);
     void stepPhysics ();

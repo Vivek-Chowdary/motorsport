@@ -6,6 +6,21 @@
     contact = "habalux AT gmail DOT com, stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
+    <links>
+        clutch output = gearbox
+        transfer output = finaldrive
+        clutch input = engine
+        transfer input = gearbox
+        reardiff input = finaldrive
+        place wheels on suspensions
+        bolt wheels to suspensions
+        reardiff output wheel rr
+        reardiff ouput2 wheel rl
+        engine pedal gaspedal
+        clutch pedal clutchpedal
+        wheel refBody body->ID
+        wheel pedal brakePedal
+    </links>
     <body
         name = "body"
         mesh = "body.mesh"
