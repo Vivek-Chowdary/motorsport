@@ -105,7 +105,7 @@ void Wheel::stepPhysics ()
     // use feedback thingy in ODE in order to find out torques
     ///////////////////////////////////////////////////////////////////////
     // get accumulated torque
-    const dReal * odeTorque = dBodyGetTorque (baseObject->getBodyID());
+    const dReal * odeTorque = dBodyGetTorque (baseObject->getMainOdeObject()->getBodyID());
     Vector3d accumulatedTorque (odeTorque);
     // show acc torque
     log->__format(LOG_DEVELOPER, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);

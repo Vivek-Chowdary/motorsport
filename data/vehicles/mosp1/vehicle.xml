@@ -8,18 +8,18 @@
     >
     <links>
         clutch output = gearbox
-        transfer output = finaldrive
         clutch input = engine
+        clutch pedal clutchpedal
+        transfer output = finaldrive
         transfer input = gearbox
         reardiff input = finaldrive
-        place wheels on suspensions
-        bolt wheels to suspensions
         reardiff output wheel rr
         reardiff ouput2 wheel rl
         engine pedal gaspedal
-        clutch pedal clutchpedal
-        wheel refBody body->ID
+        wheel refObject body
         wheel pedal brakePedal
+        place wheels on suspensions
+        bolt wheels to suspensions
     </links>
     <body
         name = "body"
