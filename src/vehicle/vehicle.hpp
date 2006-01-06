@@ -51,8 +51,6 @@ class Vehicle : public WorldObject
     Vehicle (WorldObject * container, std::string vehicleName);
     Vehicle (WorldObject * container, XmlTag * tag);
     ~Vehicle ();
-    std::map < std::string, Wheel * > wheelMap;
-    std::map < std::string, Suspension * > suspensionMap;
     std::vector < Camera * > cameraList;
     Body *          getBody         (std::string name);
     DriveJoint *    getDriveJoint   (std::string name);
