@@ -128,7 +128,7 @@ XmlTag::~XmlTag()
             }
             else
             {
-                std::cout << std::endl << " Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!";
+                std::cout << std::endl << "Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!";
             }
         }
     }
@@ -159,7 +159,7 @@ std::string XmlTag::getAttribute(std::string attributeName)
         }
         else
         {
-            std::cout << std::endl << " Error! Attempted to read non-existent attribute \"" << attributeName << "\" in tag \"" << getFullName() << "\".";
+            std::cout << std::endl << "Error! Attempted to read non-existent attribute \"" << attributeName << "\" in tag \"" << getFullName() << "\".";
         }
         return "";
     }

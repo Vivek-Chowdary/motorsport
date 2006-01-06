@@ -24,7 +24,6 @@ class GearboxGear : public WorldObject
     double getRatio() { return ratio; } ;
     bool isEnabled() { return enabled; } ;
 }; 
-
 class Gearbox : public DriveMass 
 {
   private:
@@ -42,6 +41,4 @@ class Gearbox : public DriveMass
     void gearUp ();
     void gearDown ();
 };
-
-
 #endif

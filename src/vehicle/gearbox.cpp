@@ -45,6 +45,11 @@ Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
 
 Gearbox::~Gearbox ()
 {
+    for(std::map<int,GearboxGear*>::iterator i = gearMap.begin(); i != gearMap.end(); i++)
+    {
+        delete (i->second);
+    }
+    gearMap.clear();
 }
 
 

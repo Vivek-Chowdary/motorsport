@@ -40,11 +40,12 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
     //FIXME what to use, id# or name?
     log = new LogEngine (LOG_DEVELOPER, this->getFullName());
     //log = new LogEngine (LOG_DEVELOPER, this->id);
-    log->__format(LOG_CCREATOR, "Id: %s. Full Name: %s", id.c_str(), getFullName().c_str());
+    log->__format(LOG_CCREATOR, "Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
     worldObjects[this->id] = this;
 }
 WorldObject::~WorldObject ()
 {
+    log->__format(LOG_CCREATOR, "Deleting myself. Id #%s.", id.c_str(), getFullName().c_str());
     OgreObjectsIt i = ogreObjects.begin();
     for(;i != ogreObjects.end(); i++)
     {

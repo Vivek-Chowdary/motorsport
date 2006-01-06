@@ -1,7 +1,7 @@
-make vehicle component constructors work with parsed XmlData objects
-make vehicle parse everything and create the XmlData objects
-refactorize the world and area (ground, sky, ...)
 make world objects be a container of world objects, or have a map of every of the world objects it has
+check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
+refactorize the world and area (ground, sky, ...)
+allow objects to be created from an xml file, not just xml tag
 refactorize the physics code
 refactorize the input code
 refactorize user driver agent or whatever
