@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -207,22 +207,22 @@ Quaternion Vehicle::getRotation ()
 
 void Vehicle::placeWheelsOnSuspensions()
 {
-    getWheel("front right wheel")->applyRotation(getSuspension("front right suspension")->getInitialWheelRotation());
-    getWheel("front right wheel")->setPosition(getSuspension("front right suspension")->getInitialWheelPosition());
-    getWheel("front left wheel")->applyRotation(getSuspension("front left suspension")->getInitialWheelRotation());
-    getWheel("front left wheel")->setPosition(getSuspension("front left suspension")->getInitialWheelPosition());
-    getWheel("rear right wheel")->applyRotation(getSuspension("rear right suspension")->getInitialWheelRotation());
-    getWheel("rear right wheel")->setPosition(getSuspension("rear right suspension")->getInitialWheelPosition());
-    getWheel("rear left wheel")->applyRotation(getSuspension("rear left suspension")->getInitialWheelRotation());
-    getWheel("rear left wheel")->setPosition(getSuspension("rear left suspension")->getInitialWheelPosition());
+    getWheel("front right wheel")->applyRotation(getSuspension("front right suspension")->getSecondLinkRotation());
+    getWheel("front right wheel")->setPosition(getSuspension("front right suspension")->getSecondLinkPosition());
+    getWheel("front left wheel")->applyRotation(getSuspension("front left suspension")->getSecondLinkRotation());
+    getWheel("front left wheel")->setPosition(getSuspension("front left suspension")->getSecondLinkPosition());
+    getWheel("rear right wheel")->applyRotation(getSuspension("rear right suspension")->getSecondLinkRotation());
+    getWheel("rear right wheel")->setPosition(getSuspension("rear right suspension")->getSecondLinkPosition());
+    getWheel("rear left wheel")->applyRotation(getSuspension("rear left suspension")->getSecondLinkRotation());
+    getWheel("rear left wheel")->setPosition(getSuspension("rear left suspension")->getSecondLinkPosition());
 }
 
 void Vehicle::boltWheelsToSuspensions()
 {
-    getSuspension("front right suspension")->attach(getObject("body"), getWheel("front right wheel"));
-    getSuspension("front left suspension")->attach(getObject("body"), getWheel("front left wheel"));
-    getSuspension("rear right suspension")->attach(getObject("body"), getWheel("rear right wheel"));
-    getSuspension("rear left suspension")->attach(getObject("body"), getWheel("rear left wheel"));
+    getSuspension("front right suspension")->attach(getObject("body"), getObject("front right wheel"));
+    getSuspension("front left suspension")->attach(getObject("body"), getObject("front left wheel"));
+    getSuspension("rear right suspension")->attach(getObject("body"), getObject("rear right wheel"));
+    getSuspension("rear left suspension")->attach(getObject("body"), getObject("rear left wheel"));
 }
 
 void Vehicle::stepPhysics ()

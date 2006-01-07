@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -13,6 +13,7 @@
 #include "worldObject.hpp"
 #include "quaternion.hpp"
 #include "vector3d.hpp"
+#include "location.hpp"
 #include "vehicle.hpp"
 
 //forward declarations
@@ -39,8 +40,8 @@ class Suspension : public WorldObject
     void setUserDriver ();
     void stepPhysics ();
     dJointID getJointID();
-    Vector3d getInitialWheelPosition ();
-    Quaternion getInitialWheelRotation ();
+    Vector3d getSecondLinkPosition ();
+    Quaternion getSecondLinkRotation ();
 };
 
 #endif

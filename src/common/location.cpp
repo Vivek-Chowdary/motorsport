@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -19,13 +19,17 @@ Location::Location (XmlTag * tag)
         position = Vector3d(tag->getAttribute("position"));
         rotation = Quaternion(tag->getAttribute("rotation"));
     }
-//        rotation.degreesToRadians ();
     delete log;
+}
+Location::Location (std::string name, Vector3d position, Quaternion rotation)
+{
+    this->name = name;
+    this->position = position;
+    this->rotation = rotation;
 }
 
 Location::~Location ()
 {
-    // empty
 }
 
 Vector3d Location::getPosition ()

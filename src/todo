@@ -1,3 +1,4 @@
+use tnsp for brake and suspension thingies
 check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
 refactorize the world and area (ground, sky, ...)
 redefine vehicle.xml format, so that it allows links between objects.

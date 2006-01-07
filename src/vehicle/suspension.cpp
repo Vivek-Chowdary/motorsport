@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2005 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -89,11 +89,11 @@ void Suspension::attach (WorldObject * base, WorldObject * object)
     //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
     //dJointSetHingeAxis (jointID, 0,1,0);
 }
-Vector3d Suspension::getInitialWheelPosition ()
+Vector3d Suspension::getSecondLinkPosition ()
 {
     return position;
 }
-Quaternion Suspension::getInitialWheelRotation ()
+Quaternion Suspension::getSecondLinkRotation ()
 {
     return rotation;
 }

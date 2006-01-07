@@ -7,19 +7,22 @@
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
     >
     <links>
-        clutch output = gearbox
-        clutch input = engine
-        clutch pedal clutchpedal
-        transfer output = finaldrive
-        transfer input = gearbox
-        reardiff input = finaldrive
-        reardiff output wheel rr
-        reardiff ouput2 wheel rl
-        engine pedal gaspedal
-        wheel refObject body
-        wheel pedal brakePedal
-        place wheels on suspensions
-        bolt wheels to suspensions
+        drivejoint-drivemass            clutch output = gearbox
+        drivejoint-drivemass            clutch input = engine
+        drivejoint-drivemass            transfer output = finaldrive
+        drivejoint-drivemass            transfer input = gearbox
+        drivejoint-drivemass            reardiff input = finaldrive
+        drivejoint-drivemass            reardiff output = wheel rr
+        lsd-drivemass                   reardiff ouput2 = wheel rl
+
+        wheel-worldobject               wheel refObject = body
+        wheel-suspension                rr - rr
+        wheel-suspension                rl - rl
+        wheel-suspension                fr - fr
+        wheel-suspension                fl - fl
+        clutch-pedal                    clutch pedal = clutchpedal
+        engine-pedal                    engine pedal = gaspedal
+        wheel-pedal                     wheel pedal = brakePedal
     </links>
     <body
         name = "body"
