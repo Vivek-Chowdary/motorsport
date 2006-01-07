@@ -132,7 +132,6 @@ void Vehicle::construct (XmlTag * tag)
         Wheel * tmpWheel;
         if ( (tmpWheel = dynamic_cast<Wheel*>(i->second)) != 0)
         {
-            tmpWheel->setRefObject(getObject("body"));
             tmpWheel->setBrakePedal(getPedal("brakePedal"));
         }
     }

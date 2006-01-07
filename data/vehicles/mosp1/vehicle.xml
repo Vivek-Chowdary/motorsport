@@ -15,7 +15,6 @@
         drivejoint-drivemass            reardiff output = wheel rr
         lsd-drivemass                   reardiff ouput2 = wheel rl
 
-        wheel-worldobject               wheel refObject = body
         wheel-suspension                rr - rr
         wheel-suspension                rl - rl
         wheel-suspension                fr - fr

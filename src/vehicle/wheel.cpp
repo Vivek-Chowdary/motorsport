@@ -89,29 +89,15 @@ void Wheel::stepPhysics ()
     if (inputAngularVel > 0) brake *= -1;
     double maxBrakeTorque = 1250;
     double brakeTorque = brake * maxBrakeTorque;
-    int initialSign = inputTorqueTransfer>0?1:-1;
-    inputTorqueTransfer += brakeTorque;
-    int finalSign = inputTorqueTransfer>0?1:-1;
-    if (initialSign != finalSign)
+    if ((-brakeTorque) > inputTorqueTransfer)
     {
-        inputTorqueTransfer = 0;
+        dJointSetHinge2Param(baseSuspension->getJointID(), dParamVel, 0);
     }
+    inputTorqueTransfer += brakeTorque;
 
     // then, scale it by desired torque in the desired direction of the axis
     tAxis.scalarMultiply (inputTorqueTransfer * powered);
 
-
-    ///TODO TODO TODO TODO TODO
-    // use feedback thingy in ODE in order to find out torques
-    ///////////////////////////////////////////////////////////////////////
-    // get accumulated torque
-    const dReal * odeTorque = dBodyGetTorque (baseObject->getMainOdeObject()->getBodyID());
-    Vector3d accumulatedTorque (odeTorque);
-    // show acc torque
-    log->__format(LOG_DEVELOPER, "Accumulated torque = (%f, %f, %f)", accumulatedTorque.x, accumulatedTorque.y, accumulatedTorque.z);
-    // compare it to our torque
-    ///////////////////////////////////////////////////////////////////////
-    
     // finally, apply the torques
     dBodyAddTorque (getMainOdeObject()->getBodyID(), tAxis.x, tAxis.y, tAxis.z);
 

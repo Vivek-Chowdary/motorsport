@@ -28,13 +28,11 @@ class Wheel : public DriveMass
   private:
     bool userDriver;
     double powered;
-    WorldObject * baseObject;
     Suspension * baseSuspension;
     Pedal * brakePedal;
   public:
     Wheel (WorldObject * container, XmlTag * tag);
     ~Wheel ();
-    void setRefObject(WorldObject * object) { baseObject = object; };
     void setSusp(Suspension * suspension) { baseSuspension = suspension; };
     void setUserDriver ();
     void setBrakePedal (Pedal * pedal);
