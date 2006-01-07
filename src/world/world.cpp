@@ -40,7 +40,6 @@ World::World (WorldObject * container, std::string name)
     {
         delete this;
     } else {
-        log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
         worldPointer = this;
         setPath(Paths::world(name));
         setXmlPath(Paths::worldXml(name));

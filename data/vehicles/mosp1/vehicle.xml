@@ -171,6 +171,21 @@
         steeringAngle = "0"
         >
     </suspension.unidimensional>
+<!--
+    <suspension.fixed
+        name = "rear right suspension"
+        position = "-1.35 +0.88 -0.45"
+        rotation = "-90 0 0"
+        >
+    </suspension.fixed>
+    <suspension.fixed
+        name = "rear left suspension"
+        position = "-1.35 -0.88 -0.45"
+        rotation = "+90 0 0"
+        steeringAngle = "0"
+        >
+    </suspension.fixed>
+-->
     <wheel
         name = "front right wheel"
         mass = "15.1"

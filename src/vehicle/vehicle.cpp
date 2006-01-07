@@ -101,7 +101,12 @@ void Vehicle::construct (XmlTag * tag)
             }
             if (t->getName() == "suspension.unidimensional")
             {
-                Suspension * tmp = new Suspension (this, t);
+                Unidimensional * tmp = new Unidimensional (this, t);
+                components[tmp->getName()] = tmp;
+            }
+            if (t->getName() == "suspension.fixed")
+            {
+                Fixed * tmp = new Fixed (this, t);
                 components[tmp->getName()] = tmp;
             }
             if (t->getName() == "camera")

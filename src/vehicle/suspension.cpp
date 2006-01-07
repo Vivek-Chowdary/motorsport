@@ -20,34 +20,15 @@
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
 
-Suspension::Suspension (WorldObject * container, XmlTag * tag)
-    :WorldObject(container, "suspension")
+Suspension::Suspension (WorldObject * container, std::string name)
+    :WorldObject(container, name)
 {
-    log->__format (LOG_CCREATOR, "Starting to parse the suspension node");
-    springConstant = 0;
-    dampingConstant = 0;
-    steeringAngle = 0.0;
     position = Vector3d (0, 0, 0);
     rotation = Quaternion (1, 0, 0, 0);
-    if (tag->getName() == "suspension.unidimensional")
-    {
-        setName (     tag->getAttribute("name"));
-        position = Vector3d (tag->getAttribute("position"));
-        rotation = Quaternion (tag->getAttribute("rotation"));
-        springConstant = stod(tag->getAttribute("springConstant"));
-        dampingConstant = stod(tag->getAttribute("dampingConstant"));
-        steeringAngle = stod(tag->getAttribute("steeringAngle"));
-    }
-    
-//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
-    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
-    dJointAttach (jointID, 0, 0);
-    userDriver = false;
 }
 
 Suspension::~Suspension ()
 {
-    stopPhysics ();
 }
 
 void Suspension::setUserDriver ()
@@ -55,40 +36,6 @@ void Suspension::setUserDriver ()
     userDriver = true;
 }
 
-void Suspension::attach (WorldObject * base, WorldObject * object)
-{
-    Wheel * wheel = dynamic_cast<Wheel*>(object);
-    if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
-    if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(this);
-    dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
-
-    // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
-/*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
-      dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
-      dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
-*/
-    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
-    dBodySetFiniteRotationMode(object->getMainOdeObject()->getBodyID(), 1);
-    dBodySetFiniteRotationAxis(object->getMainOdeObject()->getBodyID(), 0, 0, 1);
-
-    double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
-    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
-    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
-    Vector3d wPosition = wheel->getMainOdeObject()->getPosition();
-    dJointSetHinge2Anchor (jointID, wPosition.x, wPosition.y, wPosition.z);
-    
-    Quaternion wRotation = wheel->getMainOdeObject()->getRotation();
-    Vector3d rAxis1 = wRotation.rotateObject(Vector3d(0, 1, 0));
-    dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
-    Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
-    dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
-    log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
-    
-    // old kart suspension
-    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-    //dJointSetHingeAxis (jointID, 0,1,0);
-}
 Vector3d Suspension::getSecondLinkPosition ()
 {
     return position;
@@ -97,13 +44,7 @@ Quaternion Suspension::getSecondLinkRotation ()
 {
     return rotation;
 }
-
-void Suspension::stopPhysics ()
-{
-    dJointDestroy (jointID);
-}
-
-void Suspension::stepPhysics ()
+double Unidimensional::getSteeringAngle()
 {
     double angle = 0;
     double leftSteering = 0;
@@ -153,10 +94,49 @@ void Suspension::stepPhysics ()
 
     // Override keyboard data with joystick axis if the keyboard is not used.
     const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
-    rightSteering *= steeringAngle * piK / 2;
-    leftSteering *= steeringAngle * piK / 2;
+    rightSteering *= maxSteeringAngle * piK / 2;
+    leftSteering *= maxSteeringAngle * piK / 2;
     angle += rightSteering - leftSteering;
+    return angle;
+}
+double Unidimensional::getRate()
+{
+    return dJointGetHinge2Angle2Rate (jointID);
+}
+Vector3d Unidimensional::getAxis()
+{
+    dVector3 odeTAxis;
+    dJointGetHinge2Axis2 (jointID, odeTAxis);
+    return Vector3d (odeTAxis);
+}
+void Unidimensional::setVelocity(double velocity)
+{
+    dJointSetHinge2Param(jointID, dParamVel, 0);
+}
 
+Unidimensional::Unidimensional (WorldObject * container, XmlTag * tag)
+    :Suspension(container, "suspension.unidimensional")
+{
+    userDriver = false;
+    springConstant = 0;
+    dampingConstant = 0;
+    maxSteeringAngle = 0.0;
+    if (tag->getName() == "suspension.unidimensional")
+    {
+        setName (     tag->getAttribute("name"));
+        position = Vector3d (tag->getAttribute("position"));
+        rotation = Quaternion (tag->getAttribute("rotation"));
+        springConstant = stod(tag->getAttribute("springConstant"));
+        dampingConstant = stod(tag->getAttribute("dampingConstant"));
+        maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
+    }
+//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
+    dJointAttach (jointID, 0, 0);
+}
+void Unidimensional::stepPhysics()
+{
+    double angle = getSteeringAngle();
     // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
     dJointSetHinge2Param (jointID, dParamLoStop, angle-0.0000001);
@@ -167,18 +147,106 @@ void Suspension::stepPhysics ()
     dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
 }
-
-double Suspension::getRate()
+Unidimensional::~Unidimensional()
 {
-    return dJointGetHinge2Angle2Rate (jointID);
+    dJointDestroy (jointID);
 }
-Vector3d Suspension::getAxis()
+void Unidimensional::attach(WorldObject * base, WorldObject * object)
+{
+    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
+    if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
+    wheel->setSusp(this);
+    dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
+
+    // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
+/*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
+      dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
+      dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
+*/
+    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
+    dBodySetFiniteRotationMode(object->getMainOdeObject()->getBodyID(), 1);
+    dBodySetFiniteRotationAxis(object->getMainOdeObject()->getBodyID(), 0, 0, 1);
+
+    double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    dJointSetHinge2Param (jointID, dParamSuspensionERP, h * springConstant / (h * springConstant + dampingConstant));
+    dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
+    Vector3d wPosition = object->getPosition();
+    dJointSetHinge2Anchor (jointID, wPosition.x, wPosition.y, wPosition.z);
+    
+    Quaternion wRotation = getSecondLinkRotation();
+    Vector3d rAxis1 = wRotation.rotateObject(Vector3d(0, 1, 0));
+    dJointSetHinge2Axis1 (jointID, rAxis1.x, rAxis1.y, rAxis1.z);
+    Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
+    dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
+    log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+    
+    // old kart suspension
+    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    //dJointSetHingeAxis (jointID, 0,1,0);
+}
+
+
+
+
+Fixed::Fixed (WorldObject * container, XmlTag * tag)
+    :Suspension(container, "suspension.unidimensional")
+{
+    userDriver = false;
+    if (tag->getName() == "suspension.fixed")
+    {
+        setName (     tag->getAttribute("name"));
+        position = Vector3d (tag->getAttribute("position"));
+        rotation = Quaternion (tag->getAttribute("rotation"));
+    }
+    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    dJointAttach (jointID, 0, 0);
+}
+void Fixed::stepPhysics()
+{
+    // Empty...
+}
+Fixed::~Fixed()
+{
+    dJointDestroy (jointID);
+}
+void Fixed::attach(WorldObject * base, WorldObject * object)
+{
+    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
+    if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
+    wheel->setSusp(this);
+    dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
+
+    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
+    dBodySetFiniteRotationMode(object->getMainOdeObject()->getBodyID(), 1);
+    dBodySetFiniteRotationAxis(object->getMainOdeObject()->getBodyID(), 0, 0, 1);
+
+    Vector3d wPosition = object->getPosition();
+    dJointSetHingeAnchor (jointID, wPosition.x, wPosition.y, wPosition.z);
+    
+    Quaternion wRotation = object->getRotation();
+    Vector3d rAxis = wRotation.rotateObject(Vector3d(0, 0, 1));
+    dJointSetHingeAxis (jointID, rAxis.x, rAxis.y, rAxis.z);
+    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    //dJointSetHingeAxis (jointID, 0, 1, 0);
+    log->__format (LOG_DEVELOPER, "Axis = %f, %f, %f.", rAxis.x, rAxis.y, rAxis.z);
+    
+    // old kart suspension
+    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
+    //dJointSetHingeAxis (jointID, 0,1,0);
+}
+double Fixed::getRate()
+{
+    return dJointGetHingeAngleRate (jointID);
+}
+Vector3d Fixed::getAxis()
 {
     dVector3 odeTAxis;
-    dJointGetHinge2Axis2 (jointID, odeTAxis);
+    dJointGetHingeAxis (jointID, odeTAxis);
     return Vector3d (odeTAxis);
 }
-void Suspension::setVelocity(double velocity)
+void Fixed::setVelocity(double velocity)
 {
-    dJointSetHinge2Param(jointID, dParamVel, 0);
+    dJointSetHingeParam(jointID, dParamVel, 0);
 }

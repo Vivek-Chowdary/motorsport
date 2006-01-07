@@ -24,27 +24,55 @@ namespace Ogre {
 
 class Suspension : public WorldObject
 {
-  private:
-    dJointID jointID;
-    Quaternion rotation;
-    Vector3d position;
-    double springConstant;
-    double dampingConstant;
-    double steeringAngle;
-    bool userDriver;
-    void stopPhysics ();
-  public:
-    Suspension (WorldObject * container, XmlTag * tag);
-    ~Suspension ();
-    void attach (WorldObject * base, WorldObject * object);
-    void setUserDriver ();
-    void stepPhysics ();
-    Vector3d getSecondLinkPosition ();
-    Quaternion getSecondLinkRotation ();
-    double getRate();
-    Vector3d getAxis();
-    void setVelocity(double velocity);
+    protected:
+        Suspension (WorldObject * container, std::string name);
+        ~Suspension ();
+        Quaternion rotation;
+        Vector3d position;
+        bool userDriver;
+    public:
+        void setUserDriver ();
+        Vector3d getSecondLinkPosition ();
+        Quaternion getSecondLinkRotation ();
+
+        virtual void stepPhysics ()=0;
+        virtual double getRate()=0;
+        virtual Vector3d getAxis()=0;
+        virtual void setVelocity(double velocity)=0;
+        virtual void attach(WorldObject * base, WorldObject * object)=0;
 };
 
+class Unidimensional : public Suspension
+{
+    protected:
+        dJointID jointID;
+        double springConstant;
+        double dampingConstant;
+        double maxSteeringAngle;
+        double getSteeringAngle();
+    public:
+        Unidimensional (WorldObject * container, XmlTag * tag);
+        ~Unidimensional();
+
+        void stepPhysics();
+        double getRate();
+        Vector3d getAxis();
+        void setVelocity(double velocity);
+        void attach(WorldObject * base, WorldObject * object);
+};
+class Fixed : public Suspension
+{
+    protected:
+        dJointID jointID;
+    public:
+        Fixed (WorldObject * container, XmlTag * tag);
+        ~Fixed();
+
+        void stepPhysics();
+        double getRate();
+        Vector3d getAxis();
+        void setVelocity(double velocity);
+        void attach(WorldObject * base, WorldObject * object);
+};
 #endif
 
