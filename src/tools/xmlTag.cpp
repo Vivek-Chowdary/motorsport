@@ -42,46 +42,28 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
     this->name = "unknown";
     if (parent == NULL)
     {
-        if (logging)
-        {
-            this->log = new LogEngine (LOG_DEVELOPER, "XmlTag");
-        }
-        else
-        {
-           this->log = NULL;
-        }
+        if (logging) this->log = new LogEngine (LOG_DEVELOPER, "XmlTag");
+        else         this->log = NULL;
     }
     else
     {
-        if (logging)
-        {
-            this->log = parent->log;
-        }
+        if (logging) this->log = parent->log;
     }
 
     if (n == NULL)
     {
-        if (logging)
-        {
-           log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
-        }
+        if (logging) log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
     }
     if (n->getNodeType() != DOMNode::ELEMENT_NODE)
     {
-        if (logging)
-        {
-           log->__format(LOG_ERROR, "This (%s) is not a tag!", getFullName().c_str());
-        }
+        if (logging) log->__format(LOG_ERROR, "This (%s) is not a tag!", getFullName().c_str());
     }
     assignXmlString (name, n->getNodeName());
 
     //fill tag attributes map
     if (!n->hasAttributes())
     {
-        if (logging)
-        {
-            log->__format(LOG_WARNING, "No attributes in this tag (%s)!", getFullName().c_str() );
-        }
+        if (logging) log->__format(LOG_WARNING, "No attributes in this tag (%s)!", getFullName().c_str() );
     }
     else
     {
@@ -122,13 +104,10 @@ XmlTag::~XmlTag()
     {
         if (!(i->second))
         {
-            if (log)
+            if (i->first != "xmlns" && i->first != "xmlns:xsi" && i->first != "xsi:schemaLocation")
             {
-                log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
-            }
-            else
-            {
-                std::cout << std::endl << "Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!";
+                if (log) log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
+                else     std::cout << "Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!" << std::endl;
             }
         }
     }
@@ -153,14 +132,8 @@ std::string XmlTag::getAttribute(std::string attributeName)
 {
     if (attributes.find(attributeName) == attributes.end())
     {
-        if (log)
-        {
-            log->__format(LOG_ERROR, "Attempted to read non-existent attribute \"%s\" in tag \"%s\"", attributeName.c_str(), getFullName().c_str());
-        }
-        else
-        {
-            std::cout << std::endl << "Error! Attempted to read non-existent attribute \"" << attributeName << "\" in tag \"" << getFullName() << "\".";
-        }
+        if (log) log->__format(LOG_ERROR, "Attempted to read non-existent attribute \"%s\" in tag \"%s\"", attributeName.c_str(), getFullName().c_str());
+        else     std::cout << std::endl << "Error! Attempted to read non-existent attribute \"" << attributeName << "\" in tag \"" << getFullName() << "\".";
         return "";
     }
     attributesRead[attributeName] = true;
