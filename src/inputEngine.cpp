@@ -50,15 +50,12 @@ InputEngine::InputEngine ()
     
     log->__format (LOG_DEVELOPER, "Initializing dummy joystick devices");
     systemData->axisMap[getIDJoyAxis (0, 0)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (32767);
-    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (-32767);
-    systemData->axisMap[getIDJoyAxis (0, 0)]->setNewRawValue (0);
     systemData->axisMap[getIDJoyAxis (0, 1)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (-32767);
-    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (32767);
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (0);
+    systemData->axisMap[getIDJoyAxis (0, 1)]->setNewRawValue (1);
     systemData->axisMap[getIDJoyAxis (0, 2)] = new Axis;
-    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (-32767);
-    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (32767);
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (0);
+    systemData->axisMap[getIDJoyAxis (0, 2)]->setNewRawValue (1);
     
     log->__format (LOG_DEVELOPER, "Initializing real joystick devices");
     int nJoysticks = SDL_NumJoysticks();
@@ -76,12 +73,8 @@ InputEngine::InputEngine ()
             }
             if (axis == 1 || axis == 2)
             {
-                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
-                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
-            } else {
-                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (2);
-                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
-                SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
+                systemData->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (0);
+                systemData->axisMap[getIDJoyAxis (joy, axis)]->setNewRawValue (1);
             }
             log->__format (LOG_DEVELOPER, "Joystick axis #%i initialized. %f", getIDJoyAxis(joy, axis), SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis (joy, axis)]->getValue());
         }
@@ -93,6 +86,14 @@ InputEngine::InputEngine ()
             log->__format (LOG_DEVELOPER, "Joystick axis #%i initialized.", getIDJoyButton(joy, button));
         }
     }
+
+    log->__format (LOG_DEVELOPER, "Discard initial events.");
+    SDL_Event event;
+    while (SDL_PollEvent (&event))
+    {
+        //empty
+    }
+    
     log->__format (LOG_ENDUSER, "%i joystick%s found.", nJoysticks, (nJoysticks==1)?" was":"s were");
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
@@ -197,6 +198,9 @@ int InputEngine::computeStep (void)
 
 InputEngine::~InputEngine (void)
 {
+    log->__format (LOG_DEVELOPER, "Steering wheel: %i, %i.",systemData->axisMap[getIDJoyAxis (0, 0)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 0)]->getMaxRawValue());
+    log->__format (LOG_DEVELOPER, "Gas pedal:      %i, %i.",systemData->axisMap[getIDJoyAxis (0, 2)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 2)]->getMaxRawValue());
+    log->__format (LOG_DEVELOPER, "Brake pedal:    %i, %i.",systemData->axisMap[getIDJoyAxis (0, 1)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 1)]->getMaxRawValue());
     // finally stop the log engine
     delete log;
 }

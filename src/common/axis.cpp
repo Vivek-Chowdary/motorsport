@@ -11,6 +11,14 @@
 #include <sstream>
 #include <algorithm>
 
+int Axis::getMaxRawValue()
+{
+    return maxRawValue;
+}
+int Axis::getMinRawValue()
+{
+    return minRawValue;
+}
 void Axis::setNewRawValue(int value)
 {
     //update device axis calibration values
@@ -30,7 +38,7 @@ void Axis::setNewRawValue(int value)
 }
 void Axis::updateValue()
 {
-    if (maxRawValue <= minRawValue)
+    if (maxRawValue < minRawValue)
     {
         value = 0.5;
     }
@@ -47,7 +55,9 @@ double Axis::getValue()
 }
 Axis::Axis () : minRawValue(std::numeric_limits<int>::max()), maxRawValue(std::numeric_limits<int>::min())
 {
-    //empty
+    minRawValue = 0;
+    maxRawValue = 0;
+    value = 0.5;
 }
 Axis::~Axis ()
 {

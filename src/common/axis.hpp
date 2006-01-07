@@ -28,6 +28,8 @@ class Axis
     void setNewRawValue(int value); //updates internal normalized value, done once per input event
     void updateValue();      //applies the filters, always done once per input engine step
     double getValue();            //returns normalized value, done once per physics engine step
+    int getMaxRawValue();
+    int getMinRawValue();
     
     //management of filters list
     //void appendFilter (AxisFilter * filter);
