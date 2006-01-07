@@ -182,9 +182,9 @@ XmlTag * XmlTag::getTag(int tagNumber)
 std::string XmlTag::getFullName()
 {
     std::string result = "";
-    if (parent == NULL) result = filePath + ": ";
-    else result = parent->getFullName();
-    return result + "/" + name;
+    if (parent == NULL) result = filePath + ":";
+    else result = parent->getFullName() + "/";
+    return result + name;
 }
 std::string XmlTag::getName()
 {
