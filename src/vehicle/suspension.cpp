@@ -168,7 +168,17 @@ void Suspension::stepPhysics ()
     dJointSetHinge2Param (jointID, dParamSuspensionCFM, 1 / (h * springConstant + dampingConstant));
 }
 
-dJointID Suspension::getJointID()
+double Suspension::getRate()
 {
-    return jointID;
+    return dJointGetHinge2Angle2Rate (jointID);
+}
+Vector3d Suspension::getAxis()
+{
+    dVector3 odeTAxis;
+    dJointGetHinge2Axis2 (jointID, odeTAxis);
+    return Vector3d (odeTAxis);
+}
+void Suspension::setVelocity(double velocity)
+{
+    dJointSetHinge2Param(jointID, dParamVel, 0);
 }

@@ -69,7 +69,7 @@ void Wheel::stepPhysics ()
     prevAngularVel = inputAngularVel;
 
     // use hinge's angular rate as angular velocity of wheel (rad/s)
-    inputAngularVel = dJointGetHinge2Angle2Rate (baseSuspension->getJointID())*powered*-1;
+    inputAngularVel = baseSuspension->getRate()*powered*-1;
     //inputAngularVel = dJointGetHingeAngleRate (baseSuspension->getJointID()); // old kart suspension code
 
     // calculate angular acceleration      
@@ -79,10 +79,8 @@ void Wheel::stepPhysics ()
     //inputTorqueTransfer -= 0.1*inputAngularVel;
 
     // first, get the axis of the suspension
-    dVector3 odeTAxis;
-    dJointGetHinge2Axis2 (baseSuspension->getJointID(), odeTAxis);
-    Vector3d tAxis (odeTAxis);
-
+    Vector3d tAxis = baseSuspension->getAxis();
+    
     // accumulate torques:
     double brake = brakePedal->getNormalizedAngle();
     if (!userDriver) brake = 1;
@@ -91,7 +89,7 @@ void Wheel::stepPhysics ()
     double brakeTorque = brake * maxBrakeTorque;
     if ((-brakeTorque) > inputTorqueTransfer)
     {
-        dJointSetHinge2Param(baseSuspension->getJointID(), dParamVel, 0);
+        baseSuspension->setVelocity(0.0);
     }
     inputTorqueTransfer += brakeTorque;
 

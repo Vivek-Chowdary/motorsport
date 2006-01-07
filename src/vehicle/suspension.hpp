@@ -39,9 +39,11 @@ class Suspension : public WorldObject
     void attach (WorldObject * base, WorldObject * object);
     void setUserDriver ();
     void stepPhysics ();
-    dJointID getJointID();
     Vector3d getSecondLinkPosition ();
     Quaternion getSecondLinkRotation ();
+    double getRate();
+    Vector3d getAxis();
+    void setVelocity(double velocity);
 };
 
 #endif
