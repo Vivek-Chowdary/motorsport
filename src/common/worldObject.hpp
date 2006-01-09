@@ -61,7 +61,7 @@ class WorldObject
         static void logAll();
         LogEngine * getLog();
 
-        void WorldObject::stepGraphics ();
+        void stepGraphics ();
 
         OdeObject * getMainOdeObject();
         

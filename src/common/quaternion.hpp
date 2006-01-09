@@ -40,7 +40,7 @@ class Quaternion
     Quaternion operator+ (const Quaternion & k) const;
     const Quaternion & operator+= (const Quaternion & k);
 
-    Vector3d Quaternion::rotateObject (Vector3d objectPosition);
+    Vector3d rotateObject (Vector3d objectPosition);
 
   private:
   void SetFromEuler(double phi, double theta, double psi); // bad name
