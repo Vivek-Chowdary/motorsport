@@ -113,6 +113,10 @@ LogEngine * WorldObject::getLog()
 {
     return log;
 }
+WorldObject * WorldObject::getContainer()
+{
+    return container;
+}
 OdeObject * WorldObject::getMainOdeObject()
 {
     if (odeObjects.empty()) return NULL;

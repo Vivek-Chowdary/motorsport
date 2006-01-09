@@ -20,6 +20,7 @@ OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data, std::string
     std::string geomIdentifier = identifier + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     if (data.mass <= 0)
     {
         worldObject->getLog()->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
@@ -51,6 +52,7 @@ OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, 
     bodyID = NULL;
     // create dBody
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     
     // create transform spaces (in order to be able to 'offset' the collision geoms
     geomIDs["GeomSpace(A)"] = dCreateGeomTransform (World::getWorldPointer ()->spaceID);
@@ -97,6 +99,7 @@ OdeObject::OdeObject (WorldObject * worldObject, VehicleWheelOdeObjectData data,
     std::string geomIdentifier = identifier + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     if (data.mass <= 0)
     {
         worldObject->getLog()->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");

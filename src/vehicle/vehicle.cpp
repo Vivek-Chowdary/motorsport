@@ -109,6 +109,11 @@ void Vehicle::construct (XmlTag * tag)
                 Fixed * tmp = new Fixed (this, t);
                 components[tmp->getName()] = tmp;
             }
+            if (t->getName() == "suspension.doublewishbone")
+            {
+                DoubleWishbone * tmp = new DoubleWishbone (this, t);
+                components[tmp->getName()] = tmp;
+            }
             if (t->getName() == "camera")
             {
                 Camera * tmp = new Camera(this, t);
@@ -117,6 +122,7 @@ void Vehicle::construct (XmlTag * tag)
         }
     }
 
+    log->__format(LOG_DEVELOPER, "Setting some drive joint pointers...");
     getDriveJoint("clutch")->setOutputPointer(getDriveMass("gearbox"));
     getDriveJoint("transfer")->setOutputPointer(getDriveMass("finalDrive"));
     
@@ -124,9 +130,12 @@ void Vehicle::construct (XmlTag * tag)
     getDriveJoint("transfer")->setInputPointer(getDriveMass("gearbox"));
     getDriveJoint("rearDiff")->setInputPointer(getDriveMass("finalDrive"));
         
+    log->__format(LOG_DEVELOPER, "Placing wheels on suspensions...");
     placeWheelsOnSuspensions();
+    log->__format(LOG_DEVELOPER, "Bolting wheels to suspensions...");
     boltWheelsToSuspensions();
 
+    log->__format(LOG_DEVELOPER, "Setting some more drive joint pointers...");
     getDriveJoint("rearDiff")->setOutputPointer(getDriveMass("rear right wheel"));
     getLSD("rearDiff")->setOutputPointer2(getDriveMass("rear left wheel"));
 

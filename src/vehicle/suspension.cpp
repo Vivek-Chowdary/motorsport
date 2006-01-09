@@ -159,12 +159,7 @@ void Unidimensional::attach(WorldObject * base, WorldObject * object)
     wheel->setSusp(this);
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
-    // Set suspension travel limits. one needs to be done before the other, can't recall which one, so it's dupped
-/*    dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
-      dJointSetHinge2Param (jointID, dParamLoStop2, -0.01);
-      dJointSetHinge2Param (jointID, dParamHiStop2, +0.01);
-*/
-    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
+    // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis, and updated every frame
     dBodySetFiniteRotationMode(object->getMainOdeObject()->getBodyID(), 1);
     dBodySetFiniteRotationAxis(object->getMainOdeObject()->getBodyID(), 0, 0, 1);
 
@@ -180,10 +175,6 @@ void Unidimensional::attach(WorldObject * base, WorldObject * object)
     Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
     dJointSetHinge2Axis2 (jointID, rAxis2.x, rAxis2.y, rAxis2.z);
     log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
-    
-    // old kart suspension
-    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-    //dJointSetHingeAxis (jointID, 0,1,0);
 }
 
 
@@ -228,13 +219,7 @@ void Fixed::attach(WorldObject * base, WorldObject * object)
     Quaternion wRotation = object->getRotation();
     Vector3d rAxis = wRotation.rotateObject(Vector3d(0, 0, 1));
     dJointSetHingeAxis (jointID, rAxis.x, rAxis.y, rAxis.z);
-    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-    //dJointSetHingeAxis (jointID, 0, 1, 0);
     log->__format (LOG_DEVELOPER, "Axis = %f, %f, %f.", rAxis.x, rAxis.y, rAxis.z);
-    
-    // old kart suspension
-    //dJointSetHingeAxis (jointID, rotation.x, rotation.y, rotation.z);
-    //dJointSetHingeAxis (jointID, 0,1,0);
 }
 double Fixed::getRate()
 {
@@ -249,4 +234,261 @@ Vector3d Fixed::getAxis()
 void Fixed::setVelocity(double velocity)
 {
     dJointSetHingeParam(jointID, dParamVel, 0);
+}
+
+DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
+    :Suspension(container, "suspension.doublewishbone")
+{
+    userDriver = false;
+    maxSteeringAngle = 0.0;
+    if (tag->getName() == "suspension.doublewishbone")
+    {
+        setName (     tag->getAttribute("name"));
+        position = Vector3d (tag->getAttribute("position"));
+        rotation = Quaternion (tag->getAttribute("rotation"));
+        firstPosition = Vector3d (tag->getAttribute("firstPosition"));
+        firstRotation = Quaternion (tag->getAttribute("firstRotation"));
+        maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
+        springStiffness = stod(tag->getAttribute("springStiffness"));
+        springLengthAtEase = stod(tag->getAttribute("springLengthAtEase"));
+        damperFastBump = stod(tag->getAttribute("damperFastBump"));
+        damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
+        springStiffness = stod(tag->getAttribute("springStiffness"));
+        springStiffness = stod(tag->getAttribute("springStiffness"));
+    }
+    springOldx =  springLengthAtEase;
+    if (firstPosition.y > 0) right = true;
+    upperDim = Vector3d(0.1, 0.3, 0.05);
+    upperWeight = 2.0;
+    lowerDim = Vector3d(0.1, 0.3, 0.05);
+    lowerWeight = 2.0;
+    boneDim = Vector3d(0.1, 0.05, 0.4);
+    boneWeight = 2.0;
+    //--------------------------------------------
+    createBones();
+}
+DoubleWishbone::~DoubleWishbone()
+{
+    //empty
+}
+
+void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
+{
+    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
+    if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
+    wheel->setSusp(this);
+
+    double dirMult = 1.0;
+    if (!right) dirMult *= -1;
+
+    //create chassisUpper joint
+    Vector3d pos = getFirstLinkPosition();
+    chassisUpperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach( chassisUpperJoint, base->getMainOdeObject()->getBodyID() , upperWishBoneBody );
+    dJointSetHingeAxis( chassisUpperJoint, 1,0,0 );
+    dJointSetHingeAnchor( chassisUpperJoint, firstPosition.x, firstPosition.y, firstPosition.z+(boneDim.z*0.5));
+
+    //create chassisLower joint
+    chassisLowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach( chassisLowerJoint, base->getMainOdeObject()->getBodyID() , lowerWishBoneBody );
+    dJointSetHingeAxis( chassisLowerJoint, 1,0,0 );
+    dJointSetHingeAnchor( chassisLowerJoint, firstPosition.x, firstPosition.y, firstPosition.z-(boneDim.z*0.5));
+
+    //create axis&steering joint
+    axisJoint = dJointCreateHinge2( World::getWorldPointer()->worldID, 0 );
+    dJointAttach ( axisJoint, boneBody, object->getMainOdeObject()->getBodyID() );
+    dJointSetHinge2Anchor( axisJoint, firstPosition.x, firstPosition.y+(upperDim.y*dirMult), firstPosition.z);
+
+    Quaternion wRotation = getSecondLinkRotation();
+    Vector3d rAxis1 = wRotation.rotateObject(Vector3d(0, 1, 0));
+    dJointSetHinge2Axis1 (axisJoint, rAxis1.x, rAxis1.y, rAxis1.z);
+    Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
+    dJointSetHinge2Axis2 (axisJoint, rAxis2.x, rAxis2.y, rAxis2.z);
+    log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+}
+void DoubleWishbone::computeSprings()
+{
+    double timeStep = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    dVector3 chassisHingePos,boneHingePos;
+    dJointGetHingeAnchor( chassisUpperJoint, chassisHingePos );
+    dJointGetHingeAnchor( lowerJoint, boneHingePos );
+
+    dReal x = dDISTANCE( chassisHingePos, boneHingePos );
+    dReal v = (x-springOldx)/timeStep;
+    dReal f = (springLengthAtEase-x)*springStiffness ;
+    //dReal s = 1.f;
+    if (v<0.0)	// compression
+        f -= v*damperFastBump;
+    else
+        f -= v*damperFastRebound;
+
+    dVector3 forceDirection;
+    int i;
+    for (i=0;i<3;++i)
+        forceDirection[i] = f*(chassisHingePos[i]-boneHingePos[i])/x;
+
+    dBodyAddForceAtPos(upperWishBoneBody, forceDirection[0], forceDirection[1], forceDirection[2],
+            chassisHingePos[0], chassisHingePos[1], chassisHingePos[2]);
+    dBodyAddForceAtPos(lowerWishBoneBody, -forceDirection[0], -forceDirection[1], -forceDirection[2],
+            boneHingePos[0], boneHingePos[1], boneHingePos[2]);
+
+    springOldx = x;
+}
+void DoubleWishbone::stepPhysics()
+{
+    double angle = getSteeringAngle();
+    // Set wheel steering limits
+    //if (right) angle *= -1;
+    dJointSetHinge2Param (axisJoint, dParamLoStop, angle-0.0000001);
+    dJointSetHinge2Param (axisJoint, dParamHiStop, angle+0.0000001);
+
+    computeSprings();
+    
+    const dReal * pos;
+    pos = dBodyGetPosition(upperWishBoneBody);
+    upperB->setPosition(pos[0],pos[1],pos[2]);
+    pos = dBodyGetPosition(lowerWishBoneBody);
+    lowerB->setPosition(pos[0],pos[1],pos[2]);
+    pos = dBodyGetPosition(boneBody);
+    bB->setPosition(pos[0],pos[1],pos[2]);
+}
+void DoubleWishbone::createBones()
+{
+    double dirMult = 1.0;
+    if (!right) dirMult *= -1;
+
+    //create upperWishbone body
+    upperWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (upperWishBoneBody, (void*) container);
+    dMass m;
+    dMassSetBox(&m, 1, upperDim.x, upperDim.y, upperDim.z);
+    dMassAdjust(&m, upperWeight);
+    dBodySetMass(upperWishBoneBody, &m);
+    dBodySetPosition(upperWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z+(boneDim.z*0.5));
+
+    //create lowerWishbone body
+    lowerWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (lowerWishBoneBody, (void*) container);
+    dMassSetBox(&m, 1, lowerDim.x, lowerDim.y, lowerDim.z);
+    dMassAdjust(&m, lowerWeight);
+    dBodySetMass(lowerWishBoneBody, &m);
+    dBodySetPosition(lowerWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z-(boneDim.z*0.5));
+
+    //create bone body
+    boneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (boneBody, (void*) container);
+    dMassSetBox(&m, 1, boneDim.x, boneDim.y, boneDim.z);
+    dMassAdjust(&m, boneWeight);
+    dBodySetMass(boneBody, &m);
+    dBodySetPosition(boneBody, firstPosition.x, firstPosition.y+(dirMult*upperDim.y), firstPosition.z);
+
+    //create visual debug aids
+    Ogre::BillboardSet * bset = SystemData::getSystemDataPointer()->ogreSceneManager->createBillboardSet(std::string("lightbbs") + getId(), 3);
+    upperB = bset->createBillboard(1,1,1,Ogre::ColourValue(0.5,0.3,0.0f));
+    lowerB = bset->createBillboard(1,0,1,Ogre::ColourValue(0.5,0.8,1.0f));
+    bB = bset->createBillboard(1,-1.3,1,Ogre::ColourValue(0.5,0.3,1.0f));
+    SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->attachObject(bset);
+    upperB->setDimensions(0.3,0.05);
+    lowerB->setDimensions(0.3,0.05);
+    bB->setDimensions(0.05,0.4);
+
+    //create upper joint
+    upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach ( upperJoint, boneBody, upperWishBoneBody );
+    dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z+(boneDim.z*0.5) );
+    dJointSetHingeAxis( upperJoint , 1.0, 0.0, 0.0 );
+    //limit its rotation
+    dJointSetHingeParam ( upperJoint, dParamLoStop, -2.0 );
+    dJointSetHingeParam ( upperJoint, dParamHiStop, 2.0 );
+
+    //create lower joint
+    lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach ( lowerJoint, boneBody, lowerWishBoneBody );
+    dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z-(boneDim.z*0.5) );
+    dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
+    //limit its rotation
+    dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );
+    dJointSetHingeParam ( lowerJoint, dParamHiStop, 2.0 );
+
+    //create upperWishbone geom
+    upperWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, upperDim.x, upperDim.y-0.1, upperDim.z);
+    dGeomSetBody(upperWishBoneGeom, upperWishBoneBody);
+
+    //create lowerWishbone geom
+    lowerWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, lowerDim.x, lowerDim.y-0.1, lowerDim.z);
+    dGeomSetBody(lowerWishBoneGeom, lowerWishBoneBody);
+
+    //create bone geom
+    boneGeom = dCreateBox(World::getWorldPointer()->spaceID, boneDim.x, boneDim.y, boneDim.z-0.05);
+    dGeomSetBody(boneGeom , boneBody );
+}
+double DoubleWishbone::getRate()
+{
+    return dJointGetHinge2Angle2Rate (axisJoint);
+}
+Vector3d DoubleWishbone::getAxis()
+{
+    dVector3 odeTAxis;
+    dJointGetHinge2Axis2 (axisJoint, odeTAxis);
+    return Vector3d (odeTAxis);
+}
+void DoubleWishbone::setVelocity(double velocity)
+{
+    dJointSetHinge2Param(axisJoint, dParamVel, 0);
+}
+double DoubleWishbone::getSteeringAngle()
+{
+    double angle = 0;
+    double leftSteering = 0;
+    if ( userDriver )
+    {
+        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
+        if (leftSteering < 0.5)
+        {
+            leftSteering = 0.5 - leftSteering;
+            leftSteering *= 2.0;
+        } else {
+            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_1)]->getValue() * 5 / 5;
+            if (leftSteering == 0) {
+                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_2)]->getValue() * 4 / 5;
+                if (leftSteering == 0) {
+                    leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_3)]->getValue() * 3 / 5;
+                    if (leftSteering == 0) {
+                        leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_4)]->getValue() * 2 / 5;
+                        if (leftSteering == 0) {
+                            leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_5)]->getValue() * 1 / 5;
+                            if (leftSteering == 0) {
+                                leftSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_LEFT)]->getValue() * 5 / 5;
+        }   }   }   }   }   }
+    }
+    double rightSteering = 0;
+    if ( userDriver )
+    {
+        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,0)]->getValue();
+        if (rightSteering > 0.5)
+        {
+            rightSteering = rightSteering - 0.5;
+            rightSteering *= 2.0;
+        } else {
+            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_0)]->getValue() * 5 / 5;
+            if (rightSteering == 0) {
+                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_9)]->getValue() * 4 / 5;
+                if (rightSteering == 0) {
+                    rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_8)]->getValue() * 3 / 5;
+                    if (rightSteering == 0) {
+                        rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_7)]->getValue() * 2 / 5;
+                        if (rightSteering == 0) {
+                            rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_6)]->getValue() * 1 / 5;
+                            if (rightSteering == 0) {
+                                rightSteering = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RIGHT)]->getValue() * 5 / 5;
+        }   }   }   }   }   }
+    }
+
+    // Override keyboard data with joystick axis if the keyboard is not used.
+    const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
+    rightSteering *= maxSteeringAngle * piK / 2;
+    leftSteering *= maxSteeringAngle * piK / 2;
+    angle += rightSteering - leftSteering;
+    return angle;
 }

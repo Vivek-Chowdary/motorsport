@@ -15,6 +15,8 @@
 #include "vector3d.hpp"
 #include "location.hpp"
 #include "vehicle.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 
 //forward declarations
 namespace Ogre {
@@ -68,6 +70,81 @@ class Fixed : public Suspension
         Fixed (WorldObject * container, XmlTag * tag);
         ~Fixed();
 
+        void stepPhysics();
+        double getRate();
+        Vector3d getAxis();
+        void setVelocity(double velocity);
+        void attach(WorldObject * base, WorldObject * object);
+};
+class DoubleWishbone : public Suspension
+{
+    protected:
+        Quaternion firstRotation;
+        Vector3d firstPosition;
+        Vector3d getFirstLinkPosition (){return firstPosition;};
+        Quaternion getFirstLinkRotation (){return firstRotation;};
+        double maxSteeringAngle;
+        double getSteeringAngle();
+
+        void computeSprings();
+        void createBones();
+        ///////////// my list ////////////////////
+        /*
+        dBodyID upperWishBoneBody;
+        dBodyID lowerWishBoneBody;
+        dBodyID boneBody;
+        dGeomID upperWishBoneGeom;
+        dGeomID lowerWishBoneGeom;
+        dGeomID boneGeom;
+        dJointID upperJoint;
+        dJointID lowerJoint;
+        dJointID axisJoint;
+        dJointID chassisUpperJoint;        
+        dJointID chassisLowerJoint;        
+
+        Vector3d position chassisUpperJoint;
+        Vector3d position chassisLowerJoint;
+        Vector3d position boneUpperJoint;
+        Vector3d position boneLowerJoint;
+        
+        double upperWeight;
+        double lowerWeight;
+        double boneWeight;
+        */
+        //////////////////////////////////////////
+        dBodyID upperWishBoneBody;
+        dBodyID lowerWishBoneBody;
+        dBodyID boneBody;
+        Ogre::Billboard * upperB;
+        Ogre::Billboard * lowerB;
+        Ogre::Billboard *  bB;
+
+        dGeomID upperWishBoneGeom;
+        dGeomID lowerWishBoneGeom;
+        dGeomID boneGeom;
+        dJointID upperJoint;
+        dJointID lowerJoint;
+        dJointID axisJoint;
+        dJointID chassisUpperJoint;        
+        dJointID chassisLowerJoint;        
+
+        Vector3d upperDim;
+        Vector3d lowerDim;
+        Vector3d boneDim;
+        double upperWeight;
+        double lowerWeight;
+        double boneWeight;
+
+        double springOldx;
+        bool right;
+        double springStiffness;
+        double springLengthAtEase;
+        double damperFastBump;
+        double damperFastRebound;
+
+    public:
+        DoubleWishbone (WorldObject * container, XmlTag * tag);
+        ~DoubleWishbone();
         void stepPhysics();
         double getRate();
         Vector3d getAxis();

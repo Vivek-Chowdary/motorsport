@@ -84,6 +84,10 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
     {
         return;
     }
+    if (b1 && b2 && dBodyGetData (b1) == dBodyGetData (b2))
+    {
+        return;
+    }
 
     const int N = 10;
     dContact contact[N];

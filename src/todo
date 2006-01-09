@@ -1,5 +1,6 @@
 rename mosp window
-use tnsp for suspension thingies
+check what happens when getName() of root nodes... doesn't exist.. you know waht i mean, the xmlTag-using code..
+move suspensions to vehicle position too!
 check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
 refactorize the world and area (ground, sky, ...)
 redefine vehicle.xml format, so that it allows links between objects.

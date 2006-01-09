@@ -160,7 +160,7 @@ void Area::construct (XmlTag * tag)
     if (mesh != "none")
     {
         log->loadscreen (LOG_CCREATOR, "Creating loading the ogre area mesh");
-        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", Paths::area(getName()) + mesh);
+        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", getPath() + mesh);
         Ogre::SceneNode * areaNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
         areaNode->attachObject (areaEntity);
         areaNode->setScale (1, 1, 1);

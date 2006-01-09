@@ -48,6 +48,7 @@ class WorldObject
     public:
         WorldObject (WorldObject * container, const std::string & name);
         virtual ~WorldObject ();
+        WorldObject * getContainer();
         std::string getId();
         std::string getName();
         std::string getFullName();
