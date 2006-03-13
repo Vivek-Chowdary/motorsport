@@ -38,7 +38,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
         ogreData.meshPath = tag->getAttribute("mesh");
     }
 
-    odeObjects[getId()] = new OdeObject(this, data, getId());
+    odeObjects[getName()] = new OdeObject(this, data, getName());
 
     // set the air drag variables correctly
     if (frontalArea == 0)
