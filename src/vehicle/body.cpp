@@ -23,7 +23,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
 {
     dragCoefficient = 0.3;
     frontalArea = 0;
-    VehicleBodyOdeObjectData data;
+    BodyOdeData data;
     OgreObjectData ogreData;
 
     if (tag->getName() == "body")

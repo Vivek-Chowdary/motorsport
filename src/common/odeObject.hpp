@@ -16,9 +16,9 @@
 #include "vector3d.hpp"
 
 class OdeObject;
-class OdeObjectData;
-class VehicleBodyOdeObjectData;
-class VehicleWheelOdeObjectData;
+class PartOdeData;
+class BodyOdeData;
+class WheelOdeData;
 class Quaternion;
 class WorldObject;
 
@@ -36,9 +36,9 @@ class OdeObject
         std::string identifier;
 
     public:
-        OdeObject (WorldObject * worldObject, OdeObjectData data, std::string identifier);
-        OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, std::string identifier);
-        OdeObject (WorldObject * worldObject, VehicleWheelOdeObjectData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, PartOdeData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string identifier);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
@@ -46,28 +46,28 @@ class OdeObject
         void setRotation (Quaternion rotation);
         dBodyID getBodyID();
 };
-class OdeObjectData
+class PartOdeData
 {
     public:
         double mass;
         std::string shape;
-        Vector3d dimensions;
+        Vector3d size;
         double radius;
         double length;
         int directionAxis;
 
-        OdeObjectData()
+        PartOdeData()
         {
             mass = -1;
             shape = "none";
-            dimensions.x = dimensions.y = dimensions.z = 1;
+            size.x = size.y = size.z = 1;
             radius = 1;
             length = 1;
             directionAxis = 3;
         }
-        ~OdeObjectData() {};
+        ~PartOdeData() {};
 };
-class VehicleBodyOdeObjectData
+class BodyOdeData
 {
     public:
         double length;
@@ -75,24 +75,24 @@ class VehicleBodyOdeObjectData
         double height;
         double mass;
 
-        VehicleBodyOdeObjectData()
+        BodyOdeData()
         {
             mass = -1;
             width = height = length = 1;
         }
-        ~VehicleBodyOdeObjectData() {};
+        ~BodyOdeData() {};
 };
-class VehicleWheelOdeObjectData
+class WheelOdeData
 {
     public:
         double radius;
         double width;
         double mass;
 
-        VehicleWheelOdeObjectData()
+        WheelOdeData()
         {
             mass = width = radius = 0;
         }
-        ~VehicleWheelOdeObjectData() {};
+        ~WheelOdeData() {};
 };
 #endif

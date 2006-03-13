@@ -23,7 +23,7 @@ Wheel::Wheel (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "wheel")
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
-    VehicleWheelOdeObjectData data;
+    WheelOdeData data;
     OgreObjectData ogreData;
     powered = 0;
     inputAngularVel = 0.0;

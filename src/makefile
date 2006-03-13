@@ -303,15 +303,15 @@ $(TARGET) :$(OBJECTS)
 	@echo    "----------------------------------------------"
 
 #compiling the unit test programs
-TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o tools/xmlParser.o log/fakeGuiEngine.o tools/vector3d.o
+TestLogEngine: -lxerces-c -lpthread log/testLogEngine.o log/logEngine.o tools/xmlParser.o log/fakeGuiEngine.o common/vector3d.o tools/xmlTag.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
-TestAxis: input/axis.o input/testAxis.o
+TestAxis: common/axis.o tools/testAxis.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 
-TestVector3d: tools/vector3d.o tools/testVector3d.o
+TestVector3d: common/vector3d.o tools/testVector3d.o
 	$(LD)  -o $@ $^
 	@chmod +x $@
 

@@ -128,7 +128,7 @@ double Vector3d::distance (const Vector3d & k) const
 
 
 // cross product (normalized to 1 unit, is needed for OpenGL normal-vectors)
-const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec)
+const Vector3d Vector3d::GetCrossProduct (const std::vector < Vector3d > &vec)
 {
     // Normalx = (vtx1y - vtx2y) * (vtx2z - vtx3z) - (vtx1z - vtx2z) * (vtx2y - vtx3y) 
     // Normaly = (vtx1z - vtx2z) * (vtx2x - vtx3x) - (vtx1x - vtx2x) * (vtx2z - vtx3z) 

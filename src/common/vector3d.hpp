@@ -42,6 +42,7 @@ class Vector3d
     Vector3d & scalarAdd(const double value);
     Vector3d & scalarMultiply(const double value);
     Vector3d & scalarDivide(const double value);
+    const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec);
 };
 
 #endif

@@ -197,7 +197,7 @@ void TestPut_filter_eq ()
     // scope to construct+destruct the object.
     {
         LogEngine logEngine (LOG_WARNING, "TST");
-        logEngine.put (LOG_WARNING, "logtext");
+        logEngine.format (LOG_WARNING, "logtext");
     }
 
     std::fstream testFile;

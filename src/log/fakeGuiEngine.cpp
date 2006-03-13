@@ -30,12 +30,12 @@ int GuiEngine::computeStep (void)
 }
 void GuiEngine::showLoadscreen (){}
 void GuiEngine::updateStatistics (void){}
-void GuiEngine::addTelemetryLine (const char * line)
+void GuiEngine::addTelemetryLine (const std::string & line)
 {
   telemetryText = line;
 }
-void GuiEngine::addLoadscreenLine (const char * line)
+void GuiEngine::addLoadscreenLine (const std::string & line)
 {
   loadscreenText = line;
 }
-void GuiEngine::processXmlRootNode (DOMNode * n){}
+//void GuiEngine::processXmlRootNode (DOMNode * n){}

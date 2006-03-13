@@ -13,7 +13,7 @@
 #include "quaternion.hpp"
 #include "world.hpp"
 
-OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string identifier)
 {
     this->worldObject = worldObject;
     this->identifier = identifier;
@@ -29,8 +29,8 @@ OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data, std::string
     dMass dmass;
     if (data.shape == "box")
     {
-        geomIDs[geomIdentifier] = dCreateBox (World::getWorldPointer ()->spaceID, data.dimensions.x, data.dimensions.y, data.dimensions.z);
-        dMassSetBoxTotal (&dmass, data.mass, data.dimensions.x, data.dimensions.y, data.dimensions.z);
+        geomIDs[geomIdentifier] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
+        dMassSetBoxTotal (&dmass, data.mass, data.size.x, data.size.y, data.size.z);
     }
     if (data.shape == "sphere")
     {
@@ -45,7 +45,7 @@ OdeObject::OdeObject (WorldObject * worldObject, OdeObjectData data, std::string
     dGeomSetBody (geomIDs[geomIdentifier], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string identifier)
 {
     this->worldObject = worldObject;
     this->identifier = identifier;
@@ -92,7 +92,7 @@ OdeObject::OdeObject (WorldObject * worldObject, VehicleBodyOdeObjectData data, 
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
-OdeObject::OdeObject (WorldObject * worldObject, VehicleWheelOdeObjectData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string identifier)
 {
     this->worldObject = worldObject;
     this->identifier = identifier;

@@ -9,7 +9,7 @@
     mass = "50"
     >
     <box
-        dimensions = "1 1 2"
+        size = "1 1 2"
         >
     </box>
 <!--

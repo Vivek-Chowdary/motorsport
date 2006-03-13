@@ -27,7 +27,7 @@ Part::Part (WorldObject * container, const std::string & name)
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("parts." + name);
     XmlTag * tag = new XmlTag (getXmlPath().c_str());
     OgreObjectData ogreData;
-    OdeObjectData data;
+    PartOdeData data;
     std::string shape = "none";
     if (tag->getName() == "part")
     {
@@ -39,7 +39,7 @@ Part::Part (WorldObject * container, const std::string & name)
             data.shape = t->getName();
             if (data.shape == "box")
             {
-                data.dimensions = Vector3d(t->getAttribute("dimensions"));
+                data.size = Vector3d(t->getAttribute("size"));
             }
             if (data.shape == "sphere")
             {
