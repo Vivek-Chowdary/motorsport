@@ -265,7 +265,73 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     boneDim = Vector3d(0.1, 0.05, 0.4);
     boneWeight = 2.0;
     //--------------------------------------------
-    createBones();
+    double dirMult = 1.0;
+    if (!right) dirMult *= -1;
+
+    //create upperWishbone body
+    upperWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (upperWishBoneBody, (void*) container);
+    dMass m;
+    dMassSetBox(&m, 1, upperDim.x, upperDim.y, upperDim.z);
+    dMassAdjust(&m, upperWeight);
+    dBodySetMass(upperWishBoneBody, &m);
+    dBodySetPosition(upperWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z+(boneDim.z*0.5));
+
+    //create lowerWishbone body
+    lowerWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (lowerWishBoneBody, (void*) container);
+    dMassSetBox(&m, 1, lowerDim.x, lowerDim.y, lowerDim.z);
+    dMassAdjust(&m, lowerWeight);
+    dBodySetMass(lowerWishBoneBody, &m);
+    dBodySetPosition(lowerWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z-(boneDim.z*0.5));
+
+    //create bone body
+    boneBody = dBodyCreate( World::getWorldPointer()->worldID );
+    dBodySetData (boneBody, (void*) container);
+    dMassSetBox(&m, 1, boneDim.x, boneDim.y, boneDim.z);
+    dMassAdjust(&m, boneWeight);
+    dBodySetMass(boneBody, &m);
+    dBodySetPosition(boneBody, firstPosition.x, firstPosition.y+(dirMult*upperDim.y), firstPosition.z);
+
+    //create visual debug aids
+    Ogre::BillboardSet * bset = SystemData::getSystemDataPointer()->ogreSceneManager->createBillboardSet(std::string("lightbbs") + getId(), 3);
+    upperB = bset->createBillboard(1,1,1,Ogre::ColourValue(0.5,0.3,0.0f));
+    lowerB = bset->createBillboard(1,0,1,Ogre::ColourValue(0.5,0.8,1.0f));
+    bB = bset->createBillboard(1,-1.3,1,Ogre::ColourValue(0.5,0.3,1.0f));
+    SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->attachObject(bset);
+    upperB->setDimensions(0.3,0.05);
+    lowerB->setDimensions(0.3,0.05);
+    bB->setDimensions(0.05,0.4);
+
+    //create upper joint
+    upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach ( upperJoint, boneBody, upperWishBoneBody );
+    dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z+(boneDim.z*0.5) );
+    dJointSetHingeAxis( upperJoint , 1.0, 0.0, 0.0 );
+    //limit its rotation
+    dJointSetHingeParam ( upperJoint, dParamLoStop, -2.0 );
+    dJointSetHingeParam ( upperJoint, dParamHiStop, 2.0 );
+
+    //create lower joint
+    lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    dJointAttach ( lowerJoint, boneBody, lowerWishBoneBody );
+    dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z-(boneDim.z*0.5) );
+    dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
+    //limit its rotation
+    dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );
+    dJointSetHingeParam ( lowerJoint, dParamHiStop, 2.0 );
+
+    //create upperWishbone geom
+    upperWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, upperDim.x, upperDim.y-0.1, upperDim.z);
+    dGeomSetBody(upperWishBoneGeom, upperWishBoneBody);
+
+    //create lowerWishbone geom
+    lowerWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, lowerDim.x, lowerDim.y-0.1, lowerDim.z);
+    dGeomSetBody(lowerWishBoneGeom, lowerWishBoneBody);
+
+    //create bone geom
+    boneGeom = dCreateBox(World::getWorldPointer()->spaceID, boneDim.x, boneDim.y, boneDim.z-0.05);
+    dGeomSetBody(boneGeom , boneBody );
 }
 DoubleWishbone::~DoubleWishbone()
 {
@@ -349,76 +415,6 @@ void DoubleWishbone::stepPhysics()
     lowerB->setPosition(pos[0],pos[1],pos[2]);
     pos = dBodyGetPosition(boneBody);
     bB->setPosition(pos[0],pos[1],pos[2]);
-}
-void DoubleWishbone::createBones()
-{
-    double dirMult = 1.0;
-    if (!right) dirMult *= -1;
-
-    //create upperWishbone body
-    upperWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
-    dBodySetData (upperWishBoneBody, (void*) container);
-    dMass m;
-    dMassSetBox(&m, 1, upperDim.x, upperDim.y, upperDim.z);
-    dMassAdjust(&m, upperWeight);
-    dBodySetMass(upperWishBoneBody, &m);
-    dBodySetPosition(upperWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z+(boneDim.z*0.5));
-
-    //create lowerWishbone body
-    lowerWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
-    dBodySetData (lowerWishBoneBody, (void*) container);
-    dMassSetBox(&m, 1, lowerDim.x, lowerDim.y, lowerDim.z);
-    dMassAdjust(&m, lowerWeight);
-    dBodySetMass(lowerWishBoneBody, &m);
-    dBodySetPosition(lowerWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z-(boneDim.z*0.5));
-
-    //create bone body
-    boneBody = dBodyCreate( World::getWorldPointer()->worldID );
-    dBodySetData (boneBody, (void*) container);
-    dMassSetBox(&m, 1, boneDim.x, boneDim.y, boneDim.z);
-    dMassAdjust(&m, boneWeight);
-    dBodySetMass(boneBody, &m);
-    dBodySetPosition(boneBody, firstPosition.x, firstPosition.y+(dirMult*upperDim.y), firstPosition.z);
-
-    //create visual debug aids
-    Ogre::BillboardSet * bset = SystemData::getSystemDataPointer()->ogreSceneManager->createBillboardSet(std::string("lightbbs") + getId(), 3);
-    upperB = bset->createBillboard(1,1,1,Ogre::ColourValue(0.5,0.3,0.0f));
-    lowerB = bset->createBillboard(1,0,1,Ogre::ColourValue(0.5,0.8,1.0f));
-    bB = bset->createBillboard(1,-1.3,1,Ogre::ColourValue(0.5,0.3,1.0f));
-    SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->attachObject(bset);
-    upperB->setDimensions(0.3,0.05);
-    lowerB->setDimensions(0.3,0.05);
-    bB->setDimensions(0.05,0.4);
-
-    //create upper joint
-    upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
-    dJointAttach ( upperJoint, boneBody, upperWishBoneBody );
-    dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z+(boneDim.z*0.5) );
-    dJointSetHingeAxis( upperJoint , 1.0, 0.0, 0.0 );
-    //limit its rotation
-    dJointSetHingeParam ( upperJoint, dParamLoStop, -2.0 );
-    dJointSetHingeParam ( upperJoint, dParamHiStop, 2.0 );
-
-    //create lower joint
-    lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
-    dJointAttach ( lowerJoint, boneBody, lowerWishBoneBody );
-    dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperDim.y), firstPosition.z-(boneDim.z*0.5) );
-    dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
-    //limit its rotation
-    dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );
-    dJointSetHingeParam ( lowerJoint, dParamHiStop, 2.0 );
-
-    //create upperWishbone geom
-    upperWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, upperDim.x, upperDim.y-0.1, upperDim.z);
-    dGeomSetBody(upperWishBoneGeom, upperWishBoneBody);
-
-    //create lowerWishbone geom
-    lowerWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, lowerDim.x, lowerDim.y-0.1, lowerDim.z);
-    dGeomSetBody(lowerWishBoneGeom, lowerWishBoneBody);
-
-    //create bone geom
-    boneGeom = dCreateBox(World::getWorldPointer()->spaceID, boneDim.x, boneDim.y, boneDim.z-0.05);
-    dGeomSetBody(boneGeom , boneBody );
 }
 double DoubleWishbone::getRate()
 {

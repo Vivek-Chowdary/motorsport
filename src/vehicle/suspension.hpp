@@ -86,7 +86,6 @@ class DoubleWishbone : public Suspension
         double maxSteeringAngle;
         double getSteeringAngle();
 
-        void createBones();
         bool right;
         dBodyID upperWishBoneBody;
         dBodyID lowerWishBoneBody;
