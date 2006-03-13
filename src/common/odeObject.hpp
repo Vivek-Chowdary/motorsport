@@ -19,7 +19,7 @@ class OdeObject;
 class PartOdeData;
 class BodyOdeData;
 class WheelOdeData;
-class BoxOdeData;
+class BoneOdeData;
 class Quaternion;
 class WorldObject;
 
@@ -43,7 +43,7 @@ class OdeObject
         OdeObject (WorldObject * worldObject, PartOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, BodyOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, WheelOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, BoxOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, BoneOdeData data, std::string name);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
@@ -101,19 +101,19 @@ class WheelOdeData
         }
         ~WheelOdeData() {};
 };
-class BoxOdeData
+class BoneOdeData
 {
     public:
-        Vector3d size;
+        double length;
+        double radius;
         double mass;
         double density;
         bool useMass;
-        BoxOdeData()
+        BoneOdeData()
         {
-            size.x = size.y = size.z = 0;
-            mass = density = 0;
+            length = radius = mass = density = 0;
             useMass = true;
         }
-        ~BoxOdeData() {};
+        ~BoneOdeData() {};
 };
 #endif

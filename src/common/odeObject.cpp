@@ -117,7 +117,7 @@ OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string 
     dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, BoxOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, BoneOdeData data, std::string name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -129,15 +129,15 @@ OdeObject::OdeObject (WorldObject * worldObject, BoxOdeData data, std::string na
     dMass dmass;
     if (data.useMass)
     {
-        dMassSetBoxTotal(&dmass, data.mass, data.size.x, data.size.y, data.size.z);
+        dMassSetBoxTotal(&dmass, data.mass, data.radius, data.radius, data.length);
     }
     else
     {
-        dMassSetBox(&dmass, data.density, data.size.x, data.size.y, data.size.z);
+        dMassSetBox(&dmass, data.density, data.radius, data.radius, data.length);
     }
     dBodySetMass (bodyID, &dmass);
 
-    geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
+    geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.radius, data.radius, data.length);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
     dGeomSetBody (geomIDs[name], bodyID);

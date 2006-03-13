@@ -87,14 +87,12 @@ class DoubleWishbone : public Suspension
         double getSteeringAngle();
 
         bool right;
-        dBodyID upperWishBoneBody;
         dBodyID lowerWishBoneBody;
         dBodyID boneBody;
         Ogre::Billboard * upperB;
         Ogre::Billboard * lowerB;
         Ogre::Billboard *  bB;
 
-        dGeomID upperWishBoneGeom;
         dGeomID lowerWishBoneGeom;
         dGeomID boneGeom;
         dJointID upperJoint;
@@ -103,10 +101,10 @@ class DoubleWishbone : public Suspension
         dJointID chassisUpperJoint;        
         dJointID chassisLowerJoint;        
 
-        Vector3d upperDim;
+        double uprightLength;
+        double upperBoneLength;
         Vector3d lowerDim;
         Vector3d boneDim;
-        double upperWeight;
         double lowerWeight;
         double boneWeight;
 
