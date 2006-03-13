@@ -258,8 +258,6 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     }
     springOldx =  springLengthAtEase;
     if (firstPosition.y > 0) right = true;
-    lowerDim = Vector3d(0.1, 0.3, 0.05);
-    lowerWeight = 2.0;
     boneDim = Vector3d(0.1, 0.05, 0.4);
     boneWeight = 2.0;
     //--------------------------------------------
@@ -276,18 +274,23 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     dBodySetData (odeObjects["upperBone"]->getBodyID(), (void*) container);
     Quaternion upperBoneRot (90, 0, 0);
     odeObjects["upperBone"]->setRotation(upperBoneRot);
-    Vector3d upperBonePos (firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z+(boneDim.z*0.5));
+    Vector3d upperBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneLength*0.5) , firstPosition.z+(boneDim.z*0.5));
     odeObjects["upperBone"]->setPosition(upperBonePos);
 
     //create lowerWishbone body
-    lowerWishBoneBody = dBodyCreate( World::getWorldPointer()->worldID );
-    dBodySetData (lowerWishBoneBody, (void*) container);
-    dMass m;
-    dMassSetBox(&m, 1, lowerDim.x, lowerDim.y, lowerDim.z);
-    dMassAdjust(&m, lowerWeight);
-    dBodySetMass(lowerWishBoneBody, &m);
-    dBodySetPosition(lowerWishBoneBody, firstPosition.x, firstPosition.y+(dirMult*lowerDim.y*0.5) , firstPosition.z-(boneDim.z*0.5));
+    BoneOdeData lowerBoneData;
+    lowerBoneData.radius = 0.05;
+    lowerBoneData.length = lowerBoneLength = 0.3;
+    lowerBoneData.mass = 2.0;
+    odeObjects["lowerBone"] = new OdeObject(this, lowerBoneData, "lowerBone");
+    dBodySetData (odeObjects["lowerBone"]->getBodyID(), (void*) container);
+    Quaternion lowerBoneRot (90, 0, 0);
+    odeObjects["lowerBone"]->setRotation(lowerBoneRot);
+    Vector3d lowerBonePos (firstPosition.x, firstPosition.y+(dirMult*lowerBoneLength*0.5) , firstPosition.z-(boneDim.z*0.5));
+    odeObjects["lowerBone"]->setPosition(lowerBonePos);
+    
 
+    dMass m;
     //create bone body
     boneBody = dBodyCreate( World::getWorldPointer()->worldID );
     dBodySetData (boneBody, (void*) container);
@@ -317,16 +320,12 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
 
     //create lower joint
     lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
-    dJointAttach ( lowerJoint, boneBody, lowerWishBoneBody );
+    dJointAttach ( lowerJoint, boneBody, odeObjects["lowerBone"]->getBodyID() );
     dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData.length), firstPosition.z-(boneDim.z*0.5) );
     dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
     //limit its rotation
     dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );
     dJointSetHingeParam ( lowerJoint, dParamHiStop, 2.0 );
-
-    //create lowerWishbone geom
-    lowerWishBoneGeom = dCreateBox(World::getWorldPointer()->spaceID, lowerDim.x, lowerDim.y-0.1, lowerDim.z);
-    dGeomSetBody(lowerWishBoneGeom, lowerWishBoneBody);
 
     //create bone geom
     boneGeom = dCreateBox(World::getWorldPointer()->spaceID, boneDim.x, boneDim.y, boneDim.z-0.05);
@@ -356,7 +355,7 @@ void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
 
     //create chassisLower joint
     chassisLowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
-    dJointAttach( chassisLowerJoint, base->getMainOdeObject()->getBodyID() , lowerWishBoneBody );
+    dJointAttach( chassisLowerJoint, base->getMainOdeObject()->getBodyID() , odeObjects["lowerBone"]->getBodyID() );
     dJointSetHingeAxis( chassisLowerJoint, 1,0,0 );
     dJointSetHingeAnchor( chassisLowerJoint, firstPosition.x, firstPosition.y, firstPosition.z-(boneDim.z*0.5));
 
@@ -402,7 +401,7 @@ void DoubleWishbone::stepPhysics()
 
     dBodyAddForceAtPos(odeObjects["upperBone"]->getBodyID(), forceDirection[0], forceDirection[1], forceDirection[2],
             chassisHingePos[0], chassisHingePos[1], chassisHingePos[2]);
-    dBodyAddForceAtPos(lowerWishBoneBody, -forceDirection[0], -forceDirection[1], -forceDirection[2],
+    dBodyAddForceAtPos(odeObjects["lowerBone"]->getBodyID(), -forceDirection[0], -forceDirection[1], -forceDirection[2],
             boneHingePos[0], boneHingePos[1], boneHingePos[2]);
 
     springOldx = x;
@@ -410,7 +409,7 @@ void DoubleWishbone::stepPhysics()
     const dReal * pos;
     pos = dBodyGetPosition(odeObjects["upperBone"]->getBodyID());
     upperB->setPosition(pos[0],pos[1],pos[2]);
-    pos = dBodyGetPosition(lowerWishBoneBody);
+    pos = dBodyGetPosition(odeObjects["lowerBone"]->getBodyID());
     lowerB->setPosition(pos[0],pos[1],pos[2]);
     pos = dBodyGetPosition(boneBody);
     bB->setPosition(pos[0],pos[1],pos[2]);
