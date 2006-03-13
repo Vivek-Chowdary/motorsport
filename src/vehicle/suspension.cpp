@@ -307,8 +307,15 @@ void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
     dJointSetHinge2Axis2 (axisJoint, rAxis2.x, rAxis2.y, rAxis2.z);
     log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
 }
-void DoubleWishbone::computeSprings()
+void DoubleWishbone::stepPhysics()
 {
+    //compute steering
+    double angle = getSteeringAngle();
+    //if (right) angle *= -1;
+    dJointSetHinge2Param (axisJoint, dParamLoStop, angle-0.0000001);
+    dJointSetHinge2Param (axisJoint, dParamHiStop, angle+0.0000001);
+
+    //compute suspension
     double timeStep = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
     dVector3 chassisHingePos,boneHingePos;
     dJointGetHingeAnchor( chassisUpperJoint, chassisHingePos );
@@ -334,16 +341,6 @@ void DoubleWishbone::computeSprings()
             boneHingePos[0], boneHingePos[1], boneHingePos[2]);
 
     springOldx = x;
-}
-void DoubleWishbone::stepPhysics()
-{
-    double angle = getSteeringAngle();
-    // Set wheel steering limits
-    //if (right) angle *= -1;
-    dJointSetHinge2Param (axisJoint, dParamLoStop, angle-0.0000001);
-    dJointSetHinge2Param (axisJoint, dParamHiStop, angle+0.0000001);
-
-    computeSprings();
     
     const dReal * pos;
     pos = dBodyGetPosition(upperWishBoneBody);

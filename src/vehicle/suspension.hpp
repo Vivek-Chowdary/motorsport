@@ -86,32 +86,8 @@ class DoubleWishbone : public Suspension
         double maxSteeringAngle;
         double getSteeringAngle();
 
-        void computeSprings();
         void createBones();
-        ///////////// my list ////////////////////
-        /*
-        dBodyID upperWishBoneBody;
-        dBodyID lowerWishBoneBody;
-        dBodyID boneBody;
-        dGeomID upperWishBoneGeom;
-        dGeomID lowerWishBoneGeom;
-        dGeomID boneGeom;
-        dJointID upperJoint;
-        dJointID lowerJoint;
-        dJointID axisJoint;
-        dJointID chassisUpperJoint;        
-        dJointID chassisLowerJoint;        
-
-        Vector3d position chassisUpperJoint;
-        Vector3d position chassisLowerJoint;
-        Vector3d position boneUpperJoint;
-        Vector3d position boneLowerJoint;
-        
-        double upperWeight;
-        double lowerWeight;
-        double boneWeight;
-        */
-        //////////////////////////////////////////
+        bool right;
         dBodyID upperWishBoneBody;
         dBodyID lowerWishBoneBody;
         dBodyID boneBody;
@@ -136,7 +112,6 @@ class DoubleWishbone : public Suspension
         double boneWeight;
 
         double springOldx;
-        bool right;
         double springStiffness;
         double springLengthAtEase;
         double damperFastBump;
