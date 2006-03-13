@@ -17,7 +17,7 @@ OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string i
 {
     this->worldObject = worldObject;
     this->id = id;
-    std::string geomIdentifier = id + ",Geom(unique)";
+    std::string geomId = id + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
@@ -29,20 +29,20 @@ OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string i
     dMass dmass;
     if (data.shape == "box")
     {
-        geomIDs[geomIdentifier] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
+        geomIDs[geomId] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
         dMassSetBoxTotal (&dmass, data.mass, data.size.x, data.size.y, data.size.z);
     }
     if (data.shape == "sphere")
     {
-        geomIDs[geomIdentifier] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
+        geomIDs[geomId] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
         dMassSetSphereTotal (&dmass, data.mass, data.radius);
     }
     if (data.shape == "cappedCylinder")
     {
-        geomIDs[geomIdentifier] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
+        geomIDs[geomId] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
         dMassSetCappedCylinderTotal (&dmass, data.mass, data.directionAxis, data.radius, data.length);
     }
-    dGeomSetBody (geomIDs[geomIdentifier], bodyID);
+    dGeomSetBody (geomIDs[geomId], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
 OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string id)
@@ -96,7 +96,7 @@ OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string 
 {
     this->worldObject = worldObject;
     this->id = id;
-    std::string geomIdentifier = id + ",Geom(unique)";
+    std::string geomId = id + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
@@ -110,10 +110,10 @@ OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string 
                          0, 0, 0,
                          0.237, 0.237, 0.409,
                          0, 0, 0);
-    geomIDs[geomIdentifier] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
+    geomIDs[geomId] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
-    dGeomSetBody (geomIDs[geomIdentifier], bodyID);
+    dGeomSetBody (geomIDs[geomId], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
 OdeObject::~OdeObject ()
