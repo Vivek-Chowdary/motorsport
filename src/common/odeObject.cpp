@@ -13,11 +13,11 @@
 #include "quaternion.hpp"
 #include "world.hpp"
 
-OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string id)
 {
     this->worldObject = worldObject;
-    this->identifier = identifier;
-    std::string geomIdentifier = identifier + ",Geom(unique)";
+    this->id = id;
+    std::string geomIdentifier = id + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
@@ -45,10 +45,10 @@ OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string i
     dGeomSetBody (geomIDs[geomIdentifier], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string id)
 {
     this->worldObject = worldObject;
-    this->identifier = identifier;
+    this->id = id;
     bodyID = NULL;
     // create dBody
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
@@ -92,11 +92,11 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string i
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
-OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string identifier)
+OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string id)
 {
     this->worldObject = worldObject;
-    this->identifier = identifier;
-    std::string geomIdentifier = identifier + ",Geom(unique)";
+    this->id = id;
+    std::string geomIdentifier = id + ",Geom(unique)";
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));

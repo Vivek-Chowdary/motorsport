@@ -33,12 +33,12 @@ class OdeObject
         WorldObject * worldObject;
         dBodyID bodyID;
         GeomIDs geomIDs;
-        std::string identifier;
+        std::string id;
 
     public:
-        OdeObject (WorldObject * worldObject, PartOdeData data, std::string identifier);
-        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string identifier);
-        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string identifier);
+        OdeObject (WorldObject * worldObject, PartOdeData data, std::string id);
+        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string id);
+        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string id);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();

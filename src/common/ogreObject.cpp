@@ -15,21 +15,21 @@
 #include "quaternion.hpp"
 #include "odeObject.hpp"
 
-OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string identifier)
+OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string id)
 {
     this->worldObject = worldObject;
-    this->identifier = identifier;
+    this->id = id;
     std::string meshPath = data.meshPath;
     entity = NULL;
     node = NULL;
     odeObject = NULL;
 
     bool error = true;
-    try { SystemData::getSystemDataPointer()->ogreSceneManager->getEntity (identifier); }
+    try { SystemData::getSystemDataPointer()->ogreSceneManager->getEntity (id); }
     catch (Ogre::Exception & e) { error = false; }
-    if (error) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" already exists!.", identifier.c_str());
+    if (error) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" already exists!.", id.c_str());
 
-    entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (identifier, meshPath);
+    entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
     entity->setCastShadows(true);
     for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
     {

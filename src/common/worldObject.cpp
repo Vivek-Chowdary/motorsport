@@ -34,7 +34,6 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
     char numberString[numberStringSize];
     snprintf (numberString, numberStringSize, "%i", instancesCount);
     this->id = std::string(numberString);
-    this->id = numberString;
     instancesCount++;
 
     //FIXME what to use, id# or name?
@@ -131,8 +130,12 @@ void WorldObject::stepGraphics ()
     }
 }
 void WorldObject::setPosition (Vector3d position)
-{               
-    odeObjects.begin()->second->setPosition(position);
+{
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        j->second->setPosition(position);;
+    }
 }
 Vector3d WorldObject::getPosition ()
 {
@@ -144,11 +147,19 @@ Quaternion WorldObject::getRotation ()
 }
 void WorldObject::setRotation (Quaternion rotation)
 {
-    odeObjects.begin()->second->setRotation(rotation);
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        j->second->setRotation(rotation);
+    }
 }
 void WorldObject::applyRotation (Quaternion rotation)
 {
-    setPosition ( rotation.rotateObject(odeObjects.begin()->second->getPosition()) );
-    Quaternion finalRotation = rotation * odeObjects.begin()->second->getRotation();
-    odeObjects.begin()->second->setRotation (finalRotation);
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        setPosition ( rotation.rotateObject(j->second->getPosition()) );
+        Quaternion finalRotation = rotation * j->second->getRotation();
+        j->second->setRotation (finalRotation);
+    }
 }

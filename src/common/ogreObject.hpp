@@ -32,9 +32,9 @@ class OgreObject
         Ogre::SceneNode * node;
         OdeObject * odeObject;
         WorldObject * worldObject;
-        std::string identifier;
+        std::string id;
     public:
-        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string identifier);
+        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string id);
         ~OgreObject ();
         void setOdeReference(OdeObject * odeObject);       
         void stepGraphics();
