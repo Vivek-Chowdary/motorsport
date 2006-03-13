@@ -93,5 +93,4 @@ void Part::stepPhysics ()
     }
     const dReal * pos;
     pos = dBodyGetPosition(partID);
-    log->__format(LOG_DEVELOPER, "part:x=%f y=%f z=%f", pos[0], pos[1], pos[2]);
 }

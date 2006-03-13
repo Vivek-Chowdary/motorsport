@@ -19,6 +19,7 @@ class OdeObject;
 class PartOdeData;
 class BodyOdeData;
 class WheelOdeData;
+class BoxOdeData;
 class Quaternion;
 class WorldObject;
 
@@ -30,21 +31,26 @@ typedef std::map <std::string, dGeomID>::iterator GeomIDsIt;
 class OdeObject
 {
     protected:
+        static unsigned int instancesCount;
+        void updateId();
+        std::string name;
         WorldObject * worldObject;
         dBodyID bodyID;
         GeomIDs geomIDs;
         std::string id;
 
     public:
-        OdeObject (WorldObject * worldObject, PartOdeData data, std::string id);
-        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string id);
-        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string id);
+        OdeObject (WorldObject * worldObject, PartOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, BoxOdeData data, std::string name);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         dBodyID getBodyID();
+        dGeomID getGeomID(std::string name);
 };
 class PartOdeData
 {
@@ -94,5 +100,20 @@ class WheelOdeData
             mass = width = radius = 0;
         }
         ~WheelOdeData() {};
+};
+class BoxOdeData
+{
+    public:
+        Vector3d size;
+        double mass;
+        double density;
+        bool useMass;
+        BoxOdeData()
+        {
+            size.x = size.y = size.z = 0;
+            mass = density = 0;
+            useMass = true;
+        }
+        ~BoxOdeData() {};
 };
 #endif

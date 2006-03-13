@@ -13,42 +13,48 @@
 #include "quaternion.hpp"
 #include "world.hpp"
 
-OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string id)
+unsigned int OdeObject::instancesCount = 0;
+
+void OdeObject::updateId()
 {
+    const int numberStringSize = 64;
+    char numberString[numberStringSize];
+    snprintf (numberString, numberStringSize, "%i", instancesCount);
+    this->id = std::string(numberString);
+    instancesCount++;
+}
+OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string name)
+{
+    updateId();
     this->worldObject = worldObject;
-    this->id = id;
-    std::string geomId = id + ",Geom(unique)";
+    this->name = name;
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
-    if (data.mass <= 0)
-    {
-        worldObject->getLog()->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
-        data.mass = 100;
-    }
     dMass dmass;
     if (data.shape == "box")
     {
-        geomIDs[geomId] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
+        geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
         dMassSetBoxTotal (&dmass, data.mass, data.size.x, data.size.y, data.size.z);
     }
     if (data.shape == "sphere")
     {
-        geomIDs[geomId] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
+        geomIDs[name] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
         dMassSetSphereTotal (&dmass, data.mass, data.radius);
     }
     if (data.shape == "cappedCylinder")
     {
-        geomIDs[geomId] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
+        geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
         dMassSetCappedCylinderTotal (&dmass, data.mass, data.directionAxis, data.radius, data.length);
     }
-    dGeomSetBody (geomIDs[geomId], bodyID);
+    dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string id)
+OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string name)
 {
+    updateId();
     this->worldObject = worldObject;
-    this->id = id;
+    this->name = name;
     bodyID = NULL;
     // create dBody
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
@@ -92,29 +98,49 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string i
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
-OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string id)
+OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string name)
 {
+    updateId();
     this->worldObject = worldObject;
-    this->id = id;
-    std::string geomId = id + ",Geom(unique)";
+    this->name = name;
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
-    if (data.mass <= 0)
-    {
-        worldObject->getLog()->__format (LOG_WARNING, "No mass has been defined for this part! Defaulting to 100kg.");
-        data.mass = 100;
-    }
     dMass dmass;
     dMassSetParameters (&dmass, data.mass,
                          0, 0, 0,
                          0.237, 0.237, 0.409,
                          0, 0, 0);
-    geomIDs[geomId] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
+    geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
-    dGeomSetBody (geomIDs[geomId], bodyID);
+    dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
+}
+OdeObject::OdeObject (WorldObject * worldObject, BoxOdeData data, std::string name)
+{
+    updateId();
+    this->worldObject = worldObject;
+    this->name = name;
+    bodyID = NULL;
+
+    bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
+    dMass dmass;
+    if (data.useMass)
+    {
+        dMassSetBoxTotal(&dmass, data.mass, data.size.x, data.size.y, data.size.z);
+    }
+    else
+    {
+        dMassSetBox(&dmass, data.density, data.size.x, data.size.y, data.size.z);
+    }
+    dBodySetMass (bodyID, &dmass);
+
+    geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
+    dBodySetLinearVel  (bodyID, 0, 0, 0);
+    dBodySetAngularVel (bodyID, 0, 0, 0);
+    dGeomSetBody (geomIDs[name], bodyID);
 }
 OdeObject::~OdeObject ()
 {
@@ -157,4 +183,8 @@ Quaternion OdeObject::getRotation()
 dBodyID OdeObject::getBodyID()
 {
     return bodyID;
+}
+dGeomID OdeObject::getGeomID(std::string name)
+{
+    return geomIDs[name];
 }

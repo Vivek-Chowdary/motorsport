@@ -15,10 +15,20 @@
 #include "quaternion.hpp"
 #include "odeObject.hpp"
 
-OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string id)
+unsigned int OgreObject::instancesCount = 0;
+void OgreObject::updateId()
 {
+    const int numberStringSize = 64;
+    char numberString[numberStringSize];
+    snprintf (numberString, numberStringSize, "%i", instancesCount);
+    this->id = std::string(numberString);
+    instancesCount++;
+}
+OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name)
+{
+    updateId();
     this->worldObject = worldObject;
-    this->id = id;
+    this->name = name;
     std::string meshPath = data.meshPath;
     entity = NULL;
     node = NULL;
@@ -27,7 +37,7 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
     bool error = true;
     try { SystemData::getSystemDataPointer()->ogreSceneManager->getEntity (id); }
     catch (Ogre::Exception & e) { error = false; }
-    if (error) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" already exists!.", id.c_str());
+    if (error) worldObject->getLog()->__format(LOG_ERROR, "Entity \"#%s\" (%s) already exists!.", id.c_str(), name.c_str());
 
     entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
     entity->setCastShadows(true);
@@ -37,13 +47,12 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
     }
     node = static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild());
     node->attachObject (entity);
-
 }
 OgreObject::~OgreObject ()
 {
     worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
     node->detachObject(entity);
-    if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" still attached somewhere!.", entity->getName().c_str());
+    if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
     SystemData::getSystemDataPointer()->ogreSceneManager->removeEntity (entity);
     entity = NULL;
 

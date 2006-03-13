@@ -28,13 +28,17 @@ typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
 class OgreObject
 {
     protected:
+        static unsigned int instancesCount;
+        void updateId();
+        std::string name;
+
         Ogre::Entity * entity;
         Ogre::SceneNode * node;
         OdeObject * odeObject;
         WorldObject * worldObject;
         std::string id;
     public:
-        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string id);
+        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name);
         ~OgreObject ();
         void setOdeReference(OdeObject * odeObject);       
         void stepGraphics();
