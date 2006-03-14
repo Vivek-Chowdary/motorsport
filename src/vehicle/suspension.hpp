@@ -87,23 +87,19 @@ class DoubleWishbone : public Suspension
         double getSteeringAngle();
 
         bool right;
-        dBodyID boneBody;
         Ogre::Billboard * upperB;
         Ogre::Billboard * lowerB;
         Ogre::Billboard *  bB;
 
-        dGeomID boneGeom;
         dJointID upperJoint;
         dJointID lowerJoint;
         dJointID axisJoint;
         dJointID chassisUpperJoint;        
         dJointID chassisLowerJoint;        
 
-        double uprightLength;
+        double uprightBoneLength;
         double upperBoneLength;
         double lowerBoneLength;
-        Vector3d boneDim;
-        double boneWeight;
 
         double springOldx;
         double springStiffness;
