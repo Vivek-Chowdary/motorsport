@@ -164,11 +164,16 @@ void Vehicle::construct (XmlTag * tag)
 void Vehicle::stepGraphics ()
 {
     base->stepGraphics();
-    getBody("body")->stepGraphics();
+
+    std::map < std::string, Suspension * >::const_iterator suspIter;
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
+        DoubleWishbone * tmpSusp;
+        if ( (tmpSusp = dynamic_cast<DoubleWishbone*>(i->second)) != 0) tmpSusp->stepGraphics();
         Wheel * tmpWheel;
         if ( (tmpWheel = dynamic_cast<Wheel*>(i->second)) != 0) tmpWheel->stepGraphics();
+        Body * tmpBody;
+        if ( (tmpBody = dynamic_cast<Body*>(i->second)) != 0) tmpBody->stepGraphics();
     }
 }
 

@@ -179,6 +179,9 @@
         position = "+1.44 +0.857 -0.45"
         rotation = "-90 0 0"
         steeringAngle = "+80"
+        upperBoneMesh = "susp/Cube.mesh"
+        lowerBoneMesh = "susp/Cube.mesh"
+        uprightBoneMesh = "susp/Cube.001.mesh"
         >
     </suspension.doublewishbone>
     <suspension.fixed
@@ -198,6 +201,9 @@
         position = "-1.35 -0.88 -0.45"
         rotation = "+90 0 0"
         steeringAngle = "0"
+        upperBoneMesh = "susp/Cube.mesh"
+        lowerBoneMesh = "susp/Cube.mesh"
+        uprightBoneMesh = "susp/Cube.001.mesh"
         >
     </suspension.doublewishbone>
 <!--

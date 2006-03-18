@@ -239,6 +239,9 @@ void Fixed::setVelocity(double velocity)
 DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     :Suspension(container, "suspension.doublewishbone")
 {
+    OgreObjectData upperBoneOData;
+    OgreObjectData lowerBoneOData;
+    OgreObjectData uprightBoneOData;
     userDriver = false;
     maxSteeringAngle = 0.0;
     if (tag->getName() == "suspension.doublewishbone")
@@ -255,6 +258,9 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
         damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
         springStiffness = stod(tag->getAttribute("springStiffness"));
         springStiffness = stod(tag->getAttribute("springStiffness"));
+        upperBoneOData.meshPath = tag->getAttribute("upperBoneMesh");
+        lowerBoneOData.meshPath = tag->getAttribute("lowerBoneMesh");
+        uprightBoneOData.meshPath = tag->getAttribute("uprightBoneMesh");
     }
     springOldx =  springLengthAtEase;
     if (firstPosition.y > 0) right = true;
@@ -275,6 +281,11 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     odeObjects["upperBone"]->setRotation(upperBoneRot);
     Vector3d upperBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneLength*0.5) , firstPosition.z+(uprightBoneLength*0.5));
     odeObjects["upperBone"]->setPosition(upperBonePos);
+    //and its graphics
+    upperBoneOData.meshPath = getPath() + upperBoneOData.meshPath;
+    OgreObject * upperOgreObject = new OgreObject(this, upperBoneOData, getId());
+    ogreObjects["upperBone"] = upperOgreObject;
+    ogreObjects["upperBone"]->setOdeReference(odeObjects["upperBone"]);
 
     //create lowerWishbone body
     BoneOdeData lowerBoneData;
@@ -287,7 +298,11 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     odeObjects["lowerBone"]->setRotation(lowerBoneRot);
     Vector3d lowerBonePos (firstPosition.x, firstPosition.y+(dirMult*lowerBoneLength*0.5) , firstPosition.z-(uprightBoneLength*0.5));
     odeObjects["lowerBone"]->setPosition(lowerBonePos);
-    
+    //and its graphics
+    lowerBoneOData.meshPath = getPath() + lowerBoneOData.meshPath;
+    OgreObject * lowerOgreObject = new OgreObject(this, lowerBoneOData, getId());
+    ogreObjects["lowerBone"] = lowerOgreObject;
+    ogreObjects["lowerBone"]->setOdeReference(odeObjects["lowerBone"]);
 
     //create bone body
     BoneOdeData uprightBoneData;
@@ -300,16 +315,11 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     odeObjects["uprightBone"]->setRotation(uprightBoneRot);
     Vector3d uprightBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneData.length), firstPosition.z);
     odeObjects["uprightBone"]->setPosition(uprightBonePos);
-
-    //create visual debug aids
-    Ogre::BillboardSet * bset = SystemData::getSystemDataPointer()->ogreSceneManager->createBillboardSet(std::string("lightbbs") + getId(), 3);
-    upperB = bset->createBillboard(1,1,1,Ogre::ColourValue(0.5,0.3,0.0f));
-    lowerB = bset->createBillboard(1,0,1,Ogre::ColourValue(0.5,0.8,1.0f));
-    bB = bset->createBillboard(1,-1.3,1,Ogre::ColourValue(0.5,0.3,1.0f));
-    SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->attachObject(bset);
-    upperB->setDimensions(0.3,0.05);
-    lowerB->setDimensions(0.3,0.05);
-    bB->setDimensions(0.05,0.4);
+    //and its graphics
+    uprightBoneOData.meshPath = getPath() + uprightBoneOData.meshPath;
+    OgreObject * uprightOgreObject = new OgreObject(this, uprightBoneOData, getId());
+    ogreObjects["uprightBone"] = uprightOgreObject;
+    ogreObjects["uprightBone"]->setOdeReference(odeObjects["uprightBone"]);
 
     //create upper joint
     upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
@@ -403,14 +413,6 @@ void DoubleWishbone::stepPhysics()
             boneHingePos[0], boneHingePos[1], boneHingePos[2]);
 
     springOldx = x;
-    
-    const dReal * pos;
-    pos = dBodyGetPosition(odeObjects["upperBone"]->getBodyID());
-    upperB->setPosition(pos[0],pos[1],pos[2]);
-    pos = dBodyGetPosition(odeObjects["lowerBone"]->getBodyID());
-    lowerB->setPosition(pos[0],pos[1],pos[2]);
-    pos = dBodyGetPosition(odeObjects["uprightBone"]->getBodyID());
-    bB->setPosition(pos[0],pos[1],pos[2]);
 }
 double DoubleWishbone::getRate()
 {

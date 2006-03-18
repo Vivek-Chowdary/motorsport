@@ -85,11 +85,7 @@ class DoubleWishbone : public Suspension
         Quaternion getFirstLinkRotation (){return firstRotation;};
         double maxSteeringAngle;
         double getSteeringAngle();
-
         bool right;
-        Ogre::Billboard * upperB;
-        Ogre::Billboard * lowerB;
-        Ogre::Billboard *  bB;
 
         dJointID upperJoint;
         dJointID lowerJoint;
