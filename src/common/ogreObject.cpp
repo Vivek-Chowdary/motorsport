@@ -47,6 +47,7 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
     }
     node = static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild());
     node->attachObject (entity);
+    //entity->setRenderDetail(Ogre::SDL_WIREFRAME);
 }
 OgreObject::~OgreObject ()
 {

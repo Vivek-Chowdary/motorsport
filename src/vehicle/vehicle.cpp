@@ -192,9 +192,10 @@ void Vehicle::setPosition (Vector3d position)
         Wheel * tmpWheel;
         if ( (tmpWheel = dynamic_cast<Wheel*>(i->second)) != 0)
             tmpWheel->getMainOdeObject()->setPosition ( tmpWheel->getMainOdeObject()->getPosition() + posDiff );
+        Suspension * tmpSusp;
+        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second)) != 0)
+            tmpSusp->setPosition ( tmpSusp->getPosition() + posDiff );
     }
-        // suspension position needs not be re-set.
-        //suspIter->second->setPosition ( suspIter->second->getPosition() + posDiff );
 }
 
 Vector3d Vehicle::getPosition ()
@@ -210,12 +211,12 @@ void Vehicle::applyRotation (Quaternion rotation)
         Wheel * tmpWheel;
         if ( (tmpWheel = dynamic_cast<Wheel*>(i->second)) != 0)
             tmpWheel->applyRotation (rotation);
+        Suspension * tmpSusp;
+        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second)) != 0)
+            tmpSusp->applyRotation (rotation);
     }
     // apply rotation to body
     getObject("body")->applyRotation (rotation);
-
-        // suspension rotation needs not be re-set.
-        //suspIter->second->applyRotation (rotation);
 }
 
 Quaternion Vehicle::getRotation ()

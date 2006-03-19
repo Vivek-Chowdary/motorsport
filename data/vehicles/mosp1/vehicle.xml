@@ -148,7 +148,7 @@
     <suspension.doublewishbone
         name = "front left suspension"
         springStiffness =  "80500"
-        springLengthAtEase =  "0.55"
+        springLengthAtEase =  "0.5"
         damperFastBump = "2000"
         damperFastRebound = "2100"
         firstPosition = "+1.44 -0.557 -0.45"
@@ -156,6 +156,9 @@
         position = "+1.44 -0.857 -0.45"
         rotation = "+90 0 0"
         steeringAngle = "-80"
+        upperBoneMesh = "susp/Cube.mesh"
+        lowerBoneMesh = "susp/Cube.mesh"
+        uprightBoneMesh = "susp/Cube.001.mesh"
         >
     </suspension.doublewishbone>
 -->
@@ -171,10 +174,10 @@
     <suspension.doublewishbone
         name = "front right suspension"
         springStiffness =  "80500"
-        springLengthAtEase =  "0.55"
+        springLengthAtEase =  "0.5"
         damperFastBump = "2000"
         damperFastRebound = "2100"
-        firstPosition = "+1.44 +0.557 -0.45"
+        firstPosition = "+1.44 +0.57 -0.45"
         firstRotation = "0 0 0"
         position = "+1.44 +0.857 -0.45"
         rotation = "-90 0 0"
@@ -193,7 +196,7 @@
     <suspension.doublewishbone
         name = "rear left suspension"
         springStiffness =  "80900"
-        springLengthAtEase =  "0.55"
+        springLengthAtEase =  "0.5"
         damperFastBump = "2000"
         damperFastRebound = "2100"
         firstPosition = "-1.35 -0.58 -0.45"
@@ -207,19 +210,6 @@
         >
     </suspension.doublewishbone>
 <!--
-    <suspension.doublewishbone
-        name = "rear right suspension"
-        springStiffness =  "80900"
-        springLengthAtEase =  "0.55"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "-1.35 +0.58 -0.45"
-        firstRotation = "0 0 0"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-90 0 0"
-        steeringAngle = "0"
-        >
-    </suspension.doublewishbone>
     <suspension.unidimensional
         name = "rear right suspension"
         springConstant =  "80900"
@@ -229,6 +219,22 @@
         steeringAngle = "0"
         >
     </suspension.unidimensional>
+    <suspension.doublewishbone
+        name = "rear right suspension"
+        springStiffness =  "80900"
+        springLengthAtEase =  "0.5"
+        damperFastBump = "2000"
+        damperFastRebound = "2100"
+        firstPosition = "-1.35 +0.58 -0.45"
+        firstRotation = "0 0 0"
+        position = "-1.35 +0.88 -0.45"
+        rotation = "-90 0 0"
+        steeringAngle = "0"
+        upperBoneMesh = "susp/Cube.mesh"
+        lowerBoneMesh = "susp/Cube.mesh"
+        uprightBoneMesh = "susp/Cube.001.mesh"
+        >
+    </suspension.doublewishbone>
     <suspension.unidimensional
         name = "rear left suspension"
         springConstant =  "80900"

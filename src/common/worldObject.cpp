@@ -134,7 +134,7 @@ void WorldObject::setPosition (Vector3d position)
     OdeObjectsIt j = odeObjects.begin();
     for(;j != odeObjects.end(); j++)
     {
-        j->second->setPosition(position);;
+        j->second->setPosition(position);
     }
 }
 Vector3d WorldObject::getPosition ()
@@ -158,7 +158,7 @@ void WorldObject::applyRotation (Quaternion rotation)
     OdeObjectsIt j = odeObjects.begin();
     for(;j != odeObjects.end(); j++)
     {
-        setPosition ( rotation.rotateObject(j->second->getPosition()) );
+        j->second->setPosition ( rotation.rotateObject(j->second->getPosition()) );
         Quaternion finalRotation = rotation * j->second->getRotation();
         j->second->setRotation (finalRotation);
     }

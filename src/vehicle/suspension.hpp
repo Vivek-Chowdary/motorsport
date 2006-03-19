@@ -36,6 +36,8 @@ class Suspension : public WorldObject
         void setUserDriver ();
         Vector3d getSecondLinkPosition ();
         Quaternion getSecondLinkRotation ();
+        void setPosition (Vector3d position);
+        Vector3d getPosition();
 
         virtual void stepPhysics ()=0;
         virtual double getRate()=0;
@@ -87,6 +89,7 @@ class DoubleWishbone : public Suspension
         double getSteeringAngle();
         bool right;
 
+        //dJointID sdamper;
         dJointID upperJoint;
         dJointID lowerJoint;
         dJointID axisJoint;

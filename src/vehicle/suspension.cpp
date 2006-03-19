@@ -19,6 +19,7 @@
 #include "wheel.hpp"
 #include "axis.hpp"
 #include "SDL/SDL_keysym.h"
+#include <cmath>
 
 Suspension::Suspension (WorldObject * container, std::string name)
     :WorldObject(container, name)
@@ -43,6 +44,24 @@ Vector3d Suspension::getSecondLinkPosition ()
 Quaternion Suspension::getSecondLinkRotation ()
 {
     return rotation;
+}
+Vector3d Suspension::getPosition ()
+{
+    return this->position;
+}
+void Suspension::setPosition (Vector3d position)
+{
+    // so final this.position must be position
+    // so final components posicion must be:
+    // store difference of position between component and this.position
+    // move component to position + difference
+    Vector3d posDiff = position - getPosition();
+    for (OdeObjectsIt i = odeObjects.begin(); i != odeObjects.end(); i++)
+    {
+        Vector3d posDiff = i->second->getPosition() - getPosition();
+        i->second->setPosition (position + posDiff);
+    }   
+    this->position = position;
 }
 double Unidimensional::getSteeringAngle()
 {
@@ -304,7 +323,7 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     ogreObjects["lowerBone"] = lowerOgreObject;
     ogreObjects["lowerBone"]->setOdeReference(odeObjects["lowerBone"]);
 
-    //create bone body
+    //create upright bone body
     BoneOdeData uprightBoneData;
     uprightBoneData.radius = 0.05;
     uprightBoneData.length = uprightBoneLength;
@@ -378,6 +397,12 @@ void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
     Vector3d rAxis2 = wRotation.rotateObject(Vector3d(0, 0, 1));
     dJointSetHinge2Axis2 (axisJoint, rAxis2.x, rAxis2.y, rAxis2.z);
     log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
+
+    //create spring-damper joint
+    // sdamper = dJointCreateSlider(World::getWorldPointer()->worldID, 0);
+    //dJointAttach( sdamper, base->getMainOdeObject()->getBodyID(), odeObjects["uprightBone"]->getBodyID() );
+    //dJointSetSliderAxis (sdamper, 0,dirMult*0.66,0.66);
+    //dJointSetSliderAxis (sdamper, forceDirection[0], forceDirection[1], forceDirection[2]);
 }
 void DoubleWishbone::stepPhysics()
 {
@@ -407,6 +432,9 @@ void DoubleWishbone::stepPhysics()
     for (i=0;i<3;++i)
         forceDirection[i] = f*(chassisHingePos[i]-boneHingePos[i])/x;
 
+    //double h = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    //dJointSetSliderParam (sdamper, dParamSuspensionERP, h * springStiffness / (h * springStiffness + damperFastBump));
+    //dJointSetSliderParam (sdamper, dParamSuspensionCFM, 1 / (h * springStiffness + damperFastBump));
     dBodyAddForceAtPos(odeObjects["upperBone"]->getBodyID(), forceDirection[0], forceDirection[1], forceDirection[2],
             chassisHingePos[0], chassisHingePos[1], chassisHingePos[2]);
     dBodyAddForceAtPos(odeObjects["lowerBone"]->getBodyID(), -forceDirection[0], -forceDirection[1], -forceDirection[2],
