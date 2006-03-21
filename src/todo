@@ -1,6 +1,6 @@
+add support for multiple meshes per world object
 rename mosp window
 check what happens when getName() of root nodes... doesn't exist.. you know waht i mean, the xmlTag-using code..
-move suspensions to vehicle position too!
 check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
 refactorize the world and area (ground, sky, ...)
 redefine vehicle.xml format, so that it allows links between objects.
@@ -9,5 +9,6 @@ refactorize the physics code
 refactorize the input code
 refactorize user driver agent or whatever
 refactorize the system.hpp data into other classes.
+make sure data is deleted correctly when deleting objects
 recode singletons
 check what headers are really necessary, which can be replaced with forward declarations, ...

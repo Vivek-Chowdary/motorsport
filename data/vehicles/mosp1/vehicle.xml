@@ -25,7 +25,6 @@
     </links>
     <body
         name = "body"
-        mesh = "body.mesh"
         length = "4.66"
         width = "2.08"
         height = "1.2" 
@@ -33,7 +32,14 @@
         dragCoefficient = "0.3"
         _frontalArea = "default"  comment="default = width * height * 0.6"
         frontalArea = "1.5"
+        mesh = "body.mesh"
         >
+        <child
+            mesh= "wheel_front.mesh"
+            position = "-1.5 0 0.6"
+            rotation = "0 15 0"
+            >
+        </child>
     </body>
     <pedal
         name = "clutchPedal"

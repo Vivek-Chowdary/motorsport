@@ -36,19 +36,33 @@ Body::Body (WorldObject * container, XmlTag * tag)
         frontalArea = stod (tag->getAttribute("frontalArea"));
         dragCoefficient = stod (tag->getAttribute("dragCoefficient"));
         ogreData.meshPath = tag->getAttribute("mesh");
+        //create main mesh
+        ogreData.meshPath = getPath() + ogreData.meshPath;
+        OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+        ogreObjects[getId()] = ogreObject;
+        //create child meshes
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "child")
+            {
+                OgreObjectData childData;
+                childData.meshPath = getPath() + t->getAttribute("mesh");
+                Vector3d posDiff (t->getAttribute("position"));
+                Quaternion rotDiff (t->getAttribute("rotation"));
+                OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                ogreObjects[ogreChild->getId()] = ogreChild;
+                ogreChild->setOgreReference(ogreObjects.begin()->second, rotDiff, posDiff);
+            }
+        }
     }
-
     odeObjects[getName()] = new OdeObject(this, data, getName());
+    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 
     // set the air drag variables correctly
     if (frontalArea == 0)
     {
         frontalArea = data.width * data.height * 0.6;
     }
-    ogreData.meshPath = getPath() + ogreData.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
-    ogreObjects[getId()] = ogreObject;
-    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 
 Body::~Body ()

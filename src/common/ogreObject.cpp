@@ -24,6 +24,10 @@ void OgreObject::updateId()
     this->id = std::string(numberString);
     instancesCount++;
 }
+std::string OgreObject::getId()
+{
+    return id;
+}
 OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name)
 {
     updateId();
@@ -68,6 +72,23 @@ void OgreObject::setOdeReference(OdeObject * odeObject)
 {
     this->odeObject = odeObject;
 }
+
+void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff)
+{
+    node->removeAllChildren();
+    delete node;
+    Ogre::Vector3 * pd = new Ogre::Vector3(positionDiff.x, positionDiff.y, positionDiff.z);
+    Ogre::Quaternion * rd = new Ogre::Quaternion (rotationDiff.w, rotationDiff.x, rotationDiff.y, rotationDiff.z);
+    node = static_cast<Ogre::SceneNode*>(ogreObject->getNode()->createChild (*pd, *rd));
+    node->attachObject (entity);
+}
+
+
+Ogre::SceneNode * OgreObject::getNode()
+{
+    return node;
+}
+
 void OgreObject::stepGraphics()
 {
     if (odeObject)

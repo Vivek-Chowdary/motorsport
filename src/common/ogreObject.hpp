@@ -21,6 +21,8 @@ class OdeObject;
 class OgreObject;
 class OgreObjectData;
 class WorldObject;
+class Quaternion;
+class Vector3d;
 
 typedef std::map <std::string, OgreObject *> OgreObjects;
 typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
@@ -40,8 +42,11 @@ class OgreObject
     public:
         OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name);
         ~OgreObject ();
+        std::string getId();
         void setOdeReference(OdeObject * odeObject);       
+        void setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff);
         void stepGraphics();
+        Ogre::SceneNode * getNode();
 };
 class OgreObjectData
 {
