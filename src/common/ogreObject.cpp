@@ -75,7 +75,7 @@ void OgreObject::setOdeReference(OdeObject * odeObject)
 
 void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff)
 {
-    node->removeAllChildren();
+    node->detachObject(entity);
     delete node;
     Ogre::Vector3 * pd = new Ogre::Vector3(positionDiff.x, positionDiff.y, positionDiff.z);
     Ogre::Quaternion * rd = new Ogre::Quaternion (rotationDiff.w, rotationDiff.x, rotationDiff.y, rotationDiff.z);

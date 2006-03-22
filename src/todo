@@ -1,4 +1,6 @@
 add support for multiple meshes per world object
+set proper coords system in the world
+finish suspension rotations thing
 rename mosp window
 check what happens when getName() of root nodes... doesn't exist.. you know waht i mean, the xmlTag-using code..
 check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...

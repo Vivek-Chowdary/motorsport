@@ -42,12 +42,26 @@ Wheel::Wheel (WorldObject * container, XmlTag * tag)
         data.mass = stod(tag->getAttribute("mass"));
         powered = stod(tag->getAttribute("powered"));
         ogreData.meshPath = tag->getAttribute("mesh");
+        //create main mesh
+        ogreData.meshPath = getPath() + ogreData.meshPath;
+        OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+        ogreObjects[ogreObject->getId()] = ogreObject;
+        //create child meshes
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "child")
+            {
+                OgreObjectData childData;
+                childData.meshPath = getPath() + t->getAttribute("mesh");
+                Vector3d posDiff (t->getAttribute("position"));
+                Quaternion rotDiff (t->getAttribute("rotation"));
+                OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                ogreObjects[ogreChild->getId()] = ogreChild;
+                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
+            }
+        }
     }
-     
     odeObjects[getId()] = new OdeObject(this, data, getId());
-    ogreData.meshPath = getPath() + ogreData.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
-    ogreObjects[getId()] = ogreObject;
     ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 

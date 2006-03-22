@@ -264,8 +264,8 @@
         radius = "0.34"
         width = "0.125"
         powered = "-1"
-        mesh = "wheel_front.mesh"
         renderMode="solid"
+        mesh = "wheel_front.mesh"
         >
     </wheel>
     <wheel

@@ -39,7 +39,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
         //create main mesh
         ogreData.meshPath = getPath() + ogreData.meshPath;
         OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
-        ogreObjects[getId()] = ogreObject;
+        ogreObjects[ogreObject->getId()] = ogreObject;
         //create child meshes
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
@@ -51,7 +51,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
                 Quaternion rotDiff (t->getAttribute("rotation"));
                 OgreObject * ogreChild = new OgreObject(this, childData, getId());
                 ogreObjects[ogreChild->getId()] = ogreChild;
-                ogreChild->setOgreReference(ogreObjects.begin()->second, rotDiff, posDiff);
+                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
             }
         }
     }
