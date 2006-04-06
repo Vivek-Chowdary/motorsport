@@ -38,10 +38,12 @@ OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::str
     node = NULL;
     odeObject = NULL;
 
+    /* FIXME: uncomment me
     bool error = true;
     try { SystemData::getSystemDataPointer()->ogreSceneManager->getEntity (id); }
     catch (Ogre::Exception & e) { error = false; }
     if (error) worldObject->getLog()->__format(LOG_ERROR, "Entity \"#%s\" (%s) already exists!.", id.c_str(), name.c_str());
+    */
 
     entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
     entity->setCastShadows(true);
@@ -75,12 +77,12 @@ void OgreObject::setOdeReference(OdeObject * odeObject)
 
 void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff)
 {
-    node->detachObject(entity);
-    delete node;
+    static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode())->removeChild(node);
+    ogreObject->getNode()->addChild(node);
     Ogre::Vector3 * pd = new Ogre::Vector3(positionDiff.x, positionDiff.y, positionDiff.z);
     Ogre::Quaternion * rd = new Ogre::Quaternion (rotationDiff.w, rotationDiff.x, rotationDiff.y, rotationDiff.z);
-    node = static_cast<Ogre::SceneNode*>(ogreObject->getNode()->createChild (*pd, *rd));
-    node->attachObject (entity);
+    node->setPosition(*pd);
+    node->setOrientation(*rd);
 }
 
 

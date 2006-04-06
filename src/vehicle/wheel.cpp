@@ -46,9 +46,11 @@ Wheel::Wheel (WorldObject * container, XmlTag * tag)
         ogreData.meshPath = getPath() + ogreData.meshPath;
         OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
         ogreObjects[ogreObject->getId()] = ogreObject;
+        odeObjects[getId()] = new OdeObject(this, data, getId());
+        ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         //create child meshes
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
+        { 
             if (t->getName() == "child")
             {
                 OgreObjectData childData;
@@ -61,8 +63,6 @@ Wheel::Wheel (WorldObject * container, XmlTag * tag)
             }
         }
     }
-    odeObjects[getId()] = new OdeObject(this, data, getId());
-    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 }
 
 Wheel::~Wheel ()

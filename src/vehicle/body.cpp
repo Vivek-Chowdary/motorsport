@@ -40,6 +40,8 @@ Body::Body (WorldObject * container, XmlTag * tag)
         ogreData.meshPath = getPath() + ogreData.meshPath;
         OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
         ogreObjects[ogreObject->getId()] = ogreObject;
+        odeObjects[getName()] = new OdeObject(this, data, getName());
+        ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         //create child meshes
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
@@ -55,8 +57,6 @@ Body::Body (WorldObject * container, XmlTag * tag)
             }
         }
     }
-    odeObjects[getName()] = new OdeObject(this, data, getName());
-    ogreObjects.begin()->second->setOdeReference(getMainOdeObject());
 
     // set the air drag variables correctly
     if (frontalArea == 0)
