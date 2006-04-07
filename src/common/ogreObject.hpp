@@ -35,12 +35,13 @@ class OgreObject
         std::string name;
 
         Ogre::Entity * entity;
+        bool useMesh;
         Ogre::SceneNode * node;
         OdeObject * odeObject;
         WorldObject * worldObject;
         std::string id;
     public:
-        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name);
+        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name, bool useMesh = true);
         ~OgreObject ();
         std::string getId();
         void setOdeReference(OdeObject * odeObject);       

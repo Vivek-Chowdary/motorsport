@@ -38,7 +38,18 @@ Camera::Camera (WorldObject * container, XmlTag * tag)
     {
         setName (     tag->getAttribute("name"));
         *positionOffset = Vector3d (tag->getAttribute("position"));
-        *targetOffset = Vector3d (tag->getAttribute("target"));
+        std::string t = "";
+        if ( (t = tag->getAttribute("target")) != "")
+        {
+            *targetOffset = Vector3d (t);
+        }
+        /*
+        else
+        {
+            //TODO create a target based on "rotation" tag.
+            log->__format(LOG_ERROR, "Camera has no readable target!");
+        }
+        */
     }
 }
 

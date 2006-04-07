@@ -28,6 +28,12 @@ class Blend2MospVehicleApplication:
         self.setExportPath(ogreexport.os.path.dirname(ogreexport.Blender.Get('filename'))+"/export")
         self.scene = ogreexport.Blender.Scene.GetCurrent().getName()
 
+    def setXSLT (self, path):
+        self.xslt = path
+
+    def setIndenter (self, path):
+        self.indenter = path
+
     def setExportPath(self, path):
         self.path = path
         return
@@ -73,6 +79,7 @@ class Blend2MospVehicleApplication:
     def exportScene(self):
         dsApp = ogredotscene.DotSceneExporterApplication()
         dsApp.sceneExporter.settings.path = self.path
+        dsApp.sceneExporter.settings.doProperties = 1
         dsApp.sceneExporter.export()
         return
 
@@ -81,7 +88,9 @@ class Blend2MospVehicleApplication:
         return
     
     def transformScene(self):
-        os.system("xsltproc blend2mospvehicle.xsl "+self.path+"/"+self.scene+".xml > " +self.path+ "/vehicle.xml")
+        os.system("pwd")
+        os.system("xsltproc " +self.xslt+ " " +self.path+ "/" +self.scene+ ".xml > " +self.path+ "/vehicle.xml.tmp")
+        os.system(self.indenter+ " " +self.path+ "/vehicle.xml.tmp " +self.path+ "/vehicle.xml")
         return
 
 
@@ -91,7 +100,9 @@ class Blend2MospVehicleApplication:
 if (__name__ == "__main__"):
     application = Blend2MospVehicleApplication()
     application.setOgreXmlConverterApp ('OgreXMLConverter')
+    application.setXSLT ("/home/stenyak/dev/motorsport/tools/blend2mospvehicle/blend2mospvehicle.xsl")
+    application.setIndenter ("/home/stenyak/dev/motorsport/tools/xmlIndenter/xmlIndenter.sh")
     application.setExportPath(ogreexport.os.path.dirname(ogreexport.Blender.Get('filename'))+"/export")
     application.exportAll()
-    application.cleanAll()
-    print "############ Done! #############"
+    #application.cleanAll()
+    print "###### Done! Vehicle exported! :) ######"

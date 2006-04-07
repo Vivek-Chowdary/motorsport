@@ -28,40 +28,43 @@ std::string OgreObject::getId()
 {
     return id;
 }
-OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name)
+OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name, bool useMesh)
 {
     updateId();
     this->worldObject = worldObject;
     this->name = name;
+    this->useMesh = useMesh;
     std::string meshPath = data.meshPath;
     entity = NULL;
     node = NULL;
     odeObject = NULL;
 
-    /* FIXME: uncomment me
-    bool error = true;
-    try { SystemData::getSystemDataPointer()->ogreSceneManager->getEntity (id); }
-    catch (Ogre::Exception & e) { error = false; }
-    if (error) worldObject->getLog()->__format(LOG_ERROR, "Entity \"#%s\" (%s) already exists!.", id.c_str(), name.c_str());
-    */
-
-    entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
-    entity->setCastShadows(true);
-    for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
+    if (useMesh)
     {
-        worldObject->getLog()->__format(LOG_CCREATOR, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
+        entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
+        entity->setCastShadows(true);
+        for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
+        {
+            worldObject->getLog()->__format(LOG_CCREATOR, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
+        }
     }
     node = static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild());
-    node->attachObject (entity);
-    //entity->setRenderDetail(Ogre::SDL_WIREFRAME);
+    if (useMesh)
+    {
+        node->attachObject (entity);
+        //entity->setRenderDetail(Ogre::SDL_WIREFRAME);
+    }
 }
 OgreObject::~OgreObject ()
 {
-    worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
-    node->detachObject(entity);
-    if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
-    SystemData::getSystemDataPointer()->ogreSceneManager->removeEntity (entity);
-    entity = NULL;
+    if (useMesh)
+    {
+        worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
+        node->detachObject(entity);
+        if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
+        SystemData::getSystemDataPointer()->ogreSceneManager->removeEntity (entity);
+        entity = NULL;
+    }
 
     worldObject->getLog()->__format (LOG_DEVELOPER, "Removing node id=%s", node->getName().c_str());
     SystemData::getSystemDataPointer()->ogreSceneManager->destroySceneNode (node->getName());

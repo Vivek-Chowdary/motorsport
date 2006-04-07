@@ -136,8 +136,8 @@ void Vehicle::construct (XmlTag * tag)
     boltWheelsToSuspensions();
 
     log->__format(LOG_DEVELOPER, "Setting some more drive joint pointers...");
-    getDriveJoint("rearDiff")->setOutputPointer(getDriveMass("rear right wheel"));
-    getLSD("rearDiff")->setOutputPointer2(getDriveMass("rear left wheel"));
+    getDriveJoint("rearDiff")->setOutputPointer(getDriveMass("rr wheel"));
+    getLSD("rearDiff")->setOutputPointer2(getDriveMass("rl wheel"));
 
     getEngine("engine")->setGasPedal(getPedal("gasPedal"));
     getClutch("clutch")->setClutchPedal(getPedal("clutchPedal"));
@@ -226,22 +226,22 @@ Quaternion Vehicle::getRotation ()
 
 void Vehicle::placeWheelsOnSuspensions()
 {
-    getWheel("front right wheel")->applyRotation(getSuspension("front right suspension")->getSecondLinkRotation());
-    getWheel("front right wheel")->setPosition(getSuspension("front right suspension")->getSecondLinkPosition());
-    getWheel("front left wheel")->applyRotation(getSuspension("front left suspension")->getSecondLinkRotation());
-    getWheel("front left wheel")->setPosition(getSuspension("front left suspension")->getSecondLinkPosition());
-    getWheel("rear right wheel")->applyRotation(getSuspension("rear right suspension")->getSecondLinkRotation());
-    getWheel("rear right wheel")->setPosition(getSuspension("rear right suspension")->getSecondLinkPosition());
-    getWheel("rear left wheel")->applyRotation(getSuspension("rear left suspension")->getSecondLinkRotation());
-    getWheel("rear left wheel")->setPosition(getSuspension("rear left suspension")->getSecondLinkPosition());
+    getWheel("fr wheel")->applyRotation(getSuspension("fr suspension")->getSecondLinkRotation());
+    getWheel("fr wheel")->setPosition(getSuspension("fr suspension")->getSecondLinkPosition());
+    getWheel("fl wheel")->applyRotation(getSuspension("fl suspension")->getSecondLinkRotation());
+    getWheel("fl wheel")->setPosition(getSuspension("fl suspension")->getSecondLinkPosition());
+    getWheel("rr wheel")->applyRotation(getSuspension("rr suspension")->getSecondLinkRotation());
+    getWheel("rr wheel")->setPosition(getSuspension("rr suspension")->getSecondLinkPosition());
+    getWheel("rl wheel")->applyRotation(getSuspension("rl suspension")->getSecondLinkRotation());
+    getWheel("rl wheel")->setPosition(getSuspension("rl suspension")->getSecondLinkPosition());
 }
 
 void Vehicle::boltWheelsToSuspensions()
 {
-    getSuspension("front right suspension")->attach(getObject("body"), getObject("front right wheel"));
-    getSuspension("front left suspension")->attach(getObject("body"), getObject("front left wheel"));
-    getSuspension("rear right suspension")->attach(getObject("body"), getObject("rear right wheel"));
-    getSuspension("rear left suspension")->attach(getObject("body"), getObject("rear left wheel"));
+    getSuspension("fr suspension")->attach(getObject("body"), getObject("fr wheel"));
+    getSuspension("fl suspension")->attach(getObject("body"), getObject("fl wheel"));
+    getSuspension("rr suspension")->attach(getObject("body"), getObject("rr wheel"));
+    getSuspension("rl suspension")->attach(getObject("body"), getObject("rl wheel"));
 }
 
 void Vehicle::stepPhysics ()
@@ -293,7 +293,7 @@ void Vehicle::stepPhysics ()
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         tmp = dBodyGetPosition(getObject("body")->getMainOdeObject()->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getDriveMass("engine")->getOutputAngularVel(), getDriveMass("finalDrive")->getInputAngularVel(), getWheel("rear right wheel")->getInputAngularVel(), getWheel("rear left wheel")->getInputAngularVel(), getGearbox("gearbox")->getCurrentGearName().c_str(), distance);
+        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getDriveMass("engine")->getOutputAngularVel(), getDriveMass("finalDrive")->getInputAngularVel(), getWheel("rr wheel")->getInputAngularVel(), getWheel("rl wheel")->getInputAngularVel(), getGearbox("gearbox")->getCurrentGearName().c_str(), distance);
     }
 }
 

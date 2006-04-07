@@ -35,20 +35,20 @@ Body::Body (WorldObject * container, XmlTag * tag)
         data.mass = stod (tag->getAttribute("mass"));
         frontalArea = stod (tag->getAttribute("frontalArea"));
         dragCoefficient = stod (tag->getAttribute("dragCoefficient"));
-        ogreData.meshPath = tag->getAttribute("mesh");
+        ogreData.meshPath = "";
         //create main mesh
         ogreData.meshPath = getPath() + ogreData.meshPath;
-        OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
+        OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
         ogreObjects[ogreObject->getId()] = ogreObject;
         odeObjects[getName()] = new OdeObject(this, data, getName());
         ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         //create child meshes
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            if (t->getName() == "child")
+            if (t->getName() == "mesh")
             {
                 OgreObjectData childData;
-                childData.meshPath = getPath() + t->getAttribute("mesh");
+                childData.meshPath = getPath() + t->getAttribute("file");
                 Vector3d posDiff (t->getAttribute("position"));
                 Quaternion rotDiff (t->getAttribute("rotation"));
                 OgreObject * ogreChild = new OgreObject(this, childData, getId());

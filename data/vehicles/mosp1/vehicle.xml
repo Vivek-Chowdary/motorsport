@@ -32,14 +32,19 @@
         dragCoefficient = "0.3"
         _frontalArea = "default"  comment="default = width * height * 0.6"
         frontalArea = "1.5"
-        mesh = "body.mesh"
         >
-        <child
-            mesh= "wheel_front.mesh"
+        <mesh
+            file= "body.mesh"
+            position = "0 0 0"
+            rotation = "0 0 0"
+            >
+        </mesh>
+        <mesh
+            file= "wheel_front.mesh"
             position = "-1.5 0 0.6"
             rotation = "0 15 0"
             >
-        </child>
+        </mesh>
     </body>
     <pedal
         name = "clutchPedal"
@@ -143,7 +148,7 @@
     </steeringWheel>
 <!--
     <suspension.unidimensional
-        name = "front right suspension"
+        name = "fr suspension"
         springConstant =  "80500"
         dampingConstant = "2000"
         position = "+1.44 +0.857 -0.45"
@@ -152,7 +157,7 @@
         >
     </suspension.unidimensional>
     <suspension.doublewishbone
-        name = "front left suspension"
+        name = "fl suspension"
         springStiffness =  "80500"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -169,7 +174,7 @@
     </suspension.doublewishbone>
 -->
     <suspension.unidimensional
-        name = "front left suspension"
+        name = "fl suspension"
         springConstant =  "80500"
         dampingConstant = "2000"
         position = "+1.44 -0.857 -0.45"
@@ -178,7 +183,7 @@
         >
     </suspension.unidimensional>
     <suspension.doublewishbone
-        name = "front right suspension"
+        name = "fr suspension"
         springStiffness =  "80500"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -194,13 +199,13 @@
         >
     </suspension.doublewishbone>
     <suspension.fixed
-        name = "rear right suspension"
+        name = "rr suspension"
         position = "-1.35 +0.88 -0.45"
         rotation = "-90 0 0"
         >
     </suspension.fixed>
     <suspension.doublewishbone
-        name = "rear left suspension"
+        name = "rl suspension"
         springStiffness =  "80900"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -217,7 +222,7 @@
     </suspension.doublewishbone>
 <!--
     <suspension.unidimensional
-        name = "rear right suspension"
+        name = "rr suspension"
         springConstant =  "80900"
         dampingConstant = "2000"
         position = "-1.35 +0.88 -0.45"
@@ -226,7 +231,7 @@
         >
     </suspension.unidimensional>
     <suspension.doublewishbone
-        name = "rear right suspension"
+        name = "rr suspension"
         springStiffness =  "80900"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -242,7 +247,7 @@
         >
     </suspension.doublewishbone>
     <suspension.unidimensional
-        name = "rear left suspension"
+        name = "rl suspension"
         springConstant =  "80900"
         dampingConstant = "2000"
         position = "-1.35 -0.88 -0.45"
@@ -251,7 +256,7 @@
         >
     </suspension.unidimensional>
     <suspension.fixed
-        name = "rear left suspension"
+        name = "rl suspension"
         position = "-1.35 -0.88 -0.45"
         rotation = "+90 0 0"
         steeringAngle = "0"
@@ -259,44 +264,64 @@
     </suspension.fixed>
 -->
     <wheel
-        name = "front right wheel"
+        name = "fr wheel"
         mass = "15.1"
         radius = "0.34"
         width = "0.125"
         powered = "-1"
         renderMode="solid"
-        mesh = "wheel_front.mesh"
         >
+        <mesh
+            file = "wheel_front.mesh"
+            position = "0 0 0"
+            rotation = "0 0 0"
+            >
+        </mesh>
     </wheel>
     <wheel
-        name = "front left wheel"
+        name = "fl wheel"
         mass = "15.1"
         radius = "0.34"
         width = "0.125"
         powered = "+1"
-        mesh = "wheel_front.mesh"
         renderMode="solid"
         >
+        <mesh
+            file = "wheel_front.mesh"
+            position = "0 0 0"
+            rotation = "0 0 0"
+            >
+        </mesh>
     </wheel>
     <wheel
-        name = "rear right wheel"
+        name = "rr wheel"
         mass = "15.0"
         radius = "0.34"
         width = "0.125"
         powered = "-1"
-        mesh = "wheel_rear.mesh"
         renderMode="solid"
         >
+        <mesh
+            file= "wheel_rear.mesh"
+            position = "0 0 0"
+            rotation = "0 0 0"
+            >
+        </mesh>
     </wheel>
     <wheel
-        name = "rear left wheel"
+        name = "rl wheel"
         mass = "15.0"
         radius = "0.34"
         width = "0.125"
         powered = "+1"
-        mesh = "wheel_rear.mesh"
         renderMode="solid"
         >
+        <mesh
+            file = "wheel_rear.mesh"
+            position = "0 0 0"
+            rotation = "0 0 0"
+            >
+        </mesh>
     </wheel>
     <camera
         name = "hood"

@@ -1,6 +1,6 @@
 #!/bin/bash
-tmp="/tmp/tmpIndent$1"
-tmpa="/tmp/tmpIndentB$1"
+tmp="/tmp/tmpIndent$(basename $1)"
+tmpa="/tmp/tmpIndentB$(basename $1)"
 
 head -n 1 $1 > $2
 max=$(wc -l $1|sed "s/\ .*//g")
@@ -18,9 +18,11 @@ ntab="0"
 closed="0"
 reindent="0"
 max=$(wc -l $tmp|sed "s/\ .*//g")
+echo -n "[$max]"
 for l in $(cat $tmp)
 do
-    echo "[$line / $max]"
+    #echo "[$line / $max]"
+    echo -n "."
     let line=$line+1
     if [ "$closed" = "1" ]
     then
@@ -72,3 +74,5 @@ do
     fi
     fi
 done
+
+echo "[done!]"
