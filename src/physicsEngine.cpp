@@ -80,6 +80,10 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
     // TODO: allow jointed bodies to collide by default (truck and trailer), and use attached data to identify bodies that should not collide (wheels and vehicle body). At least until creation of geoms via boolean operations is possible.
     dBodyID b1 = dGeomGetBody (o1);
     dBodyID b2 = dGeomGetBody (o2);
+    if (b1 == 0 && b2 == 0)
+    {
+        return;
+    }
     if (b1 && b2 && dAreConnected (b1, b2))
     {
         return;
@@ -106,6 +110,7 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
             // Collision with the checkpoint object. This assumes all spheres are a checkpoint, so FIXME.
             if (dGeomGetClass (o1) == dSphereClass || dGeomGetClass (o2) == dSphereClass)
             {
+                return;
             }
             contact[i].surface.mu = 0.6;
             contact[i].surface.slip1 = 0.0;

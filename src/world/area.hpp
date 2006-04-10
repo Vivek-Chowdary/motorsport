@@ -40,13 +40,10 @@ class Area : public WorldObject
         std::vector < Part * > partList;
         std::vector < Camera * > cameraList;
 
-        dGeomID bodyGeomID;
         dBodyID areaBodyID;
 
         Ogre::SceneNode * planeNode;
         Ogre::Entity * planeEntity;
-        Ogre::Entity * areaEntity;
-        Ogre::SceneNode * areaNode;
         void setCastShadows(bool castShadows);
         void setRenderDetail(int renderMode);
 };

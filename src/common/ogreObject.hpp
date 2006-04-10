@@ -48,6 +48,7 @@ class OgreObject
         void setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff);
         void stepGraphics();
         Ogre::SceneNode * getNode();
+        Ogre::Entity * getEntity();
 };
 class OgreObjectData
 {

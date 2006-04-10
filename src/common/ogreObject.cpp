@@ -89,6 +89,10 @@ void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDi
 }
 
 
+Ogre::Entity * OgreObject::getEntity()
+{
+    return entity;
+}
 Ogre::SceneNode * OgreObject::getNode()
 {
     return node;

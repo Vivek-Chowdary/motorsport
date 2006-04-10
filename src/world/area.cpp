@@ -80,8 +80,37 @@ void Area::construct (XmlTag * tag)
             if (t->getName() == "ground")
             {
                 groundHeight = stod (t->getAttribute("height"));
-                groundMaterialName = t->getAttribute("materialName");
-                mesh = t->getAttribute("mesh");
+                OgreObjectData ogreData;
+                ogreData.meshPath = "";
+                //create main mesh
+                ogreData.meshPath = getPath() + ogreData.meshPath;
+                OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
+                ogreObjects[ogreObject->getId()] = ogreObject;
+                //create child meshes
+                XmlTag * u = t->getTag(0); for (int i = 0; i < t->nTags(); u = t->getTag(++i))
+                {
+                    if (u->getName() == "mesh")
+                    {
+                        log->__format (LOG_CCREATOR, "Creating an ogre mesh for the ground");
+                        OgreObjectData childData;
+                        childData.meshPath = getPath() + u->getAttribute("file");
+                        Vector3d posDiff (u->getAttribute("position"));
+                        Quaternion rotDiff (u->getAttribute("rotation"));
+                        OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                        ogreObjects[ogreChild->getId()] = ogreChild;
+                        ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
+                        // declare ode mesh
+                        dTriMeshDataID ground = dGeomTriMeshDataCreate ();
+                        dGeomSetBody (dCreateTriMesh (World::getWorldPointer ()->spaceID, ground, 0, 0, 0), 0);
+
+                        size_t vertex_count, index_count;
+                        dVector3 * vertices;
+                        unsigned int *indices;
+                        getMeshInformation (ogreChild->getEntity()->getMesh (), vertex_count, vertices, index_count, indices, ogreChild->getNode()->getPosition(), ogreChild->getNode()->getOrientation(), ogreChild->getNode()->getScale());
+                        log->__format (LOG_CCREATOR, "Building the ode mesh for the ground");
+                        dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
+                    }
+                }
             }
             if (t->getName() == "sky")
             {
@@ -104,27 +133,15 @@ void Area::construct (XmlTag * tag)
                     tmp->stepGraphics();
                 }
             }
-            if (t->getName() == "vehiclePositionList")
+            if (t->getName() == "vehicleLocation")
             {
-                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
-                {
-                    if (u->getName() == "vehicle")
-                    {
-                        Location * tmp = new Location (u);
-                        vehiclePositionMap[tmp->getName()] = tmp;
-                    }
-                }
+                Location * tmp = new Location (t);
+                vehiclePositionMap[tmp->getName()] = tmp;
             }
-            if (t->getName() == "cameraList")
+            if (t->getName() == "camera")
             {
-                XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
-                {
-                    if (u->getName() == "camera")
-                    {
-                        Camera * tmp = new Camera (this, u);
-                        cameraList.push_back(tmp);
-                    }
-                }
+                Camera * tmp = new Camera (this, t);
+                cameraList.push_back(tmp);
             }
         }
     }
@@ -152,32 +169,6 @@ void Area::construct (XmlTag * tag)
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
     
-    log->loadscreen (LOG_CCREATOR, "Creating the area ground");
-    // declare ode mesh
-    dTriMeshDataID ground = dGeomTriMeshDataCreate ();
-    dGeomSetBody (dCreateTriMesh (World::getWorldPointer ()->spaceID, ground, 0, 0, 0), 0);
-
-    if (mesh != "none")
-    {
-        log->loadscreen (LOG_CCREATOR, "Creating loading the ogre area mesh");
-        areaEntity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity ("ground", getPath() + mesh);
-        Ogre::SceneNode * areaNode = static_cast < Ogre::SceneNode * >(SystemData::getSystemDataPointer ()->ogreSceneManager->getRootSceneNode ()->createChild ());
-        areaNode->attachObject (areaEntity);
-        areaNode->setScale (1, 1, 1);
-        areaNode->setPosition (0, 0, 0);
-        Quaternion quat (0, 0, 0);
-        areaNode->setOrientation (quat.w, quat.x, quat.y, quat.z);
-        size_t vertex_count, index_count;
-        dVector3 * vertices;
-        unsigned int *indices;
-        getMeshInformation (areaEntity->getMesh (), vertex_count, vertices, index_count, indices, areaNode->getPosition(), areaNode->getOrientation(), areaNode->getScale());
-        log->loadscreen (LOG_CCREATOR, "Building the ode area mesh");
-        dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
-        // dGeomTriMeshDataDestroy (ground);
-    } else {
-        areaEntity = 0;
-    }
-
     // create the checkpoint sphere
     dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);
     dGeomSetBody (checkpointID, 0);
@@ -187,7 +178,8 @@ void Area::construct (XmlTag * tag)
 void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);
-    if (areaEntity != 0) areaEntity->setCastShadows(castShadows);
+    //UNCOMMENT ME
+    //if (areaEntity != 0) areaEntity->setCastShadows(castShadows);
 }
 
 void Area::setRenderDetail(int renderMode)
@@ -206,7 +198,8 @@ void Area::setRenderDetail(int renderMode)
         break;
     }
     planeEntity->setRenderDetail(mode);
-    if (areaEntity != 0) areaEntity->setRenderDetail(mode);
+    //UNCOMMENT ME
+    // if (areaEntity != 0) areaEntity->setRenderDetail(mode);
 }
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)
