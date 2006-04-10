@@ -11,3 +11,6 @@ xcopy /y .\*Config.xml .\bin\Release
 mkdir .\bin\data
 xcopy /y /E ..\..\..\data .\bin\data
 
+
+mkdir .\bin\cfg
+xcopy /y /E ..\..\..\cfg .\bin\cfg
