@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<logConfig
+    xmlns="http://motorsport-sim.org"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://motorsport-sim.org logConfig.xsd"
+
+    globalLevel = "LOG_WARNING"
+    fileName = "motorsport.log"
+    textBuffer = "1024"
+/>
