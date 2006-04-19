@@ -62,7 +62,7 @@
         -->
     </vehicleList>
     <area
-        directory = "land"
+        directory = "mospland"
         >
     </area>
 </world>
