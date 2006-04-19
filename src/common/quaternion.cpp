@@ -17,17 +17,21 @@ Quaternion::Quaternion ()
     // empty
 }
 
-Quaternion::Quaternion (double _w, double _x, double _y, double _z)
+Quaternion::Quaternion (dReal _w, dReal _x, dReal _y, dReal _z)
   : w(_w), x(_x), y(_y),z(_z)
 {
     // empty
 }
 
-void Quaternion::SetFromEuler(double phi, double theta, double psi)
+void Quaternion::SetFromEuler(dReal phi, dReal theta, dReal psi)
 {
     // euler degrees to euler radians
-    const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
-    phi *= piK;
+#if defined(dSINGLE)
+    const dReal piK = (dReal)(3.14159265358979323846 / 180.);
+#else
+    const dReal piK = 3.14159265358979323846264338327950288419716939937510 / 180.;
+#endif
+	phi *= piK;
     theta *= piK;
     psi *= piK;
     // euler angles to ode matrix
@@ -43,7 +47,7 @@ void Quaternion::SetFromEuler(double phi, double theta, double psi)
     z = tmpQuaternion[3];
 }
 
-Quaternion::Quaternion (double phi, double theta, double psi)
+Quaternion::Quaternion (dReal phi, dReal theta, dReal psi)
 {
   SetFromEuler(phi, theta, psi);
 }
@@ -66,8 +70,8 @@ Quaternion::Quaternion (const dReal * odeQuaternion)
 Quaternion::Quaternion(const std::string &srcString)
 {
     std::stringstream tmpString (srcString);
-    const double magicValue = 0.123456789101112131415;
-    double tmpW, tmpX, tmpY, tmpZ = magicValue;
+    const dReal magicValue = 0.123456789f;
+    dReal tmpW, tmpX, tmpY, tmpZ = magicValue;
     tmpString >> tmpW >> tmpX >> tmpY >> tmpZ;
     if ( tmpZ == magicValue ) {
       SetFromEuler (tmpW, tmpX, tmpY);   

@@ -16,22 +16,22 @@ Vector3d::Vector3d ()
   //empty
 }
 
-Vector3d::Vector3d (double _x, double _y, double _z)
+Vector3d::Vector3d (dReal _x, dReal _y, dReal _z)
   : x(_x), y(_y),z(_z)
 {
   //empty
 }
-Vector3d::Vector3d(double qw, double qx, double qy, double qz)
+Vector3d::Vector3d(dReal qw, dReal qx, dReal qy, dReal qz)
 {
     //from quaternion to euler radians
-    double sqw = qw*qw;
-    double sqx = qx*qx;
-    double sqy = qy*qy;
-    double sqz = qz*qz;
+    dReal sqw = qw*qw;
+    dReal sqx = qx*qx;
+    dReal sqy = qy*qy;
+    dReal sqz = qz*qz;
 
-    y = atan2(2.0 * (qx * qy + qz * qw), (sqx - sqy - sqz + sqw));
-    x = -atan2(2.0 * (qy * qz + qx * qw), (-sqx - sqy + sqz + sqw));
-    z = -asin(-2.0 * (qx * qz - qy * qw));
+    y = atan2(2.0f * (qx * qy + qz * qw), (sqx - sqy - sqz + sqw));
+    x = -atan2(2.0f * (qy * qz + qx * qw), (-sqx - sqy + sqz + sqw));
+    z = -asin(-2.0f * (qx * qz - qy * qw));
 }
 
 Vector3d::Vector3d (const dReal * odeArray)
@@ -115,11 +115,11 @@ const Vector3d & Vector3d::operator-= (const Vector3d & k)
     z -= k.z;
     return *this;
 }
-double Vector3d::distance () const
+dReal Vector3d::distance () const
 {
     return sqrt (x * x + y * y + z * z);
 }
-double Vector3d::distance (const Vector3d & k) const
+dReal Vector3d::distance (const Vector3d & k) const
 {
     return (*this - k).distance ();
 }
@@ -169,7 +169,7 @@ const Vector3d GetCrossProduct_old (const std::vector < Vector3d > &vec)
 .y) * (vec[1].x - vec[2].x);
 
     /* * normalize vector */
-    double x, y, z, sum, sqr;
+    dReal x, y, z, sum, sqr;
     x = y = z = sum = 0;
 
     // square coordinates
@@ -181,7 +181,7 @@ const Vector3d GetCrossProduct_old (const std::vector < Vector3d > &vec)
     sum = x + y + z;
 
     // square root
-    sqr = pow (sum, (double) 0.5);
+    sqr = pow (sum, (dReal)0.5);
     if (!sqr)
     {
         sqr = 1;                // wg. Division durch 0
@@ -198,7 +198,7 @@ const Vector3d GetAvgVector_old (const std::vector < Vector3d > & vec)
     Vector3d ret;
     size_t i, size;
     size = vec.size();
-    double x, y, z;
+    dReal x, y, z;
     x = y = z = 0;
     for (i = 0; i < size; i++)
     {
@@ -219,13 +219,17 @@ const Vector3d GetAvgVector (const std::vector < Vector3d > & vec)
     for (size_t i = 0; i < size; i++) {
       ret += vec[i];
     }
-    ret.scalarDivide(size); //scalarDivide checks for div0
+    ret.scalarDivide((dReal)size); //scalarDivide checks for div0
     return ret;
 }
 
 Vector3d& Vector3d::degreesToRadians ()
 {
-    const double piK = 3.14159265358979323846264338327950288419716939937510 / 180;
+#if defined(dSINGLE)
+    const dReal piK = (dReal)(3.14159265358979323846 / 180.);
+#else
+    const dReal piK = 3.14159265358979323846264338327950288419716939937510 / 180.;
+#endif
     scalarMultiply(piK);
     return *this;
 }
@@ -235,14 +239,14 @@ Vector3d& Vector3d::degreesToRadians ()
 // im also uncertain if this->x is better then x.
 // but I have a vague memory about polymorph inheritance and problems.
 
-Vector3d&  Vector3d::scalarAdd(const double value)
+Vector3d&  Vector3d::scalarAdd(const dReal value)
 {
   this->x += value;
   this->y += value;
   this->z += value;
   return *this;
 }
-Vector3d&  Vector3d::scalarMultiply(const double value)
+Vector3d&  Vector3d::scalarMultiply(const dReal value)
 {
   this->x *= value;
   this->y *= value;
@@ -250,7 +254,7 @@ Vector3d&  Vector3d::scalarMultiply(const double value)
   return *this;
 }
 
-Vector3d& Vector3d::scalarDivide(const double value)
+Vector3d& Vector3d::scalarDivide(const dReal value)
 {
   if (value != 0) {
     this->x /= value;

@@ -69,16 +69,16 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string n
     dGeomTransformSetCleanup (geomIDs["GeomSpace(B)"], 0);
     
     // create collision geoms
-    geomIDs["Geom(A)"] = dCreateBox (0, data.length, data.width, data.height / 2.0);
-    geomIDs["Geom(B)"] = dCreateBox (0, data.length / 2.0, data.width / 2.0, data.height / 2.0);
+    geomIDs["Geom(A)"] = dCreateBox (0, data.length, data.width, data.height / 2.0f);
+    geomIDs["Geom(B)"] = dCreateBox (0, data.length / 2.0f, data.width / 2.0f, data.height / 2.0f);
 
     // insert collision geoms into transformation spaces
     dGeomTransformSetGeom (geomIDs["GeomSpace(A)"], geomIDs["Geom(A)"]);
     dGeomTransformSetGeom (geomIDs["GeomSpace(B)"], geomIDs["Geom(B)"]);
 
     // apply offsets to the collision geoms
-    dGeomSetPosition (geomIDs["Geom(A)"], 0, 0, - data.height / 4.0);
-    dGeomSetPosition (geomIDs["Geom(B)"], -data.width / 6, 0, (data.height / 4.0) + 0.1);
+    dGeomSetPosition (geomIDs["Geom(A)"], 0.f, 0.f, - data.height / 4.0f);
+    dGeomSetPosition (geomIDs["Geom(B)"], -data.width / 6.f, 0.f, (data.height / 4.0f) + 0.1f);
 
     // associate the dBody with the 2 collision geoms via the transformation spaces
     dGeomSetBody (geomIDs["GeomSpace(A)"], bodyID);
@@ -108,9 +108,9 @@ OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string 
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     dMass dmass;
     dMassSetParameters (&dmass, data.mass,
-                         0, 0, 0,
-                         0.237, 0.237, 0.409,
-                         0, 0, 0);
+                         0., 0., 0.,
+                         0.237f, 0.237f, 0.409f,
+                         0., 0., 0.);
     geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
@@ -152,9 +152,8 @@ OdeObject::~OdeObject ()
         worldObject->getLog()->__format (LOG_DEVELOPER, "Removing geom id=%s", i->first.c_str());
         dGeomDestroy (i->second);
         i->second = NULL;
-        geomIDs.erase(i);
     }
-
+	geomIDs.clear();
     dBodyDestroy (bodyID);
     bodyID = NULL;
     this->worldObject = NULL;

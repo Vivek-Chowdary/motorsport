@@ -55,11 +55,11 @@ class OdeObject
 class PartOdeData
 {
     public:
-        double mass;
+        dReal mass;
         std::string shape;
         Vector3d size;
-        double radius;
-        double length;
+        dReal radius;
+        dReal length;
         int directionAxis;
 
         PartOdeData()
@@ -76,10 +76,10 @@ class PartOdeData
 class BodyOdeData
 {
     public:
-        double length;
-        double width;
-        double height;
-        double mass;
+        dReal length;
+        dReal width;
+        dReal height;
+        dReal mass;
 
         BodyOdeData()
         {
@@ -91,9 +91,9 @@ class BodyOdeData
 class WheelOdeData
 {
     public:
-        double radius;
-        double width;
-        double mass;
+        dReal radius;
+        dReal width;
+        dReal mass;
 
         WheelOdeData()
         {
@@ -104,10 +104,10 @@ class WheelOdeData
 class BoneOdeData
 {
     public:
-        double length;
-        double radius;
-        double mass;
-        double density;
+        dReal length;
+        dReal radius;
+        dReal mass;
+        dReal density;
         bool useMass;
         BoneOdeData()
         {

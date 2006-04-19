@@ -285,7 +285,7 @@ clobber : clean
 .PHONY: run
 run:
 	@echo    "---Run...-------------------------------------"
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH)$(subst $(Pat_space),$(Pat_empty),$(patsubst %,:%,$(LIBRARY_DIRS))); ./motorsport 2>/dev/null
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH)$(subst $(Pat_space),$(Pat_empty),$(patsubst %,:%,$(LIBRARY_DIRS))); ./motorsport 2>stdout.log
 	@echo    "----------------------------------------------"
 
 .PHONY: tags

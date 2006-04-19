@@ -17,13 +17,13 @@ class Vector3d;
 class Quaternion
 {
   public:
-    double w;
-    double x;
-    double y;
-    double z;
+    dReal w;
+    dReal x;
+    dReal y;
+    dReal z;
     Quaternion ();                                      // defaults to (1, 0, 0, 0)
-    Quaternion (double w, double x, double y, double z);// from quaternion values
-    Quaternion (double phi, double theta, double psi);  // from Euler angles
+    Quaternion (dReal w, dReal x, dReal y, dReal z);// from quaternion values
+    Quaternion (dReal phi, dReal theta, dReal psi);  // from Euler angles
     Quaternion (dQuaternion odeQuaternion);             // from ode quaternion
     Quaternion (const dReal * odeQuaternion);           // from ode array
     Quaternion (const std::string &srcString);          // from std::string
@@ -43,7 +43,7 @@ class Quaternion
     Vector3d rotateObject (Vector3d objectPosition);
 
   private:
-  void SetFromEuler(double phi, double theta, double psi); // bad name
+  void SetFromEuler(dReal phi, dReal theta, dReal psi); // bad name
 };
 
 #endif

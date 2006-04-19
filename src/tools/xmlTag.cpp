@@ -53,6 +53,7 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
     if (n == NULL)
     {
         if (logging) log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
+		return;
     }
     if (n->getNodeType() != DOMNode::ELEMENT_NODE)
     {

@@ -16,12 +16,12 @@
 class Vector3d
 {
   public:
-    double x;
-    double y;
-    double z;
+    dReal x;
+    dReal y;
+    dReal z;
     Vector3d ();
-    Vector3d (double x, double y, double z);                // from separated components
-    Vector3d(double qw, double qx, double qy, double qz);   // from quaternion to euler radians
+    Vector3d (dReal x, dReal y, dReal z);                // from separated components
+    Vector3d(dReal qw, dReal qx, dReal qy, dReal qz);   // from quaternion to euler radians
     Vector3d (const dReal * odeArray);                      // from ode array
 //    Vector3d (const Vector3d & cpy); default copy constructor used.
     Vector3d (const std::string &srcString);
@@ -36,12 +36,12 @@ class Vector3d
     Vector3d operator* (const Vector3d & k) const;
     const Vector3d & operator+= (const Vector3d & k);
     const Vector3d & operator-= (const Vector3d & k);
-    double distance () const;
-    double distance (const Vector3d & k) const;
+    dReal distance () const;
+    dReal distance (const Vector3d & k) const;
     Vector3d & degreesToRadians();
-    Vector3d & scalarAdd(const double value);
-    Vector3d & scalarMultiply(const double value);
-    Vector3d & scalarDivide(const double value);
+    Vector3d & scalarAdd(const dReal value);
+    Vector3d & scalarMultiply(const dReal value);
+    Vector3d & scalarDivide(const dReal value);
     const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec);
 };
 

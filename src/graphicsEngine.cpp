@@ -10,7 +10,6 @@
 #ifdef WIN32
 #   define WIN32_LEAN_AND_MEAN
 #   include <windows.h>
-#   include "OgreWin32Window.h"
 #endif
 #include "OgreNoMemoryMacros.h"
 #include "graphicsEngine.hpp"
@@ -242,8 +241,8 @@ GraphicsEngine::GraphicsEngine ()
     screenshotFilename.assign ("frame%i.jpg");
     initialFrame = 0;
     castAreaShadows = true;
-    vehicleRenderMode = Ogre::SDL_SOLID;
-    areaRenderMode = Ogre::SDL_SOLID;
+    vehicleRenderMode = Ogre::PM_SOLID;
+    areaRenderMode = Ogre::PM_SOLID;
     #ifdef WIN32
     std::string ogrePluginsDir = "plugins";
     #else
@@ -270,9 +269,9 @@ GraphicsEngine::GraphicsEngine ()
         if ( tag->getAttribute("vehicleRenderMode") == "points") vehicleRenderMode = 1;
         if ( tag->getAttribute("vehicleRenderMode") == "wireframe") vehicleRenderMode = 2;
         if ( tag->getAttribute("vehicleRenderMode") == "solid") vehicleRenderMode = 3;
-        if ( tag->getAttribute("areaRenderMode") == "points") vehicleRenderMode = 1;
-        if ( tag->getAttribute("areaRenderMode") == "wireframe") vehicleRenderMode = 2;
-        if ( tag->getAttribute("areaRenderMode") == "solid") vehicleRenderMode = 3;
+        if ( tag->getAttribute("areaRenderMode") == "points") areaRenderMode = 1;
+        if ( tag->getAttribute("areaRenderMode") == "wireframe") areaRenderMode = 2;
+        if ( tag->getAttribute("areaRenderMode") == "solid") areaRenderMode = 3;
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
             if (t->getName() == "ogre")
@@ -365,20 +364,19 @@ GraphicsEngine::GraphicsEngine ()
     systemData->ogreWindow = ogreRoot->initialise (true);  
     setupResources ();
 #ifdef WIN32
-    // This is a bit of a hack way to get the HWND from Ogre.
-    // Currently only works for the OpenGL renderer.
-    log->__format (LOG_WARNING, "Windows version: temporary hackish workaround in order to get SDL input working");
-    char tmp[64];
-    Ogre::Win32Window* ow32_win = static_cast<Ogre::Win32Window*>(systemData->ogreWindow);
-    if (ow32_win != NULL)
-    {
-        sprintf(tmp, "SDL_WINDOWID=%d", ow32_win->getWindowHandle());
-        _putenv(tmp);
-    }
+
+	char tmp[64];
+	// New method: As proposed by Sinbad.
+	//  This method always works.
+	HWND hWnd;
+	systemData->ogreWindow->getCustomAttribute("HWND", &hWnd);
+	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
+	_putenv(tmp);
+
 #endif
     log->__format (LOG_DEVELOPER, "Getting ogre scene manager");
     // Set shadowing system
-    systemData->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
+    systemData->ogreSceneManager = ogreRoot->createSceneManager (sceneManager);
     systemData->ogreSceneManager->setShadowTechnique(shadowTechnique);
     systemData->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
     systemData->ogreSceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));

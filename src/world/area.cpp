@@ -184,22 +184,24 @@ void Area::setCastShadows(bool castShadows)
 
 void Area::setRenderDetail(int renderMode)
 {
-    Ogre::SceneDetailLevel mode;
+    Ogre::PolygonMode mode;
     switch (renderMode)
     {
     case 1:
-        mode = Ogre::SDL_POINTS;
+        mode = Ogre::PM_POINTS;
         break;
     case 2:
-        mode = Ogre::SDL_WIREFRAME;
+        mode = Ogre::PM_WIREFRAME;
         break;
     case 3:
-        mode = Ogre::SDL_SOLID;
+        mode = Ogre::PM_SOLID;
         break;
     }
-    planeEntity->setRenderDetail(mode);
-    //UNCOMMENT ME
-    // if (areaEntity != 0) areaEntity->setRenderDetail(mode);
+    int size = cameraList.size ();
+    for (int i = 0; i < size; i++)
+    {
+		cameraList[i]->ogreCamera->setPolygonMode(mode);
+    }
 }
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)

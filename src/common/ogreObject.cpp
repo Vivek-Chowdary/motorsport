@@ -62,7 +62,7 @@ OgreObject::~OgreObject ()
         worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
         node->detachObject(entity);
         if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
-        SystemData::getSystemDataPointer()->ogreSceneManager->removeEntity (entity);
+        SystemData::getSystemDataPointer()->ogreSceneManager->destroyEntity (entity);
         entity = NULL;
     }
 

@@ -44,21 +44,21 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 }
 WorldObject::~WorldObject ()
 {
-    log->__format(LOG_CCREATOR, "Deleting myself. Id #%s.", id.c_str(), getFullName().c_str());
+    log->__format(LOG_CCREATOR, "Deleting myself. Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
     OgreObjectsIt i = ogreObjects.begin();
     for(;i != ogreObjects.end(); i++)
     {
         delete i->second;
         i->second = NULL;
-        ogreObjects.erase(i);
     }
+	ogreObjects.clear();
     OdeObjectsIt j = odeObjects.begin();
     for(;j != odeObjects.end(); j++)
     {
         delete j->second;
         j->second = NULL;
-        odeObjects.erase(j);
     }
+	odeObjects.clear();
     worldObjects.erase(this->id);
     delete log;
     log = NULL;

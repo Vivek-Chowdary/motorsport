@@ -13,5 +13,7 @@ cd ..
 cd lib
 d=$origin/lib
     ln -s /home/stenyak$d/OGRE
+    ln -s /home/stenyak$d
+    for i in /home/stenyak$d/*Ogre*; do ln -s $i; done
     ln -s $d/ode
 cd ..
