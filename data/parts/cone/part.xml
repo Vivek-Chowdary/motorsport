@@ -2,14 +2,14 @@
 <part
     name = "Cone"
     description = "A typical road cone."
-    author = "Bruno Gonzalez Campo (STenyaK)"
-    contact = "stenyak AT gmx DOT net"
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-    mesh = "cone.mesh"
-    mass = "50"
+    author = "David Goodman"
+    contact = " david DOT n DOT goodman AT max-realms DOT com"
+    license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly. Read Max-Realms_License.htm for more info."
+    mesh = "Cone.mesh"
+    mass = "3"
     >
     <box
-        size = "1 1 2"
+        size = "0.35 0.35 0.6"
         >
     </box>
 <!--
