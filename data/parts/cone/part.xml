@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <part
-    name = "Cone"
-    description = "A typical road cone."
-    author = "David Goodman"
-    contact = " david DOT n DOT goodman AT max-realms DOT com"
-    license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly. Read Max-Realms_License.htm for more info."
-    mesh = "Cone.mesh"
+    name = "Traffic-cone"
+    description = "A typical traffic cone."
+    author = "Angelos Anadilinos (aka vagos)"
+    contact = "aggnos1 AT yahoo DOT com"
+    license = "Creative Commons Attribution-NonCommercial-ShareAlike License. For more info, read the readme.txt file."
+    mesh = "cone.mesh"
     mass = "3"
     >
     <box
-        size = "0.35 0.35 0.6"
+        size = "0.5 0.5 0.8"
         >
     </box>
 <!--
