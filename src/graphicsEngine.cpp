@@ -287,7 +287,7 @@ GraphicsEngine::GraphicsEngine ()
                 bpp = stoi(t->getAttribute("bpp"));
                 renderer = t->getAttribute("renderer");
                 defaultNumMipMaps = stoi(t->getAttribute("defaultNumMipmaps"));
-                fullScreen = stod(t->getAttribute("fullScreen"));
+                fullScreen = stob(t->getAttribute("fullScreen"));
                 if (t->getAttribute("sceneManager") == "ST_GENERIC") sceneManager = Ogre::ST_GENERIC;
                 if (t->getAttribute("sceneManager") == "ST_EXTERIOR_CLOSE") sceneManager = Ogre::ST_EXTERIOR_CLOSE;
                 if (t->getAttribute("sceneManager") == "ST_EXTERIOR_FAR") sceneManager = Ogre::ST_EXTERIOR_FAR;

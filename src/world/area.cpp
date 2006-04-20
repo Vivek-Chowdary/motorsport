@@ -108,7 +108,11 @@ void Area::construct (XmlTag * tag)
                         unsigned int *indices;
                         getMeshInformation (ogreChild->getEntity()->getMesh (), vertex_count, vertices, index_count, indices, ogreChild->getNode()->getPosition(), ogreChild->getNode()->getOrientation(), ogreChild->getNode()->getScale());
                         log->__format (LOG_CCREATOR, "Building the ode mesh for the ground");
+#if defined(dSINGLE)
+                        dGeomTriMeshDataBuildSingle (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
+#else
                         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
+#endif
                     }
                 }
             }

@@ -12,7 +12,13 @@
 #include <string>
 #include <map>
 #include <fstream>
+
+#ifdef _MSC_VER
+// Apparently visual studio does not like this macro
+#define __format format
+#else
 #define __format(X ,Y, ...) format((X), std::string("[%s:%3i] " + std::string((Y))).c_str(),__FILE__, __LINE__, ##__VA_ARGS__)
+#endif
 
 //forward declarations
 class GuiEngine;
