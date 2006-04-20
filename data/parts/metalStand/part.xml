@@ -4,7 +4,7 @@
     description = "An empty metal stand, for use in race tracks"
     author = "David Goodman"
     contact = " david DOT n DOT goodman AT max-realms DOT com"
-    license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly."
+    license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly. Read Max-Realms_License.htm for more info."
     mesh = "metalstand.mesh"
     mass = "5000"
     >
