@@ -30,6 +30,15 @@ OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string n
     this->name = name;
     bodyID = NULL;
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
+ 
+    //TODO make this optional via xml or something similar   
+    /*/set autodisable
+    dBodySetAutoDisableFlag (bodyID, 1);
+    dBodySetAutoDisableLinearThreshold (bodyID, 0.15);
+    dBodySetAutoDisableAngularThreshold (bodyID, 0.20);
+    dBodySetAutoDisableSteps (bodyID, 1);
+    //*/
+    
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     dMass dmass;
     if (data.shape == "box")
