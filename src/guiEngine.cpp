@@ -110,7 +110,7 @@ void GuiEngine::showLoadscreen ()
         
     tmpOgreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera ("Loadscreen camera");
     tmpOgreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
-    tmpOgreCamera->setPosition (Ogre::Vector3 (30, 30, 10));
+    tmpOgreCamera->setPosition (Ogre::Vector3 (-3, 3, 1));
     tmpOgreCamera->lookAt (Ogre::Vector3 (0, 0, 0));
     tmpOgreCamera->setNearClipDistance (0.100);
     SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();

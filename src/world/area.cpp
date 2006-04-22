@@ -113,6 +113,7 @@ void Area::construct (XmlTag * tag)
 #else
                         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
 #endif
+                        SystemData::getSystemDataPointer()->ogreWindow->update ();
                     }
                 }
             }
@@ -135,6 +136,7 @@ void Area::construct (XmlTag * tag)
                     tmp->setRotation (rotation);
                     partList.push_back (tmp);
                     tmp->stepGraphics();
+                    SystemData::getSystemDataPointer()->ogreWindow->update ();
                 }
             }
             if (t->getName() == "vehicleLocation")
@@ -166,12 +168,14 @@ void Area::construct (XmlTag * tag)
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
     areaBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
+    SystemData::getSystemDataPointer()->ogreWindow->update ();
 
     // FIXME should be part of the world, not the area
     log->loadscreen (LOG_CCREATOR, "Creating the area sky");
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
     SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
+    SystemData::getSystemDataPointer()->ogreWindow->update ();
     
     // create the checkpoint sphere
     dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);

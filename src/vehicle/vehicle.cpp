@@ -98,21 +98,25 @@ void Vehicle::construct (XmlTag * tag)
             {
                 Wheel * tmp = new Wheel (this, t);
                 components[tmp->getName()] = tmp;
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.unidimensional")
             {
                 Unidimensional * tmp = new Unidimensional (this, t);
                 components[tmp->getName()] = tmp;
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.fixed")
             {
                 Fixed * tmp = new Fixed (this, t);
                 components[tmp->getName()] = tmp;
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.doublewishbone")
             {
                 DoubleWishbone * tmp = new DoubleWishbone (this, t);
                 components[tmp->getName()] = tmp;
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
             if (t->getName() == "camera")
             {

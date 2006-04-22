@@ -54,6 +54,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
                 OgreObject * ogreChild = new OgreObject(this, childData, getId());
                 ogreObjects[ogreChild->getId()] = ogreChild;
                 ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
         }
     }
