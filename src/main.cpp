@@ -202,6 +202,10 @@ void computeLogic (LogEngine * log)
         log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
         systemData->increaseDesiredPhysicsRate();
     }
+    if (systemData->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
+    {
+        systemData->cameraDirector = !systemData->cameraDirector;
+    }
 }
 
 void recordVideoFrames ()

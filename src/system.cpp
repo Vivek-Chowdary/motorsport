@@ -28,7 +28,8 @@ SystemData::SystemData ()
     pauseStep(0),
     height(1),
     width(1),
-    videoRecordTimestep(0)
+    videoRecordTimestep(0),
+    cameraDirector(false)
 {
   //empty
 }

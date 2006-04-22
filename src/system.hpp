@@ -213,6 +213,8 @@ class SystemData
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;
     std::map <int, Axis * > axisMap;
+
+    bool cameraDirector;
 };
 
 #endif

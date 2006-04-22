@@ -113,6 +113,7 @@ void InputEngine::clearGraphicsEventAxis ()
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
     SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_v)]->setNewRawValue(0);
+    SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey (SDLK_b)]->setNewRawValue(0);
 }
 
 int InputEngine::computeStep (void)
