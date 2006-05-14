@@ -204,7 +204,8 @@ void computeLogic (LogEngine * log)
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
     {
-        systemData->cameraDirector = !systemData->cameraDirector;
+        systemData->cameraDirector = !(systemData->cameraDirector);
+        systemData->axisMap[getIDKeyboardKey(SDLK_b)]->setNewRawValue(0);
     }
 }
 

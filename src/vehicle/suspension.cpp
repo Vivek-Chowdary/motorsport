@@ -275,14 +275,16 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
         springLengthAtEase = stod(tag->getAttribute("springLengthAtEase"));
         damperFastBump = stod(tag->getAttribute("damperFastBump"));
         damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
-        springStiffness = stod(tag->getAttribute("springStiffness"));
-        springStiffness = stod(tag->getAttribute("springStiffness"));
         upperBoneOData.meshPath = tag->getAttribute("upperBoneMesh");
         lowerBoneOData.meshPath = tag->getAttribute("lowerBoneMesh");
         uprightBoneOData.meshPath = tag->getAttribute("uprightBoneMesh");
     }
+    else
+    {
+        log->__format(LOG_ERROR, "Suspension was supposed to be a double wishbone suspension, but tag name is different!");
+    }
     springOldx =  springLengthAtEase;
-    if (firstPosition.y > 0) right = true;
+    right = (firstPosition.y > 0)? right : false;
     uprightBoneLength = 0.4;
     //--------------------------------------------
     double dirMult = 1.0;

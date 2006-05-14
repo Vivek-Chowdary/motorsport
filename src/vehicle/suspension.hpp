@@ -83,8 +83,6 @@ class DoubleWishbone : public Suspension
     protected:
         Quaternion firstRotation;
         Vector3d firstPosition;
-        Vector3d getFirstLinkPosition (){return firstPosition;};
-        Quaternion getFirstLinkRotation (){return firstRotation;};
         double maxSteeringAngle;
         double getSteeringAngle();
         bool right;
@@ -106,6 +104,8 @@ class DoubleWishbone : public Suspension
         double damperFastBump;
         double damperFastRebound;
 
+        Vector3d getFirstLinkPosition (){return firstPosition;};
+        Quaternion getFirstLinkRotation (){return firstRotation;};
     public:
         DoubleWishbone (WorldObject * container, XmlTag * tag);
         ~DoubleWishbone();
