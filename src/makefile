@@ -55,6 +55,9 @@ LD_FLAGS:=
 endif
 DEFINES := $(PLATFORM) $(TYPE)
 TARGET := motorsport$(EXE_EXT)
+TAGS := tags
+MOSPTAGS := motorsport.tags
+SYSTAGS := system.tags
 LD := g++
 CC := gcc
 CXX := g++
@@ -116,28 +119,34 @@ PLATFORM_INCLUDE_DIRS := \
 	/usr/local/include/OGRE \
 	/usr/local/include/SDL
 endif
-#All paths...	
-INCLUDE_DIRS := \
-	$(PLATFORM_INCLUDE_DIRS) \
-	$(BASE_INCLUDE_DIR)/ \
-	$(BASE_INCLUDE_DIR)/ode \
-	$(BASE_INCLUDE_DIR)/freetype2 \
-	$(BASE_INCLUDE_DIR)/SDL \
-	$(BASE_INCLUDE_DIR)/OGRE \
-	$(BASE_INCLUDE_DIR)/xercesc \
+#Motorsport paths...
+MOTORSPORT_INCLUDE_DIRS := \
 	vehicle \
 	world \
 	log \
         tools \
 	common \
+	.
+#System paths...
+SYSTEM_INCLUDE_DIRS := \
+	$(PLATFORM_INCLUDE_DIRS) \
+	$(BASE_INCLUDE_DIR) \
+	$(BASE_INCLUDE_DIR)/ode \
+	$(BASE_INCLUDE_DIR)/freetype2 \
+	$(BASE_INCLUDE_DIR)/SDL \
+	$(BASE_INCLUDE_DIR)/OGRE \
+	$(BASE_INCLUDE_DIR)/xercesc \
 	$(BASE_INCLUDE_DIR)/../local/include/ode \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)/xercesc \
 	$(BASE_INCLUDE_DIR)/../local/include/OGRE \
-	$(BASE_INCLUDE_DIR)/../local/include/SDL \
-	./
+	$(BASE_INCLUDE_DIR)/../local/include/SDL
+#All paths...	
+INCLUDE_DIRS := \
+	$(SYSTEM_INCLUDE_DIRS) \
+	$(MOTORSPORT_INCLUDE_DIRS)
 ###########################################
 
 
@@ -262,7 +271,19 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 #Phony targets definitions
 .PHONY: all
-all: 	$(TARGET)
+all: 	$(TARGET) tags
+
+.PHONY: tags
+tags: $(SYSTAGS)
+	@ctags -I --c++-kinds=+p --fields=+iaS --extra=+q -f $(MOSPTAGS) $(patsubst %,%/*.h*,$(MOTORSPORT_INCLUDE_DIRS))
+	@if [ -f $(SYSTAGS) ]; then \
+	  cat $(MOSPTAGS) $(SYSTAGS) |sort|uniq >$(TAGS); \
+	else \
+	  mv $(MOSPTAGS) $(TAGS); \
+	fi
+
+$(SYSTAGS) :
+	@ctags -IR --c++-kinds=+p --fields=+iaS --extra=+q -f system.tags $(patsubst %,%/*.h*,$(SYSTEM_INCLUDE_DIRS))
 
 .PHONY: configure
 configure:
@@ -273,13 +294,13 @@ configure:
 .PHONY: clean
 clean:
 	@echo    "---Clean...-----------------------------------"
-	rm -f $(TARGET) $(OBJECTS) $(TEST_EXE)
+	rm -f $(TARGET) $(OBJECTS) $(TEST_EXE) $(MOSPTAGS) $(TAGS)
 	@echo    "----------------------------------------------"
 
 .PHONY: clobber
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
-	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp *.log
+	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp *.log screenframe*.jpg $(SYSTAGS) 
 	@echo    "----------------------------------------------"
 
 .PHONY: run
@@ -287,10 +308,6 @@ run:
 	@echo    "---Run...-------------------------------------"
 	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH)$(subst $(Pat_space),$(Pat_empty),$(patsubst %,:%,$(LIBRARY_DIRS))); ./motorsport 2>stdout.log
 	@echo    "----------------------------------------------"
-
-.PHONY: tags
-tags:
-	ctags --c-types=+px **/*.[ch]pp
 
 $(TARGET) :$(OBJECTS)
 	$(LD) $(LD_FLAGS) $(patsubst %,-L%,$(LIBRARY_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBRARIES))
