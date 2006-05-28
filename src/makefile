@@ -275,7 +275,7 @@ all: 	$(TARGET) tags
 
 .PHONY: tags
 tags: $(SYSTAGS)
-	@ctags -I --c++-kinds=+p --fields=+iaS --extra=+q -f $(MOSPTAGS) $(patsubst %,%/*.h*,$(MOTORSPORT_INCLUDE_DIRS))
+	@ctags -I --c++-kinds=+p --fields=+iaS --extra=+q -f $(MOSPTAGS) $(SOURCES) $(patsubst %,%/*.h*,$(MOTORSPORT_INCLUDE_DIRS))
 	@if [ -f $(SYSTAGS) ]; then \
 	  cat $(MOSPTAGS) $(SYSTAGS) |sort|uniq >$(TAGS); \
 	else \
