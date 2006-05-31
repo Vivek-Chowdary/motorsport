@@ -284,7 +284,7 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
         log->__format(LOG_ERROR, "Suspension was supposed to be a double wishbone suspension, but tag name is different!");
     }
     springOldx =  springLengthAtEase;
-    right = (firstPosition.y > 0)? right : false;
+    right = firstPosition.y > 0;
     uprightBoneLength = 0.4;
     //--------------------------------------------
     double dirMult = 1.0;

@@ -64,6 +64,9 @@ CXX := g++
 #CXX := ccache g++
 CFLAGS := -fmessage-length=0 -c -Wall -g -O0 -DGCC_3_1 -DEXT_HASH $(PLATFORM_CFLAGS)
 CXXFLAGS := $(CFLAGS)
+ifdef PROFILE
+PROFILEFLAGS := -pg
+endif
 ###########################################
 
 
@@ -264,10 +267,10 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 #Compiling instructions
 %.o : %.cpp
-	$(CXX) $(CXXFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
+	$(CXX) $(PROFILEFLAGS) $(CXXFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
 %.o : %.c
-	$(CC) $(CFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
+	$(CC) $(PROFILEFLAGS) $(CFLAGS) $(patsubst %,-D%,$(DEFINES)) $(patsubst %,-I%,$(INCLUDE_DIRS)) -o $@ $<
 
 #Phony targets definitions
 .PHONY: all
@@ -300,7 +303,7 @@ clean:
 .PHONY: clobber
 clobber : clean
 	@echo    "---Clobber...---------------------------------"
-	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp *.log screenframe*.jpg $(SYSTAGS) 
+	rm -f *~ */*~ .*[hc]pp.swp */.*[hc]pp.swp *.log screenframe*.jpg gmon.out $(SYSTAGS) 
 	@echo    "----------------------------------------------"
 
 .PHONY: run
@@ -310,7 +313,7 @@ run:
 	@echo    "----------------------------------------------"
 
 $(TARGET) :$(OBJECTS)
-	$(LD) $(LD_FLAGS) $(patsubst %,-L%,$(LIBRARY_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBRARIES))
+	$(LD) $(PROFILEFLAGS) $(LD_FLAGS) $(patsubst %,-L%,$(LIBRARY_DIRS)) -o $@ $^ $(patsubst %,-l%,$(LIBRARIES))
 	@chmod +x $@
 	@echo    "---Exec...------------------------------------"
 	@echo -n "Motorsport successfully compiled!:     "
