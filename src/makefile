@@ -50,6 +50,8 @@ TYPE :=
 EXE_EXT := 
 BASE_INCLUDE_DIR := /usr/include
 BASE_LIBRARY_DIR := /usr/lib
+#BASE_INCLUDE_DIR := $(PWD)/../3pl/linux/include
+#BASE_LIBRARY_DIR := $(PWD)/../3pl/linux/lib
 PLATFORM_CFLAGS :=
 LD_FLAGS:=
 endif
@@ -278,11 +280,15 @@ all: 	$(TARGET) tags
 
 .PHONY: tags
 tags: $(SYSTAGS)
-	@ctags -I --c++-kinds=+p --fields=+iaS --extra=+q -f $(MOSPTAGS) $(SOURCES) $(patsubst %,%/*.h*,$(MOTORSPORT_INCLUDE_DIRS))
-	@if [ -f $(SYSTAGS) ]; then \
-	  cat $(MOSPTAGS) $(SYSTAGS) |sort|uniq >$(TAGS); \
+	@if ctags -I --c++-kinds=+p --fields=+iaS --extra=+q -f $(MOSPTAGS) $(SOURCES) $(patsubst %,%/*.h*,$(MOTORSPORT_INCLUDE_DIRS)); \
+	then \
+	  if [ -f $(SYSTAGS) ]; then \
+	    cat $(MOSPTAGS) $(SYSTAGS) |sort|uniq >$(TAGS); \
+	  else \
+	    mv $(MOSPTAGS) $(TAGS); \
+	  fi; \
 	else \
-	  mv $(MOSPTAGS) $(TAGS); \
+	  echo Failed creating tags!; \
 	fi
 
 $(SYSTAGS) :
