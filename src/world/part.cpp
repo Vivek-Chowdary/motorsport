@@ -32,7 +32,6 @@ Part::Part (WorldObject * container, const std::string & name)
     if (tag->getName() == "part")
     {
         setName(tag->getAttribute("name"));
-        ogreData.meshPath = tag->getAttribute("mesh");
         data.mass = stod(tag->getAttribute("mass"));
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
@@ -54,14 +53,33 @@ Part::Part (WorldObject * container, const std::string & name)
                 if (t->getAttribute("directionAxis") == "z") data.directionAxis = 3;
             }
         }
-    }
-    ogreData.meshPath = getPath() + ogreData.meshPath;
-    OgreObject * ogreObject = new OgreObject(this, ogreData, getId());
-    ogreObjects[getId()] = ogreObject;
+        if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
+        odeObjects[getId()] = new OdeObject(this, data, getId());
 
-    if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-    odeObjects[getId()] = new OdeObject(this, data, getId());
-    ogreObjects.begin()->second->setOdeReference(odeObjects.begin()->second);
+        //create main mesh
+        ogreData.meshPath = getPath() + ogreData.meshPath;
+        OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
+        ogreObjects[ogreObject->getId()] = ogreObject;
+        odeObjects[getName()] = new OdeObject(this, data, getName());
+        ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
+        //create child meshes
+        t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "mesh")
+            {
+                OgreObjectData childData;
+                childData.meshPath = getPath() + t->getAttribute("file");
+                Vector3d posDiff (t->getAttribute("position"));
+                Vector3d scale (t->getAttribute("scale"));
+                Quaternion rotDiff (t->getAttribute("rotation"));
+                OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                ogreObjects[ogreChild->getId()] = ogreChild;
+                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
+                SystemData::getSystemDataPointer()->ogreWindow->update ();
+            }
+        }
+    }
+
     delete tag;
 }
 

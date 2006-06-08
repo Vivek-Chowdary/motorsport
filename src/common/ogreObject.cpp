@@ -78,7 +78,7 @@ void OgreObject::setOdeReference(OdeObject * odeObject)
     this->odeObject = odeObject;
 }
 
-void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff)
+void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale)
 {
     static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode())->removeChild(node);
     ogreObject->getNode()->addChild(node);
@@ -86,6 +86,7 @@ void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDi
     Ogre::Quaternion * rd = new Ogre::Quaternion (rotationDiff.w, rotationDiff.x, rotationDiff.y, rotationDiff.z);
     node->setPosition(*pd);
     node->setOrientation(*rd);
+    node->setScale(scale.x, scale.y, scale.z);
 }
 
 

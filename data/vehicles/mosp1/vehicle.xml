@@ -35,14 +35,9 @@
         >
         <mesh
             file= "body.mesh"
+            scale = "1 1 1"
             position = "0 0 0"
             rotation = "0 0 0"
-            >
-        </mesh>
-        <mesh
-            file= "wheel_front.mesh"
-            position = "-1.5 0 0.6"
-            rotation = "0 15 0"
             >
         </mesh>
     </body>
@@ -156,6 +151,16 @@
         steeringAngle = "+80"
         >
     </suspension.unidimensional>
+    <suspension.unidimensional
+        name = "fl suspension"
+        springConstant =  "80500"
+        dampingConstant = "2000"
+        position = "+1.44 -0.857 -0.45"
+        rotation = "+92.5 0 0"
+        steeringAngle = "-80"
+        >
+    </suspension.unidimensional>
+-->
     <suspension.doublewishbone
         name = "fl suspension"
         springStiffness =  "80500"
@@ -172,38 +177,22 @@
         uprightBoneMesh = "susp/Cube.001.mesh"
         >
     </suspension.doublewishbone>
--->
-    <suspension.unidimensional
-        name = "fl suspension"
-        springConstant =  "80500"
-        dampingConstant = "2000"
-        position = "+1.44 -0.857 -0.45"
-        rotation = "+92.5 0 0"
-        steeringAngle = "-80"
-        >
-    </suspension.unidimensional>
     <suspension.doublewishbone
         name = "fr suspension"
         springStiffness =  "80500"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
         damperFastRebound = "2100"
-        firstPosition = "+1.44 +0.57 -0.45"
+        firstPosition = "+1.44 +0.557 -0.45"
         firstRotation = "0 0 0"
         position = "+1.44 +0.857 -0.45"
         rotation = "-90 0 0"
-        steeringAngle = "+80"
+        steeringAngle = "+50"
         upperBoneMesh = "susp/Cube.mesh"
         lowerBoneMesh = "susp/Cube.mesh"
         uprightBoneMesh = "susp/Cube.001.mesh"
         >
     </suspension.doublewishbone>
-    <suspension.fixed
-        name = "rr suspension"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-90 0 0"
-        >
-    </suspension.fixed>
     <suspension.doublewishbone
         name = "rl suspension"
         springStiffness =  "80900"
@@ -214,7 +203,23 @@
         firstRotation = "0 0 0"
         position = "-1.35 -0.88 -0.45"
         rotation = "+90 0 0"
-        steeringAngle = "0"
+        steeringAngle = "+0"
+        upperBoneMesh = "susp/Cube.mesh"
+        lowerBoneMesh = "susp/Cube.mesh"
+        uprightBoneMesh = "susp/Cube.001.mesh"
+        >
+    </suspension.doublewishbone>
+    <suspension.doublewishbone
+        name = "rr suspension"
+        springStiffness =  "80900"
+        springLengthAtEase =  "0.5"
+        damperFastBump = "2000"
+        damperFastRebound = "2100"
+        firstPosition = "-1.35 +0.58 -0.45"
+        firstRotation = "0 0 0"
+        position = "-1.35 +0.88 -0.45"
+        rotation = "-90 0 0"
+        steeringAngle = "-0"
         upperBoneMesh = "susp/Cube.mesh"
         lowerBoneMesh = "susp/Cube.mesh"
         uprightBoneMesh = "susp/Cube.001.mesh"
@@ -230,22 +235,6 @@
         steeringAngle = "0"
         >
     </suspension.unidimensional>
-    <suspension.doublewishbone
-        name = "rr suspension"
-        springStiffness =  "80900"
-        springLengthAtEase =  "0.5"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "-1.35 +0.58 -0.45"
-        firstRotation = "0 0 0"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-90 0 0"
-        steeringAngle = "0"
-        upperBoneMesh = "susp/Cube.mesh"
-        lowerBoneMesh = "susp/Cube.mesh"
-        uprightBoneMesh = "susp/Cube.001.mesh"
-        >
-    </suspension.doublewishbone>
     <suspension.unidimensional
         name = "rl suspension"
         springConstant =  "80900"
@@ -255,6 +244,12 @@
         steeringAngle = "0"
         >
     </suspension.unidimensional>
+    <suspension.fixed
+        name = "rr suspension"
+        position = "-1.35 +0.88 -0.45"
+        rotation = "-90 0 0"
+        >
+    </suspension.fixed>
     <suspension.fixed
         name = "rl suspension"
         position = "-1.35 -0.88 -0.45"
@@ -273,6 +268,7 @@
         >
         <mesh
             file = "wheel_front.mesh"
+            scale = "1 1 1"
             position = "0 0 0"
             rotation = "0 0 0"
             >
@@ -288,6 +284,7 @@
         >
         <mesh
             file = "wheel_front.mesh"
+            scale = "1 1 1"
             position = "0 0 0"
             rotation = "0 0 0"
             >
@@ -303,6 +300,7 @@
         >
         <mesh
             file= "wheel_rear.mesh"
+            scale = "1 1 1"
             position = "0 0 0"
             rotation = "0 0 0"
             >
@@ -318,6 +316,7 @@
         >
         <mesh
             file = "wheel_rear.mesh"
+            scale = "1 1 1"
             position = "0 0 0"
             rotation = "0 0 0"
             >

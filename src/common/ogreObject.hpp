@@ -45,7 +45,7 @@ class OgreObject
         ~OgreObject ();
         std::string getId();
         void setOdeReference(OdeObject * odeObject);       
-        void setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff);
+        void setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale);
         void stepGraphics();
         Ogre::SceneNode * getNode();
         Ogre::Entity * getEntity();

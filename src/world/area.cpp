@@ -95,10 +95,11 @@ void Area::construct (XmlTag * tag)
                         OgreObjectData childData;
                         childData.meshPath = getPath() + u->getAttribute("file");
                         Vector3d posDiff (u->getAttribute("position"));
+                        Vector3d scale (u->getAttribute("scale"));
                         Quaternion rotDiff (u->getAttribute("rotation"));
                         OgreObject * ogreChild = new OgreObject(this, childData, getId());
                         ogreObjects[ogreChild->getId()] = ogreChild;
-                        ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
+                        ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                         // declare ode mesh
                         dTriMeshDataID ground = dGeomTriMeshDataCreate ();
                         dGeomSetBody (dCreateTriMesh (World::getWorldPointer ()->spaceID, ground, 0, 0, 0), 0);

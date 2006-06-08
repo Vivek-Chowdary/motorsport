@@ -50,10 +50,11 @@ Body::Body (WorldObject * container, XmlTag * tag)
                 OgreObjectData childData;
                 childData.meshPath = getPath() + t->getAttribute("file");
                 Vector3d posDiff (t->getAttribute("position"));
+                Vector3d scale (t->getAttribute("scale"));
                 Quaternion rotDiff (t->getAttribute("rotation"));
                 OgreObject * ogreChild = new OgreObject(this, childData, getId());
                 ogreObjects[ogreChild->getId()] = ogreChild;
-                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff);
+                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                 SystemData::getSystemDataPointer()->ogreWindow->update ();
             }
         }

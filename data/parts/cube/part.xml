@@ -5,9 +5,15 @@
     author = "Bruno Gonzalez Campo (STenyaK)"
     contact = "stenyak AT gmx DOT net"
     license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-    mesh = "cube.mesh"
     mass = "2000"
     >
+    <mesh
+        file = "cube.mesh"
+        scale = "1 1 1"
+        position = "0 0 0"
+        rotation = "0 0 0"
+        >
+    </mesh>
     <box
         size = "2 2 2"
         >

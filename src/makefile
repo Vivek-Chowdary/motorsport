@@ -292,7 +292,7 @@ tags: $(SYSTAGS)
 	fi
 
 $(SYSTAGS) :
-	@ctags -IR --c++-kinds=+p --fields=+iaS --extra=+q -f system.tags $(patsubst %,%/*.h*,$(SYSTEM_INCLUDE_DIRS))
+	@ctags -IR --c++-kinds=+p --fields=+iaS --extra=+q -f $(SYSTAGS) $(patsubst %,%/*.h*,$(SYSTEM_INCLUDE_DIRS))
 
 .PHONY: configure
 configure:

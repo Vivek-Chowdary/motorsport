@@ -2,7 +2,7 @@
 <world
     name = "Test World"
     description = "Drive the Mosp1 car in the testing grounds!"
-    useAreaCamera = "true"
+    useAreaCamera = "false"
     gravityX = "0.0"
     gravityY = "0.0"
     gravityZ = "-9.8"
@@ -18,6 +18,7 @@
         -->
         <vehicle
             directory = "mosp1"
+            _directory = "quattros1"
             driver = "user"
             startPosition = "paceCar"
             >
@@ -63,6 +64,7 @@
     </vehicleList>
     <area
         directory = "mospland"
+        _directory = "mospland2006.r6"
         >
     </area>
 </world>
