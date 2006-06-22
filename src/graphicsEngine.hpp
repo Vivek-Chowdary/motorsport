@@ -8,10 +8,12 @@
 \*****************************************************************************/
 
 #include <string>
+#include <boost/shared_ptr.hpp>
 
 //forward declarations
 class SystemData;
 class LogEngine;
+typedef boost::shared_ptr<LogEngine> pLogEngine;
 namespace Ogre {
   class Root;
 }
@@ -25,7 +27,7 @@ class GraphicsEngine
     /** This log engine allows the graphics engine to write data in the log file, allowing to be differenciated from other engines.
      * @brief Log engine used by the graphics engine.
      */
-    LogEngine * log;
+    pLogEngine log;
     /** 
      * @brief Pointer to the system data, used by different engines in order to store common data.
      */

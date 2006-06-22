@@ -33,7 +33,7 @@ class XmlTag
         XmlAttributes attributes;
         XmlAttributesBool attributesRead;
         Tags tags;
-        LogEngine * log;
+        pLogEngine log;
         double initTime;
     public:
         XmlTag (std::string xmlFilePath);

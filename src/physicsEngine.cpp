@@ -42,7 +42,7 @@ PhysicsEngine::PhysicsEngine ()
     int stepType = 1;
     int dWorldStepFast1MaxIterations = 100;
 
-    log = new LogEngine (LOG_DEVELOPER, "PhysicsEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "PhysicsEngine");
     if (tag->getName() == "physicsConfig")
     {
         frequency = stod(tag->getAttribute("frequency"));
@@ -190,7 +190,4 @@ int PhysicsEngine::computeStep (void)
 PhysicsEngine::~PhysicsEngine (void)
 {
     dCloseODE ();
-
-    // finally stop the log engine
-    delete log;
 }

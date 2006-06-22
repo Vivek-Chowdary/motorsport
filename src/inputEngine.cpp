@@ -27,7 +27,7 @@ InputEngine::InputEngine ()
     XmlTag * tag = new XmlTag ("../cfg/inputConfig.xml");
 #endif    
     delete tag;
-    log = new LogEngine (LOG_DEVELOPER, "InputEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "InputEngine");
 
     log->__format (LOG_DEVELOPER, "Setting up data pointers...");
     systemData = SystemData::getSystemDataPointer ();
@@ -202,6 +202,4 @@ InputEngine::~InputEngine (void)
     log->__format (LOG_DEVELOPER, "Steering wheel: %i, %i.",systemData->axisMap[getIDJoyAxis (0, 0)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 0)]->getMaxRawValue());
     log->__format (LOG_DEVELOPER, "Gas pedal:      %i, %i.",systemData->axisMap[getIDJoyAxis (0, 2)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 2)]->getMaxRawValue());
     log->__format (LOG_DEVELOPER, "Brake pedal:    %i, %i.",systemData->axisMap[getIDJoyAxis (0, 1)]->getMinRawValue(), systemData->axisMap[getIDJoyAxis (0, 1)]->getMaxRawValue());
-    // finally stop the log engine
-    delete log;
 }

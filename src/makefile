@@ -276,7 +276,7 @@ OBJECTS := $(patsubst %.cpp,%.o,$(SOURCES))
 
 #Phony targets definitions
 .PHONY: all
-all: 	$(TARGET) tags
+all: 	tags $(TARGET)
 
 .PHONY: tags
 tags: $(SYSTAGS)

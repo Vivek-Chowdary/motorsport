@@ -43,7 +43,7 @@ int main (int argc, char **argv)
 #else
     XmlTag * tag = new XmlTag ("../cfg/mainConfig.xml");
 #endif
-    LogEngine * log = new LogEngine (LOG_DEVELOPER, "MainProgram");
+    pLogEngine log = LogEngine::create (LOG_DEVELOPER, "MainProgram");
     if (tag->getName() == "mainConfig")
     {
         SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (tag->getAttribute("videoRecordTimestep"));
@@ -149,19 +149,18 @@ int main (int argc, char **argv)
     delete inputEngine;
     log->__format (LOG_DEVELOPER, "Deleting gui engine");
     delete guiEngine;
-    log->__format (LOG_DEVELOPER, "Deleting log engine");
-    delete log;
+
     stopSdl ();
 
     //FIXME: uncomment later on
     //WorldObject::logAll();
-    //LogEngine::logAll();
+    LogEngine::logAll();
     
     // We go back to the OS.
     return (0);
 }
 
-void startSdl (LogEngine * log)
+void startSdl (pLogEngine log)
 {
     if (SDL_Init (SDL_INIT_EVERYTHING) < 0)
     {
@@ -174,7 +173,7 @@ void stopSdl (void)
     SDL_Quit ();
 }
 
-void computeLogic (LogEngine * log)
+void computeLogic (pLogEngine log)
 {
     SystemData *systemData = SystemData::getSystemDataPointer ();
     if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)

@@ -27,7 +27,7 @@ int LogEngine::textBuffer = 128;
 unsigned int LogEngine::instancesCount = 0;
 LogEngines LogEngine::logEngines;
 
-LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
+pLogEngine LogEngine::create(LOG_LEVEL localLevel, const std::string & name)
 {
     // open the file for writing in rewrite mode if necessary.
     if ((instancesCount == 0) || (!logFile.is_open ()))
@@ -54,18 +54,27 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
         if (!logFile.good ())
         {
             std::cerr << "ERROR: Log file \"" << fileName << "\" could not be opened!\n";
-            return;
+            //FIXME: exit program?
+            //return;
         }
-        format (LOG_ENDUSER, "Start of logs.");
         delete tag;
     }
+    pLogEngine log (new LogEngine(localLevel, name));
     // increase logEngines counter
     instancesCount++;
-
     const int numberStringSize = 64;
     char numberString[numberStringSize];
     snprintf (numberString, numberStringSize, "%i", instancesCount);
-    logEngines.insert( std::pair< std::string, LogEngine* >(std::string("LOG#") + numberString + "#." + name, this) );
+    logEngines[std::string("LOG#") + numberString + "#." + name] = log;
+
+    return pLogEngine(log);
+}
+LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
+{
+    if ((instancesCount == 0) || (!logFile.is_open ()))
+    {
+        format (LOG_ENDUSER, "Start of logs.");
+    }
     return;
 }
 LogEngine::~LogEngine ()
@@ -73,10 +82,8 @@ LogEngine::~LogEngine ()
     LogEnginesIt i = logEngines.begin();
     for(;i != logEngines.end(); i++)
     {
-        if (this == i->second) i->second = NULL;;
-        if (this == i->second) logEngines.erase(i);
+        if (this == i->second.get()) logEngines.erase(i);
     }
-    //TODO: replace with if map.empty()
     if (logEngines.empty())
     {
         format (LOG_ENDUSER, "Closing logFile");
@@ -86,11 +93,10 @@ LogEngine::~LogEngine ()
 
 void LogEngine::logAll()
 {
-    LogEngine log (LOG_DEVELOPER, "LogEngines");
     LogEnginesIt i = logEngines.begin();
     for(;i != logEngines.end(); i++)
     {
-        i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s", i->first.c_str());
+        i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s\t Instances: %i", i->first.c_str(), i->second.use_count());
     }
 }
 

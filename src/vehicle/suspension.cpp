@@ -258,9 +258,9 @@ void Fixed::setVelocity(double velocity)
 DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     :Suspension(container, "suspension.doublewishbone")
 {
-    OgreObjectData upperBoneOData;
-    OgreObjectData lowerBoneOData;
-    OgreObjectData uprightBoneOData;
+    pOgreObjectData upperBoneOData(new OgreObjectData);
+    pOgreObjectData lowerBoneOData(new OgreObjectData);
+    pOgreObjectData uprightBoneOData(new OgreObjectData);
     userDriver = false;
     maxSteeringAngle = 0.0;
     if (tag->getName() == "suspension.doublewishbone")
@@ -275,9 +275,9 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
         springLengthAtEase = stod(tag->getAttribute("springLengthAtEase"));
         damperFastBump = stod(tag->getAttribute("damperFastBump"));
         damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
-        upperBoneOData.meshPath = tag->getAttribute("upperBoneMesh");
-        lowerBoneOData.meshPath = tag->getAttribute("lowerBoneMesh");
-        uprightBoneOData.meshPath = tag->getAttribute("uprightBoneMesh");
+        upperBoneOData->meshPath = tag->getAttribute("upperBoneMesh");
+        lowerBoneOData->meshPath = tag->getAttribute("lowerBoneMesh");
+        uprightBoneOData->meshPath = tag->getAttribute("uprightBoneMesh");
     }
     else
     {
@@ -292,60 +292,60 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
 
 
     //create upperWishbone body
-    BoneOdeData upperBoneData;
-    upperBoneData.radius = 0.05;
-    upperBoneData.length = upperBoneLength = 0.3;
-    upperBoneData.mass = 2.0;
-    odeObjects["upperBone"] = new OdeObject(this, upperBoneData, "upperBone");
+    pBoneOdeData upperBoneData(new BoneOdeData);
+    upperBoneData->radius = 0.05;
+    upperBoneData->length = upperBoneLength = 0.3;
+    upperBoneData->mass = 2.0;
+    odeObjects["upperBone"] = pOdeObject(new OdeObject(this, upperBoneData, "upperBone"));
     dBodySetData (odeObjects["upperBone"]->getBodyID(), (void*) container);
     Quaternion upperBoneRot (90, 0, 0);
     odeObjects["upperBone"]->setRotation(upperBoneRot);
     Vector3d upperBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneLength*0.5) , firstPosition.z+(uprightBoneLength*0.5));
     odeObjects["upperBone"]->setPosition(upperBonePos);
     //and its graphics
-    upperBoneOData.meshPath = getPath() + upperBoneOData.meshPath;
-    OgreObject * upperOgreObject = new OgreObject(this, upperBoneOData, getId());
+    upperBoneOData->meshPath = getPath() + upperBoneOData->meshPath;
+    pOgreObject upperOgreObject (new OgreObject(this, upperBoneOData, getId()));
     ogreObjects["upperBone"] = upperOgreObject;
     ogreObjects["upperBone"]->setOdeReference(odeObjects["upperBone"]);
 
     //create lowerWishbone body
-    BoneOdeData lowerBoneData;
-    lowerBoneData.radius = 0.05;
-    lowerBoneData.length = lowerBoneLength = 0.3;
-    lowerBoneData.mass = 2.0;
-    odeObjects["lowerBone"] = new OdeObject(this, lowerBoneData, "lowerBone");
+    pBoneOdeData lowerBoneData(new BoneOdeData);
+    lowerBoneData->radius = 0.05;
+    lowerBoneData->length = lowerBoneLength = 0.3;
+    lowerBoneData->mass = 2.0;
+    odeObjects["lowerBone"] = pOdeObject(new OdeObject(this, lowerBoneData, "lowerBone"));
     dBodySetData (odeObjects["lowerBone"]->getBodyID(), (void*) container);
     Quaternion lowerBoneRot (90, 0, 0);
     odeObjects["lowerBone"]->setRotation(lowerBoneRot);
     Vector3d lowerBonePos (firstPosition.x, firstPosition.y+(dirMult*lowerBoneLength*0.5) , firstPosition.z-(uprightBoneLength*0.5));
     odeObjects["lowerBone"]->setPosition(lowerBonePos);
     //and its graphics
-    lowerBoneOData.meshPath = getPath() + lowerBoneOData.meshPath;
-    OgreObject * lowerOgreObject = new OgreObject(this, lowerBoneOData, getId());
+    lowerBoneOData->meshPath = getPath() + lowerBoneOData->meshPath;
+    pOgreObject lowerOgreObject (new OgreObject(this, lowerBoneOData, getId()));
     ogreObjects["lowerBone"] = lowerOgreObject;
     ogreObjects["lowerBone"]->setOdeReference(odeObjects["lowerBone"]);
 
     //create upright bone body
-    BoneOdeData uprightBoneData;
-    uprightBoneData.radius = 0.05;
-    uprightBoneData.length = uprightBoneLength;
-    uprightBoneData.mass = 2.0;
-    odeObjects["uprightBone"] = new OdeObject(this, uprightBoneData, "uprightBone");
+    pBoneOdeData uprightBoneData(new BoneOdeData);
+    uprightBoneData->radius = 0.05;
+    uprightBoneData->length = uprightBoneLength;
+    uprightBoneData->mass = 2.0;
+    odeObjects["uprightBone"] = pOdeObject(new OdeObject(this, uprightBoneData, "uprightBone"));
     dBodySetData (odeObjects["uprightBone"]->getBodyID(), (void*) container);
     Quaternion uprightBoneRot (0, 0, 0);
     odeObjects["uprightBone"]->setRotation(uprightBoneRot);
-    Vector3d uprightBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneData.length), firstPosition.z);
+    Vector3d uprightBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z);
     odeObjects["uprightBone"]->setPosition(uprightBonePos);
     //and its graphics
-    uprightBoneOData.meshPath = getPath() + uprightBoneOData.meshPath;
-    OgreObject * uprightOgreObject = new OgreObject(this, uprightBoneOData, getId());
+    uprightBoneOData->meshPath = getPath() + uprightBoneOData->meshPath;
+    pOgreObject uprightOgreObject (new OgreObject(this, uprightBoneOData, getId()));
     ogreObjects["uprightBone"] = uprightOgreObject;
     ogreObjects["uprightBone"]->setOdeReference(odeObjects["uprightBone"]);
 
     //create upper joint
     upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
     dJointAttach ( upperJoint, odeObjects["uprightBone"]->getBodyID(), odeObjects["upperBone"]->getBodyID() );
-    dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData.length), firstPosition.z+(uprightBoneLength*0.5) );
+    dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z+(uprightBoneLength*0.5) );
     dJointSetHingeAxis( upperJoint , 1.0, 0.0, 0.0 );
     //limit its rotation
     dJointSetHingeParam ( upperJoint, dParamLoStop, -2.0 );
@@ -354,7 +354,7 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     //create lower joint
     lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
     dJointAttach ( lowerJoint, odeObjects["uprightBone"]->getBodyID(), odeObjects["lowerBone"]->getBodyID() );
-    dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData.length), firstPosition.z-(uprightBoneLength*0.5) );
+    dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z-(uprightBoneLength*0.5) );
     dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
     //limit its rotation
     dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );

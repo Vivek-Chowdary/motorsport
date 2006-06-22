@@ -1,0 +1,18 @@
+material groundMaterial
+{
+  receive_shadows on
+  technique
+  {
+    pass
+    {
+      ambient 0.5 0.5 0.5
+      diffuse 0.756191 0.756115 0.756115
+      specular 0.500000 0.500000 0.500000 50.000000
+      emissive 0.000000 0.000000 0.000000
+      texture_unit
+      {
+        texture ground.png
+      }
+    }
+  }
+}

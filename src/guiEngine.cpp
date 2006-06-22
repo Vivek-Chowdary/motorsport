@@ -35,7 +35,7 @@ GuiEngine::GuiEngine ()
         XmlTag * tag = new XmlTag ("../cfg/guiConfig.xml");
 #endif
         showStatistics = true;
-        log = new LogEngine (LOG_DEVELOPER, "GuiEngine");
+        log = LogEngine::create (LOG_DEVELOPER, "GuiEngine");
 
         if (tag->getName() == "guiConfig")
         {
@@ -244,6 +244,4 @@ void GuiEngine::updateTime (double time)
 
 GuiEngine::~GuiEngine (void)
 {
-    // finally stop the log engine
-    delete log;
 }

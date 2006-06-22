@@ -23,36 +23,36 @@ Body::Body (WorldObject * container, XmlTag * tag)
 {
     dragCoefficient = 0.3;
     frontalArea = 0;
-    BodyOdeData data;
-    OgreObjectData ogreData;
+    pBodyOdeData data(new BodyOdeData);
+    pOgreObjectData ogreData(new OgreObjectData);
 
     if (tag->getName() == "body")
     {
         setName (     tag->getAttribute("name"));
-        data.length = stod (tag->getAttribute("length"));
-        data.width = stod (tag->getAttribute("width"));
-        data.height = stod (tag->getAttribute("height"));
-        data.mass = stod (tag->getAttribute("mass"));
+        data->length = stod (tag->getAttribute("length"));
+        data->width = stod (tag->getAttribute("width"));
+        data->height = stod (tag->getAttribute("height"));
+        data->mass = stod (tag->getAttribute("mass"));
         frontalArea = stod (tag->getAttribute("frontalArea"));
         dragCoefficient = stod (tag->getAttribute("dragCoefficient"));
-        ogreData.meshPath = "";
+        ogreData->meshPath = "";
         //create main mesh
-        ogreData.meshPath = getPath() + ogreData.meshPath;
-        OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
+        ogreData->meshPath = getPath() + ogreData->meshPath;
+        pOgreObject ogreObject (new OgreObject(this, ogreData, getId(), false));
         ogreObjects[ogreObject->getId()] = ogreObject;
-        odeObjects[getName()] = new OdeObject(this, data, getName());
+        odeObjects[getName()] = pOdeObject(new OdeObject(this, data, getName()));
         ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         //create child meshes
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
             if (t->getName() == "mesh")
             {
-                OgreObjectData childData;
-                childData.meshPath = getPath() + t->getAttribute("file");
+                pOgreObjectData childData(new OgreObjectData);
+                childData->meshPath = getPath() + t->getAttribute("file");
                 Vector3d posDiff (t->getAttribute("position"));
                 Vector3d scale (t->getAttribute("scale"));
                 Quaternion rotDiff (t->getAttribute("rotation"));
-                OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                pOgreObject ogreChild (new OgreObject(this, childData, getId()));
                 ogreObjects[ogreChild->getId()] = ogreChild;
                 ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                 SystemData::getSystemDataPointer()->ogreWindow->update ();
@@ -63,7 +63,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
     // set the air drag variables correctly
     if (frontalArea == 0)
     {
-        frontalArea = data.width * data.height * 0.6;
+        frontalArea = data->width * data->height * 0.6;
     }
 }
 

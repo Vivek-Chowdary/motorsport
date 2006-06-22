@@ -73,7 +73,7 @@ class Vehicle : public WorldObject
     Vector3d getPosition ();
     Quaternion getRotation ();
     double getOutputTorque ();
-    OdeObject * getMainOdeObject();
+    pOdeObject getMainOdeObject();
     void stepGraphics ();
 };
 #endif

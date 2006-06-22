@@ -28,16 +28,15 @@ std::string OgreObject::getId()
 {
     return id;
 }
-OgreObject::OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name, bool useMesh)
+OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, std::string name, bool useMesh)
 {
     updateId();
     this->worldObject = worldObject;
     this->name = name;
     this->useMesh = useMesh;
-    std::string meshPath = data.meshPath;
+    std::string meshPath = data->meshPath;
     entity = NULL;
     node = NULL;
-    odeObject = NULL;
 
     if (useMesh)
     {
@@ -70,15 +69,14 @@ OgreObject::~OgreObject ()
     SystemData::getSystemDataPointer()->ogreSceneManager->destroySceneNode (node->getName());
     node = NULL;   
 
-    odeObject = NULL;
     this->worldObject = NULL;
 }
-void OgreObject::setOdeReference(OdeObject * odeObject)
+void OgreObject::setOdeReference(pOdeObject odeObject)
 {
     this->odeObject = odeObject;
 }
 
-void OgreObject::setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale)
+void OgreObject::setOgreReference(pOgreObject ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale)
 {
     static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode())->removeChild(node);
     ogreObject->getNode()->addChild(node);

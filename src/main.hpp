@@ -9,9 +9,10 @@
 
 #ifndef MAIN_HPP
 #define MAIN_HPP
+#include <shared.hpp>
 
 //forward declarations
-class LogEngine;
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 
 /** 
  * @brief Stops all SDL subsystems.
@@ -22,13 +23,13 @@ void stopSdl (void);
  * 
  * @param log A correctly initialized log engine.
  */
-void startSdl (LogEngine * log);
+void startSdl (pLogEngine log);
 /** 
  * @brief Process all input events related to game logic (such as petition to exit, or to modify physic engine rates, etc...
  * 
  * @param log A correctly initialized log engine.
  */
-void computeLogic (LogEngine * log);
+void computeLogic (pLogEngine log);
 /** 
  * @brief If video recording is enabled, it checks whether the screen should be recorded to hard disk and does it if necessary.
  */

@@ -42,8 +42,11 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
     this->name = "unknown";
     if (parent == NULL)
     {
-        if (logging) this->log = new LogEngine (LOG_DEVELOPER, "XmlTag");
-        else         this->log = NULL;
+        if (logging)
+        {
+            pLogEngine l (LogEngine::create (LOG_DEVELOPER, "XmlTag"));
+            this->log = l;
+        }
     }
     else
     {
@@ -53,7 +56,7 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
     if (n == NULL)
     {
         if (logging) log->__format(LOG_ERROR, "Empty tag (%s)!", getFullName().c_str());
-		return;
+        return;
     }
     if (n->getNodeType() != DOMNode::ELEMENT_NODE)
     {
@@ -93,6 +96,7 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
             if (n) if (n->getNodeType() == DOMNode::ELEMENT_NODE)
             {
                 assignXmlString (childTagName, n->getNodeName());
+                //XmlTag * tmpTag = new XmlTag(this, n, logging);
                 XmlTag * tmpTag = new XmlTag(this, n);
                 tags.push_back(tmpTag);
             }
@@ -123,10 +127,8 @@ XmlTag::~XmlTag()
         if (log)
         {
             log->__format(LOG_ENDUSER, "\"%s\" parsed in %f seconds.", filePath.c_str(), SDL_GetTicks()/1000.0 - initTime);
-            delete log;
         }
     }
-    log = NULL;
     parent = NULL;
 }
 std::string XmlTag::getAttribute(std::string attributeName)

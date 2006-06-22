@@ -23,7 +23,7 @@ void OdeObject::updateId()
     this->id = std::string(numberString);
     instancesCount++;
 }
-OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -41,25 +41,25 @@ OdeObject::OdeObject (WorldObject * worldObject, PartOdeData data, std::string n
     
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     dMass dmass;
-    if (data.shape == "box")
+    if (data->shape == "box")
     {
-        geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.size.x, data.size.y, data.size.z);
-        dMassSetBoxTotal (&dmass, data.mass, data.size.x, data.size.y, data.size.z);
+        geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data->size.x, data->size.y, data->size.z);
+        dMassSetBoxTotal (&dmass, data->mass, data->size.x, data->size.y, data->size.z);
     }
-    if (data.shape == "sphere")
+    if (data->shape == "sphere")
     {
-        geomIDs[name] = dCreateSphere (World::getWorldPointer ()->spaceID, data.radius);
-        dMassSetSphereTotal (&dmass, data.mass, data.radius);
+        geomIDs[name] = dCreateSphere (World::getWorldPointer ()->spaceID, data->radius);
+        dMassSetSphereTotal (&dmass, data->mass, data->radius);
     }
-    if (data.shape == "cappedCylinder")
+    if (data->shape == "cappedCylinder")
     {
-        geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.length);
-        dMassSetCappedCylinderTotal (&dmass, data.mass, data.directionAxis, data.radius, data.length);
+        geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data->radius, data->length);
+        dMassSetCappedCylinderTotal (&dmass, data->mass, data->directionAxis, data->radius, data->length);
     }
     dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -78,16 +78,16 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string n
     dGeomTransformSetCleanup (geomIDs["GeomSpace(B)"], 0);
     
     // create collision geoms
-    geomIDs["Geom(A)"] = dCreateBox (0, data.length, data.width, data.height / 2.0f);
-    geomIDs["Geom(B)"] = dCreateBox (0, data.length / 2.0f, data.width / 2.0f, data.height / 2.0f);
+    geomIDs["Geom(A)"] = dCreateBox (0, data->length, data->width, data->height / 2.0f);
+    geomIDs["Geom(B)"] = dCreateBox (0, data->length / 2.0f, data->width / 2.0f, data->height / 2.0f);
 
     // insert collision geoms into transformation spaces
     dGeomTransformSetGeom (geomIDs["GeomSpace(A)"], geomIDs["Geom(A)"]);
     dGeomTransformSetGeom (geomIDs["GeomSpace(B)"], geomIDs["Geom(B)"]);
 
     // apply offsets to the collision geoms
-    dGeomSetPosition (geomIDs["Geom(A)"], 0.f, 0.f, - data.height / 4.0f);
-    dGeomSetPosition (geomIDs["Geom(B)"], -data.width / 6.f, 0.f, (data.height / 4.0f) + 0.1f);
+    dGeomSetPosition (geomIDs["Geom(A)"], 0.f, 0.f, - data->height / 4.0f);
+    dGeomSetPosition (geomIDs["Geom(B)"], -data->width / 6.f, 0.f, (data->height / 4.0f) + 0.1f);
 
     // associate the dBody with the 2 collision geoms via the transformation spaces
     dGeomSetBody (geomIDs["GeomSpace(A)"], bodyID);
@@ -95,7 +95,7 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string n
 
     // set dBody mass
     dMass tmpMass;
-    dMassSetBoxTotal (&tmpMass, data.mass, data.length, data.width, data.height);
+    dMassSetBoxTotal (&tmpMass, data->mass, data->length, data->width, data->height);
     dBodySetMass (bodyID, &tmpMass);
 
     // make sure it's initialized with correct values.
@@ -107,7 +107,7 @@ OdeObject::OdeObject (WorldObject * worldObject, BodyOdeData data, std::string n
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
-OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -116,17 +116,17 @@ OdeObject::OdeObject (WorldObject * worldObject, WheelOdeData data, std::string 
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     dMass dmass;
-    dMassSetParameters (&dmass, data.mass,
+    dMassSetParameters (&dmass, data->mass,
                          0., 0., 0.,
                          0.237f, 0.237f, 0.409f,
                          0., 0., 0.);
-    geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data.radius, data.width);
+    geomIDs[name] = dCreateCCylinder (World::getWorldPointer ()->spaceID, data->radius, data->width);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
     dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, BoneOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -136,17 +136,17 @@ OdeObject::OdeObject (WorldObject * worldObject, BoneOdeData data, std::string n
     bodyID = dBodyCreate (World::getWorldPointer ()->worldID);
     dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
     dMass dmass;
-    if (data.useMass)
+    if (data->useMass)
     {
-        dMassSetBoxTotal(&dmass, data.mass, data.radius, data.radius, data.length);
+        dMassSetBoxTotal(&dmass, data->mass, data->radius, data->radius, data->length);
     }
     else
     {
-        dMassSetBox(&dmass, data.density, data.radius, data.radius, data.length);
+        dMassSetBox(&dmass, data->density, data->radius, data->radius, data->length);
     }
     dBodySetMass (bodyID, &dmass);
 
-    geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data.radius, data.radius, data.length);
+    geomIDs[name] = dCreateBox (World::getWorldPointer ()->spaceID, data->radius, data->radius, data->length);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
     dGeomSetBody (geomIDs[name], bodyID);

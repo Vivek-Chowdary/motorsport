@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-class LogEngine;
+#include <shared.hpp>
 #include "ode/objects.h"
 
 /// Manages everything related to the simulated world data.
@@ -16,6 +16,7 @@ class LogEngine;
 
 
 class SystemData;
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 
 class PhysicsEngine
 {
@@ -23,7 +24,7 @@ class PhysicsEngine
     // / Log engine used by the physics engine.
     /** This log engine allows the physics engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine * log;
+    pLogEngine log;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
     // / Callback function for collisions detection.

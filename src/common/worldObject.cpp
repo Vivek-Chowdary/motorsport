@@ -37,7 +37,7 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
     instancesCount++;
 
     //FIXME what to use, id# or name?
-    log = new LogEngine (LOG_DEVELOPER, this->getFullName());
+    log = LogEngine::create (LOG_DEVELOPER, this->getFullName());
     //log = new LogEngine (LOG_DEVELOPER, this->id);
     log->__format(LOG_CCREATOR, "Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
     worldObjects[this->id] = this;
@@ -45,33 +45,18 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 WorldObject::~WorldObject ()
 {
     log->__format(LOG_CCREATOR, "Deleting myself. Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
-    OgreObjectsIt i = ogreObjects.begin();
-    for(;i != ogreObjects.end(); i++)
-    {
-        delete i->second;
-        i->second = NULL;
-    }
-	ogreObjects.clear();
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        delete j->second;
-        j->second = NULL;
-    }
-	odeObjects.clear();
+
     worldObjects.erase(this->id);
-    delete log;
-    log = NULL;
     base = NULL;
 }
 void WorldObject::logAll()
 {
-    LogEngine log (LOG_DEVELOPER, "WorldObjects");
+    pLogEngine log (LogEngine::create(LOG_DEVELOPER, "WorldObjects"));
     WorldObjectsIt i = worldObjects.begin();
     for(;i != worldObjects.end(); i++)
     {
         if (i->second != NULL)
-        log.__format(LOG_DEVELOPER, "WorldObject id#%s.\t Full name: %s", i->second->getId().c_str(), i->second->getFullName().c_str());
+        log->__format(LOG_DEVELOPER, "WorldObject id#%s.\t Full name: %s", i->second->getId().c_str(), i->second->getFullName().c_str());
     }
 }
 std::string WorldObject::getId()
@@ -108,7 +93,7 @@ void WorldObject::setXmlPath(std::string xmlPath)
 {
     this->xmlPath = xmlPath;
 }
-LogEngine * WorldObject::getLog()
+pLogEngine WorldObject::getLog()
 {
     return log;
 }
@@ -116,9 +101,10 @@ WorldObject * WorldObject::getContainer()
 {
     return container;
 }
-OdeObject * WorldObject::getMainOdeObject()
+pOdeObject WorldObject::getMainOdeObject()
 {
-    if (odeObjects.empty()) return NULL;
+    //TODO: check what is returned when odeObjects is empty. prolly a reset shared pointer, but i'm not sure
+    //if (odeObjects.empty()) return NULL;
     return odeObjects.begin()->second;
 }
 void WorldObject::stepGraphics ()

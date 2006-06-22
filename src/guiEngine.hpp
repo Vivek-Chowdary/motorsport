@@ -8,11 +8,11 @@
 \*****************************************************************************/
 
 #include "SDL/SDL.h"
-#include <string>
+#include <shared.hpp>
 
 //forward declaration
 class SystemData;
-class LogEngine;
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 namespace Ogre {
     class Camera;
 };
@@ -27,7 +27,7 @@ class GuiEngine
     // / Log engine used by the gui engine.
     /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
     */
-    LogEngine * log;
+    pLogEngine log;
     // / Pointer to the system data, used by different engines in order to store common data.
     SystemData *systemData;
     // / Allows or disallows to show statistics on screen

@@ -11,21 +11,19 @@
 #define OGREOBJECT_HPP
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
-#include <map>
+#include <shared.hpp>
 
 namespace Ogre {
     class Entity;
     class SceneNode;
 }
-class OdeObject;
-class OgreObject;
-class OgreObjectData;
 class WorldObject;
 class Quaternion;
 class Vector3d;
 
-typedef std::map <std::string, OgreObject *> OgreObjects;
-typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
+SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt);
+SHARED_PTR(OgreObjectData, pOgreObjectData);
 
 class OgreObject
 {
@@ -37,15 +35,15 @@ class OgreObject
         Ogre::Entity * entity;
         bool useMesh;
         Ogre::SceneNode * node;
-        OdeObject * odeObject;
+        pOdeObject odeObject;
         WorldObject * worldObject;
         std::string id;
     public:
-        OgreObject (WorldObject * worldObject, OgreObjectData data, std::string name, bool useMesh = true);
+        OgreObject (WorldObject * worldObject, pOgreObjectData data, std::string name, bool useMesh = true);
         ~OgreObject ();
         std::string getId();
-        void setOdeReference(OdeObject * odeObject);       
-        void setOgreReference(OgreObject * ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale);
+        void setOdeReference(pOdeObject odeObject);       
+        void setOgreReference(pOgreObject ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale);
         void stepGraphics();
         Ogre::SceneNode * getNode();
         Ogre::Entity * getEntity();

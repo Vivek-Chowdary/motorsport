@@ -12,14 +12,13 @@
 
 Location::Location (XmlTag * tag)
 {
-    LogEngine * log = new LogEngine (LOG_DEVELOPER, "Location");
+    pLogEngine log (LogEngine::create (LOG_DEVELOPER, "Location"));
     // if (tag->getName() == "location")
     {
         name = tag->getAttribute("name");
         position = Vector3d(tag->getAttribute("position"));
         rotation = Quaternion(tag->getAttribute("rotation"));
     }
-    delete log;
 }
 Location::Location (std::string name, Vector3d position, Quaternion rotation)
 {

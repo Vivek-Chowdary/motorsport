@@ -9,8 +9,7 @@
 
 #ifndef LOG_ENGINE_HPP
 #define LOG_ENGINE_HPP
-#include <string>
-#include <map>
+#include <shared.hpp>
 #include <fstream>
 
 #ifdef _MSC_VER
@@ -51,9 +50,7 @@ struct LogConfig
   LOG_MASK mask;      // !< Where should we send the log
 };
 
-class LogEngine;
-typedef std::map <std::string, LogEngine *> LogEngines;
-typedef std::map <std::string, LogEngine *>::iterator LogEnginesIt;
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
 */
@@ -88,18 +85,20 @@ class LogEngine
 	@return code as a short c-string.
     */
     const std::string GetLogLevelCode (LOG_LEVEL level);
-  public:
-    static void logAll();
     // / Creates a new log engine, creating the log file if needed.
     /** Creates a new log engine, and Initializes the pertinent data in order to allow logging. If it's the first log engine to be created, the log file will be opened/created.
         @param localLevel level of verbosity of this log.
         @param name 3 characters with an id for the log.
     */
       LogEngine (LOG_LEVEL localLevel, const std::string & name);
+  public:
+    static pLogEngine create(LOG_LEVEL localLevel, const std::string & name);
     // / Deletes the log engine, closing the log file if needed.
     /** Deletes the log engine and associated data. If there's no other log engines left, the log file will be closed.
     */
      ~LogEngine (void);
+
+    static void logAll();
 
     // / Writes a log message to the log file.
     /** Writes a log message to the log file, provided its level is low enough (compared to the level of the log engine). It's possible to avoid writing a newline before the message.

@@ -204,7 +204,7 @@ void Camera::setPositionID (dBodyID positionID)
     this->positionID = positionID;
 }
 
-void Camera::setTarget (OdeObject * odeObject)
+void Camera::setTarget (pOdeObject odeObject)
 {
     this->targetID = odeObject->getBodyID();
 }

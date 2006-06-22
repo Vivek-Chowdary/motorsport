@@ -12,21 +12,19 @@
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
 #include "ode/objects.h"
-#include <map>
+#include <shared.hpp>
 #include "vector3d.hpp"
 
-class OdeObject;
-class PartOdeData;
-class BodyOdeData;
-class WheelOdeData;
-class BoneOdeData;
 class Quaternion;
 class WorldObject;
 
-typedef std::map <std::string, OdeObject *> OdeObjects;
-typedef std::map <std::string, OdeObject *>::iterator OdeObjectsIt;
-typedef std::map <std::string, dGeomID> GeomIDs;
-typedef std::map <std::string, dGeomID>::iterator GeomIDsIt;
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
+SHARED_PTR(PartOdeData, pPartOdeData);
+SHARED_PTR(BodyOdeData, pBodyOdeData);
+SHARED_PTR(WheelOdeData, pWheelOdeData);
+SHARED_PTR(BoneOdeData, pBoneOdeData);
+
+SHARED_MAP(dGeomID, GeomIDs, GeomIDsIt);
 
 class OdeObject
 {
@@ -40,10 +38,10 @@ class OdeObject
         std::string id;
 
     public:
-        OdeObject (WorldObject * worldObject, PartOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, BodyOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, WheelOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, BoneOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();

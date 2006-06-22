@@ -181,7 +181,7 @@ void Vehicle::stepGraphics ()
     }
 }
 
-OdeObject * Vehicle::getMainOdeObject()
+pOdeObject Vehicle::getMainOdeObject()
 {
     return getObject("body")->getMainOdeObject();
 }

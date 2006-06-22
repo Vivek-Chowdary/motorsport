@@ -80,11 +80,11 @@ void Area::construct (XmlTag * tag)
             if (t->getName() == "ground")
             {
                 groundHeight = stod (t->getAttribute("height"));
-                OgreObjectData ogreData;
-                ogreData.meshPath = "";
+                pOgreObjectData ogreData(new OgreObjectData);
+                ogreData->meshPath = "";
                 //create main mesh
-                ogreData.meshPath = getPath() + ogreData.meshPath;
-                OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
+                ogreData->meshPath = getPath() + ogreData->meshPath;
+                pOgreObject ogreObject (new OgreObject(this, ogreData, getId(), false));
                 ogreObjects[ogreObject->getId()] = ogreObject;
                 //create child meshes
                 XmlTag * u = t->getTag(0); for (int i = 0; i < t->nTags(); u = t->getTag(++i))
@@ -92,12 +92,12 @@ void Area::construct (XmlTag * tag)
                     if (u->getName() == "mesh")
                     {
                         log->__format (LOG_CCREATOR, "Creating an ogre mesh for the ground");
-                        OgreObjectData childData;
-                        childData.meshPath = getPath() + u->getAttribute("file");
+                        pOgreObjectData childData (new OgreObjectData);
+                        childData->meshPath = getPath() + u->getAttribute("file");
                         Vector3d posDiff (u->getAttribute("position"));
                         Vector3d scale (u->getAttribute("scale"));
                         Quaternion rotDiff (u->getAttribute("rotation"));
-                        OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                        pOgreObject ogreChild (new OgreObject(this, childData, getId()));
                         ogreObjects[ogreChild->getId()] = ogreChild;
                         ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                         // declare ode mesh

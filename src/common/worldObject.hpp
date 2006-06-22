@@ -13,18 +13,13 @@
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
 #include "xmlTag.hpp"
-#include <string>
-#include <map>
+#include <shared.hpp>
 
 //forward declatations
 class Quaternion;
 class Vector3d;
-class OgreObject;
-typedef std::map <std::string, OgreObject *> OgreObjects;
-typedef std::map <std::string, OgreObject *>::iterator OgreObjectsIt;
-class OdeObject;
-typedef std::map <std::string, OdeObject *> OdeObjects;
-typedef std::map <std::string, OdeObject *>::iterator OdeObjectsIt;
+SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt);
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
 class WorldObject;
 typedef std::map <std::string, WorldObject *> WorldObjects;
 typedef std::map <std::string, WorldObject *>::iterator WorldObjectsIt;
@@ -40,7 +35,7 @@ class WorldObject
         std::string path;
         std::string xmlPath;
     protected:
-        LogEngine * log;
+        pLogEngine log;
         WorldObject * base;
         WorldObject * container;
         OgreObjects ogreObjects;
@@ -59,11 +54,11 @@ class WorldObject
         void setXmlPath(std::string xmlPath);
 
         static void logAll();
-        LogEngine * getLog();
+        pLogEngine getLog();
 
         void stepGraphics ();
 
-        OdeObject * getMainOdeObject();
+        pOdeObject getMainOdeObject();
         
         Vector3d getPosition ();
         Quaternion getRotation ();

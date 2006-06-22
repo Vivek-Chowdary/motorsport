@@ -36,7 +36,7 @@ class Camera : public WorldObject
     Vector3d updateOgreTarget ();
     void stepPhysics();
     void setPositionID (dBodyID positionID);
-    void setTarget (OdeObject * odeObject);
+    void setTarget (pOdeObject odeObject);
     void startGraphics ();
     void stepGraphics ();
     Ogre::Camera * ogreCamera;

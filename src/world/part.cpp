@@ -26,53 +26,53 @@ Part::Part (WorldObject * container, const std::string & name)
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "parts." + name);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("parts." + name);
     XmlTag * tag = new XmlTag (getXmlPath().c_str());
-    OgreObjectData ogreData;
-    PartOdeData data;
+    pOgreObjectData ogreData(new OgreObjectData);
+    pPartOdeData data(new PartOdeData);
     std::string shape = "none";
     if (tag->getName() == "part")
     {
         setName(tag->getAttribute("name"));
-        data.mass = stod(tag->getAttribute("mass"));
+        data->mass = stod(tag->getAttribute("mass"));
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            data.shape = t->getName();
-            if (data.shape == "box")
+            data->shape = t->getName();
+            if (data->shape == "box")
             {
-                data.size = Vector3d(t->getAttribute("size"));
+                data->size = Vector3d(t->getAttribute("size"));
             }
-            if (data.shape == "sphere")
+            if (data->shape == "sphere")
             {
-                data.radius = stod(t->getAttribute("radius"));
+                data->radius = stod(t->getAttribute("radius"));
             }
-            if (data.shape == "cappedCylinder")
+            if (data->shape == "cappedCylinder")
             {
-                data.radius = stod(t->getAttribute("radius"));
-                data.length = stod(t->getAttribute("length"));
-                if (t->getAttribute("directionAxis") == "x") data.directionAxis = 1;
-                if (t->getAttribute("directionAxis") == "y") data.directionAxis = 2;
-                if (t->getAttribute("directionAxis") == "z") data.directionAxis = 3;
+                data->radius = stod(t->getAttribute("radius"));
+                data->length = stod(t->getAttribute("length"));
+                if (t->getAttribute("directionAxis") == "x") data->directionAxis = 1;
+                if (t->getAttribute("directionAxis") == "y") data->directionAxis = 2;
+                if (t->getAttribute("directionAxis") == "z") data->directionAxis = 3;
             }
         }
-        if (data.shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-        odeObjects[getId()] = new OdeObject(this, data, getId());
+        if (data->shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
+        odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
 
         //create main mesh
-        ogreData.meshPath = getPath() + ogreData.meshPath;
-        OgreObject * ogreObject = new OgreObject(this, ogreData, getId(), false);
+        ogreData->meshPath = getPath() + ogreData->meshPath;
+        pOgreObject ogreObject (new OgreObject(this, ogreData, getId(), false));
         ogreObjects[ogreObject->getId()] = ogreObject;
-        odeObjects[getName()] = new OdeObject(this, data, getName());
+        odeObjects[getName()] = pOdeObject(new OdeObject(this, data, getName()));
         ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         //create child meshes
         t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
             if (t->getName() == "mesh")
             {
-                OgreObjectData childData;
-                childData.meshPath = getPath() + t->getAttribute("file");
+                pOgreObjectData childData(new OgreObjectData);
+                childData->meshPath = getPath() + t->getAttribute("file");
                 Vector3d posDiff (t->getAttribute("position"));
                 Vector3d scale (t->getAttribute("scale"));
                 Quaternion rotDiff (t->getAttribute("rotation"));
-                OgreObject * ogreChild = new OgreObject(this, childData, getId());
+                pOgreObject ogreChild (new OgreObject(this, childData, getId()));
                 ogreObjects[ogreChild->getId()] = ogreChild;
                 ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                 SystemData::getSystemDataPointer()->ogreWindow->update ();

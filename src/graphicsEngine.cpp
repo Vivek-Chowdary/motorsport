@@ -247,9 +247,6 @@ GraphicsEngine::~GraphicsEngine (void)
 {
     log->__format (LOG_DEVELOPER, "Unloading ogre window data from memory...");
     delete (systemData->ogreWindow);
-
-    // finally stop the log engine
-    delete log;
 }
 
 GraphicsEngine::GraphicsEngine ()
@@ -282,7 +279,7 @@ GraphicsEngine::GraphicsEngine ()
     int defaultNumMipMaps = 5;
     fullScreen = false;
 
-    log = new LogEngine (LOG_DEVELOPER, "GraphicsEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "GraphicsEngine");
 
     if (tag->getName() == "graphicsConfig")
     {
@@ -329,7 +326,8 @@ GraphicsEngine::GraphicsEngine ()
     }
     delete tag;
 
-    log = new LogEngine (localLogLevel, localLogName.c_str());
+    
+    log = LogEngine::create (localLogLevel, localLogName.c_str());
     log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
 
     // get the direction of the graphics data
