@@ -19,6 +19,8 @@ namespace Ogre {
 
 class Vector3d;
 
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
+
 class Camera : public WorldObject
 {
   private:
@@ -28,8 +30,9 @@ class Camera : public WorldObject
     dBodyID targetID;
     Vector3d * targetOffset;
     void stopPhysics();
-  public:
     Camera (WorldObject * container, XmlTag * tag);
+  public:
+    static pCamera create(WorldObject * container, XmlTag * tag);
     ~Camera ();
     void updateOgreRotation ();
     Vector3d updateOgrePosition ();

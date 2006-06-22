@@ -9,7 +9,6 @@
 
 #ifndef VEHICLE_HPP
 #define VEHICLE_HPP
-#include <vector>
 #include "worldObject.hpp"
 #include "ode/objects.h"
 #include "xmlTag.hpp"
@@ -30,8 +29,9 @@ class Pedal;
 class Suspension;
 class Vector3d;
 class Quaternion;
-class Camera;
 class CameraPosition;
+
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
 
 class Vehicle : public WorldObject
 {
@@ -51,7 +51,7 @@ class Vehicle : public WorldObject
     Vehicle (WorldObject * container, std::string vehicleName);
     Vehicle (WorldObject * container, XmlTag * tag);
     ~Vehicle ();
-    std::vector < Camera * > cameraList;
+    Cameras cameras;
     Body *          getBody         (std::string name);
     DriveJoint *    getDriveJoint   (std::string name);
     DriveMass *     getDriveMass    (std::string name);

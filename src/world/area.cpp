@@ -44,15 +44,6 @@ Area::~Area ()
         delete partList[i];
     }
     partList.clear ();
-
-    // unload the cameras from memory
-    log->__format (LOG_DEVELOPER, "Unloading cameras from memory...");
-    size = cameraList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        delete cameraList[i];
-    }
-    cameraList.clear ();
 }
 
 void Area::construct (XmlTag * tag)
@@ -147,8 +138,8 @@ void Area::construct (XmlTag * tag)
             }
             if (t->getName() == "camera")
             {
-                Camera * tmp = new Camera (this, t);
-                cameraList.push_back(tmp);
+                pCamera tmp = Camera::create (this, t);
+                cameras[tmp->getName()] = tmp;
             }
         }
     }
@@ -206,10 +197,10 @@ void Area::setRenderDetail(int renderMode)
         mode = Ogre::PM_SOLID;
         break;
     }
-    int size = cameraList.size ();
-    for (int i = 0; i < size; i++)
+    CamerasIt i = cameras.begin();
+    for(;i != cameras.end(); i++)
     {
-		cameraList[i]->ogreCamera->setPolygonMode(mode);
+        i->second->ogreCamera->setPolygonMode(mode);
     }
 }
 

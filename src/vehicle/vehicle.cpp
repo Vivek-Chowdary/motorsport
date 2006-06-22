@@ -120,8 +120,8 @@ void Vehicle::construct (XmlTag * tag)
             }
             if (t->getName() == "camera")
             {
-                Camera * tmp = new Camera(this, t);
-                cameraList.push_back(tmp);
+                pCamera tmp = Camera::create (this, t);
+                cameras[tmp->getName()] = tmp;
             }
         }
     }

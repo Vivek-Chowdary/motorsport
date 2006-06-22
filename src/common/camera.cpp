@@ -21,6 +21,12 @@
 #include "area.hpp"
 #include "vector3d.hpp"
 
+pCamera Camera::create(WorldObject * container, XmlTag * tag)
+{
+    pCamera p (new Camera(container, tag));
+    return p;
+}
+
 Camera::Camera (WorldObject * container, XmlTag * tag)
     :WorldObject(container, "camera")
 {
@@ -37,11 +43,13 @@ Camera::Camera (WorldObject * container, XmlTag * tag)
     if (tag->getName() == "camera")
     {
         setName (     tag->getAttribute("name"));
-        *positionOffset = Vector3d (tag->getAttribute("position"));
+        delete positionOffset;
+        positionOffset =  new Vector3d (tag->getAttribute("position"));
         std::string t = "";
         if ( (t = tag->getAttribute("target")) != "")
         {
-            *targetOffset = Vector3d (t);
+            delete targetOffset;
+            targetOffset = new Vector3d (t);
         }
         /*
         else
@@ -135,7 +143,7 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
-    if (this == World::getWorldPointer()->getActiveCamera() )
+    if (this == World::getWorldPointer()->getActiveCamera().get() )
     {
         static bool wasPressed = false;
         if (SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_x)]->getValue() == 1)

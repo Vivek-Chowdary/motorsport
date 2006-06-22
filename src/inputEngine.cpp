@@ -172,11 +172,13 @@ int InputEngine::computeStep (void)
         }
     }
 
-    int numAreaCams = World::getWorldPointer()->areaList[0]->cameraList.size();
+    /*/TODO: convert to shared poinetrs code if/when necessary
+    int numAreaCams = World::getWorldPointer()->areaList[0]->cameras.size();
     for (int i=0; i < numAreaCams; i++)
     {
         //World::getWorldPointer()->areaList[0]->cameraList[i]->stepInput();
     }
+    //*/
     
  /* Be careful with this debugging code!! you need to have created all the axis you're going to debug!
     log->telemetry (LOG_ENDUSER, "%5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f %5.4f",

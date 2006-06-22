@@ -16,18 +16,17 @@
 #include "worldObject.hpp"
 
 //forward declaration
-class Camera;
 class Area;
 class Vehicle;
+
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
 
 class World : public WorldObject
 {
   private:
     static World *worldPointer;
     std::string description;
-    Camera * activeCamera;
-    int activeAreaCameraIndex;
-    int activeVehicleCameraIndex;
+    pCamera activeCamera;
     void processXmlVehicleListNode (XmlTag * tag);
     void processXmlRootNode (XmlTag * tag);
   public:
@@ -43,12 +42,12 @@ class World : public WorldObject
     std::vector < Area * > areaList;
     std::vector < Vehicle * > vehicleList;
 
-    void setActiveCamera (Camera * camera);
-    Camera * getActiveCamera ();
-    Camera * activeAreaCamera;
-    Camera * activeVehicleCamera;
-    int getActiveAreaCameraIndex();
-    int getActiveVehicleCameraIndex();
+    void setActiveCamera (pCamera camera);
+    pCamera getActiveCamera();
+    pCamera activeAreaCamera;
+    pCamera activeVehicleCamera;
+    pCamera getActiveAreaCamera();
+    pCamera getActiveVehicleCamera();
 };
 
 #endif

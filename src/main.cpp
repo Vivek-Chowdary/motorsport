@@ -155,7 +155,9 @@ int main (int argc, char **argv)
     //FIXME: uncomment later on
     //WorldObject::logAll();
     LogEngine::logAll();
+    //LogEngine::deleteAll();
     
+    log->__format (LOG_DEVELOPER, "About to exit motorsport");
     // We go back to the OS.
     return (0);
 }

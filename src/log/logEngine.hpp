@@ -92,6 +92,7 @@ class LogEngine
     */
       LogEngine (LOG_LEVEL localLevel, const std::string & name);
   public:
+    static void deleteAll();
     static pLogEngine create(LOG_LEVEL localLevel, const std::string & name);
     // / Deletes the log engine, closing the log file if needed.
     /** Deletes the log engine and associated data. If there's no other log engines left, the log file will be closed.

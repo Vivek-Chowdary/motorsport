@@ -150,49 +150,66 @@ int GraphicsEngine::computeStep (void)
     // change camera if needed
     if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
-        int nextCam;
-        nextCam = World::getWorldPointer()->getActiveAreaCameraIndex()+1;
-        int maxCams = World::getWorldPointer()->areaList[0]->cameraList.size();
-        if (nextCam >= maxCams )
+        CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
+        pCamera nextCam = i->second;
+        bool found = false;
+        for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
         {
-            nextCam = 0;
+            if (found == true)
+            {
+                nextCam = i->second;
+                found = false;
+            }
+            if (World::getWorldPointer()->getActiveAreaCamera()->getName() == i->second->getName())
+            {
+                found = true;
+            } 
         }
-        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->areaList[0]->cameraList[nextCam]);
-        World::getWorldPointer()->activeAreaCamera = World::getWorldPointer()->areaList[0]->cameraList[nextCam];
+        World::getWorldPointer()->setActiveCamera(nextCam);
+        World::getWorldPointer()->activeAreaCamera = nextCam;
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
-        int nextCam = World::getWorldPointer()->getActiveVehicleCameraIndex()+1;
-        int maxCams = World::getWorldPointer()->vehicleList[0]->cameraList.size();
-        if (nextCam >= maxCams )
+        CamerasIt i = World::getWorldPointer()->vehicleList[0]->cameras.begin();
+        pCamera nextCam = i->second;
+        bool found = false;
+        for (;i != World::getWorldPointer()->vehicleList[0]->cameras.end(); i++)
         {
-            nextCam = 0;
+            if (found == true)
+            {
+                nextCam = i->second;
+                found = false;
+            }
+            if (World::getWorldPointer()->getActiveVehicleCamera()->getName() == i->second->getName())
+            {
+                found = true;
+            } 
         }
-        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->vehicleList[0]->cameraList[nextCam]);
-        World::getWorldPointer()->activeVehicleCamera = World::getWorldPointer()->vehicleList[0]->cameraList[nextCam];
+        World::getWorldPointer()->setActiveCamera(nextCam);
+        World::getWorldPointer()->activeVehicleCamera = nextCam;
     }
     if (systemData->cameraDirector)
     {
         log->__format(LOG_DEVELOPER, "Finding closest camera");
         Vector3d vPos = World::getWorldPointer()->vehicleList[0]->getPosition();
-        int closestCam = 0;
         double closestDistance = 99999999999.0;
-        for (unsigned int i = 0; i<World::getWorldPointer()->areaList[0]->cameraList.size(); i++)
+        CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
+        pCamera closestCam = i->second;
+        for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
         {
-            log->__format(LOG_DEVELOPER, "Checking cam#%i",i);
-            Ogre::Vector3 p = World::getWorldPointer()->areaList[0]->cameraList[i]->ogreCamera->getPosition();
+            log->__format(LOG_DEVELOPER, "Checking cam id: %s", i->second->getName().c_str());
+            Ogre::Vector3 p = i->second->ogreCamera->getPosition();
             Vector3d cPos (p.x, p.y, p.z);
             double distance = cPos.distance(vPos);
             if (distance < closestDistance)
             {
                 closestDistance = distance;
-                closestCam = i;
+                closestCam = i->second;
             }
+
         }
-        log->__format(LOG_DEVELOPER, "Closest camera: %i. Distance: %f", closestCam, closestDistance);
-            
-        World::getWorldPointer()->setActiveCamera(World::getWorldPointer ()->areaList[0]->cameraList[closestCam]);
-        World::getWorldPointer()->activeAreaCamera = World::getWorldPointer()->areaList[0]->cameraList[closestCam];
+        World::getWorldPointer()->setActiveCamera(closestCam);
+        World::getWorldPointer()->activeAreaCamera = closestCam;
     }
     // Update Ogre's bodies positions with Ode's positions.
     int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
@@ -208,16 +225,16 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer ()->areaList[0]->partList[currentCube]->stepGraphics ();
     }
 
-    // Update cameras positions (should be done in the fsx engine FIXME.
-    int numberOfCameras = World::getWorldPointer ()->areaList[0]->cameraList.size ();
-    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    // Update cameras positions (should be done in the fsx engine FIXME
+    CamerasIt i = World::getWorldPointer ()->areaList[0]->cameras.begin();
+    for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
     {
-        World::getWorldPointer ()->areaList[0]->cameraList[currentCamera]->stepGraphics ();
+        i->second->stepGraphics();
     }
-    numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
-    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    i = World::getWorldPointer ()->vehicleList[0]->cameras.begin();
+    for (;i != World::getWorldPointer()->vehicleList[0]->cameras.end(); i++)
     {
-        World::getWorldPointer ()->vehicleList[0]->cameraList[currentCamera]->stepGraphics ();
+        i->second->stepGraphics();
     }
 
     // Update infinite plane position according to vehicle position

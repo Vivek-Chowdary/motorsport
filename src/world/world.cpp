@@ -52,6 +52,10 @@ World::World (WorldObject * container, std::string name)
 
 World::~World ()
 {
+    activeCamera.reset();
+    activeAreaCamera.reset();
+    activeVehicleCamera.reset();
+
     // unload the bodies from memory
     log->__format (LOG_DEVELOPER, "Unloading vehicles from memory...");
     int size = vehicleList.size ();
@@ -148,15 +152,17 @@ void World::processXmlRootNode (XmlTag * tag)
     processXmlVehicleListNode (vehicleListTag);
 
     // initialize cameras (pointing to car 0 by default)
-    for (unsigned int i=0; i< areaList[0]->cameraList.size(); i++)
+    CamerasIt i = areaList[0]->cameras.begin();
+    for(;i != areaList[0]->cameras.end(); i++)
     {
-        areaList[0]->cameraList[i]->setPositionID( areaList[0]->areaBodyID );
-        areaList[0]->cameraList[i]->setTarget( vehicleList[0]->getMainOdeObject());
+        i->second->setPositionID( areaList[0]->areaBodyID );
+        i->second->setTarget( vehicleList[0]->getMainOdeObject());
     }
-    for (unsigned int i=0; i< vehicleList[0]->cameraList.size(); i++)
+    i = vehicleList[0]->cameras.begin();
+    for(;i != vehicleList[0]->cameras.end(); i++)
     {
-        vehicleList[0]->cameraList[i]->setPositionID( vehicleList[0]->getMainOdeObject()->getBodyID());
-        vehicleList[0]->cameraList[i]->setTarget( vehicleList[0]->getMainOdeObject() );
+        i->second->setPositionID( vehicleList[0]->getMainOdeObject()->getBodyID());
+        i->second->setTarget( vehicleList[0]->getMainOdeObject() );
     }
 
     // set active camera
@@ -164,16 +170,16 @@ void World::processXmlRootNode (XmlTag * tag)
     if (useAreaCamera)
     {
         //err... use... area camera, i guess.
-        setActiveCamera (areaList[0]->cameraList[0]);
+        setActiveCamera (areaList[0]->cameras.begin()->second);
     } else {
         //don't use area camera: use vehicle camera
-        setActiveCamera (vehicleList[0]->cameraList[0]);
+        setActiveCamera (vehicleList[0]->cameras.begin()->second);
     }
-    activeAreaCamera = areaList[0]->cameraList[0];
-    activeVehicleCamera = vehicleList[0]->cameraList[0];
+    activeAreaCamera = areaList[0]->cameras.begin()->second;
+    activeVehicleCamera = vehicleList[0]->cameras.begin()->second;
 }
 
-void World::setActiveCamera (Camera * camera)
+void World::setActiveCamera (pCamera camera)
 {
     activeCamera = camera;
     SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
@@ -181,29 +187,19 @@ void World::setActiveCamera (Camera * camera)
     log->__format (LOG_ENDUSER, "Changed camera...");
 }
 
-Camera * World::getActiveCamera (void)
+pCamera World::getActiveCamera (void)
 {
     return activeCamera;
 }
 
-int World::getActiveAreaCameraIndex()
+pCamera World::getActiveAreaCamera()
 {
-    int camNumber = 0;
-    while ( activeAreaCamera != areaList[0]->cameraList[camNumber] )
-    {
-        camNumber++;
-    }
-    return camNumber;
+    return areaList[0]->cameras[activeAreaCamera->getName()];
 }
 
-int World::getActiveVehicleCameraIndex()
+pCamera World::getActiveVehicleCamera()
 {
-    int camNumber = 0;
-    while ( activeVehicleCamera != vehicleList[0]->cameraList[camNumber] )
-    {
-        camNumber++;
-    }
-    return camNumber;
+    return vehicleList[0]->cameras[activeVehicleCamera->getName()];
 }
 
 void World::processXmlVehicleListNode (XmlTag * tag)

@@ -137,17 +137,16 @@ int PhysicsEngine::computeStep (void)
         World::getWorldPointer()->areaList[0]->partList[i]->stepPhysics ();
     }
 
-    int numberOfCameras = World::getWorldPointer ()->areaList[0]->cameraList.size ();
-    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
+    for(;i != World::getWorldPointer()->areaList[0]->cameras.end();i++)
     {
-        World::getWorldPointer ()->areaList[0]->cameraList[currentCamera]->stepPhysics ();
+        i->second->stepPhysics();
     }
-    numberOfCameras = World::getWorldPointer ()->vehicleList[0]->cameraList.size ();
-    for (int currentCamera = 0; currentCamera < numberOfCameras; currentCamera++)
+    i = World::getWorldPointer()->vehicleList[0]->cameras.begin();
+    for(;i != World::getWorldPointer()->vehicleList[0]->cameras.end();i++)
     {
-        World::getWorldPointer ()->vehicleList[0]->cameraList[currentCamera]->stepPhysics ();
+        i->second->stepPhysics();
     }
-                        
 
     checkpointPassed = false;
     dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);

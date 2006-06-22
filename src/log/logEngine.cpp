@@ -27,6 +27,13 @@ int LogEngine::textBuffer = 128;
 unsigned int LogEngine::instancesCount = 0;
 LogEngines LogEngine::logEngines;
 
+void LogEngine::deleteAll()
+{
+    while( !logEngines.empty() )
+    {
+        logEngines.erase( logEngines.begin() );
+    }
+}
 pLogEngine LogEngine::create(LOG_LEVEL localLevel, const std::string & name)
 {
     // open the file for writing in rewrite mode if necessary.
@@ -80,15 +87,27 @@ LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (
 LogEngine::~LogEngine ()
 {
     LogEnginesIt i = logEngines.begin();
+    LogEnginesIt d;
     for(;i != logEngines.end(); i++)
     {
-        if (this == i->second.get()) logEngines.erase(i);
+        if (this == i->second.get())
+        {
+            d = i;
+            //d->second->format(LOG_ENDUSER, "I'm gonna be deleted! :D");
+        }
+        else
+        {
+            //i->second->format(LOG_ENDUSER, "I'm still left! :D");
+        }
     }
-    if (logEngines.empty())
+    logEngines.erase(d);
+    //Check if this is the last log engine in the map.If it is, since we're gonna delete it, we close the log file.
+    if (logEngines.size() <= 1)
     {
         format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
+    //format (LOG_ENDUSER, "--------------------------LogFile size: %i", logEngines.size());
 }
 
 void LogEngine::logAll()
@@ -96,7 +115,7 @@ void LogEngine::logAll()
     LogEnginesIt i = logEngines.begin();
     for(;i != logEngines.end(); i++)
     {
-        i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s\t Instances: %i", i->first.c_str(), i->second.use_count());
+        i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s\t References #: %i", i->first.c_str(), i->second.use_count());
     }
 }
 
