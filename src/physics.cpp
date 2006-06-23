@@ -7,13 +7,13 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "physicsEngine.hpp"
+#include "physics.hpp"
 #include "logEngine.hpp"
 #include "SDL.h"
 #include "math.h"
 #include "system.hpp"
 #include "world.hpp"
-#include "guiEngine.hpp"
+#include "gui.hpp"
 #include "part.hpp"
 #include "vehicle.hpp"
 #include "camera.hpp"
@@ -24,9 +24,9 @@
 #include "OgreNoMemoryMacros.h"
 #include "ode/ode.h"
 
-bool PhysicsEngine::checkpointPassed = false;
+bool Physics::checkpointPassed = false;
 
-PhysicsEngine::PhysicsEngine ()
+Physics::Physics ()
   : stepType(0), dWorldStepFast1MaxIterations(0) 
 {
 #ifdef MACOSX
@@ -42,7 +42,7 @@ PhysicsEngine::PhysicsEngine ()
     int stepType = 1;
     int dWorldStepFast1MaxIterations = 100;
 
-    log = LogEngine::create (LOG_DEVELOPER, "PhysicsEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "Physics");
     if (tag->getName() == "physicsConfig")
     {
         frequency = stod(tag->getAttribute("frequency"));
@@ -73,7 +73,7 @@ PhysicsEngine::PhysicsEngine ()
 }
 
 
-void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
+void Physics::nearCallback (void *data, dGeomID o1, dGeomID o2)
 {
     int i, n;
 
@@ -125,7 +125,7 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
     }
 }
 
-int PhysicsEngine::computeStep (void)
+int Physics::computeStep (void)
 //makes the graphics engine draw one frame
 {
     // mega-verbosity
@@ -177,16 +177,16 @@ int PhysicsEngine::computeStep (void)
     static double lapTime = time;
     if (checkpointWasPassed && (!checkpointPassed))
     {
-        GuiEngine::getGuiEnginePointer()->updateLapTime (time - lapTime);
+        Gui::get()->updateLapTime (time - lapTime);
         log->__format(LOG_ENDUSER, "Checkpoint passed! Last lap time is: %f seconds.", time-lapTime);
         lapTime = time;
     }
     checkpointWasPassed = checkpointPassed;
-    GuiEngine::getGuiEnginePointer()->updateTime (time - lapTime);
+    Gui::get()->updateTime (time - lapTime);
     return (0);
 }
 
-PhysicsEngine::~PhysicsEngine (void)
+Physics::~Physics (void)
 {
     dCloseODE ();
 }

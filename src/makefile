@@ -233,11 +233,11 @@ SOURCES := \
 	vehicle/vehicle.cpp \
         world/area.cpp \
 	world/world.cpp \
-	graphicsEngine.cpp \
-	guiEngine.cpp \
-	inputEngine.cpp \
+	graphics.cpp \
+	gui.cpp \
+	input.cpp \
 	log/logEngine.cpp \
-	physicsEngine.cpp \
+	physics.cpp \
 	common/quaternion.cpp \
         common/axis.cpp \
         common/vector3d.cpp \

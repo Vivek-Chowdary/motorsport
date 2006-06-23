@@ -12,10 +12,10 @@
 #include "world.hpp"            // contains the IDF for the simulated/virtual world data
 #include "system.hpp"           // contains the IDF for the system data
 #include "logEngine.hpp"    // allows to easily log actions
-#include "inputEngine.hpp"      // process the queue of input events
-#include "graphicsEngine.hpp"   // displays the virtual and system data (sim+gui)
-#include "physicsEngine.hpp"    // calculates the physics of the world data
-#include "guiEngine.hpp"        // displays all the user interface on screen
+#include "input.hpp"      // process the queue of input events
+#include "graphics.hpp"   // displays the virtual and system data (sim+gui)
+#include "physics.hpp"    // calculates the physics of the world data
+#include "gui.hpp"        // displays all the user interface on screen
 #ifdef WIN32
 #   define WIN32_LEAN_AND_MEAN
 #   include "windows.h"
@@ -57,17 +57,17 @@ int main (int argc, char **argv)
 
     // We declare the 'global' data and engines.
     log->__format (LOG_DEVELOPER, "Creating graphics engine");
-    GraphicsEngine *graphicsEngine = new GraphicsEngine ();
+    pGraphics graphics (new Graphics ());
     log->__format (LOG_DEVELOPER, "Creating gui engine");
-    GuiEngine *guiEngine = new GuiEngine ();
-    guiEngine->showLoadscreen ();
+    pGui gui = Gui::get();
+    gui->showLoadscreen ();
     log->loadscreen (LOG_DEVELOPER, "Creating physics engine...");
-    PhysicsEngine *physicsEngine = new PhysicsEngine ();
+    pPhysics physics (new Physics ());
 
     log->loadscreen (LOG_DEVELOPER, "Starting SDL subsystems...");
     startSdl (log);
     log->loadscreen (LOG_DEVELOPER, "Creating input engine...");
-    InputEngine *inputEngine = new InputEngine ();
+    pInput input (new Input ());
 
     log->loadscreen (LOG_DEVELOPER, "Getting system data pointer...");
     pSystem system = System::get();
@@ -84,7 +84,7 @@ int main (int argc, char **argv)
     log->loadscreen (LOG_DEVELOPER, "Enabling main loop");
     system->enableMainLoop ();
     log->loadscreen (LOG_ENDUSER, "Hiding load screen");
-    guiEngine->hideLoadscreen();
+    gui->hideLoadscreen();
     log->__format (LOG_DEVELOPER, "Starting main loop");
     while (system->isMainLoopEnabled ())
     {
@@ -99,14 +99,14 @@ int main (int argc, char **argv)
             system->statisticsTime += 1;
             log->__format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", system->graphicsFrequency, system->getCurrentPhysicsFrequency());
         }
-        inputEngine->computeStep ();
+        input->computeStep ();
         // Run the gui engine.
-        guiEngine->computeStep ();
+        gui->computeStep ();
         // Run the graphics engine.
-        graphicsEngine->computeStep ();
+        graphics->computeStep ();
         system->graphicsSteps++;
         // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
-        inputEngine->clearGraphicsEventAxis ();
+        input->clearGraphicsEventAxis ();
         // Run the physics engine until the game time is in sync with the real loop time.
         while (((system->realTime - system->simulationTime) >= system->getDesiredPhysicsTimestep()) && (system->isMainLoopEnabled ()))
         {
@@ -120,9 +120,9 @@ int main (int argc, char **argv)
                 if ((system->pauseStep != 0 && steps < system->pauseStep) || (system->pauseStep == 0))
                 {
                     computeLogic (log);
-                    inputEngine->clearLogicEventAxis ();
-                    inputEngine->computeStep ();
-                    physicsEngine->computeStep ();
+                    input->clearLogicEventAxis ();
+                    input->computeStep ();
+                    physics->computeStep ();
                     steps++;
                     if (System::get()->videoRecordTimestep > 0)
                     {
@@ -143,13 +143,13 @@ int main (int argc, char **argv)
     // We delete the 'global' data and engines.
     log->__format (LOG_ENDUSER, "( 5 ): Unloading engines and libraries...");
     log->__format (LOG_DEVELOPER, "Deleting graphics engine");
-    delete graphicsEngine;
+    graphics.reset();
     log->__format (LOG_DEVELOPER, "Deleting physics engine");
-    delete physicsEngine;
+    physics.reset();
     log->__format (LOG_DEVELOPER, "Deleting input engine");
-    delete inputEngine;
+    input.reset();
     log->__format (LOG_DEVELOPER, "Deleting gui engine");
-    delete guiEngine;
+    gui.reset();
     system.reset();
     System::destroy();
 

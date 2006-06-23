@@ -13,12 +13,10 @@
 #   include "axis.hpp"
 #include <common/shared.hpp>
 
-namespace Ogre {
-class RenderWindow;
-class SceneManager;
-}
-
+// Forward declarations
+namespace Ogre { class RenderWindow; class SceneManager; }
 SHARED_PTR(System,pSystem);
+
 /** 
  * @brief Contains a lot of data, generally needed in many places. It's a singleton.
  */

@@ -9,14 +9,15 @@
 
 #include <common/shared.hpp>
 
-//forward declatation
+// Forward declatation
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 SHARED_PTR(System,pSystem);
+SHARED_PTR(Input,pInput);
 
 /// Manages everything related to user input.
 /** Manages everything related to user input, such as keyboard keypresses, mouse movement, steering wheel movement, joystick, etc... Essentially, it's the interface between the end-user and the simulated world, allowing the user to transparently make changes in this simulated world. Input devices calibration issues and many other things are handled by this engine.
 */
-class InputEngine
+class Input
 {
   private:
     // / Log engine used by the input engine.
@@ -29,11 +30,11 @@ class InputEngine
     // / Creates a new input engine.
     /** Creates a new input engine, with its associated own log engine. It initializes all necessary related data.
     */
-      InputEngine ();
+      Input ();
     // / Deletes the input engine.
     /** Deletes the input engine, as well as its associated log engine.
     */
-     ~InputEngine (void);
+     ~Input (void);
     // / Processes all user input events since last call.
     /** Processes all user input events since last call, transforming them into modifications to the world data.
     */

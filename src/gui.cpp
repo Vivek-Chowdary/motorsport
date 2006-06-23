@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "guiEngine.hpp"
+#include "gui.hpp"
 #include "SDL/SDL.h"
 #include "system.hpp"
 #include "logEngine.hpp"
@@ -16,26 +16,43 @@
 #include "xmlTag.hpp"
 using namespace Ogre;
 
-GuiEngine *GuiEngine::guiEnginePointer = NULL;
+pGui Gui::gui;
 
-GuiEngine *GuiEngine::getGuiEnginePointer ()
+pGui Gui::get()
 {
-    return (guiEnginePointer);
+    if (!gui)
+    {
+        new Gui();
+    }
+    return (gui);
+}
+void Gui::destroy()
+{
+    if (!gui)
+    {
+        std::cout << "WARNING: There's no gui to be destroyed!" << std::endl;
+    }
+    else
+    {
+        gui.reset();
+    }
 }
 
-GuiEngine::GuiEngine ()
+Gui::Gui ()
 {
-    if (guiEnginePointer != 0)
+    if (gui)
     {
-        delete this;
+        gui->log->__format(LOG_ERROR, "Tried to create another gui. This shouldn't have happened.");
     } else {
+        pGui tmp(this);
+        gui = tmp;
 #ifdef MACOSX
         XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/guiConfig.xml");
 #else
         XmlTag * tag = new XmlTag ("../cfg/guiConfig.xml");
 #endif
         showStatistics = true;
-        log = LogEngine::create (LOG_DEVELOPER, "GuiEngine");
+        log = LogEngine::create (LOG_DEVELOPER, "Gui");
 
         if (tag->getName() == "guiConfig")
         {
@@ -44,12 +61,7 @@ GuiEngine::GuiEngine ()
         }
         delete tag;
 
-        // get the direction of the graphics data
-        log->__format (LOG_DEVELOPER, "Setting up data pointers...");
-        system = System::get();
-
         // updating singleton pointer
-        guiEnginePointer = this;
         tmpOgreCamera = 0;
         loadscreenText = "";
         lapTime = "Lap Time: n/a";
@@ -57,7 +69,7 @@ GuiEngine::GuiEngine ()
     }
 }
 
-int GuiEngine::computeStep (void)
+int Gui::computeStep (void)
 //makes the graphics engine draw one frame
 {
     log->__format (LOG_DEVELOPER, "Doing an step...");
@@ -83,11 +95,11 @@ int GuiEngine::computeStep (void)
         OGRE_EXCEPT (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
     }
 
-    if (system->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
     {
         log->__format (LOG_ENDUSER, "Showing/hiding statistics on screen.");
         showStatistics = !showStatistics;
-        system->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
+        System::get()->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     if (showStatistics)
     {
@@ -103,7 +115,7 @@ int GuiEngine::computeStep (void)
     return (0);
 }
 
-void GuiEngine::showLoadscreen ()
+void Gui::showLoadscreen ()
 {
     OverlayElement *loadscreenHeader = OverlayManager::getSingleton ().getOverlayElement ("loadscreen/header");
     loadscreenHeader->setCaption ("Loading contents and engines. Please wait...");
@@ -123,7 +135,7 @@ void GuiEngine::showLoadscreen ()
     }
     loadscreenOverlay->show();
 }
-void GuiEngine::hideLoadscreen ()
+void Gui::hideLoadscreen ()
 {
     Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
     if (!loadscreenOverlay)
@@ -136,17 +148,17 @@ void GuiEngine::hideLoadscreen ()
     System::get()->ogreWindow->removeViewport (-1);
 }
 
-void GuiEngine::updateStatistics (void)
+void Gui::updateStatistics (void)
 {
     OverlayElement *guiAvg = OverlayManager::getSingleton ().getOverlayElement ("gui/AverageFps");
     OverlayElement *guiCurr = OverlayManager::getSingleton ().getOverlayElement ("gui/CurrFps");
     OverlayElement *guiScaledPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/ScaledPhysicsRate");
     OverlayElement *guiPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/PhysicsRate");
-    const RenderTarget::FrameStats & stats = system->ogreWindow->getStatistics ();
+    const RenderTarget::FrameStats & stats = System::get()->ogreWindow->getStatistics ();
     guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
-    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)system->graphicsFrequency) + " fps");
-    guiScaledPhysics->setCaption ("Current Physics Rate: " + StringConverter::toString (float(system->getCurrentPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(system->getCurrentPhysicsTimestep() * 1000.0)) + " ms)");
-    guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(system->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(system->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
+    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)System::get()->graphicsFrequency) + " fps");
+    guiScaledPhysics->setCaption ("Current Physics Rate: " + StringConverter::toString (float(System::get()->getCurrentPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(System::get()->getCurrentPhysicsTimestep() * 1000.0)) + " ms)");
+    guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(System::get()->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(System::get()->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
     OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
     if (telemetryLines > 0)
@@ -176,7 +188,7 @@ void GuiEngine::updateStatistics (void)
     }
 }
 
-void GuiEngine::addTelemetryLine (const std::string & line)
+void Gui::addTelemetryLine (const std::string & line)
 {
     if (telemetryLines > 0)
     {
@@ -193,7 +205,7 @@ void GuiEngine::addTelemetryLine (const std::string & line)
     }
 }
 
-void GuiEngine::addLoadscreenLine (const std::string & line)
+void Gui::addLoadscreenLine (const std::string & line)
 {
     static unsigned lines = 0;
     const unsigned int nchars = 85;
@@ -227,7 +239,7 @@ void GuiEngine::addLoadscreenLine (const std::string & line)
     }
     System::get()->ogreWindow->update ();
 }
-void GuiEngine::updateLapTime (double time)
+void Gui::updateLapTime (double time)
 {
     OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/LapTime");
     double tmpTime = time;
@@ -235,13 +247,13 @@ void GuiEngine::updateLapTime (double time)
     tmpTime = tmpTime - (minutes * 60);
     guiLapTime->setCaption ("Lap Time: " + StringConverter::toString(float(time)) + " s (" + StringConverter::toString(minutes) + "' " + StringConverter::toString(float(tmpTime)) + "\")");
 }
-void GuiEngine::updateTime (double time)
+void Gui::updateTime (double time)
 {
     OverlayElement *guiLapTime = OverlayManager::getSingleton ().getOverlayElement ("gui/Time");
     guiLapTime->setCaption ("Time: " + StringConverter::toString (float(time)) + " s");
 }
 
 
-GuiEngine::~GuiEngine (void)
+Gui::~Gui (void)
 {
 }

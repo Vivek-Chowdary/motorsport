@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include "inputEngine.hpp"
+#include "input.hpp"
 #include "SDL/SDL_types.h"
 #include "SDL/SDL.h"
 #include "system.hpp"
@@ -19,7 +19,7 @@
 #include "axis.hpp"
 
 
-InputEngine::InputEngine ()
+Input::Input ()
 {
 #ifdef MACOSX
     XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/inputConfig.xml");
@@ -27,7 +27,7 @@ InputEngine::InputEngine ()
     XmlTag * tag = new XmlTag ("../cfg/inputConfig.xml");
 #endif    
     delete tag;
-    log = LogEngine::create (LOG_DEVELOPER, "InputEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "Input");
 
     log->__format (LOG_DEVELOPER, "Setting up data pointers...");
     system = System::get();
@@ -98,7 +98,7 @@ InputEngine::InputEngine ()
 //    log->telemetry (LOG_TRACE, " A0    A1    A2    A3    A4    A5    B0    B1    B2    B3    B4    B5");
 }
 
-void InputEngine::clearLogicEventAxis ()
+void Input::clearLogicEventAxis ()
 {
     System::get()->axisMap[getIDKeyboardKey (SDLK_HOME)]->setNewRawValue(0);
     System::get()->axisMap[getIDKeyboardKey (SDLK_END)]->setNewRawValue(0);
@@ -108,7 +108,7 @@ void InputEngine::clearLogicEventAxis ()
     System::get()->axisMap[getIDKeyboardKey (SDLK_z)]->setNewRawValue(0);
 }
 
-void InputEngine::clearGraphicsEventAxis ()
+void Input::clearGraphicsEventAxis ()
 {
     System::get()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue(0);
     System::get()->axisMap[getIDKeyboardKey (SDLK_c)]->setNewRawValue(0);
@@ -116,7 +116,7 @@ void InputEngine::clearGraphicsEventAxis ()
     System::get()->axisMap[getIDKeyboardKey (SDLK_b)]->setNewRawValue(0);
 }
 
-int InputEngine::computeStep (void)
+int Input::computeStep (void)
 {
     std::string tmpString;
     int id;
@@ -199,7 +199,7 @@ int InputEngine::computeStep (void)
     return (0);
 }
 
-InputEngine::~InputEngine (void)
+Input::~Input (void)
 {
     log->__format (LOG_DEVELOPER, "Steering wheel: %i, %i.",system->axisMap[getIDJoyAxis (0, 0)]->getMinRawValue(), system->axisMap[getIDJoyAxis (0, 0)]->getMaxRawValue());
     log->__format (LOG_DEVELOPER, "Gas pedal:      %i, %i.",system->axisMap[getIDJoyAxis (0, 2)]->getMinRawValue(), system->axisMap[getIDJoyAxis (0, 2)]->getMaxRawValue());

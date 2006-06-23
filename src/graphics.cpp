@@ -12,20 +12,20 @@
 #   include <windows.h>
 #endif
 #include "OgreNoMemoryMacros.h"
-#include "graphicsEngine.hpp"
-#include "area.hpp"
-#include "camera.hpp"
-#include "part.hpp"
+#include "graphics.hpp"
 #include "system.hpp"
 #include "Ogre.h"
 #include "OgreConfigFile.h"
-#include "world.hpp"
 #include "SDL/SDL_keysym.h"
+#include "world.hpp"
+#include "area.hpp"
+#include "camera.hpp"
+#include "part.hpp"
 #include "vehicle.hpp"
 #include "logEngine.hpp"
 #include "paths.hpp"
 
-void GraphicsEngine::manualInitialize (const std::string & renderer)
+void Graphics::manualInitialize (const std::string & renderer)
 {
     Ogre::RenderSystem * renderSystem;
     bool ok = false;
@@ -60,7 +60,7 @@ void GraphicsEngine::manualInitialize (const std::string & renderer)
     renderSystem->setConfigOption ("Video Mode", resolution);
 }
 
-void GraphicsEngine::setupResources ()
+void Graphics::setupResources ()
 {
     //load some default constant resources
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation("./", "FileSystem", "General");
@@ -72,16 +72,16 @@ void GraphicsEngine::setupResources ()
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("General");
 }
 
-int GraphicsEngine::computeStep (void)
+int Graphics::computeStep (void)
 {
     Vector3d rotAngles (0, 0, 0);
     // Sun controller. FIXME the sun should be a class, physically behaved. */
-    if (system->axisMap[getIDKeyboardKey(SDLK_o)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_o)]->getValue() == 1)
     {
         // Increase degree by degree, in Y axis.
         rotAngles.y++;
     }
-    if (system->axisMap[getIDKeyboardKey(SDLK_p)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_p)]->getValue() == 1)
     {
         // Increase degree by degree, in Y axis.
         rotAngles.y--;
@@ -118,7 +118,7 @@ int GraphicsEngine::computeStep (void)
         {
             // Linearly interpolate light values.
             r = mina - ( ( ( z        - min ) / ( med - min ) ) * (mina - meda) );
-            system->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
+            System::get()->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
 
             r = minl - ( ( ( z        - min ) / ( med - min ) ) * (minl - medl) );
             light->setDiffuseColour (r.x, r.y, r.z);
@@ -129,7 +129,7 @@ int GraphicsEngine::computeStep (void)
         {
             // Linearly interpolate light values.
             r = meda - ( ( ( z        - med ) / ( max - med ) ) * (meda - maxa) );
-            system->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
+            System::get()->ogreSceneManager->setAmbientLight(Ogre::ColourValue(r.x, r.y, r.z));
 
             r = medl - ( ( ( z        - med ) / ( max - med ) ) * (medl - maxl) );
             light->setDiffuseColour (r.x, r.y, r.z);
@@ -138,17 +138,17 @@ int GraphicsEngine::computeStep (void)
     }
 
     // take a screenshot if neededa
-    if (system->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
     {
         static unsigned int count = initialFrame;
         static char tmpName[64];
         sprintf (tmpName, screenshotFilename.c_str(), count++);
         log->__format (LOG_ENDUSER, "Taking a screenshot in %s.", tmpName);
-        system->ogreWindow->writeContentsToFile (tmpName);
+        System::get()->ogreWindow->writeContentsToFile (tmpName);
     }
 
     // change camera if needed
-    if (system->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
         CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
@@ -168,7 +168,7 @@ int GraphicsEngine::computeStep (void)
         World::get()->setActiveCamera(nextCam);
         World::get()->activeAreaCamera = nextCam;
     }
-    if (system->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
+    if (System::get()->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
         CamerasIt i = World::get()->vehicles.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
@@ -188,7 +188,7 @@ int GraphicsEngine::computeStep (void)
         World::get()->setActiveCamera(nextCam);
         World::get()->activeVehicleCamera = nextCam;
     }
-    if (system->cameraDirector)
+    if (System::get()->cameraDirector)
     {
         log->__format(LOG_DEVELOPER, "Finding closest camera");
         Vector3d vPos = World::get()->vehicles.begin()->second->getPosition();
@@ -252,21 +252,21 @@ int GraphicsEngine::computeStep (void)
     // Update area render mode
     World::get()->areas.begin()->second->setRenderDetail(areaRenderMode);
     
-    // Let the listener frames be started and ended: they are needed for particle systems.
+    // Let the listener frames be started and ended: they are needed for particle System::get()s.
     ogreRoot->_fireFrameStarted ();
-    system->ogreWindow->update ();
+    System::get()->ogreWindow->update ();
     ogreRoot->_fireFrameEnded ();
 
     return (0);
 }
 
-GraphicsEngine::~GraphicsEngine (void)
+Graphics::~Graphics (void)
 {
     log->__format (LOG_DEVELOPER, "Unloading ogre window data from memory...");
-    delete (system->ogreWindow);
+    delete (System::get()->ogreWindow);
 }
 
-GraphicsEngine::GraphicsEngine ()
+Graphics::Graphics ()
 {
 #ifdef MACOSX
     XmlTag * tag = new XmlTag ("motorsport.app/Contents/Resources/graphicsConfig.xml");
@@ -296,7 +296,7 @@ GraphicsEngine::GraphicsEngine ()
     int defaultNumMipMaps = 5;
     fullScreen = false;
 
-    log = LogEngine::create (LOG_DEVELOPER, "GraphicsEngine");
+    log = LogEngine::create (LOG_DEVELOPER, "Graphics");
 
     if (tag->getName() == "graphicsConfig")
     {
@@ -349,10 +349,10 @@ GraphicsEngine::GraphicsEngine ()
 
     // get the direction of the graphics data
     log->__format (LOG_DEVELOPER, "Setting up data pointers...");
-    system = System::get();
+    System::get() = System::get();
 
-    system->height = height;
-    system->width = width;
+    System::get()->height = height;
+    System::get()->width = width;
     log->__format (LOG_DEVELOPER, "Graphics data initialized to %ix%i@%ibpp", width, height, bpp);
 
     log->__format (LOG_DEVELOPER, "Creating temporary ogre plugins config file (plugins.cfg)");
@@ -397,9 +397,9 @@ GraphicsEngine::GraphicsEngine ()
     log->__format (LOG_DEVELOPER, "Saving config file to removeme.cfg");
     ogreRoot->saveConfig();
 
-    // Here we choose to let the system create a default rendering window
+    // Here we choose to let the System::get() create a default rendering window
     log->__format (LOG_DEVELOPER, "Initializing ogre root element");
-    system->ogreWindow = ogreRoot->initialise (true);  
+    System::get()->ogreWindow = ogreRoot->initialise (true);  
     setupResources ();
 #ifdef WIN32
 
@@ -407,17 +407,17 @@ GraphicsEngine::GraphicsEngine ()
 	// New method: As proposed by Sinbad.
 	//  This method always works.
 	HWND hWnd;
-	system->ogreWindow->getCustomAttribute("HWND", &hWnd);
+	System::get()->ogreWindow->getCustomAttribute("HWND", &hWnd);
 	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
 	_putenv(tmp);
 
 #endif
     log->__format (LOG_DEVELOPER, "Getting ogre scene manager");
-    // Set shadowing system
-    system->ogreSceneManager = ogreRoot->createSceneManager (sceneManager);
-    system->ogreSceneManager->setShadowTechnique(shadowTechnique);
-    system->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
-    system->ogreSceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
+    // Set shadowing System::get()
+    System::get()->ogreSceneManager = ogreRoot->createSceneManager (sceneManager);
+    System::get()->ogreSceneManager->setShadowTechnique(shadowTechnique);
+    System::get()->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
+    System::get()->ogreSceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));
     // Set default mipmap level (NB some APIs ignore this)
     log->__format (LOG_ENDUSER, "Setting up default number of mipmap levels");
     Ogre::TextureManager::getSingleton ().setDefaultNumMipmaps (defaultNumMipMaps);
@@ -435,7 +435,7 @@ GraphicsEngine::GraphicsEngine ()
     //light->setPosition(50, 50, 1);
     light->setDiffuseColour(1, 1, 1);
     light->setSpecularColour(1, 1, 1);
-    system->ogreSceneManager->getRootSceneNode()->attachObject (light);
+    System::get()->ogreSceneManager->getRootSceneNode()->attachObject (light);
 
     log->__format (LOG_DEVELOPER, "Removing temporary ogre plugins config file (plugins.cfg)");
     remove("plugins.cfg");

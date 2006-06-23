@@ -8,7 +8,7 @@
 \*****************************************************************************/
 
 #include "logEngine.hpp"
-#include "guiEngine.hpp"
+#include "gui.hpp"
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
@@ -106,7 +106,7 @@ LogEngine::~LogEngine ()
         format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
-    format (LOG_ENDUSER, "--------------------------LogFile size: %i", logEngines.size());
+    //format (LOG_ENDUSER, "--------------------------LogFile size: %i", logEngines.size());
 }
 
 void LogEngine::logAll()
@@ -223,18 +223,18 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     {
         if (mask & LOG_TELEMETRY)
         {
-            GuiEngine::getGuiEnginePointer ()->addTelemetryLine (buffer);
+            Gui::get()->addTelemetryLine (buffer);
             logFile << logLine.str () << "\n";
             logFile.flush ();
         }
         if (mask & LOG_LOADSCREEN)
         {
-            GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (buffer);
+            Gui::get()->addLoadscreenLine (buffer);
         }
     } else {
     if (mask & LOG_TELEMETRY)
     {
-        GuiEngine::getGuiEnginePointer ()->addTelemetryLine (buffer);
+        Gui::get()->addTelemetryLine (buffer);
     }
     if (mask & LOG_CONSOLE)
     {
@@ -242,7 +242,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     }
     if (mask & LOG_LOADSCREEN)
     {
-        GuiEngine::getGuiEnginePointer ()->addLoadscreenLine (std::string(buffer));
+        Gui::get()->addLoadscreenLine (std::string(buffer));
     }
     if ((mask & LOG_FILE))
     {

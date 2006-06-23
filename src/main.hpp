@@ -13,6 +13,7 @@
 
 //forward declarations
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR(Graphics,pGraphics);
 
 /** 
  * @brief Stops all SDL subsystems.

@@ -19,9 +19,6 @@
 #define __format(X ,Y, ...) format((X), std::string("[%s:%3i] " + std::string((Y))).c_str(),__FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
-//forward declarations
-class GuiEngine;
-
 /// It's used to indicate the level of verbosity in a log.
 /** It indicates the level of verbosity of a log. The lower the number is, the more important the messages are.
 */
@@ -50,7 +47,10 @@ struct LogConfig
   LOG_MASK mask;      // !< Where should we send the log
 };
 
+// Forward declarations
+class GuiEngine;
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).
 */

@@ -17,14 +17,15 @@ namespace Ogre {
 
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 SHARED_PTR(System,pSystem);
+SHARED_PTR(Gui,pGui);
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
 */
-class GuiEngine
+class Gui
 {
   private:
-    static GuiEngine * guiEnginePointer;
+    static pGui gui;
     // / Log engine used by the gui engine.
     /** This log engine allows the gui engine to write data in the log file, allowing to be differenciated from other engines.
     */
@@ -40,15 +41,17 @@ class GuiEngine
     int telemetryLines;
     std::string time;
     std::string lapTime;
-  public:
     // / Creates a new gui engine.
     /** Creates a new gui engine, with its associated own log engine. It initializes all necessary related data, such as initial graphics representation of system data (backgrounds, fonts,...), and sets up the underlying rendering libray (Ogre).
     */
-      GuiEngine ();
+    Gui ();
+  public:
+    static pGui get();
+    static void destroy();
     // / Deletes the gui engine.
     /** Deletes de gui engine, as well as its associated log engine. It also removes all the related data from memory.
     */
-     ~GuiEngine ();
+     ~Gui ();
     // / Updates some statistics.
     /** Updates some statistics (framerates, etc...) in order to show them on screen if needed..
     */
@@ -64,7 +67,5 @@ class GuiEngine
     void addLoadscreenLine (const std::string & line);
     void updateLapTime (double time);
     void updateTime (double time);
-
-    static GuiEngine *getGuiEnginePointer();
 };
 

@@ -14,11 +14,12 @@
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.
 */
 
-
-SHARED_PTR(System,pSystem);
+// Forward declarations
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR(System,pSystem);
+SHARED_PTR(Physics,pPhysics);
 
-class PhysicsEngine
+class Physics
 {
   private:
     // / Log engine used by the physics engine.
@@ -40,11 +41,11 @@ class PhysicsEngine
     // / Creates a new physics engine.
     /** Creates a new physics engine, with its associated own log engine. It initializes all necessary related data, including the simulated world's physic entities.
     */
-      PhysicsEngine ();
+      Physics ();
     // / Deletes the physics engine.
     /** Deletes the physics engine, as well as its associated log engine. It also removes all the simulated world's physic entities from memory.
     */
-     ~PhysicsEngine (void);
+     ~Physics (void);
     // / Updates all the simulated world state.
     /** Updates all the simulated world state, including physic movements (collision detection and correction, physic forces...), world events, and other issues.
     */
