@@ -18,8 +18,8 @@ namespace Ogre {
     class Entity;
     class SceneNode;
 };
-class Location;
 
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt);
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
 SHARED_PTR_MAP(Part, pPart, Parts, PartsIt);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
@@ -36,7 +36,8 @@ class Area : public WorldObject
     public:
         static pArea create(WorldObject * container, std::string areaName);
         ~Area ();
-        std::map <std::string, Location * > vehiclePositionMap;
+
+        Locations locations;
         Parts parts;
         Cameras cameras;
 

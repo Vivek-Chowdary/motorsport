@@ -13,6 +13,9 @@
 #include <string>
 #include "quaternion.hpp"
 #include "xmlTag.hpp"
+#include <common/shared.hpp>
+
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt);
 
 class Location
 {
@@ -20,9 +23,11 @@ class Location
     Vector3d position;
     Quaternion rotation;
     std::string name;
-  public:
     Location (XmlTag * tag);
     Location (std::string name, Vector3d position, Quaternion rotation);
+  public:
+    static pLocation create(XmlTag * tag);
+    static pLocation create(std::string name, Vector3d position, Quaternion rotation);
     ~Location ();
     Vector3d getPosition();
     Quaternion getRotation();

@@ -211,15 +211,15 @@ void World::processXmlVehicleListNode (XmlTag * tag)
                 vehicles[tmpVehicle->getName()] = tmpVehicle;
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
-                if (areas.begin()->second->vehiclePositionMap.count(vehicleStartPosition) == 0)
+                if (areas.begin()->second->locations.count(vehicleStartPosition) == 0)
                 {
                     log->__format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the area!", vehicleStartPosition.c_str());
                 }
                 tmpVehicle->setPosition (Vector3d(0, 0, 0));
-                tmpVehicle->applyRotation ( areas.begin()->second->vehiclePositionMap[vehicleStartPosition]->getRotation() );
+                tmpVehicle->applyRotation ( areas.begin()->second->locations[vehicleStartPosition]->getRotation() );
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting position");
-                tmpVehicle->setPosition (areas.begin()->second->vehiclePositionMap[vehicleStartPosition]->getPosition());
+                tmpVehicle->setPosition (areas.begin()->second->locations[vehicleStartPosition]->getPosition());
             }
         }
     }

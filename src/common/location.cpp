@@ -10,6 +10,16 @@
 #include "location.hpp"
 #include "logEngine.hpp"
 
+pLocation Location::create(XmlTag * tag)
+{
+    pLocation loc(new Location(tag));
+    return loc;
+}
+pLocation Location::create(std::string name, Vector3d position, Quaternion rotation)
+{
+    pLocation loc(new Location(name, position, rotation));
+    return loc;
+}
 Location::Location (XmlTag * tag)
 {
     pLogEngine log (LogEngine::create (LOG_DEVELOPER, "Location"));

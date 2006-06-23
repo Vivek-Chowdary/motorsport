@@ -130,8 +130,8 @@ void Area::construct (XmlTag * tag)
             }
             if (t->getName() == "vehicleLocation")
             {
-                Location * tmp = new Location (t);
-                vehiclePositionMap[tmp->getName()] = tmp;
+                pLocation tmp = Location::create (t);
+                locations[tmp->getName()] = tmp;
             }
             if (t->getName() == "camera")
             {
