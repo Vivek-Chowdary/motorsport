@@ -74,7 +74,7 @@ pLogEngine LogEngine::create(LOG_LEVEL localLevel, const std::string & name)
     snprintf (numberString, numberStringSize, "%i", instancesCount);
     logEngines[std::string("LOG#") + numberString + "#." + name] = log;
 
-    return pLogEngine(log);
+    return log;
 }
 LogEngine::LogEngine (LOG_LEVEL localLevel, const std::string & name):logLevel (localLevel), logName (name)
 {

@@ -32,6 +32,7 @@ class Quaternion;
 class CameraPosition;
 
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
+SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
 
 class Vehicle : public WorldObject
 {
@@ -47,9 +48,9 @@ class Vehicle : public WorldObject
     void boltWheelsToSuspensions();
     void stopGraphics ();
     WorldObjects components;
-  public:
     Vehicle (WorldObject * container, std::string vehicleName);
-    Vehicle (WorldObject * container, XmlTag * tag);
+  public:
+    static pVehicle create(WorldObject * container, std::string vehicleName);
     ~Vehicle ();
     Cameras cameras;
     Body *          getBody         (std::string name);

@@ -56,18 +56,11 @@ World::~World ()
     activeAreaCamera.reset();
     activeVehicleCamera.reset();
 
-    // unload the bodies from memory
-    log->__format (LOG_DEVELOPER, "Unloading vehicles from memory...");
-    int size = vehicleList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        delete vehicleList[i];
-        vehicleList[i] = NULL;
-    }
-    vehicleList.clear ();
+    //shouldn't be necessary, but vehicle geoms can't be deleted after ode world so we must make sure!
+    vehicles.clear();
     
     log->__format (LOG_DEVELOPER, "Unloading areas from memory...");
-    size = areaList.size ();
+    int size = areaList.size ();
     for (int i = 0; i < size; i++)
     {
         delete areaList[i];
@@ -93,7 +86,7 @@ void World::processXmlRootNode (XmlTag * tag)
     double gravityX = 0.0;
     double gravityY = 0.0;
     double gravityZ = 0.0;
-    XmlTag * vehicleListTag = NULL;
+    XmlTag * vehiclesTag = NULL;
     bool useAreaCamera = true;    //if false, use vehicle camera
     std::string areaDirectory = "testingGround";
 
@@ -109,7 +102,7 @@ void World::processXmlRootNode (XmlTag * tag)
         {
             if (t->getName() == "vehicleList")
             {
-                vehicleListTag = t;
+                vehiclesTag = t;
             }
             if (t->getName() == "area")
             {
@@ -149,20 +142,20 @@ void World::processXmlRootNode (XmlTag * tag)
 
     // load all vehicles
     log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
-    processXmlVehicleListNode (vehicleListTag);
+    processXmlVehicleListNode (vehiclesTag);
 
     // initialize cameras (pointing to car 0 by default)
     CamerasIt i = areaList[0]->cameras.begin();
     for(;i != areaList[0]->cameras.end(); i++)
     {
         i->second->setPositionID( areaList[0]->areaBodyID );
-        i->second->setTarget( vehicleList[0]->getMainOdeObject());
+        i->second->setTarget( vehicles.begin()->second->getMainOdeObject());
     }
-    i = vehicleList[0]->cameras.begin();
-    for(;i != vehicleList[0]->cameras.end(); i++)
+    i = vehicles.begin()->second->cameras.begin();
+    for(;i != vehicles.begin()->second->cameras.end(); i++)
     {
-        i->second->setPositionID( vehicleList[0]->getMainOdeObject()->getBodyID());
-        i->second->setTarget( vehicleList[0]->getMainOdeObject() );
+        i->second->setPositionID( vehicles.begin()->second->getMainOdeObject()->getBodyID());
+        i->second->setTarget( vehicles.begin()->second->getMainOdeObject() );
     }
 
     // set active camera
@@ -173,10 +166,10 @@ void World::processXmlRootNode (XmlTag * tag)
         setActiveCamera (areaList[0]->cameras.begin()->second);
     } else {
         //don't use area camera: use vehicle camera
-        setActiveCamera (vehicleList[0]->cameras.begin()->second);
+        setActiveCamera (vehicles.begin()->second->cameras.begin()->second);
     }
     activeAreaCamera = areaList[0]->cameras.begin()->second;
-    activeVehicleCamera = vehicleList[0]->cameras.begin()->second;
+    activeVehicleCamera = vehicles.begin()->second->cameras.begin()->second;
 }
 
 void World::setActiveCamera (pCamera camera)
@@ -199,7 +192,7 @@ pCamera World::getActiveAreaCamera()
 
 pCamera World::getActiveVehicleCamera()
 {
-    return vehicleList[0]->cameras[activeVehicleCamera->getName()];
+    return vehicles.begin()->second->cameras[activeVehicleCamera->getName()];
 }
 
 void World::processXmlVehicleListNode (XmlTag * tag)
@@ -218,12 +211,12 @@ void World::processXmlVehicleListNode (XmlTag * tag)
                 vehicleStartPosition = t->getAttribute("startPosition");
 
                 log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-                Vehicle * tmpVehicle = new Vehicle (this, vehicleDirectory);
+                pVehicle tmpVehicle  = Vehicle::create(this, vehicleDirectory);
                 if (driver == "user" )
                 {
                     tmpVehicle->setUserDriver();
                 }
-                vehicleList.push_back (tmpVehicle);
+                vehicles[tmpVehicle->getName()] = tmpVehicle;
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
                 if (areaList[0]->vehiclePositionMap.count(vehicleStartPosition) == 0)

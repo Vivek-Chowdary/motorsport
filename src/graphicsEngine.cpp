@@ -170,10 +170,10 @@ int GraphicsEngine::computeStep (void)
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
-        CamerasIt i = World::getWorldPointer()->vehicleList[0]->cameras.begin();
+        CamerasIt i = World::getWorldPointer()->vehicles.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
         bool found = false;
-        for (;i != World::getWorldPointer()->vehicleList[0]->cameras.end(); i++)
+        for (;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end(); i++)
         {
             if (found == true)
             {
@@ -191,7 +191,7 @@ int GraphicsEngine::computeStep (void)
     if (systemData->cameraDirector)
     {
         log->__format(LOG_DEVELOPER, "Finding closest camera");
-        Vector3d vPos = World::getWorldPointer()->vehicleList[0]->getPosition();
+        Vector3d vPos = World::getWorldPointer()->vehicles.begin()->second->getPosition();
         double closestDistance = 99999999999.0;
         CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
         pCamera closestCam = i->second;
@@ -212,10 +212,10 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer()->activeAreaCamera = closestCam;
     }
     // Update Ogre's bodies positions with Ode's positions.
-    int numberOfVehicles = World::getWorldPointer ()->vehicleList.size ();
-    for (int currentVehicle = 0; currentVehicle < numberOfVehicles; currentVehicle++)
+    VehiclesIt j = World::getWorldPointer()->vehicles.begin();
+    for (; j != World::getWorldPointer()->vehicles.end(); j++)
     {
-        World::getWorldPointer ()->vehicleList[currentVehicle]->stepGraphics ();
+        j->second->stepGraphics();
     }
 
     // Update Ogre's parts positions with Ode's positions.
@@ -231,15 +231,15 @@ int GraphicsEngine::computeStep (void)
     {
         i->second->stepGraphics();
     }
-    i = World::getWorldPointer ()->vehicleList[0]->cameras.begin();
-    for (;i != World::getWorldPointer()->vehicleList[0]->cameras.end(); i++)
+    i = World::getWorldPointer ()->vehicles.begin()->second->cameras.begin();
+    for (;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end(); i++)
     {
         i->second->stepGraphics();
     }
 
     // Update infinite plane position according to vehicle position
     Ogre::Vector3 areaPos (World::getWorldPointer()->areaList[0]->planeNode->getPosition());
-    Vector3d vehiclePos (World::getWorldPointer()->vehicleList[0]->getPosition());
+    Vector3d vehiclePos (World::getWorldPointer()->vehicles.begin()->second->getPosition());
     Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
     const double tile = 1000.0 / 20.0;
     if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);

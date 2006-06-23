@@ -25,6 +25,11 @@
 #include "SDL/SDL_keysym.h"
 #include "quaternion.hpp"
 
+pVehicle Vehicle::create(WorldObject * container, std::string vehicleName)
+{
+    pVehicle vehicle(new Vehicle(container, vehicleName));
+    return vehicle;
+}
 Vehicle::Vehicle (WorldObject * container, std::string vehicleName)
     :WorldObject(container, vehicleName)
 {

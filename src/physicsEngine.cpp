@@ -142,8 +142,8 @@ int PhysicsEngine::computeStep (void)
     {
         i->second->stepPhysics();
     }
-    i = World::getWorldPointer()->vehicleList[0]->cameras.begin();
-    for(;i != World::getWorldPointer()->vehicleList[0]->cameras.end();i++)
+    i = World::getWorldPointer()->vehicles.begin()->second->cameras.begin();
+    for(;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end();i++)
     {
         i->second->stepPhysics();
     }
@@ -162,10 +162,10 @@ int PhysicsEngine::computeStep (void)
         dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     }
-    size = World::getWorldPointer ()->vehicleList.size ();
-    for (int i = 0; i < size; i++)
+    VehiclesIt j = World::getWorldPointer()->vehicles.begin();
+    for (; j != World::getWorldPointer()->vehicles.end(); j++)
     {
-        World::getWorldPointer ()->vehicleList[i]->stepPhysics ();
+        j->second->stepPhysics();
     }
 
     dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);

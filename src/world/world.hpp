@@ -20,6 +20,7 @@ class Area;
 class Vehicle;
 
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
+SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
 
 class World : public WorldObject
 {
@@ -40,7 +41,7 @@ class World : public WorldObject
     dJointGroupID jointGroupID;
 
     std::vector < Area * > areaList;
-    std::vector < Vehicle * > vehicleList;
+    Vehicles vehicles;
 
     void setActiveCamera (pCamera camera);
     pCamera getActiveCamera();

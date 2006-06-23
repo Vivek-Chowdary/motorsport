@@ -74,7 +74,7 @@ Body::~Body ()
 void Body::stepPhysics ()
 {
     dBodyID bodyID = getMainOdeObject()->getBodyID();
-    if (this == World::getWorldPointer ()->vehicleList[0]->getObject("body"))
+    if (this == World::getWorldPointer ()->vehicles.begin()->second->getObject("body"))
     {
         double moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
         moveZ += SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
