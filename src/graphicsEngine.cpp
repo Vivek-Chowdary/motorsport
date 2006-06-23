@@ -150,52 +150,52 @@ int GraphicsEngine::computeStep (void)
     // change camera if needed
     if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
-        CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();
+        CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
         bool found = false;
-        for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
+        for (;i != World::get()->areas.begin()->second->cameras.end(); i++)
         {
             if (found == true)
             {
                 nextCam = i->second;
                 found = false;
             }
-            if (World::getWorldPointer()->getActiveAreaCamera()->getName() == i->second->getName())
+            if (World::get()->getActiveAreaCamera()->getName() == i->second->getName())
             {
                 found = true;
             } 
         }
-        World::getWorldPointer()->setActiveCamera(nextCam);
-        World::getWorldPointer()->activeAreaCamera = nextCam;
+        World::get()->setActiveCamera(nextCam);
+        World::get()->activeAreaCamera = nextCam;
     }
     if (systemData->axisMap[getIDKeyboardKey(SDLK_v)]->getValue() == 1)
     {
-        CamerasIt i = World::getWorldPointer()->vehicles.begin()->second->cameras.begin();
+        CamerasIt i = World::get()->vehicles.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
         bool found = false;
-        for (;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end(); i++)
+        for (;i != World::get()->vehicles.begin()->second->cameras.end(); i++)
         {
             if (found == true)
             {
                 nextCam = i->second;
                 found = false;
             }
-            if (World::getWorldPointer()->getActiveVehicleCamera()->getName() == i->second->getName())
+            if (World::get()->getActiveVehicleCamera()->getName() == i->second->getName())
             {
                 found = true;
             } 
         }
-        World::getWorldPointer()->setActiveCamera(nextCam);
-        World::getWorldPointer()->activeVehicleCamera = nextCam;
+        World::get()->setActiveCamera(nextCam);
+        World::get()->activeVehicleCamera = nextCam;
     }
     if (systemData->cameraDirector)
     {
         log->__format(LOG_DEVELOPER, "Finding closest camera");
-        Vector3d vPos = World::getWorldPointer()->vehicles.begin()->second->getPosition();
+        Vector3d vPos = World::get()->vehicles.begin()->second->getPosition();
         double closestDistance = 99999999999.0;
-        CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();
+        CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
         pCamera closestCam = i->second;
-        for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
+        for (;i != World::get()->areas.begin()->second->cameras.end(); i++)
         {
             log->__format(LOG_DEVELOPER, "Checking cam id: %s", i->second->getName().c_str());
             Ogre::Vector3 p = i->second->ogreCamera->getPosition();
@@ -208,49 +208,49 @@ int GraphicsEngine::computeStep (void)
             }
 
         }
-        World::getWorldPointer()->setActiveCamera(closestCam);
-        World::getWorldPointer()->activeAreaCamera = closestCam;
+        World::get()->setActiveCamera(closestCam);
+        World::get()->activeAreaCamera = closestCam;
     }
     // Update Ogre's vehicles positions with Ode's positions.
-    VehiclesIt j = World::getWorldPointer()->vehicles.begin();
-    for (; j != World::getWorldPointer()->vehicles.end(); j++)
+    VehiclesIt j = World::get()->vehicles.begin();
+    for (; j != World::get()->vehicles.end(); j++)
     {
         j->second->stepGraphics();
     }
 
     // Update Ogre's parts positions with Ode's positions.
-    PartsIt k = World::getWorldPointer()->areas.begin()->second->parts.begin();
-    for (; k != World::getWorldPointer()->areas.begin()->second->parts.end(); k++)
+    PartsIt k = World::get()->areas.begin()->second->parts.begin();
+    for (; k != World::get()->areas.begin()->second->parts.end(); k++)
     {
         k->second->stepGraphics();
     }
 
     // Update cameras positions (should be done in the fsx engine FIXME
-    CamerasIt i = World::getWorldPointer ()->areas.begin()->second->cameras.begin();
-    for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
+    CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
+    for (;i != World::get()->areas.begin()->second->cameras.end(); i++)
     {
         i->second->stepGraphics();
     }
-    i = World::getWorldPointer ()->vehicles.begin()->second->cameras.begin();
-    for (;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end(); i++)
+    i = World::get()->vehicles.begin()->second->cameras.begin();
+    for (;i != World::get()->vehicles.begin()->second->cameras.end(); i++)
     {
         i->second->stepGraphics();
     }
 
     // Update infinite plane position according to vehicle position
-    Ogre::Vector3 areaPos (World::getWorldPointer()->areas.begin()->second->planeNode->getPosition());
-    Vector3d vehiclePos (World::getWorldPointer()->vehicles.begin()->second->getPosition());
+    Ogre::Vector3 areaPos (World::get()->areas.begin()->second->planeNode->getPosition());
+    Vector3d vehiclePos (World::get()->vehicles.begin()->second->getPosition());
     Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
     const double tile = 1000.0 / 20.0;
     if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);
     if (diff.y > tile || diff.y < -tile) areaPos.y -= int ((diff.y) / (tile)) * (tile);
-    World::getWorldPointer()->areas.begin()->second->planeNode->setPosition(areaPos);
+    World::get()->areas.begin()->second->planeNode->setPosition(areaPos);
     
     // Update area shadows state
-    World::getWorldPointer()->areas.begin()->second->setCastShadows(castAreaShadows);
+    World::get()->areas.begin()->second->setCastShadows(castAreaShadows);
     
     // Update area render mode
-    World::getWorldPointer ()->areas.begin()->second->setRenderDetail(areaRenderMode);
+    World::get()->areas.begin()->second->setRenderDetail(areaRenderMode);
     
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();

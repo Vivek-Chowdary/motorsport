@@ -143,7 +143,7 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
-    if (this == World::getWorldPointer()->getActiveCamera().get() )
+    if (this == World::get()->getActiveCamera().get() )
     {
         static bool wasPressed = false;
         if (SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_x)]->getValue() == 1)

@@ -21,26 +21,50 @@
 #include "location.hpp"
 #include "SDL.h"
 
-World *World::worldPointer = NULL;
+//pWorld World::world = NULL;
+pWorld World::world;
+std::string World::newWorld = "";
 
-World *World::getWorldPointer ()
+void World::setNewWorld(std::string name)
 {
-    if (worldPointer == 0)
+    world.reset();
+    World::newWorld = name;
+    World::get();
+}
+pWorld World::get()
+{
+    if (!world)
     {
-        std::cout << "WARNING: Auto-creating a default world!" << std::endl;
-        worldPointer = new World(NULL, "default");
+        if (newWorld == "")
+        {
+            std::cout << "WARNING: Auto-creating a default world!" << std::endl;
+            newWorld = "default";
+        }
+        new World(World::newWorld);
     }
-    return (worldPointer);
+    return (world);
+}
+void World::destroy()
+{
+    if (!world)
+    {
+        std::cout << "WARNING: There's no world to be destroyed!" << std::endl;
+    }
+    else
+    {
+        world.reset();
+    }
 }
 
-World::World (WorldObject * container, std::string name)
-    :WorldObject(container, name)
+World::World (std::string name)
+    :WorldObject(NULL, name)
 {
-    if (worldPointer != 0)
+    if (world)
     {
-        delete this;
+        world->log->__format(LOG_ERROR, "Tried to create another world, named \"%s\". This shouldn't have happened.", name.c_str());
     } else {
-        worldPointer = this;
+        pWorld tmp(this);
+        world = tmp;
         setPath(Paths::world(name));
         setXmlPath(Paths::worldXml(name));
         log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
@@ -67,8 +91,6 @@ World::~World ()
     dWorldDestroy (ghostWorldID);
     log->__format (LOG_DEVELOPER, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
-    
-    worldPointer = NULL;
 }
 
 

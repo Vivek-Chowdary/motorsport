@@ -119,7 +119,7 @@ void PhysicsEngine::nearCallback (void *data, dGeomID o1, dGeomID o2)
             contact[i].surface.soft_erp = 0.8;
             contact[i].surface.soft_cfm = 0.00000001;
 
-            dJointID c = dJointCreateContact (World::getWorldPointer ()->worldID, World::getWorldPointer ()->jointGroupID, contact + i);
+            dJointID c = dJointCreateContact (World::get()->worldID, World::get()->jointGroupID, contact + i);
             dJointAttach (c, dGeomGetBody (o1), dGeomGetBody (o2));
         }
     }
@@ -131,44 +131,44 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->__format (LOG_DEVELOPER, "Doing an step: calculating a physics step");
 
-    PartsIt k = World::getWorldPointer()->areas.begin()->second->parts.begin();
-    for (; k != World::getWorldPointer()->areas.begin()->second->parts.end(); k++)
+    PartsIt k = World::get()->areas.begin()->second->parts.begin();
+    for (; k != World::get()->areas.begin()->second->parts.end(); k++)
     {
         k->second->stepPhysics();
     }
 
-    CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();
-    for(;i != World::getWorldPointer()->areas.begin()->second->cameras.end();i++)
+    CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
+    for(;i != World::get()->areas.begin()->second->cameras.end();i++)
     {
         i->second->stepPhysics();
     }
-    i = World::getWorldPointer()->vehicles.begin()->second->cameras.begin();
-    for(;i != World::getWorldPointer()->vehicles.begin()->second->cameras.end();i++)
+    i = World::get()->vehicles.begin()->second->cameras.begin();
+    for(;i != World::get()->vehicles.begin()->second->cameras.end();i++)
     {
         i->second->stepPhysics();
     }
 
     checkpointPassed = false;
-    dSpaceCollide (World::getWorldPointer ()->spaceID, 0, &nearCallback);
+    dSpaceCollide (World::get()->spaceID, 0, &nearCallback);
     switch (stepType)
     {
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep());
+        dWorldStep (World::get()->worldID, systemData->getDesiredPhysicsTimestep());
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (World::getWorldPointer ()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::get()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     }
-    VehiclesIt j = World::getWorldPointer()->vehicles.begin();
-    for (; j != World::getWorldPointer()->vehicles.end(); j++)
+    VehiclesIt j = World::get()->vehicles.begin();
+    for (; j != World::get()->vehicles.end(); j++)
     {
         j->second->stepPhysics();
     }
 
-    dJointGroupEmpty (World::getWorldPointer ()->jointGroupID);
+    dJointGroupEmpty (World::get()->jointGroupID);
     
     // check if a car has passed the checkpoint
     static bool checkpointWasPassed = false;

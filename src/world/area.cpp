@@ -90,7 +90,7 @@ void Area::construct (XmlTag * tag)
                         ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
                         // declare ode mesh
                         dTriMeshDataID ground = dGeomTriMeshDataCreate ();
-                        dGeomSetBody (dCreateTriMesh (World::getWorldPointer ()->spaceID, ground, 0, 0, 0), 0);
+                        dGeomSetBody (dCreateTriMesh (World::get()->spaceID, ground, 0, 0, 0), 0);
 
                         size_t vertex_count, index_count;
                         dVector3 * vertices;
@@ -144,7 +144,7 @@ void Area::construct (XmlTag * tag)
     log->loadscreen (LOG_CCREATOR, "Creating the area ground");
 
     log->__format (LOG_DEVELOPER, "Creating the ode plane");
-    dCreatePlane (World::getWorldPointer()->spaceID, 0, 0, 1, groundHeight);
+    dCreatePlane (World::get()->spaceID, 0, 0, 1, groundHeight);
 
     log->__format (LOG_DEVELOPER, "Creating the ogre plane");
     Ogre::Plane plane;
@@ -156,7 +156,7 @@ void Area::construct (XmlTag * tag)
     planeEntity->setMaterialName(groundMaterialName.c_str());
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
-    areaBodyID = dBodyCreate (World::getWorldPointer ()->ghostWorldID);
+    areaBodyID = dBodyCreate (World::get()->ghostWorldID);
     SystemData::getSystemDataPointer()->ogreWindow->update ();
 
     // FIXME should be part of the world, not the area
@@ -167,7 +167,7 @@ void Area::construct (XmlTag * tag)
     SystemData::getSystemDataPointer()->ogreWindow->update ();
     
     // create the checkpoint sphere
-    dGeomID checkpointID = dCreateSphere (World::getWorldPointer()->spaceID, checkpointRadius);
+    dGeomID checkpointID = dCreateSphere (World::get()->spaceID, checkpointRadius);
     dGeomSetBody (checkpointID, 0);
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
 }

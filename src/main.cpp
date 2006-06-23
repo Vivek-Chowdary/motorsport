@@ -74,7 +74,7 @@ int main (int argc, char **argv)
     // We load the world data from hdd into memory.
     log->__format (LOG_ENDUSER, "( 2 ): Loading world data...");
     log->loadscreen (LOG_CCREATOR, "Loading initial world data...");
-    new World (NULL, "default");
+    World::setNewWorld("default");
 
     // We start the main loop.
     log->__format (LOG_ENDUSER, "( 3 ): Starting simulation...");
@@ -137,7 +137,7 @@ int main (int argc, char **argv)
     // We unload the world data from memory.
     log->__format (LOG_ENDUSER, "( 4 ): Unloading world data...");
     log->__format (LOG_CCREATOR, "Unloading world data");
-    delete World::getWorldPointer ();
+    World::destroy();
 
     // We delete the 'global' data and engines.
     log->__format (LOG_ENDUSER, "( 5 ): Unloading engines and libraries...");

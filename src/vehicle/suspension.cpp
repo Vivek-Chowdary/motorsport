@@ -149,8 +149,8 @@ Unidimensional::Unidimensional (WorldObject * container, XmlTag * tag)
         dampingConstant = stod(tag->getAttribute("dampingConstant"));
         maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
     }
-//    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
-    jointID = dJointCreateHinge2 (World::getWorldPointer()->worldID, 0);
+//    jointID = dJointCreateHinge (World::get()->worldID, 0);
+    jointID = dJointCreateHinge2 (World::get()->worldID, 0);
     dJointAttach (jointID, 0, 0);
 }
 void Unidimensional::stepPhysics()
@@ -209,7 +209,7 @@ Fixed::Fixed (WorldObject * container, XmlTag * tag)
         position = Vector3d (tag->getAttribute("position"));
         rotation = Quaternion (tag->getAttribute("rotation"));
     }
-    jointID = dJointCreateHinge (World::getWorldPointer()->worldID, 0);
+    jointID = dJointCreateHinge (World::get()->worldID, 0);
     dJointAttach (jointID, 0, 0);
 }
 void Fixed::stepPhysics()
@@ -343,7 +343,7 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     ogreObjects["uprightBone"]->setOdeReference(odeObjects["uprightBone"]);
 
     //create upper joint
-    upperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    upperJoint = dJointCreateHinge( World::get()->worldID, 0 );
     dJointAttach ( upperJoint, odeObjects["uprightBone"]->getBodyID(), odeObjects["upperBone"]->getBodyID() );
     dJointSetHingeAnchor( upperJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z+(uprightBoneLength*0.5) );
     dJointSetHingeAxis( upperJoint , 1.0, 0.0, 0.0 );
@@ -352,7 +352,7 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     dJointSetHingeParam ( upperJoint, dParamHiStop, 2.0 );
 
     //create lower joint
-    lowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    lowerJoint = dJointCreateHinge( World::get()->worldID, 0 );
     dJointAttach ( lowerJoint, odeObjects["uprightBone"]->getBodyID(), odeObjects["lowerBone"]->getBodyID() );
     dJointSetHingeAnchor( lowerJoint , firstPosition.x , firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z-(uprightBoneLength*0.5) );
     dJointSetHingeAxis( lowerJoint , 1.0, 0.0, 0.0 );
@@ -377,19 +377,19 @@ void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
 
     //create chassisUpper joint
     Vector3d pos = getFirstLinkPosition();
-    chassisUpperJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    chassisUpperJoint = dJointCreateHinge( World::get()->worldID, 0 );
     dJointAttach( chassisUpperJoint, base->getMainOdeObject()->getBodyID() , odeObjects["upperBone"]->getBodyID() );
     dJointSetHingeAxis( chassisUpperJoint, 1,0,0 );
     dJointSetHingeAnchor( chassisUpperJoint, firstPosition.x, firstPosition.y, firstPosition.z+(uprightBoneLength*0.5));
 
     //create chassisLower joint
-    chassisLowerJoint = dJointCreateHinge( World::getWorldPointer()->worldID, 0 );
+    chassisLowerJoint = dJointCreateHinge( World::get()->worldID, 0 );
     dJointAttach( chassisLowerJoint, base->getMainOdeObject()->getBodyID() , odeObjects["lowerBone"]->getBodyID() );
     dJointSetHingeAxis( chassisLowerJoint, 1,0,0 );
     dJointSetHingeAnchor( chassisLowerJoint, firstPosition.x, firstPosition.y, firstPosition.z-(uprightBoneLength*0.5));
 
     //create axis&steering joint
-    axisJoint = dJointCreateHinge2( World::getWorldPointer()->worldID, 0 );
+    axisJoint = dJointCreateHinge2( World::get()->worldID, 0 );
     dJointAttach ( axisJoint, odeObjects["uprightBone"]->getBodyID(), object->getMainOdeObject()->getBodyID() );
     dJointSetHinge2Anchor( axisJoint, firstPosition.x, firstPosition.y+(upperBoneLength*dirMult), firstPosition.z);
 
@@ -401,7 +401,7 @@ void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
     log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
 
     //create spring-damper joint
-    // sdamper = dJointCreateSlider(World::getWorldPointer()->worldID, 0);
+    // sdamper = dJointCreateSlider(World::get()->worldID, 0);
     //dJointAttach( sdamper, base->getMainOdeObject()->getBodyID(), odeObjects["uprightBone"]->getBodyID() );
     //dJointSetSliderAxis (sdamper, 0,dirMult*0.66,0.66);
     //dJointSetSliderAxis (sdamper, forceDirection[0], forceDirection[1], forceDirection[2]);

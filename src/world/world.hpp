@@ -17,18 +17,22 @@
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
 SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
+SHARED_PTR(World,pWorld);
 
 class World : public WorldObject
 {
   private:
-    static World *worldPointer;
+    static pWorld world;
+    static std::string newWorld;
     std::string description;
     pCamera activeCamera;
     void processXmlVehicleListNode (XmlTag * tag);
     void processXmlRootNode (XmlTag * tag);
+    World (std::string name);
   public:
-    static World *getWorldPointer ();
-    World (WorldObject * container, std::string name);
+    static pWorld get();
+    static void setNewWorld(std::string name);
+    static void destroy();
     ~World ();
 
     dWorldID worldID;
