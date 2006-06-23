@@ -40,14 +40,14 @@ OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, std::st
 
     if (useMesh)
     {
-        entity = SystemData::getSystemDataPointer ()->ogreSceneManager->createEntity (id, meshPath);
+        entity = System::get()->ogreSceneManager->createEntity (id, meshPath);
         entity->setCastShadows(true);
         for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
         {
             worldObject->getLog()->__format(LOG_CCREATOR, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
         }
     }
-    node = static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode()->createChild());
+    node = static_cast<Ogre::SceneNode*>(System::get()->ogreSceneManager->getRootSceneNode()->createChild());
     if (useMesh)
     {
         node->attachObject (entity);
@@ -61,12 +61,12 @@ OgreObject::~OgreObject ()
         worldObject->getLog()->__format (LOG_DEVELOPER, "Removing entity id=%s", entity->getName().c_str());
         node->detachObject(entity);
         if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
-        SystemData::getSystemDataPointer()->ogreSceneManager->destroyEntity (entity);
+        System::get()->ogreSceneManager->destroyEntity (entity);
         entity = NULL;
     }
 
     worldObject->getLog()->__format (LOG_DEVELOPER, "Removing node id=%s", node->getName().c_str());
-    SystemData::getSystemDataPointer()->ogreSceneManager->destroySceneNode (node->getName());
+    System::get()->ogreSceneManager->destroySceneNode (node->getName());
     node = NULL;   
 
     this->worldObject = NULL;
@@ -78,7 +78,7 @@ void OgreObject::setOdeReference(pOdeObject odeObject)
 
 void OgreObject::setOgreReference(pOgreObject ogreObject, Quaternion rotationDiff, Vector3d positionDiff, Vector3d scale)
 {
-    static_cast<Ogre::SceneNode*>(SystemData::getSystemDataPointer()->ogreSceneManager->getRootSceneNode())->removeChild(node);
+    static_cast<Ogre::SceneNode*>(System::get()->ogreSceneManager->getRootSceneNode())->removeChild(node);
     ogreObject->getNode()->addChild(node);
     Ogre::Vector3 * pd = new Ogre::Vector3(positionDiff.x, positionDiff.y, positionDiff.z);
     Ogre::Quaternion * rd = new Ogre::Quaternion (rotationDiff.w, rotationDiff.x, rotationDiff.y, rotationDiff.z);

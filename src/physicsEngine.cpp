@@ -37,8 +37,8 @@ PhysicsEngine::PhysicsEngine ()
     double frequency = 250.0;
     int timeScale = 1;
     int pauseStep = 0;
-    SystemData::getSystemDataPointer()->setCfmValue (-1);
-    SystemData::getSystemDataPointer()->setErpValue (-1);
+    System::get()->setCfmValue (-1);
+    System::get()->setErpValue (-1);
     int stepType = 1;
     int dWorldStepFast1MaxIterations = 100;
 
@@ -52,8 +52,8 @@ PhysicsEngine::PhysicsEngine ()
         {
             if (t->getName() == "ode")
             {
-                if (t->getAttribute("cfmValue") != "default") SystemData::getSystemDataPointer()->setCfmValue(stod(t->getAttribute("cfmValue")));
-                if (t->getAttribute("erpValue") != "default") SystemData::getSystemDataPointer()->setErpValue(stod(t->getAttribute("erpValue")));
+                if (t->getAttribute("cfmValue") != "default") System::get()->setCfmValue(stod(t->getAttribute("cfmValue")));
+                if (t->getAttribute("erpValue") != "default") System::get()->setErpValue(stod(t->getAttribute("erpValue")));
                 if (t->getAttribute("stepType") == "dWorldStep") stepType = 1;
                 if (t->getAttribute("stepType") == "dWorldStepFast1") stepType = 2;
                 dWorldStepFast1MaxIterations = stoi (t->getAttribute("dWorldStepFast1MaxIterations"));
@@ -62,13 +62,13 @@ PhysicsEngine::PhysicsEngine ()
     }
     // get the direction of the graphics data
     log->__format (LOG_DEVELOPER, "Setting up data pointers...");
-    systemData = SystemData::getSystemDataPointer ();
+    system = System::get();
 
     log->__format (LOG_DEVELOPER, "Setting physics data");
-    systemData->setDesiredPhysicsFrequency(frequency);
-    systemData->timeScale = timeScale;
-    systemData->pauseStep = pauseStep;
-    log->__format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", systemData->getDesiredPhysicsFrequency(), systemData->getDesiredPhysicsTimestep() * 1000);
+    system->setDesiredPhysicsFrequency(frequency);
+    system->timeScale = timeScale;
+    system->pauseStep = pauseStep;
+    log->__format (LOG_ENDUSER, "Physics rate set @ %f Hz (%f ms)", system->getDesiredPhysicsFrequency(), system->getDesiredPhysicsTimestep() * 1000);
     delete tag;
 }
 
@@ -155,11 +155,11 @@ int PhysicsEngine::computeStep (void)
     default:
     case 1:
         // traditional (x^y), theorycally slowest, and most accurate physics calculations:
-        dWorldStep (World::get()->worldID, systemData->getDesiredPhysicsTimestep());
+        dWorldStep (World::get()->worldID, system->getDesiredPhysicsTimestep());
         break;
     case 2:
         // alternative (x*y), fastest and less accurate physics calculations:
-        dWorldStepFast1 (World::get()->worldID, systemData->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
+        dWorldStepFast1 (World::get()->worldID, system->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     }
     VehiclesIt j = World::get()->vehicles.begin();

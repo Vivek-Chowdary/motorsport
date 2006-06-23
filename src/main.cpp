@@ -44,17 +44,18 @@ int main (int argc, char **argv)
     XmlTag * tag = new XmlTag ("../cfg/mainConfig.xml");
 #endif
     pLogEngine log = LogEngine::create (LOG_DEVELOPER, "MainProgram");
+    log->__format (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
+    log->__format (LOG_DEVELOPER, "Creating system data");
+    System::get();
+
     if (tag->getName() == "mainConfig")
     {
-        SystemData::getSystemDataPointer ()->videoRecordTimestep = stoi (tag->getAttribute("videoRecordTimestep"));
+        System::get()->videoRecordTimestep = stoi (tag->getAttribute("videoRecordTimestep"));
         Paths::setCustomDataDir(tag->getAttribute("dataDir"));
     }
     delete tag;
 
     // We declare the 'global' data and engines.
-    log->__format (LOG_ENDUSER, "( 1 ): Loading engines and libraries...");
-    log->__format (LOG_DEVELOPER, "Creating system data");
-    new SystemData ();
     log->__format (LOG_DEVELOPER, "Creating graphics engine");
     GraphicsEngine *graphicsEngine = new GraphicsEngine ();
     log->__format (LOG_DEVELOPER, "Creating gui engine");
@@ -69,7 +70,7 @@ int main (int argc, char **argv)
     InputEngine *inputEngine = new InputEngine ();
 
     log->loadscreen (LOG_DEVELOPER, "Getting system data pointer...");
-    SystemData *systemData = SystemData::getSystemDataPointer ();
+    pSystem system = System::get();
 
     // We load the world data from hdd into memory.
     log->__format (LOG_ENDUSER, "( 2 ): Loading world data...");
@@ -79,56 +80,56 @@ int main (int argc, char **argv)
     // We start the main loop.
     log->__format (LOG_ENDUSER, "( 3 ): Starting simulation...");
     log->loadscreen (LOG_DEVELOPER, "Initializating main loop");
-    systemData->statisticsTime = systemData->simulationTime = SDL_GetTicks() / 1000.0;
+    system->statisticsTime = system->simulationTime = SDL_GetTicks() / 1000.0;
     log->loadscreen (LOG_DEVELOPER, "Enabling main loop");
-    systemData->enableMainLoop ();
+    system->enableMainLoop ();
     log->loadscreen (LOG_ENDUSER, "Hiding load screen");
     guiEngine->hideLoadscreen();
     log->__format (LOG_DEVELOPER, "Starting main loop");
-    while (systemData->isMainLoopEnabled ())
+    while (system->isMainLoopEnabled ())
     {
         // Update current real loop time.
-        systemData->realTime = SDL_GetTicks () / 1000.0;
+        system->realTime = SDL_GetTicks () / 1000.0;
         // Update statistics data every second.
-        if (systemData->simulationTime - systemData->statisticsTime >= 1)
+        if (system->simulationTime - system->statisticsTime >= 1)
         {
-            systemData->graphicsFrequency = systemData->graphicsSteps;
-            systemData->setCurrentPhysicsFrequency (systemData->physicsSteps);
-            systemData->graphicsSteps = systemData->physicsSteps = 0;
-            systemData->statisticsTime += 1;
-            log->__format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", systemData->graphicsFrequency, systemData->getCurrentPhysicsFrequency());
+            system->graphicsFrequency = system->graphicsSteps;
+            system->setCurrentPhysicsFrequency (system->physicsSteps);
+            system->graphicsSteps = system->physicsSteps = 0;
+            system->statisticsTime += 1;
+            log->__format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", system->graphicsFrequency, system->getCurrentPhysicsFrequency());
         }
         inputEngine->computeStep ();
         // Run the gui engine.
         guiEngine->computeStep ();
         // Run the graphics engine.
         graphicsEngine->computeStep ();
-        systemData->graphicsSteps++;
+        system->graphicsSteps++;
         // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
         inputEngine->clearGraphicsEventAxis ();
         // Run the physics engine until the game time is in sync with the real loop time.
-        while (((systemData->realTime - systemData->simulationTime) >= systemData->getDesiredPhysicsTimestep()) && (systemData->isMainLoopEnabled ()))
+        while (((system->realTime - system->simulationTime) >= system->getDesiredPhysicsTimestep()) && (system->isMainLoopEnabled ()))
         {
-            systemData->simulationTime += systemData->getDesiredPhysicsTimestep();
-            static int step = systemData->timeScale;
+            system->simulationTime += system->getDesiredPhysicsTimestep();
+            static int step = system->timeScale;
             step--;
             if (!step)
             {
-                systemData->physicsSteps++;
+                system->physicsSteps++;
                 static int steps = 1;
-                if ((systemData->pauseStep != 0 && steps < systemData->pauseStep) || (systemData->pauseStep == 0))
+                if ((system->pauseStep != 0 && steps < system->pauseStep) || (system->pauseStep == 0))
                 {
                     computeLogic (log);
                     inputEngine->clearLogicEventAxis ();
                     inputEngine->computeStep ();
                     physicsEngine->computeStep ();
                     steps++;
-                    if (SystemData::getSystemDataPointer ()->videoRecordTimestep > 0)
+                    if (System::get()->videoRecordTimestep > 0)
                     {
                         recordVideoFrames ();
                     }
                 }
-                step = systemData->timeScale;
+                step = system->timeScale;
             }
         }
     }
@@ -149,6 +150,8 @@ int main (int argc, char **argv)
     delete inputEngine;
     log->__format (LOG_DEVELOPER, "Deleting gui engine");
     delete guiEngine;
+    system.reset();
+    System::destroy();
 
     stopSdl ();
 
@@ -177,36 +180,36 @@ void stopSdl (void)
 
 void computeLogic (pLogEngine log)
 {
-    SystemData *systemData = SystemData::getSystemDataPointer ();
-    if (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
+    pSystem system = System::get();
+    if (System::get()->axisMap[getIDKeyboardKey (SDLK_ESCAPE)]->getValue () == 1)
     {
         log->__format (LOG_DEVELOPER, "Processing a SDLK_ESCAPE keypress: User wants to exit. Notifying to stop mainLoop...");
-        systemData->disableMainLoop ();
+        system->disableMainLoop ();
     }
-    if (systemData->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
+    if (system->axisMap[getIDKeyboardKey (SDLK_HOME)]->getValue () == 1)
     {
         log->__format (LOG_DEVELOPER, "Processing a SDLK_HOME keypress...");
-        systemData->setDesiredPhysicsFrequency(150.0);
+        system->setDesiredPhysicsFrequency(150.0);
     }
-    if (systemData->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
+    if (system->axisMap[getIDKeyboardKey (SDLK_END)]->getValue () == 1)
     {
         log->__format (LOG_DEVELOPER, "Processing a SDLK_END keypress...");
-        systemData->setDesiredPhysicsFrequency(300.0);
+        system->setDesiredPhysicsFrequency(300.0);
     }
-    if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
+    if (system->axisMap[getIDKeyboardKey (SDLK_KP_MINUS)]->getValue () == 1)
     {
         log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_MINUS keypress...");
-        systemData->decreaseDesiredPhysicsRate();
+        system->decreaseDesiredPhysicsRate();
     }
-    if (systemData->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
+    if (system->axisMap[getIDKeyboardKey (SDLK_KP_PLUS)]->getValue () == 1)
     {
         log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
-        systemData->increaseDesiredPhysicsRate();
+        system->increaseDesiredPhysicsRate();
     }
-    if (systemData->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
+    if (system->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
     {
-        systemData->cameraDirector = !(systemData->cameraDirector);
-        systemData->axisMap[getIDKeyboardKey(SDLK_b)]->setNewRawValue(0);
+        system->cameraDirector = !(system->cameraDirector);
+        system->axisMap[getIDKeyboardKey(SDLK_b)]->setNewRawValue(0);
     }
 }
 
@@ -214,15 +217,15 @@ void recordVideoFrames ()
 {
     static double time = 0;
     int takeShot = 0;
-    if ((int) time >= SystemData::getSystemDataPointer ()->videoRecordTimestep)
+    if ((int) time >= System::get()->videoRecordTimestep)
     {
         takeShot++;
-        time -= SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+        time -= System::get()->getDesiredPhysicsTimestep();
     }
-    if ((takeShot > 0) && (SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->getValue () == 0))
+    if ((takeShot > 0) && (System::get()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->getValue () == 0))
     {
-        SystemData::getSystemDataPointer ()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue (1);
+        System::get()->axisMap[getIDKeyboardKey (SDLK_PRINT)]->setNewRawValue (1);
         takeShot--;
     }
-    time += SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    time += System::get()->getDesiredPhysicsTimestep();
 }

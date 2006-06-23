@@ -102,7 +102,7 @@ void Area::construct (XmlTag * tag)
 #else
                         dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
 #endif
-                        SystemData::getSystemDataPointer()->ogreWindow->update ();
+                        System::get()->ogreWindow->update ();
                     }
                 }
             }
@@ -125,7 +125,7 @@ void Area::construct (XmlTag * tag)
                     tmp->setRotation (rotation);
                     parts[tmp->getName()] = tmp;
                     tmp->stepGraphics();
-                    SystemData::getSystemDataPointer()->ogreWindow->update ();
+                    System::get()->ogreWindow->update ();
                 }
             }
             if (t->getName() == "vehicleLocation")
@@ -150,21 +150,21 @@ void Area::construct (XmlTag * tag)
     Ogre::Plane plane;
     plane.normal = Ogre::Vector3(0,0,1);
     plane.d = -groundHeight;
-    Ogre::SceneManager* pOgreSceneManager = SystemData::getSystemDataPointer()->ogreSceneManager;
+    Ogre::SceneManager* pOgreSceneManager = System::get()->ogreSceneManager;
     Ogre::MeshManager::getSingleton().createPlane("Ground plane", "general", plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
     planeEntity = pOgreSceneManager->createEntity("plane", "Ground plane");
     planeEntity->setMaterialName(groundMaterialName.c_str());
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
     areaBodyID = dBodyCreate (World::get()->ghostWorldID);
-    SystemData::getSystemDataPointer()->ogreWindow->update ();
+    System::get()->ogreWindow->update ();
 
     // FIXME should be part of the world, not the area
     log->loadscreen (LOG_CCREATOR, "Creating the area sky");
     Ogre::Quaternion rotationToZAxis;
     rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
-    SystemData::getSystemDataPointer()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
-    SystemData::getSystemDataPointer()->ogreWindow->update ();
+    System::get()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
+    System::get()->ogreWindow->update ();
     
     // create the checkpoint sphere
     dGeomID checkpointID = dCreateSphere (World::get()->spaceID, checkpointRadius);

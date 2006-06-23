@@ -9,15 +9,32 @@
 
 #include "system.hpp"
 #include "SDL/begin_code.h"
+#include <iostream>
 
-SystemData SystemData::systemDataObject = SystemData();
+pSystem System::system;
 
-SystemData *SystemData::getSystemDataPointer ()
+pSystem System::get()
 {
-    return (&systemDataObject);
+    if (!system)
+    {
+        std::cout << "Auto-creating a default system!" << std::endl;
+        new System();
+    }
+    return (system);
 }
-
-SystemData::SystemData ()
+void System::destroy()
+{
+    if (!system)
+    {
+        std::cout << "WARNING: There's no world to be destroyed!" << std::endl;
+    }
+    else
+    {
+        system.reset();
+    }
+}
+System::System ()
+/*/
   : cfmValue(-1),
     erpValue(-1),
     currentPhysicsFrequency(0),
@@ -30,35 +47,54 @@ SystemData::SystemData ()
     width(1),
     videoRecordTimestep(0),
     cameraDirector(false)
+//*/
 {
-  //empty
+    if (system)
+    {
+        std::cout << "ERROR: Tried to create another system. This shouldn't have happened!" << std::endl;
+    } else {
+        pSystem tmp(this);
+        system = tmp;
+        cfmValue = -1;
+        erpValue = -1;
+        currentPhysicsFrequency = 0;
+        physicsSteps = 0;
+        graphicsSteps = 0;
+        graphicsFrequency = 0;
+        timeScale = 1;
+        pauseStep = 0;
+        height = 1;
+        width = 1;
+        videoRecordTimestep = 0;
+        cameraDirector = false;
+    }
 }
 
-SystemData::~SystemData ()
+System::~System ()
 {
-  //empty
+    //empty
 }
 
-bool SystemData::isMainLoopEnabled (void) { return mainLoopEnabled; }
-void SystemData::enableMainLoop (void)    { mainLoopEnabled = true; }
-void SystemData::disableMainLoop (void)   { mainLoopEnabled = false;}
+bool System::isMainLoopEnabled (void) { return mainLoopEnabled; }
+void System::enableMainLoop (void)    { mainLoopEnabled = true; }
+void System::disableMainLoop (void)   { mainLoopEnabled = false;}
 
-double SystemData::getCfmValue()                   { return cfmValue; }
-double SystemData::getErpValue()                   { return erpValue; }
-void SystemData::setCfmValue(const double & value) { cfmValue = value;}
-void SystemData::setErpValue(const double & value) { erpValue = value;}
+double System::getCfmValue()                   { return cfmValue; }
+double System::getErpValue()                   { return erpValue; }
+void System::setCfmValue(const double & value) { cfmValue = value;}
+void System::setErpValue(const double & value) { erpValue = value;}
 
-double SystemData::getCurrentPhysicsFrequency()               { return currentPhysicsFrequency;        }
-double SystemData::getCurrentPhysicsTimestep()                { return 1.0/currentPhysicsFrequency;    }                            
-void SystemData::setCurrentPhysicsFrequency(double frequency) { currentPhysicsFrequency = frequency;   }
-void SystemData::setCurrentPhysicsTimestep(double timestep)   { currentPhysicsFrequency = 1.0/timestep;}
+double System::getCurrentPhysicsFrequency()               { return currentPhysicsFrequency;        }
+double System::getCurrentPhysicsTimestep()                { return 1.0/currentPhysicsFrequency;    }                            
+void System::setCurrentPhysicsFrequency(double frequency) { currentPhysicsFrequency = frequency;   }
+void System::setCurrentPhysicsTimestep(double timestep)   { currentPhysicsFrequency = 1.0/timestep;}
 
-double SystemData::getDesiredPhysicsFrequency()               { return desiredPhysicsFrequency;        }
-double SystemData::getDesiredPhysicsTimestep()                { return 1.0/desiredPhysicsFrequency;    }
-void SystemData::setDesiredPhysicsFrequency(double frequency) { desiredPhysicsFrequency = frequency;   }
-void SystemData::setDesiredPhysicsTimestep(double timestep)   { desiredPhysicsFrequency = 1.0/timestep;}
+double System::getDesiredPhysicsFrequency()               { return desiredPhysicsFrequency;        }
+double System::getDesiredPhysicsTimestep()                { return 1.0/desiredPhysicsFrequency;    }
+void System::setDesiredPhysicsFrequency(double frequency) { desiredPhysicsFrequency = frequency;   }
+void System::setDesiredPhysicsTimestep(double timestep)   { desiredPhysicsFrequency = 1.0/timestep;}
 
-void SystemData::increaseDesiredPhysicsRate()
+void System::increaseDesiredPhysicsRate()
 {
     if      (desiredPhysicsFrequency < 1)   setDesiredPhysicsFrequency (1);
     else if (desiredPhysicsFrequency < 10)  setDesiredPhysicsFrequency (desiredPhysicsFrequency + 1);
@@ -70,7 +106,7 @@ void SystemData::increaseDesiredPhysicsRate()
     else                                    setDesiredPhysicsFrequency (desiredPhysicsFrequency + 100);
     
 }
-void SystemData::decreaseDesiredPhysicsRate()
+void System::decreaseDesiredPhysicsRate()
 {
     if      (desiredPhysicsFrequency <= 1)   setDesiredPhysicsFrequency (1);
     else if (desiredPhysicsFrequency <= 10)  setDesiredPhysicsFrequency (desiredPhysicsFrequency - 1);

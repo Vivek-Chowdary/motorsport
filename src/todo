@@ -12,6 +12,4 @@ refactorize the physics code
 refactorize the input code
 refactorize user driver agent or whatever
 refactorize the system.hpp data into other classes.
-make sure data is deleted correctly when deleting objects
-recode singletons
 check what headers are really necessary, which can be replaced with forward declarations, ...

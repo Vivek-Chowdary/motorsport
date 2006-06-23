@@ -61,7 +61,7 @@ void Engine::stepPhysics ()
     double dt;
     double torqueSum;
     
-    dt = SystemData::getSystemDataPointer()->getDesiredPhysicsTimestep();
+    dt = System::get()->getDesiredPhysicsTimestep();
     prevAngularVel = inputAngularVel;
 //    inputTorqueTransfer = inputJoint->getOutputTorque();
 //    outputTorqueTransfer += outputJoint->getInputTorque();

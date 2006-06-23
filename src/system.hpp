@@ -10,23 +10,24 @@
 #ifndef SYSTEM_HPP
 #   define SYSTEM_HPP
 #   include "SDL/SDL_types.h"
-#   include <map>
 #   include "axis.hpp"
+#include <common/shared.hpp>
 
 namespace Ogre {
 class RenderWindow;
 class SceneManager;
 }
-class SystemData;
+
+SHARED_PTR(System,pSystem);
 /** 
  * @brief Contains a lot of data, generally needed in many places. It's a singleton.
  */
-class SystemData
+class System
 {
     /** 
      * @brief The only SystemData object instance (singleton).
      */
-    static SystemData systemDataObject;
+    static pSystem system;
     /** 
      * @brief The main loop will keep running while this is set to true.
      */
@@ -48,21 +49,25 @@ class SystemData
      * @brief The actual number of times per second the physics engine is running.
      */
     double currentPhysicsFrequency;
+    /** 
+     * @brief Initializes the instance some default hardcoded values.
+     */
+    System();
   public:
     /** 
      * @brief Returns the SystemData singleton instance.
      * 
      * @return A SystemData object instance.
      */
-    static SystemData *getSystemDataPointer ();
+    static pSystem get();
     /** 
-     * @brief Initializes the instance some default hardcoded values.
+     * @brief Removes the singleton reference to System.
      */
-    SystemData ();
+    static void destroy();
     /** 
      * @brief Destroys the current SystemData instance.
      */
-    ~SystemData ();
+    ~System();
 
     /** 
      * @brief Returns the ODE CFM value.

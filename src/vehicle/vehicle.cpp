@@ -103,25 +103,25 @@ void Vehicle::construct (XmlTag * tag)
             {
                 Wheel * tmp = new Wheel (this, t);
                 components[tmp->getName()] = tmp;
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.unidimensional")
             {
                 Unidimensional * tmp = new Unidimensional (this, t);
                 components[tmp->getName()] = tmp;
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.fixed")
             {
                 Fixed * tmp = new Fixed (this, t);
                 components[tmp->getName()] = tmp;
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.doublewishbone")
             {
                 DoubleWishbone * tmp = new DoubleWishbone (this, t);
                 components[tmp->getName()] = tmp;
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
             if (t->getName() == "camera")
             {
@@ -266,11 +266,11 @@ void Vehicle::stepPhysics ()
     if ( userDriver )
     {
         // check the gearshift levers
-        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue() == 1)
+        if(System::get()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue() == 1)
         {
             getGearbox("gearbox")->gearUp();
         }
-        if(SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_z)]->getValue() == 1)
+        if(System::get()->axisMap[getIDKeyboardKey(SDLK_z)]->getValue() == 1)
         {
             getGearbox("gearbox")->gearDown();
         }

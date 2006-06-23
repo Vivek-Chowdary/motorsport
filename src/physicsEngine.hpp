@@ -7,7 +7,7 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include <shared.hpp>
+#include <common/shared.hpp>
 #include "ode/objects.h"
 
 /// Manages everything related to the simulated world data.
@@ -15,7 +15,7 @@
 */
 
 
-class SystemData;
+SHARED_PTR(System,pSystem);
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 
 class PhysicsEngine
@@ -26,7 +26,7 @@ class PhysicsEngine
     */
     pLogEngine log;
     // / Pointer to the system data, used by different engines in order to store common data.
-    SystemData *systemData;
+    pSystem system;
     // / Callback function for collisions detection.
     /** Callback function used with ODE. It processes the physic entities in the simulated world, generating the necessary forces according to the detected collisions.
     */

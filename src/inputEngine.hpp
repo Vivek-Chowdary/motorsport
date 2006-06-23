@@ -7,10 +7,11 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include <shared.hpp>
+#include <common/shared.hpp>
+
 //forward declatation
-class SystemData;
 SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR(System,pSystem);
 
 /// Manages everything related to user input.
 /** Manages everything related to user input, such as keyboard keypresses, mouse movement, steering wheel movement, joystick, etc... Essentially, it's the interface between the end-user and the simulated world, allowing the user to transparently make changes in this simulated world. Input devices calibration issues and many other things are handled by this engine.
@@ -23,7 +24,7 @@ class InputEngine
     */
     pLogEngine log;
     // / Pointer to the system data, used by different engines in order to store common data.
-    SystemData *systemData;
+    pSystem system;
   public:
     // / Creates a new input engine.
     /** Creates a new input engine, with its associated own log engine. It initializes all necessary related data.

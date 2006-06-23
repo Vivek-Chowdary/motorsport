@@ -133,15 +133,15 @@ void World::processXmlRootNode (XmlTag * tag)
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);
     
-    if (SystemData::getSystemDataPointer()->getCfmValue() != -1)
+    if (System::get()->getCfmValue() != -1)
     {
-        log->__format (LOG_DEVELOPER, "Setting ODE cfm value to %f", SystemData::getSystemDataPointer()->getCfmValue());
-        dWorldSetCFM (worldID, SystemData::getSystemDataPointer()->getCfmValue());
+        log->__format (LOG_DEVELOPER, "Setting ODE cfm value to %f", System::get()->getCfmValue());
+        dWorldSetCFM (worldID, System::get()->getCfmValue());
     }
-    if (SystemData::getSystemDataPointer()->getErpValue() != -1)
+    if (System::get()->getErpValue() != -1)
     {
-        log->__format (LOG_DEVELOPER, "Setting ODE erp value to %f", SystemData::getSystemDataPointer()->getErpValue());
-        dWorldSetERP (worldID, SystemData::getSystemDataPointer()->getErpValue());
+        log->__format (LOG_DEVELOPER, "Setting ODE erp value to %f", System::get()->getErpValue());
+        dWorldSetERP (worldID, System::get()->getErpValue());
     }
 
     log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
@@ -189,8 +189,8 @@ void World::processXmlRootNode (XmlTag * tag)
 void World::setActiveCamera (pCamera camera)
 {
     activeCamera = camera;
-    SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
-    SystemData::getSystemDataPointer()->ogreWindow->addViewport (activeCamera->ogreCamera);
+    System::get()->ogreWindow->removeAllViewports ();
+    System::get()->ogreWindow->addViewport (activeCamera->ogreCamera);
     log->__format (LOG_ENDUSER, "Changed camera...");
 }
 

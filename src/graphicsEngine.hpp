@@ -7,16 +7,16 @@
 |*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
 \*****************************************************************************/
 
-#include <string>
-#include <boost/shared_ptr.hpp>
+#include <common/shared.hpp>
 
 //forward declarations
-class SystemData;
 class LogEngine;
-typedef boost::shared_ptr<LogEngine> pLogEngine;
 namespace Ogre {
   class Root;
 }
+
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR(System,pSystem);
 
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, area, etc...).
  * @brief Manages everything related to the rendering process.
@@ -31,7 +31,7 @@ class GraphicsEngine
     /** 
      * @brief Pointer to the system data, used by different engines in order to store common data.
      */
-    SystemData *systemData;
+    pSystem system;
 
     /** 
      * @brief Name of the file were screenshots will be saved.

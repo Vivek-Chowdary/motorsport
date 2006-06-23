@@ -16,7 +16,6 @@
 #include <string>
 #include <sstream>
 #include <xmlTag.hpp>
-#include "system.hpp"
 
 //TODO use iostreams for file management/writing
 
@@ -107,7 +106,7 @@ LogEngine::~LogEngine ()
         format (LOG_ENDUSER, "Closing logFile");
         logFile.close ();
     }
-    //format (LOG_ENDUSER, "--------------------------LogFile size: %i", logEngines.size());
+    format (LOG_ENDUSER, "--------------------------LogFile size: %i", logEngines.size());
 }
 
 void LogEngine::logAll()

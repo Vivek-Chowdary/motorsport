@@ -38,7 +38,6 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 
     //FIXME what to use, id# or name?
     log = LogEngine::create (LOG_DEVELOPER, this->getFullName());
-    //log = new LogEngine (LOG_DEVELOPER, this->id);
     log->__format(LOG_CCREATOR, "Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
     worldObjects[this->id] = this;
 }

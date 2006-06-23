@@ -82,7 +82,7 @@ Part::Part (WorldObject * container, const std::string & name)
                 pOgreObject ogreChild (new OgreObject(this, childData, getId()));
                 ogreObjects[ogreChild->getId()] = ogreChild;
                 ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
         }
     }
@@ -103,17 +103,17 @@ void Part::stepPhysics ()
     // applying user input [forces]
     if (this == World::get()->areas.begin()->second->parts.begin()->second.get())
     {
-        float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
-        float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
+        float moveX = System::get()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
+        float moveY = System::get()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
         moveX *= 100;
         moveY *= 100;
         dBodyAddForce (partID, moveX, moveY, 0.0f);
-        moveX = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_j)]->getValue();
-        moveY = -SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_k)]->getValue();
+        moveX = -System::get()->axisMap[getIDKeyboardKey(SDLK_j)]->getValue();
+        moveY = -System::get()->axisMap[getIDKeyboardKey(SDLK_k)]->getValue();
         moveX *= 100;
         moveY *= 100;
         dBodyAddForce (partID, moveX, moveY, 0.0f);
-        float moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() * 500;
+        float moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() * 500;
         dBodyAddForce (partID, 0, 0, moveZ);
     }
     const dReal * pos;

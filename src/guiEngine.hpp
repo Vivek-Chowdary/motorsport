@@ -8,14 +8,15 @@
 \*****************************************************************************/
 
 #include "SDL/SDL.h"
-#include <shared.hpp>
+#include <common/shared.hpp>
 
 //forward declaration
-class SystemData;
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
 namespace Ogre {
     class Camera;
 };
+
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR(System,pSystem);
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)
@@ -29,7 +30,7 @@ class GuiEngine
     */
     pLogEngine log;
     // / Pointer to the system data, used by different engines in order to store common data.
-    SystemData *systemData;
+    pSystem system;
     // / Allows or disallows to show statistics on screen
     bool showStatistics;
     std::string telemetryText;

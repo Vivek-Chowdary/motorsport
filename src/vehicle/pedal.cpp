@@ -44,37 +44,37 @@ void Pedal::stepPhysics ()
     {
         if (getName() == "gasPedal")
         {
-            currentAngle = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,2)]->getValue();
+            currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,2)]->getValue();
             if (currentAngle == 0) {
-                currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue() * 3 / 3;
+                currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP9)]->getValue() * 3 / 3;
                 if (currentAngle == 0) {
-                    currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP6)]->getValue() * 2 / 3;
+                    currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP6)]->getValue() * 2 / 3;
                     if (currentAngle == 0) {
-                        currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP3)]->getValue() * 1 / 3;
+                        currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP3)]->getValue() * 1 / 3;
                         if (currentAngle == 0) {
-                            currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
+                            currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
             }   }   }   }
         } else if (getName() == "brakePedal")
         {
-            currentAngle = 1 - SystemData::getSystemDataPointer()->axisMap[getIDJoyAxis(0,1)]->getValue();
+            currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,1)]->getValue();
             if (currentAngle == 0) {
-                currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP8)]->getValue() * 3 / 3;
+                currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP8)]->getValue() * 3 / 3;
                 if (currentAngle == 0) {
-                    currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP5)]->getValue() * 2 / 3;
+                    currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP5)]->getValue() * 2 / 3;
                     if (currentAngle == 0) {
-                        currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP2)]->getValue() * 1 / 3;
+                        currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP2)]->getValue() * 1 / 3;
                         if (currentAngle == 0) {
-                            currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
+                            currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
             }   }   }   }
         } else if (getName() == "clutchPedal")
         {
-            currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
+            currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
             if (currentAngle == 0) {
-                currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP4)]->getValue() * 2 / 3;
+                currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP4)]->getValue() * 2 / 3;
                 if (currentAngle == 0) {
-                    currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_KP1)]->getValue() * 1 / 3;
+                    currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP1)]->getValue() * 1 / 3;
                     if (currentAngle == 0) {
-                        currentAngle = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_q)]->getValue() * 3 / 3;
+                        currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_q)]->getValue() * 3 / 3;
             }   }   }
         }
     }

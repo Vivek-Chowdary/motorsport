@@ -55,7 +55,7 @@ Body::Body (WorldObject * container, XmlTag * tag)
                 pOgreObject ogreChild (new OgreObject(this, childData, getId()));
                 ogreObjects[ogreChild->getId()] = ogreChild;
                 ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
-                SystemData::getSystemDataPointer()->ogreWindow->update ();
+                System::get()->ogreWindow->update ();
             }
         }
     }
@@ -76,9 +76,9 @@ void Body::stepPhysics ()
     dBodyID bodyID = getMainOdeObject()->getBodyID();
     if (this == World::get()->vehicles.begin()->second->getObject("body"))
     {
-        double moveZ = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
-        moveZ += SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
-        moveZ -= SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
+        double moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
+        moveZ += System::get()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
+        moveZ -= System::get()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
         dBodyAddForce (bodyID, 0, 0, moveZ);
     }
     

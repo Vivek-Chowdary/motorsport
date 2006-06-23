@@ -46,7 +46,7 @@ GuiEngine::GuiEngine ()
 
         // get the direction of the graphics data
         log->__format (LOG_DEVELOPER, "Setting up data pointers...");
-        systemData = SystemData::getSystemDataPointer ();
+        system = System::get();
 
         // updating singleton pointer
         guiEnginePointer = this;
@@ -83,11 +83,11 @@ int GuiEngine::computeStep (void)
         OGRE_EXCEPT (Exception::ERR_ITEM_NOT_FOUND, "Could not find telemetry overlay", "statusPanel");
     }
 
-    if (systemData->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
+    if (system->axisMap[getIDKeyboardKey(SDLK_g)]->getValue() == 1)
     {
         log->__format (LOG_ENDUSER, "Showing/hiding statistics on screen.");
         showStatistics = !showStatistics;
-        systemData->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
+        system->axisMap[getIDKeyboardKey(SDLK_g)]->setNewRawValue(0); //no setRawValues should be out of the input engine; this must be done via filters that convert axis variations into 'events' FIXME
     }
     if (showStatistics)
     {
@@ -108,13 +108,13 @@ void GuiEngine::showLoadscreen ()
     OverlayElement *loadscreenHeader = OverlayManager::getSingleton ().getOverlayElement ("loadscreen/header");
     loadscreenHeader->setCaption ("Loading contents and engines. Please wait...");
         
-    tmpOgreCamera = SystemData::getSystemDataPointer ()->ogreSceneManager->createCamera ("Loadscreen camera");
+    tmpOgreCamera = System::get()->ogreSceneManager->createCamera ("Loadscreen camera");
     tmpOgreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     tmpOgreCamera->setPosition (Ogre::Vector3 (-3, 3, 1));
     tmpOgreCamera->lookAt (Ogre::Vector3 (0, 0, 0));
     tmpOgreCamera->setNearClipDistance (0.100);
-    SystemData::getSystemDataPointer()->ogreWindow->removeAllViewports ();
-    SystemData::getSystemDataPointer()->ogreWindow->addViewport (tmpOgreCamera, -1);
+    System::get()->ogreWindow->removeAllViewports ();
+    System::get()->ogreWindow->addViewport (tmpOgreCamera, -1);
 
     Overlay *loadscreenOverlay = (Overlay *) OverlayManager::getSingleton ().getByName ("loadscreen");
     if (!loadscreenOverlay)
@@ -133,7 +133,7 @@ void GuiEngine::hideLoadscreen ()
     loadscreenOverlay->hide();
     delete tmpOgreCamera;
     tmpOgreCamera = NULL;
-    SystemData::getSystemDataPointer()->ogreWindow->removeViewport (-1);
+    System::get()->ogreWindow->removeViewport (-1);
 }
 
 void GuiEngine::updateStatistics (void)
@@ -142,11 +142,11 @@ void GuiEngine::updateStatistics (void)
     OverlayElement *guiCurr = OverlayManager::getSingleton ().getOverlayElement ("gui/CurrFps");
     OverlayElement *guiScaledPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/ScaledPhysicsRate");
     OverlayElement *guiPhysics = OverlayManager::getSingleton ().getOverlayElement ("gui/PhysicsRate");
-    const RenderTarget::FrameStats & stats = systemData->ogreWindow->getStatistics ();
+    const RenderTarget::FrameStats & stats = system->ogreWindow->getStatistics ();
     guiAvg->setCaption ("Average Graphics Rate: " + StringConverter::toString (stats.avgFPS) + " fps");
-    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)systemData->graphicsFrequency) + " fps");
-    guiScaledPhysics->setCaption ("Current Physics Rate: " + StringConverter::toString (float(systemData->getCurrentPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(systemData->getCurrentPhysicsTimestep() * 1000.0)) + " ms)");
-    guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(systemData->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(systemData->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
+    guiCurr->setCaption ("Current Graphics Rate: " + StringConverter::toString ((float)system->graphicsFrequency) + " fps");
+    guiScaledPhysics->setCaption ("Current Physics Rate: " + StringConverter::toString (float(system->getCurrentPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(system->getCurrentPhysicsTimestep() * 1000.0)) + " ms)");
+    guiPhysics->setCaption ("Desired Physics Rate: "       + StringConverter::toString (float(system->getDesiredPhysicsFrequency())) + " Hz (" + StringConverter::toString (float(system->getDesiredPhysicsTimestep() * 1000.0)) + " ms)" );
     OverlayElement *guiTris = OverlayManager::getSingleton ().getOverlayElement ("gui/NumTris");
     guiTris->setCaption ("Triangle Count: " + StringConverter::toString (stats.triangleCount));
     if (telemetryLines > 0)
@@ -225,7 +225,7 @@ void GuiEngine::addLoadscreenLine (const std::string & line)
         loadscreenText = loadscreenText.substr(0, lastline);
         lines--;
     }
-    SystemData::getSystemDataPointer()->ogreWindow->update ();
+    System::get()->ogreWindow->update ();
 }
 void GuiEngine::updateLapTime (double time)
 {
