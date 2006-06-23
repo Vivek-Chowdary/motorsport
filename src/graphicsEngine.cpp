@@ -211,7 +211,7 @@ int GraphicsEngine::computeStep (void)
         World::getWorldPointer()->setActiveCamera(closestCam);
         World::getWorldPointer()->activeAreaCamera = closestCam;
     }
-    // Update Ogre's bodies positions with Ode's positions.
+    // Update Ogre's vehicles positions with Ode's positions.
     VehiclesIt j = World::getWorldPointer()->vehicles.begin();
     for (; j != World::getWorldPointer()->vehicles.end(); j++)
     {
@@ -219,10 +219,10 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update Ogre's parts positions with Ode's positions.
-    int numberOfCubes = World::getWorldPointer ()->areas.begin()->second->partList.size ();
-    for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
+    PartsIt k = World::getWorldPointer()->areas.begin()->second->parts.begin();
+    for (; k != World::getWorldPointer()->areas.begin()->second->parts.end(); k++)
     {
-        World::getWorldPointer ()->areas.begin()->second->partList[currentCube]->stepGraphics ();
+        k->second->stepGraphics();
     }
 
     // Update cameras positions (should be done in the fsx engine FIXME

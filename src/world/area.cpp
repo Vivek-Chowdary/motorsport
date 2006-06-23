@@ -41,14 +41,6 @@ Area::Area (WorldObject * container, std::string areaName)
 
 Area::~Area ()
 {
-    // unload the parts from memory
-    log->__format (LOG_DEVELOPER, "Unloading parts from memory...");
-    int size = partList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        delete partList[i];
-    }
-    partList.clear ();
 }
 
 void Area::construct (XmlTag * tag)
@@ -128,10 +120,10 @@ void Area::construct (XmlTag * tag)
                 {
                     position = Vector3d (u->getAttribute("position"));
                     rotation = Quaternion (u->getAttribute("rotation"));
-                    Part * tmp = new Part (this, u->getName());
+                    pPart tmp = Part::create (this, u->getName());
                     tmp->setPosition (position);
                     tmp->setRotation (rotation);
-                    partList.push_back (tmp);
+                    parts[tmp->getName()] = tmp;
                     tmp->stepGraphics();
                     SystemData::getSystemDataPointer()->ogreWindow->update ();
                 }

@@ -22,14 +22,17 @@ namespace Ogre {
   class SceneNode;
 }
 
+SHARED_PTR_MAP(Part, pPart, Parts, PartsIt);
+
 class Part : public WorldObject
 {
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
     void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
-  public:
     Part (WorldObject * container, const std::string & name);
+  public:
+    static pPart create (WorldObject * container, const std::string & name);
     ~Part ();
     void stepPhysics ();
 };

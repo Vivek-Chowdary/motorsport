@@ -131,10 +131,10 @@ int PhysicsEngine::computeStep (void)
     // mega-verbosity
     log->__format (LOG_DEVELOPER, "Doing an step: calculating a physics step");
 
-    int size = World::getWorldPointer ()->areas.begin()->second->partList.size ();
-    for (int i = 0; i < size; i++)
+    PartsIt k = World::getWorldPointer()->areas.begin()->second->parts.begin();
+    for (; k != World::getWorldPointer()->areas.begin()->second->parts.end(); k++)
     {
-        World::getWorldPointer()->areas.begin()->second->partList[i]->stepPhysics ();
+        k->second->stepPhysics();
     }
 
     CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();

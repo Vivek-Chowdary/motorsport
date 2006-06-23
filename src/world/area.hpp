@@ -11,7 +11,6 @@
 #define AREA_HPP
 #include "ode/objects.h"
 #include "worldObject.hpp"
-#include <vector>
 #include "paths.hpp"
 
 //forward declatation
@@ -19,10 +18,10 @@ namespace Ogre {
     class Entity;
     class SceneNode;
 };
-class Part;
 class Location;
 
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
+SHARED_PTR_MAP(Part, pPart, Parts, PartsIt);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
 
 class Area : public WorldObject
@@ -38,7 +37,7 @@ class Area : public WorldObject
         static pArea create(WorldObject * container, std::string areaName);
         ~Area ();
         std::map <std::string, Location * > vehiclePositionMap;
-        std::vector < Part * > partList;
+        Parts parts;
         Cameras cameras;
 
         dBodyID areaBodyID;
