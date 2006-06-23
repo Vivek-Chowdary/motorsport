@@ -150,10 +150,10 @@ int GraphicsEngine::computeStep (void)
     // change camera if needed
     if (systemData->axisMap[getIDKeyboardKey(SDLK_c)]->getValue() == 1)
     {
-        CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
+        CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();
         pCamera nextCam = i->second;
         bool found = false;
-        for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
+        for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
         {
             if (found == true)
             {
@@ -193,9 +193,9 @@ int GraphicsEngine::computeStep (void)
         log->__format(LOG_DEVELOPER, "Finding closest camera");
         Vector3d vPos = World::getWorldPointer()->vehicles.begin()->second->getPosition();
         double closestDistance = 99999999999.0;
-        CamerasIt i = World::getWorldPointer()->areaList[0]->cameras.begin();
+        CamerasIt i = World::getWorldPointer()->areas.begin()->second->cameras.begin();
         pCamera closestCam = i->second;
-        for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
+        for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
         {
             log->__format(LOG_DEVELOPER, "Checking cam id: %s", i->second->getName().c_str());
             Ogre::Vector3 p = i->second->ogreCamera->getPosition();
@@ -219,15 +219,15 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update Ogre's parts positions with Ode's positions.
-    int numberOfCubes = World::getWorldPointer ()->areaList[0]->partList.size ();
+    int numberOfCubes = World::getWorldPointer ()->areas.begin()->second->partList.size ();
     for (int currentCube = 0; currentCube < numberOfCubes; currentCube++)
     {
-        World::getWorldPointer ()->areaList[0]->partList[currentCube]->stepGraphics ();
+        World::getWorldPointer ()->areas.begin()->second->partList[currentCube]->stepGraphics ();
     }
 
     // Update cameras positions (should be done in the fsx engine FIXME
-    CamerasIt i = World::getWorldPointer ()->areaList[0]->cameras.begin();
-    for (;i != World::getWorldPointer()->areaList[0]->cameras.end(); i++)
+    CamerasIt i = World::getWorldPointer ()->areas.begin()->second->cameras.begin();
+    for (;i != World::getWorldPointer()->areas.begin()->second->cameras.end(); i++)
     {
         i->second->stepGraphics();
     }
@@ -238,19 +238,19 @@ int GraphicsEngine::computeStep (void)
     }
 
     // Update infinite plane position according to vehicle position
-    Ogre::Vector3 areaPos (World::getWorldPointer()->areaList[0]->planeNode->getPosition());
+    Ogre::Vector3 areaPos (World::getWorldPointer()->areas.begin()->second->planeNode->getPosition());
     Vector3d vehiclePos (World::getWorldPointer()->vehicles.begin()->second->getPosition());
     Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
     const double tile = 1000.0 / 20.0;
     if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);
     if (diff.y > tile || diff.y < -tile) areaPos.y -= int ((diff.y) / (tile)) * (tile);
-    World::getWorldPointer()->areaList[0]->planeNode->setPosition(areaPos);
+    World::getWorldPointer()->areas.begin()->second->planeNode->setPosition(areaPos);
     
     // Update area shadows state
-    World::getWorldPointer()->areaList[0]->setCastShadows(castAreaShadows);
+    World::getWorldPointer()->areas.begin()->second->setCastShadows(castAreaShadows);
     
     // Update area render mode
-    World::getWorldPointer ()->areaList[0]->setRenderDetail(areaRenderMode);
+    World::getWorldPointer ()->areas.begin()->second->setRenderDetail(areaRenderMode);
     
     // Let the listener frames be started and ended: they are needed for particle systems.
     ogreRoot->_fireFrameStarted ();

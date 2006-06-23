@@ -11,16 +11,12 @@
 #define WORLD_HPP
 #include "SDL/SDL_types.h"
 #include "ode/objects.h"
-#include <vector>
-#include <string>
 #include "worldObject.hpp"
 
 //forward declaration
-class Area;
-class Vehicle;
-
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
 SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
+SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
 
 class World : public WorldObject
 {
@@ -40,7 +36,7 @@ class World : public WorldObject
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 
-    std::vector < Area * > areaList;
+    Areas areas;
     Vehicles vehicles;
 
     void setActiveCamera (pCamera camera);

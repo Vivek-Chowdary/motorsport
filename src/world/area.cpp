@@ -21,6 +21,11 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
+pArea Area::create (WorldObject * container, std::string areaName)
+{
+    pArea area(new Area(container, areaName));
+    return area;
+}
 Area::Area (WorldObject * container, std::string areaName)
     :WorldObject(container, areaName)
 {

@@ -23,6 +23,7 @@ class Part;
 class Location;
 
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
+SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
 
 class Area : public WorldObject
 {
@@ -32,8 +33,9 @@ class Area : public WorldObject
         std::string contact;
         std::string license;
         void construct (XmlTag * tag);
-    public:
         Area (WorldObject * container, std::string areaName);
+    public:
+        static pArea create(WorldObject * container, std::string areaName);
         ~Area ();
         std::map <std::string, Location * > vehiclePositionMap;
         std::vector < Part * > partList;

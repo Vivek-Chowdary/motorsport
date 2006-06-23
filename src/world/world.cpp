@@ -56,17 +56,9 @@ World::~World ()
     activeAreaCamera.reset();
     activeVehicleCamera.reset();
 
-    //shouldn't be necessary, but vehicle geoms can't be deleted after ode world so we must make sure!
+    //shouldn't be necessary, but vehicle and area geoms can't be deleted after ode world so we must make sure!
     vehicles.clear();
-    
-    log->__format (LOG_DEVELOPER, "Unloading areas from memory...");
-    int size = areaList.size ();
-    for (int i = 0; i < size; i++)
-    {
-        delete areaList[i];
-        areaList[i] = 0;
-    }
-    areaList.clear ();
+    areas.clear();
     
     log->__format (LOG_DEVELOPER, "Destroying ODE world");
     dSpaceDestroy (spaceID);
@@ -136,19 +128,19 @@ void World::processXmlRootNode (XmlTag * tag)
 
     // load area (and its cameras)
     log->loadscreen (LOG_CCREATOR, "Creating a area");
-    Area * area = new Area (this, areaDirectory);
+    pArea area = Area::create (this, areaDirectory);
     //area->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
-    areaList.push_back (area);
+    areas[area->getName()] = area;
 
     // load all vehicles
     log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
     processXmlVehicleListNode (vehiclesTag);
 
     // initialize cameras (pointing to car 0 by default)
-    CamerasIt i = areaList[0]->cameras.begin();
-    for(;i != areaList[0]->cameras.end(); i++)
+    CamerasIt i = areas.begin()->second->cameras.begin();
+    for(;i != areas.begin()->second->cameras.end(); i++)
     {
-        i->second->setPositionID( areaList[0]->areaBodyID );
+        i->second->setPositionID( areas.begin()->second->areaBodyID );
         i->second->setTarget( vehicles.begin()->second->getMainOdeObject());
     }
     i = vehicles.begin()->second->cameras.begin();
@@ -163,12 +155,12 @@ void World::processXmlRootNode (XmlTag * tag)
     if (useAreaCamera)
     {
         //err... use... area camera, i guess.
-        setActiveCamera (areaList[0]->cameras.begin()->second);
+        setActiveCamera (areas.begin()->second->cameras.begin()->second);
     } else {
         //don't use area camera: use vehicle camera
         setActiveCamera (vehicles.begin()->second->cameras.begin()->second);
     }
-    activeAreaCamera = areaList[0]->cameras.begin()->second;
+    activeAreaCamera = areas.begin()->second->cameras.begin()->second;
     activeVehicleCamera = vehicles.begin()->second->cameras.begin()->second;
 }
 
@@ -187,7 +179,7 @@ pCamera World::getActiveCamera (void)
 
 pCamera World::getActiveAreaCamera()
 {
-    return areaList[0]->cameras[activeAreaCamera->getName()];
+    return areas.begin()->second->cameras[activeAreaCamera->getName()];
 }
 
 pCamera World::getActiveVehicleCamera()
@@ -219,15 +211,15 @@ void World::processXmlVehicleListNode (XmlTag * tag)
                 vehicles[tmpVehicle->getName()] = tmpVehicle;
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
-                if (areaList[0]->vehiclePositionMap.count(vehicleStartPosition) == 0)
+                if (areas.begin()->second->vehiclePositionMap.count(vehicleStartPosition) == 0)
                 {
                     log->__format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the area!", vehicleStartPosition.c_str());
                 }
                 tmpVehicle->setPosition (Vector3d(0, 0, 0));
-                tmpVehicle->applyRotation ( areaList[0]->vehiclePositionMap[vehicleStartPosition]->getRotation() );
+                tmpVehicle->applyRotation ( areas.begin()->second->vehiclePositionMap[vehicleStartPosition]->getRotation() );
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting position");
-                tmpVehicle->setPosition (areaList[0]->vehiclePositionMap[vehicleStartPosition]->getPosition());
+                tmpVehicle->setPosition (areas.begin()->second->vehiclePositionMap[vehicleStartPosition]->getPosition());
             }
         }
     }

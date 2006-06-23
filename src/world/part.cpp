@@ -94,7 +94,7 @@ void Part::stepPhysics ()
     dBodySetAngularVel (partID, (*(dReal *) (dBodyGetAngularVel (partID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 2)) * (dReal) (0.999));
     // ////////////////////////////////////simplified air friction
     // applying user input [forces]
-    if (this == World::getWorldPointer ()->areaList[0]->partList[0])
+    if (this == World::getWorldPointer ()->areas.begin()->second->partList[0])
     {
         float moveX = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
         float moveY = SystemData::getSystemDataPointer()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
