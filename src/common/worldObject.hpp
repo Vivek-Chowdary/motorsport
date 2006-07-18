@@ -9,6 +9,7 @@
 
 #ifndef WORLDOBJECT_HPP
 #define WORLDOBJECT_HPP
+#include "system.hpp"
 #include "logEngine.hpp"
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
@@ -18,13 +19,13 @@
 //forward declatations
 class Quaternion;
 class Vector3d;
-SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt);
-SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
-SHARED_PTR_MAP(WorldObject, pWorldObject, WorldObjects, WorldObjectsIt);
+SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt, wOgreObject);
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt, wOdeObject);
+SHARED_PTR_MAP(WorldObject, pWorldObject, WorldObjects, WorldObjectsIt, wWorldObject);
 typedef std::map <std::string, WorldObject *> WorldObjectsC;
 typedef std::map <std::string, WorldObject *>::iterator WorldObjectsCIt;
 
-class WorldObject
+class WorldObject: public boost::enable_shared_from_this <WorldObject>
 {
     private:
         virtual void hack(){};
@@ -37,13 +38,14 @@ class WorldObject
     protected:
         pLogEngine log;
         WorldObject * base;
-        WorldObject * container;
+        wWorldObject container;
         OgreObjects ogreObjects;
         OdeObjects odeObjects;
-        WorldObject (WorldObject * container, const std::string & name);
+        WorldObject (const std::string & name);
     public:
         virtual ~WorldObject ();
-        WorldObject * getContainer();
+        void setContainer(pWorldObject container);
+        pWorldObject getContainer();
         std::string getId();
         std::string getName();
         std::string getFullName();

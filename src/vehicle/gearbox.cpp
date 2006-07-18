@@ -12,14 +12,14 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-pGearbox Gearbox::create(WorldObject * container, XmlTag * tag)
+pGearbox Gearbox::create(XmlTag * tag)
 {
-    pGearbox tmp(new Gearbox(container, tag));
+    pGearbox tmp(new Gearbox(tag));
     return tmp;
 }
 
-Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
-    :DriveMass(container, "gearbox")
+Gearbox::Gearbox (XmlTag * tag)
+    :DriveMass("gearbox")
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
     outputTorqueTransfer = 0.0;
@@ -42,7 +42,7 @@ Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
         {
             if (t->getName() == "gear")
             {
-                GearboxGear * tmp = new GearboxGear (this, t);
+                pGearboxGear tmp = GearboxGear::create(t);
                 gearMap[tmp->getNumber()] = tmp;
             }
         }
@@ -51,16 +51,25 @@ Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
 
 Gearbox::~Gearbox ()
 {
-    for(std::map<int,GearboxGear*>::iterator i = gearMap.begin(); i != gearMap.end(); i++)
+}
+
+void Gearbox::setContainer(pWorldObject container)
+{
+    DriveMass::setContainer(container);
+    for(std::map<int,pGearboxGear>::iterator i = gearMap.begin(); i != gearMap.end(); i++)
     {
-        delete (i->second);
+        i->second->setContainer(shared_from_this());
     }
-    gearMap.clear();
 }
 
 
-GearboxGear::GearboxGear (WorldObject * container, XmlTag * tag)
-    :WorldObject(container, "gearboxGear")
+pGearboxGear GearboxGear::create(XmlTag * tag)
+{
+    pGearboxGear tmp(new GearboxGear(tag));
+    return tmp;
+}
+GearboxGear::GearboxGear (XmlTag * tag)
+    :WorldObject("gearboxGear")
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
     ratio = 1.0;

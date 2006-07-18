@@ -10,9 +10,9 @@
 #include <common/shared.hpp>
 
 // Forward declatation
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
-SHARED_PTR(System,pSystem);
-SHARED_PTR(Input,pInput);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
+SHARED_PTR(System,pSystem, wSystem);
+SHARED_PTR(Input,pInput, wInput);
 
 /// Manages everything related to user input.
 /** Manages everything related to user input, such as keyboard keypresses, mouse movement, steering wheel movement, joystick, etc... Essentially, it's the interface between the end-user and the simulated world, allowing the user to transparently make changes in this simulated world. Input devices calibration issues and many other things are handled by this engine.

@@ -19,14 +19,14 @@
 #include "vehicle.hpp"
 #include "suspension.hpp"
 
-pWheel Wheel::create(WorldObject * container, XmlTag * tag)
+pWheel Wheel::create(XmlTag * tag)
 {
-    pWheel tmp(new Wheel(container, tag));
+    pWheel tmp(new Wheel(tag));
     return tmp;
 }
 
-Wheel::Wheel (WorldObject * container, XmlTag * tag)
-    :DriveMass(container, "wheel")
+Wheel::Wheel (XmlTag * tag)
+    :DriveMass("wheel")
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     pWheelOdeData data(new WheelOdeData);

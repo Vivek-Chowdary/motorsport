@@ -13,14 +13,14 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-pEngine Engine::create(WorldObject * container, XmlTag * tag)
+pEngine Engine::create(XmlTag * tag)
 {
-    pEngine tmp(new Engine(container, tag));
+    pEngine tmp(new Engine(tag));
     return tmp;
 }
 
-Engine::Engine (WorldObject * container, XmlTag * tag)
-    :DriveMass(container, "engine")
+Engine::Engine (XmlTag * tag)
+    :DriveMass("engine")
 {
     inputAngularVel = 0.0;
     prevAngularVel = 0.0;

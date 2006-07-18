@@ -13,14 +13,14 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
-pPedal Pedal::create(WorldObject * container, XmlTag * tag)
+pPedal Pedal::create(XmlTag * tag)
 {
-    pPedal tmp(new Pedal(container, tag));
+    pPedal tmp(new Pedal(tag));
     return tmp;
 }
 
-Pedal::Pedal (WorldObject * container, XmlTag * tag)
-    :WorldObject(container, "pedal")
+Pedal::Pedal (XmlTag * tag)
+    :WorldObject("pedal")
 {
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     angleRange = 180;

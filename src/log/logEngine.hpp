@@ -49,7 +49,7 @@ struct LogConfig
 
 // Forward declarations
 class GuiEngine;
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
 
 /// Allows to automate the recording of log messages to a file.
 /** Allows to automate the recording of log messages to a plain-text file. Every log engine has its own level of verbosity, meaning it can display only messages of a certain level of importance (discarding the less important messages).

@@ -39,7 +39,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string 
     dBodySetAutoDisableSteps (bodyID, 1);
     //*/
     
-    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer().get()));
     dMass dmass;
     if (data->shape == "box")
     {
@@ -67,7 +67,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string 
     bodyID = NULL;
     // create dBody
     bodyID = dBodyCreate (World::get()->worldID);
-    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer().get()));
     
     // create transform spaces (in order to be able to 'offset' the collision geoms
     geomIDs["GeomSpace(A)"] = dCreateGeomTransform (World::get()->spaceID);
@@ -114,7 +114,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string
     this->name = name;
     bodyID = NULL;
     bodyID = dBodyCreate (World::get()->worldID);
-    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer().get()));
     dMass dmass;
     dMassSetParameters (&dmass, data->mass,
                          0., 0., 0.,
@@ -134,7 +134,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string 
     bodyID = NULL;
 
     bodyID = dBodyCreate (World::get()->worldID);
-    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer()));
+    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer().get()));
     dMass dmass;
     if (data->useMass)
     {

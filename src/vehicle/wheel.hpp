@@ -21,9 +21,8 @@ namespace Ogre {
   class Entity;
   class SceneNode;
 }
-SHARED_PTR(Suspension, pSuspension);
-
-SHARED_PTR(Wheel, pWheel);
+SHARED_PTR(Suspension, pSuspension, wSuspension);
+SHARED_PTR(Wheel, pWheel, wWheel);
 class Wheel : public DriveMass
 {
   private:
@@ -31,9 +30,9 @@ class Wheel : public DriveMass
     double powered;
     pSuspension baseSuspension;
     pPedal brakePedal;
-    Wheel (WorldObject * container, XmlTag * tag);
+    Wheel (XmlTag * tag);
   public:
-    static pWheel create(WorldObject * container, XmlTag * tag);
+    static pWheel create(XmlTag * tag);
     ~Wheel ();
     void setSusp(pSuspension suspension) { baseSuspension = suspension; };
     void setUserDriver ();

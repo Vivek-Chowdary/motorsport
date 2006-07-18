@@ -21,13 +21,13 @@
 
 void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
 
-pArea Area::create (WorldObject * container, std::string areaName)
+pArea Area::create (std::string areaName)
 {
-    pArea area(new Area(container, areaName));
+    pArea area(new Area(areaName));
     return area;
 }
-Area::Area (WorldObject * container, std::string areaName)
-    :WorldObject(container, areaName)
+Area::Area (std::string areaName)
+    :WorldObject(areaName)
 {
     setPath(Paths::area(areaName));
     setXmlPath(Paths::areaXml(areaName));
@@ -120,7 +120,7 @@ void Area::construct (XmlTag * tag)
                 {
                     position = Vector3d (u->getAttribute("position"));
                     rotation = Quaternion (u->getAttribute("rotation"));
-                    pPart tmp = Part::create (this, u->getName());
+                    pPart tmp = Part::create (u->getName());
                     tmp->setPosition (position);
                     tmp->setRotation (rotation);
                     parts[tmp->getName()] = tmp;
@@ -135,7 +135,7 @@ void Area::construct (XmlTag * tag)
             }
             if (t->getName() == "camera")
             {
-                pCamera tmp = Camera::create (this, t);
+                pCamera tmp = Camera::create (t);
                 cameras[tmp->getName()] = tmp;
             }
         }
@@ -172,6 +172,20 @@ void Area::construct (XmlTag * tag)
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
 }
 
+void Area::setContainer(pWorldObject container)
+{
+    WorldObject::setContainer(container);
+    PartsIt p = parts.begin();
+    for(;p != parts.end(); p++)
+    {
+        p->second->setContainer(shared_from_this());
+    }
+    CamerasIt i = cameras.begin();
+    for(;i != cameras.end(); i++)
+    {
+        i->second->setContainer(shared_from_this());
+    }
+}
 void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);

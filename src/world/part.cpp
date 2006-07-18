@@ -19,14 +19,14 @@
 #include "SDL/SDL_keysym.h"
 
 
-pPart Part::create(WorldObject * container, const std::string & name)
+pPart Part::create(const std::string & name)
 {
-    pPart part(new Part(container, name));
+    pPart part(new Part(name));
     return part;
 }
 
-Part::Part (WorldObject * container, const std::string & name)
-    :WorldObject(container, name)
+Part::Part (const std::string & name)
+    :WorldObject(name)
 {
     setPath(Paths::part(name));
     setXmlPath(Paths::partXml(name));

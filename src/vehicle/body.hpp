@@ -18,7 +18,7 @@ namespace Ogre { class Entity; class SceneNode; }
 class Quaternion;
 class Vehicle;
 
-SHARED_PTR(Body, pBody);
+SHARED_PTR(Body, pBody, wBody);
 
 class Body : public WorldObject
 {
@@ -27,9 +27,9 @@ class Body : public WorldObject
     double frontalArea;
     void stopPhysics ();
     void stopGraphics ();
-    Body (WorldObject * container, XmlTag * tag);
+    Body (XmlTag * tag);
   public:
-    static pBody create (WorldObject * container, XmlTag * tag);
+    static pBody create (XmlTag * tag);
     ~Body ();
     void stepPhysics ();
 };

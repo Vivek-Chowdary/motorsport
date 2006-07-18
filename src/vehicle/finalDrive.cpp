@@ -13,14 +13,14 @@
 #include "ode/ode.h"
 #include "SDL/SDL_keysym.h"
 
-pFinalDrive FinalDrive::create(WorldObject * container, XmlTag * tag)
+pFinalDrive FinalDrive::create(XmlTag * tag)
 {
-    pFinalDrive tmp(new FinalDrive(container, tag));
+    pFinalDrive tmp(new FinalDrive(tag));
     return tmp;
 }
 
-FinalDrive::FinalDrive (WorldObject * container, XmlTag * tag)
-    :DriveMass(container, "finalDrive")
+FinalDrive::FinalDrive (XmlTag * tag)
+    :DriveMass("finalDrive")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;

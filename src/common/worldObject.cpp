@@ -14,21 +14,12 @@
 unsigned int WorldObject::instancesCount = 0;
 WorldObjectsC WorldObject::worldObjects;
 
-WorldObject::WorldObject (WorldObject * container, const std::string & name)
+WorldObject::WorldObject (const std::string & name)
 {
     this->base = dynamic_cast<WorldObject *>(this);
     this->name = name;
-    this->container = container;
-    if (container == NULL)
-    {
-        this->path = "/unknownPath/";
-        this->xmlPath = path + "unknownFilepath";
-    }
-    else
-    {
-        this->path = container->getPath();
-        this->xmlPath = container->getPath();
-    }
+    this->path = "/unknownPath/";
+    this->xmlPath = path + "unknownFilepath";
 
     const int numberStringSize = 64;
     char numberString[numberStringSize];
@@ -38,13 +29,29 @@ WorldObject::WorldObject (WorldObject * container, const std::string & name)
 
     //FIXME what to use, id# or name?
     log = LogEngine::create (LOG_DEVELOPER, this->getFullName());
-    log->__format(LOG_CCREATOR, "Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
+    log->__format(LOG_CCREATOR, "New world object! Id #%s.", id.c_str());
     worldObjects[this->id] = this;
 }
+void WorldObject::setContainer(pWorldObject container)
+{
+    std::string oldName = getFullName();
+    this->container = container;
+    this->path = container->getPath();
+    this->xmlPath = container->getPath();
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        dBodySetData (j->second->getBodyID(), (void*) container.get());
+    }
+    log->setName(this->getFullName());
+    log->__format(LOG_CCREATOR, "New container! Old full name: %s. New full name: %s", id.c_str(), oldName.c_str(), getFullName().c_str());
+
+}
+
 WorldObject::~WorldObject ()
 {
-    log->__format(LOG_CCREATOR, "Deleting myself. Id #%s. Full Name: %s", id.c_str(), getFullName().c_str());
-
+    log->__format(LOG_CCREATOR, "Deleting myself. Id #%s.", id.c_str());
+    container.reset();
     worldObjects.erase(this->id);
     base = NULL;
 }
@@ -73,16 +80,18 @@ void WorldObject::setName(std::string name)
 }
 std::string WorldObject::getFullName()
 {
-    if (container == NULL) return name;
-    return container->getFullName() + "." + name;
+    pWorldObject pcontainer = container.lock();
+    if (pcontainer == NULL) return name;
+    return pcontainer->getFullName() + "." + name;
 }
 std::string WorldObject::getPath()
 {
+    if (path == "/unknownPath/") return System::get()->getCurrentPath();
     return path;
 }
 void WorldObject::setPath(std::string path)
 {
-    this->path = path;;
+    this->path = path;
 }
 std::string WorldObject::getXmlPath()
 {
@@ -96,9 +105,10 @@ pLogEngine WorldObject::getLog()
 {
     return log;
 }
-WorldObject * WorldObject::getContainer()
+pWorldObject WorldObject::getContainer()
 {
-    return container;
+    pWorldObject pcontainer = container.lock();
+    return pcontainer;
 }
 pOdeObject WorldObject::getMainOdeObject()
 {

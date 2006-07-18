@@ -119,3 +119,12 @@ void System::decreaseDesiredPhysicsRate()
     
 }
 
+std::string System::getCurrentPath()
+{
+    return currentPath;
+}
+
+void System::setCurrentPath(std::string path)
+{
+    currentPath = path;
+}

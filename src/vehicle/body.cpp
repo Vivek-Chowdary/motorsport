@@ -18,13 +18,13 @@
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
 
-pBody Body::create (WorldObject * container, XmlTag * tag)
+pBody Body::create (XmlTag * tag)
 {
-    pBody tmp (new Body(container, tag));
+    pBody tmp (new Body(tag));
     return tmp;
 }
-Body::Body (WorldObject * container, XmlTag * tag)
-    :WorldObject(container, "body")
+Body::Body (XmlTag * tag)
+    :WorldObject("body")
 {
     dragCoefficient = 0.3;
     frontalArea = 0;

@@ -18,11 +18,11 @@
 class Quaternion;
 class WorldObject;
 
-SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
-SHARED_PTR(PartOdeData, pPartOdeData);
-SHARED_PTR(BodyOdeData, pBodyOdeData);
-SHARED_PTR(WheelOdeData, pWheelOdeData);
-SHARED_PTR(BoneOdeData, pBoneOdeData);
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt, wOdeObject);
+SHARED_PTR(PartOdeData, pPartOdeData, wPartOdeData);
+SHARED_PTR(BodyOdeData, pBodyOdeData, wBodyOdeData);
+SHARED_PTR(WheelOdeData, pWheelOdeData, wWheelOdeData);
+SHARED_PTR(BoneOdeData, pBoneOdeData, wBoneOdeData);
 
 SHARED_MAP(dGeomID, GeomIDs, GeomIDsIt);
 

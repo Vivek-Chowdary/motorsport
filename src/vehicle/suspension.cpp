@@ -21,8 +21,8 @@
 #include "SDL/SDL_keysym.h"
 #include <cmath>
 
-Suspension::Suspension (WorldObject * container, std::string name)
-    : WorldObject(container, name)
+Suspension::Suspension (std::string name)
+    : WorldObject(name)
 {
     position = Vector3d (0, 0, 0);
     rotation = Quaternion (1, 0, 0, 0);
@@ -133,13 +133,13 @@ void Unidimensional::setVelocity(double velocity)
     dJointSetHinge2Param(jointID, dParamVel, 0);
 }
 
-pUnidimensional Unidimensional::create (WorldObject * container, XmlTag * tag)
+pUnidimensional Unidimensional::create (XmlTag * tag)
 {
-    pUnidimensional tmp(new Unidimensional(container, tag));
+    pUnidimensional tmp(new Unidimensional(tag));
     return tmp;
 }
-Unidimensional::Unidimensional (WorldObject * container, XmlTag * tag)
-    :Suspension(container, "suspension.unidimensional")
+Unidimensional::Unidimensional (XmlTag * tag)
+    :Suspension("suspension.unidimensional")
 {
     userDriver = false;
     springConstant = 0;
@@ -184,7 +184,7 @@ void Unidimensional::attach(pWorldObject base, pWorldObject object)
     //pWheel wheel = boost::dynamic_pointer_cast<pWheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(shared_from_this());
+    wheel->setSusp(boost::dynamic_pointer_cast<Suspension>(shared_from_this()));
     //wheel->setSusp(this);
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
@@ -207,14 +207,14 @@ void Unidimensional::attach(pWorldObject base, pWorldObject object)
 }
 
 
-pFixed Fixed::create(WorldObject * container, XmlTag * tag)
+pFixed Fixed::create(XmlTag * tag)
 {
-    pFixed tmp(new Fixed(container, tag));
+    pFixed tmp(new Fixed(tag));
     return tmp;
 }
 
-Fixed::Fixed (WorldObject * container, XmlTag * tag)
-    :Suspension(container, "suspension.unidimensional")
+Fixed::Fixed (XmlTag * tag)
+    :Suspension("suspension.unidimensional")
 {
     userDriver = false;
     if (tag->getName() == "suspension.fixed")
@@ -240,7 +240,7 @@ void Fixed::attach(pWorldObject base, pWorldObject object)
     pWheel wheel = boost::dynamic_pointer_cast<Wheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(shared_from_this());
+    wheel->setSusp(boost::dynamic_pointer_cast<Suspension>(shared_from_this()));
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
     // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
@@ -270,14 +270,14 @@ void Fixed::setVelocity(double velocity)
     dJointSetHingeParam(jointID, dParamVel, 0);
 }
 
-pDoubleWishbone DoubleWishbone::create(WorldObject * container, XmlTag * tag)
+pDoubleWishbone DoubleWishbone::create(XmlTag * tag)
 {
-    pDoubleWishbone tmp(new DoubleWishbone(container, tag));
+    pDoubleWishbone tmp(new DoubleWishbone(tag));
     return tmp;
 }
 
-DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
-    :Suspension(container, "suspension.doublewishbone")
+DoubleWishbone::DoubleWishbone(XmlTag * tag)
+    :Suspension("suspension.doublewishbone")
 {
     pOgreObjectData upperBoneOData(new OgreObjectData);
     pOgreObjectData lowerBoneOData(new OgreObjectData);
@@ -318,7 +318,6 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     upperBoneData->length = upperBoneLength = 0.3;
     upperBoneData->mass = 2.0;
     odeObjects["upperBone"] = pOdeObject(new OdeObject(this, upperBoneData, "upperBone"));
-    dBodySetData (odeObjects["upperBone"]->getBodyID(), (void*) container);
     Quaternion upperBoneRot (90, 0, 0);
     odeObjects["upperBone"]->setRotation(upperBoneRot);
     Vector3d upperBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneLength*0.5) , firstPosition.z+(uprightBoneLength*0.5));
@@ -335,7 +334,6 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     lowerBoneData->length = lowerBoneLength = 0.3;
     lowerBoneData->mass = 2.0;
     odeObjects["lowerBone"] = pOdeObject(new OdeObject(this, lowerBoneData, "lowerBone"));
-    dBodySetData (odeObjects["lowerBone"]->getBodyID(), (void*) container);
     Quaternion lowerBoneRot (90, 0, 0);
     odeObjects["lowerBone"]->setRotation(lowerBoneRot);
     Vector3d lowerBonePos (firstPosition.x, firstPosition.y+(dirMult*lowerBoneLength*0.5) , firstPosition.z-(uprightBoneLength*0.5));
@@ -352,7 +350,6 @@ DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
     uprightBoneData->length = uprightBoneLength;
     uprightBoneData->mass = 2.0;
     odeObjects["uprightBone"] = pOdeObject(new OdeObject(this, uprightBoneData, "uprightBone"));
-    dBodySetData (odeObjects["uprightBone"]->getBodyID(), (void*) container);
     Quaternion uprightBoneRot (0, 0, 0);
     odeObjects["uprightBone"]->setRotation(uprightBoneRot);
     Vector3d uprightBonePos (firstPosition.x, firstPosition.y+(dirMult*upperBoneData->length), firstPosition.z);
@@ -392,7 +389,7 @@ void DoubleWishbone::attach(pWorldObject base, pWorldObject object)
     pWheel wheel = boost::dynamic_pointer_cast<Wheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(shared_from_this());
+    wheel->setSusp(boost::dynamic_pointer_cast<Suspension>(shared_from_this()));
 
     double dirMult = 1.0;
     if (!right) dirMult *= -1;

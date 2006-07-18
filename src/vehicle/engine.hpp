@@ -13,9 +13,9 @@
 #include "driveJoint.hpp"
 
 // Forward declarations
-SHARED_PTR(Pedal, pPedal);
+SHARED_PTR(Pedal, pPedal, wPedal);
 
-SHARED_PTR(Engine, pEngine);
+SHARED_PTR(Engine, pEngine, wEngine);
 class Engine : public DriveMass
 {
   private:
@@ -23,9 +23,9 @@ class Engine : public DriveMass
     double telemetryTorque;
     double angularVelLimit;
     pPedal gasPedal;
-    Engine (WorldObject * container, XmlTag * tag);
+    Engine (XmlTag * tag);
   public:
-    static pEngine create (WorldObject * container, XmlTag * tag);
+    static pEngine create (XmlTag * tag);
     ~Engine ();
     void setGasPedal (pPedal pedal);
     void stepPhysics ();

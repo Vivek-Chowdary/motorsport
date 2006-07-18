@@ -12,29 +12,32 @@
 #include "driveMass.hpp"
 #include "wheel.hpp"
 
-SHARED_PTR(GearboxGear, pGearboxgear);
+SHARED_PTR(GearboxGear, pGearboxGear, wGearboxGear);
 class GearboxGear : public WorldObject
 {
+  private:
+    GearboxGear (XmlTag * tag);
   public:
+    static pGearboxGear create(XmlTag * tag);
     bool enabled;
     double ratio;   
     int number;
-    GearboxGear (WorldObject * container, XmlTag * tag);
     ~GearboxGear ();
     int getNumber() { return number; } ;
     double getRatio() { return ratio; } ;
     bool isEnabled() { return enabled; } ;
 }; 
-SHARED_PTR(Gearbox, pGearbox);
+SHARED_PTR(Gearbox, pGearbox, wGearbox);
 class Gearbox : public DriveMass 
 {
   private:
-    std::map < int, GearboxGear *> gearMap;
+    std::map < int, pGearboxGear> gearMap;
     int currentGear;
     double gearRatio;
-    Gearbox (WorldObject * container, XmlTag * tag);
+    Gearbox (XmlTag * tag);
   public:
-    static pGearbox create(WorldObject * container, XmlTag * tag);
+    static pGearbox create(XmlTag * tag);
+    void setContainer(pWorldObject container);
     ~Gearbox ();
     void setGear (int inputGear)      { currentGear = inputGear; };
     double getGearRatio()             { return gearMap[currentGear]->ratio; };

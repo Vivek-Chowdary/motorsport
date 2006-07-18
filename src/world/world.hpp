@@ -14,10 +14,10 @@
 #include "worldObject.hpp"
 
 //forward declaration
-SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt);
-SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
-SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
-SHARED_PTR(World,pWorld);
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt, wCamera);
+SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt, wVehicle);
+SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
+SHARED_PTR(World,pWorld, wWorld);
 
 class World : public WorldObject
 {
@@ -33,6 +33,7 @@ class World : public WorldObject
     static pWorld get();
     static void setNewWorld(std::string name);
     static void destroy();
+    void setContainer();
     ~World ();
 
     dWorldID worldID;

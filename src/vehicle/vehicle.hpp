@@ -14,25 +14,25 @@
 #include "xmlTag.hpp"
 
 // Forward declarations
-SHARED_PTR(Body, pBody);
-SHARED_PTR(Engine, pEngine);
-SHARED_PTR(Clutch, pClutch);
-SHARED_PTR(Gear, pGear);
-SHARED_PTR(Gearbox, pGearbox);
-SHARED_PTR(GearboxGear, pGearboxGear);
-SHARED_PTR(FinalDrive, pFinalDrive);
-SHARED_PTR(DriveJoint, pDriveJoint);
-SHARED_PTR(DriveMass, pDriveMass);
-SHARED_PTR(LSD, pLSD);
-SHARED_PTR(Wheel, pWheel);
-SHARED_PTR(Pedal, pPedal);
-SHARED_PTR(Suspension, pSuspension);
+SHARED_PTR(Body, pBody, wBody);
+SHARED_PTR(Engine, pEngine, wEngine);
+SHARED_PTR(Clutch, pClutch, wClutch);
+SHARED_PTR(Gear, pGear, wGear);
+SHARED_PTR(Gearbox, pGearbox, wGearbox);
+SHARED_PTR(GearboxGear, pGearboxGear, wGearboxGear);
+SHARED_PTR(FinalDrive, pFinalDrive, wFinalDrive);
+SHARED_PTR(DriveJoint, pDriveJoint, wDriveJoint);
+SHARED_PTR(DriveMass, pDriveMass, wDriveMass);
+SHARED_PTR(LSD, pLSD, wLSD);
+SHARED_PTR(Wheel, pWheel, wWheel);
+SHARED_PTR(Pedal, pPedal, wPedal);
+SHARED_PTR(Suspension, pSuspension, wSuspension);
 class Vector3d;
 class Quaternion;
 class CameraPosition;
 
-SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
-SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt);
+SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt, wVehicle);
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt, wCamera);
 
 class Vehicle : public WorldObject
 {
@@ -48,9 +48,10 @@ class Vehicle : public WorldObject
     void boltWheelsToSuspensions();
     void stopGraphics ();
     WorldObjects components;
-    Vehicle (WorldObject * container, std::string vehicleName);
+    Vehicle (std::string vehicleName);
   public:
-    static pVehicle create(WorldObject * container, std::string vehicleName);
+    static pVehicle create(std::string vehicleName);
+    void setContainer (pWorldObject container);
     ~Vehicle ();
     Cameras cameras;
 

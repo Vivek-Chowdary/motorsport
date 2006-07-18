@@ -15,9 +15,9 @@ namespace Ogre {
     class Camera;
 };
 
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
-SHARED_PTR(System,pSystem);
-SHARED_PTR(Gui,pGui);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
+SHARED_PTR(System,pSystem, wSystem);
+SHARED_PTR(Gui,pGui, wGui);
 
 /// Manages everything related to the gui rendering process.
 /** Manages everything related to the process of system data (graphical user interface) graphics rendering on screen (menues and similar gadgets)

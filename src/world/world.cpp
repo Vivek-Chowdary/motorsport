@@ -41,6 +41,7 @@ pWorld World::get()
             newWorld = "default";
         }
         new World(World::newWorld);
+        world->setContainer();
     }
     return (world);
 }
@@ -57,7 +58,7 @@ void World::destroy()
 }
 
 World::World (std::string name)
-    :WorldObject(NULL, name)
+    :WorldObject(name)
 {
     if (world)
     {
@@ -150,7 +151,8 @@ void World::processXmlRootNode (XmlTag * tag)
 
     // load area (and its cameras)
     log->loadscreen (LOG_CCREATOR, "Creating a area");
-    pArea area = Area::create (this, areaDirectory);
+    pArea area = Area::create (areaDirectory);
+    //FIXME shared ptr container set??
     //area->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
     areas[area->getName()] = area;
 
@@ -225,12 +227,13 @@ void World::processXmlVehicleListNode (XmlTag * tag)
                 vehicleStartPosition = t->getAttribute("startPosition");
 
                 log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-                pVehicle tmpVehicle  = Vehicle::create(this, vehicleDirectory);
+                pVehicle tmpVehicle  = Vehicle::create(vehicleDirectory);
                 if (driver == "user" )
                 {
                     tmpVehicle->setUserDriver();
                 }
                 vehicles[tmpVehicle->getName()] = tmpVehicle;
+                //FIXME setcontainer??
 
                 log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
                 if (areas.begin()->second->locations.count(vehicleStartPosition) == 0)
@@ -244,5 +247,21 @@ void World::processXmlVehicleListNode (XmlTag * tag)
                 tmpVehicle->setPosition (areas.begin()->second->locations[vehicleStartPosition]->getPosition());
             }
         }
+    }
+}
+void World::setContainer()
+{
+    //NOTE: world is hardcoded not to have a parent, therefore we don't run this line:
+    //WorldObject::setContainer(container);
+
+    AreasIt i = areas.begin();
+    for(;i != areas.end(); i++)
+    {
+        i->second->setContainer(shared_from_this());
+    }
+    VehiclesIt v = vehicles.begin();
+    for(;v != vehicles.end(); v++)
+    {
+        v->second->setContainer(shared_from_this());
     }
 }

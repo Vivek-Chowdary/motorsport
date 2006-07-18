@@ -25,15 +25,16 @@
 #include "SDL/SDL_keysym.h"
 #include "quaternion.hpp"
 
-pVehicle Vehicle::create(WorldObject * container, std::string vehicleName)
+pVehicle Vehicle::create(std::string vehicleName)
 {
-    pVehicle vehicle(new Vehicle(container, vehicleName));
+    pVehicle vehicle(new Vehicle(vehicleName));
     return vehicle;
 }
-Vehicle::Vehicle (WorldObject * container, std::string vehicleName)
-    :WorldObject(container, vehicleName)
+Vehicle::Vehicle (std::string vehicleName)
+    :WorldObject(vehicleName)
 {
     setPath(Paths::vehicle(vehicleName));
+    System::get()->setCurrentPath(Paths::vehicle(vehicleName));
     setXmlPath(Paths::vehicleXml(vehicleName));
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "vehicles." + vehicleName);
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath()+"skybox.zip","Zip","vehicles."+vehicleName);
@@ -55,6 +56,7 @@ Vehicle::~Vehicle ()
     }
     components.clear();
 }
+
 void Vehicle::setUserDriver ()
 {
     userDriver = true;
@@ -85,52 +87,53 @@ void Vehicle::construct (XmlTag * tag)
         contact =     tag->getAttribute("contact");
         license =     tag->getAttribute("license");
 
-        components["rearDiff"] = LSD::create(this);
-        components["transfer"] = Gear::create(this);
+        components["rearDiff"] = LSD::create();
+        components["transfer"] = Gear::create();
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            if (t->getName() == "body")         components["body"]       = Body::create       (this, t);
-            if (t->getName() == "engine")       components["engine"]     = Engine::create     (this, t);
-            if (t->getName() == "clutch")       components["clutch"]     = Clutch::create     (this, t);
-            if (t->getName() == "gearbox")      components["gearbox"]    = Gearbox::create    (this, t);
-            if (t->getName() == "finalDrive")   components["finalDrive"] = FinalDrive::create (this, t);
+            if (t->getName() == "body")         components["body"]       = Body::create       (t);
+            if (t->getName() == "engine")       components["engine"]     = Engine::create     (t);
+            if (t->getName() == "clutch")       components["clutch"]     = Clutch::create     (t);
+            if (t->getName() == "gearbox")      components["gearbox"]    = Gearbox::create    (t);
+            if (t->getName() == "finalDrive")   components["finalDrive"] = FinalDrive::create (t);
             if (t->getName() == "pedal")
             {
-                pPedal tmp = Pedal::create (this, t);
+                pPedal tmp = Pedal::create (t);
                 components[tmp->getName()] = tmp;
             }
             if (t->getName() == "wheel")
             {
-                pWheel tmp = Wheel::create (this, t);
+                pWheel tmp = Wheel::create (t);
                 components[tmp->getName()] = tmp;
                 System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.unidimensional")
             {
-                pUnidimensional tmp = Unidimensional::create (this, t);
+                pUnidimensional tmp = Unidimensional::create (t);
                 components[tmp->getName()] = tmp;
                 System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.fixed")
             {
-                pFixed tmp = Fixed::create (this, t);
+                pFixed tmp = Fixed::create (t);
                 components[tmp->getName()] = tmp;
                 System::get()->ogreWindow->update ();
             }
             if (t->getName() == "suspension.doublewishbone")
             {
-                pDoubleWishbone tmp = DoubleWishbone::create (this, t);
+                pDoubleWishbone tmp = DoubleWishbone::create (t);
                 components[tmp->getName()] = tmp;
                 System::get()->ogreWindow->update ();
             }
             if (t->getName() == "camera")
             {
-                pCamera tmp = Camera::create (this, t);
+                pCamera tmp = Camera::create (t);
                 cameras[tmp->getName()] = tmp;
             }
         }
     }
 
+    // spread the news to the necessary (input-able) vehicle parts
     log->__format(LOG_DEVELOPER, "Setting some drive joint pointers...");
     getDriveJoint("clutch")->setOutputPointer(getDriveMass("gearbox"));
     getDriveJoint("transfer")->setOutputPointer(getDriveMass("finalDrive"));
@@ -168,6 +171,21 @@ void Vehicle::construct (XmlTag * tag)
     getGearbox("gearbox")->setGear(2);
 
     stepGraphics();
+}
+
+void Vehicle::setContainer (pWorldObject container)
+{
+    WorldObject::setContainer(container);
+    // tell all the objects who's the boss.
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        i->second->setContainer(shared_from_this());
+    }
+    getGearbox("gearbox")->setContainer(shared_from_this());
+    for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
+    {
+        i->second->setContainer(shared_from_this());
+    }
 }
 
 void Vehicle::stepGraphics ()

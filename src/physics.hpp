@@ -15,9 +15,9 @@
 */
 
 // Forward declarations
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
-SHARED_PTR(System,pSystem);
-SHARED_PTR(Physics,pPhysics);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
+SHARED_PTR(System,pSystem, wSystem);
+SHARED_PTR(Physics,pPhysics, wPhysics);
 
 class Physics
 {

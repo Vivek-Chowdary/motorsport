@@ -27,7 +27,7 @@ class DriveMass : public WorldObject
     double outputTorqueTransfer;
     double inputTorqueTransfer;
   public:
-    DriveMass (WorldObject * container, std::string name);
+    DriveMass (std::string name);
     ~DriveMass ();
     double getInputTorque ()             { return inputTorqueTransfer; } ;
     double getOutputTorque ()            { return outputTorqueTransfer; } ;

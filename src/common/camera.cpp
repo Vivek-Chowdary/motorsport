@@ -21,14 +21,14 @@
 #include "area.hpp"
 #include "vector3d.hpp"
 
-pCamera Camera::create(WorldObject * container, XmlTag * tag)
+pCamera Camera::create(XmlTag * tag)
 {
-    pCamera p (new Camera(container, tag));
+    pCamera p (new Camera(tag));
     return p;
 }
 
-Camera::Camera (WorldObject * container, XmlTag * tag)
-    :WorldObject(container, "camera")
+Camera::Camera (XmlTag * tag)
+    :WorldObject("camera")
 {
     ogreCamera = System::get()->ogreSceneManager->createCamera (getId());
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));

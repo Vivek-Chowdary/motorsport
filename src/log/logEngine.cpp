@@ -100,6 +100,7 @@ LogEngine::~LogEngine ()
         }
     }
     logEngines.erase(d);
+    //d->second.reset();
     //Check if this is the last log engine in the map.If it is, since we're gonna delete it, we close the log file.
     if (logEngines.size() <= 1)
     {

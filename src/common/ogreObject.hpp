@@ -21,9 +21,9 @@ class WorldObject;
 class Quaternion;
 class Vector3d;
 
-SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
-SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt);
-SHARED_PTR(OgreObjectData, pOgreObjectData);
+SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt, wOdeObject);
+SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt, wOgreObject);
+SHARED_PTR(OgreObjectData, pOgreObjectData, wOgreObjectData);
 
 class OgreObject
 {

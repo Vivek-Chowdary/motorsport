@@ -13,27 +13,27 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-DriveJoint::DriveJoint (WorldObject * container, std::string name)
-    :WorldObject(container, name)
+DriveJoint::DriveJoint (std::string name)
+    :WorldObject(name)
 {
 }
 DriveJoint::~DriveJoint ()
 {
 }
-pClutch Clutch::create (WorldObject * container, XmlTag * tag)
+pClutch Clutch::create (XmlTag * tag)
 {
-    pClutch tmp(new Clutch(container, tag));
+    pClutch tmp(new Clutch(tag));
     return tmp;
 }
 
-pClutch Clutch::create (WorldObject * container)
+pClutch Clutch::create ()
 {
-    pClutch tmp(new Clutch(container));
+    pClutch tmp(new Clutch());
     return tmp;
 }
 
-Clutch::Clutch (WorldObject * container, XmlTag * tag)
-    :DriveJoint(container, "clutch")
+Clutch::Clutch (XmlTag * tag)
+    :DriveJoint("clutch")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -48,8 +48,8 @@ Clutch::Clutch (WorldObject * container, XmlTag * tag)
     }
 }
 
-Clutch::Clutch (WorldObject * container)
-    :DriveJoint(container, "clutch")
+Clutch::Clutch ()
+    :DriveJoint("clutch")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -67,19 +67,19 @@ void Clutch::setClutchPedal(pPedal pedal)
 }
 
 
-pGear Gear::create (WorldObject * container, XmlTag * tag)
+pGear Gear::create (XmlTag * tag)
 {
-    pGear tmp (new Gear(container, tag));
+    pGear tmp (new Gear(tag));
     return tmp;
 }
-pGear Gear::create (WorldObject * container)
+pGear Gear::create ()
 {
-    pGear tmp (new Gear(container));
+    pGear tmp (new Gear());
     return tmp;
 }
 
-Gear::Gear (WorldObject * container, XmlTag * tag)
-    :DriveJoint(container, "gear")
+Gear::Gear (XmlTag * tag)
+    :DriveJoint("gear")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -96,8 +96,8 @@ Gear::Gear (WorldObject * container, XmlTag * tag)
     }
 }
 
-Gear::Gear (WorldObject * container)
-    :DriveJoint(container, "gear")
+Gear::Gear ()
+    :DriveJoint("gear")
 {
     ratio = 1.0;
     springConstant = 300.0;
@@ -114,18 +114,18 @@ Gear::~Gear ()
 {
 }
 
-pLSD LSD::create (WorldObject * container, XmlTag * tag)
+pLSD LSD::create (XmlTag * tag)
 {
-    pLSD tmp (new LSD(container, tag));
+    pLSD tmp (new LSD(tag));
     return tmp;
 }
-pLSD LSD::create (WorldObject * container)
+pLSD LSD::create ()
 {
-    pLSD tmp (new LSD(container));
+    pLSD tmp (new LSD());
     return tmp;
 }
-LSD::LSD (WorldObject * container, XmlTag * tag)
-    :DriveJoint(container, "lsd")
+LSD::LSD (XmlTag * tag)
+    :DriveJoint("lsd")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -142,8 +142,8 @@ LSD::LSD (WorldObject * container, XmlTag * tag)
     }
 }
 
-LSD::LSD (WorldObject * container)
-    :DriveJoint(container, "lsd")
+LSD::LSD ()
+    :DriveJoint("lsd")
 {
     ratio = 1.0;
     springConstant = 300.0;

@@ -15,7 +15,7 @@
 
 // Forward declarations
 namespace Ogre { class RenderWindow; class SceneManager; }
-SHARED_PTR(System,pSystem);
+SHARED_PTR(System,pSystem, wSystem);
 
 /** 
  * @brief Contains a lot of data, generally needed in many places. It's a singleton.
@@ -51,6 +51,7 @@ class System
      * @brief Initializes the instance some default hardcoded values.
      */
     System();
+    std::string currentPath;
   public:
     /** 
      * @brief Returns the SystemData singleton instance.
@@ -212,6 +213,8 @@ class System
      * @brief Notifies the sytem that the main loop should be stopped.
      */
     void disableMainLoop (void);    // allows the program to stop running
+    std::string getCurrentPath();
+    void setCurrentPath(std::string path);
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

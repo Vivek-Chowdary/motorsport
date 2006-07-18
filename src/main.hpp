@@ -12,8 +12,8 @@
 #include <shared.hpp>
 
 //forward declarations
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
-SHARED_PTR(Graphics,pGraphics);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
+SHARED_PTR(Graphics,pGraphics, wGraphics);
 
 /** 
  * @brief Stops all SDL subsystems.

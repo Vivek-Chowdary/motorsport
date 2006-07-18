@@ -11,8 +11,8 @@
 
 // Forward declarations
 namespace Ogre { class Root; }
-SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt);
-SHARED_PTR(Graphics,pGraphics);
+SHARED_PTR_MAP(LogEngine, pLogEngine, LogEngines, LogEnginesIt, wLogEngine);
+SHARED_PTR(Graphics,pGraphics, wGraphics);
 
 /** Manages everything related to the process of world data graphics rendering on screen. The menues and similar gadgets are not rendered by this engine; only world data is handled here (cars, area, etc...).
  * @brief Manages everything related to the rendering process.

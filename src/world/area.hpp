@@ -19,10 +19,10 @@ namespace Ogre {
     class SceneNode;
 };
 
-SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt);
-SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt);
-SHARED_PTR_MAP(Part, pPart, Parts, PartsIt);
-SHARED_PTR_MAP(Area, pArea, Areas, AreasIt);
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt, wCamera);
+SHARED_PTR_MAP(Part, pPart, Parts, PartsIt, wPart);
+SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
 
 class Area : public WorldObject
 {
@@ -32,9 +32,10 @@ class Area : public WorldObject
         std::string contact;
         std::string license;
         void construct (XmlTag * tag);
-        Area (WorldObject * container, std::string areaName);
+        Area (std::string areaName);
     public:
-        static pArea create(WorldObject * container, std::string areaName);
+        static pArea create(std::string areaName);
+        void setContainer(pWorldObject worldObject);
         ~Area ();
 
         Locations locations;

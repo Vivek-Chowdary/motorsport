@@ -15,7 +15,7 @@
 #include "xmlTag.hpp"
 #include <common/shared.hpp>
 
-SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt);
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
 
 class Location
 {
