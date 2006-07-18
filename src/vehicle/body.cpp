@@ -18,6 +18,11 @@
 #include "SDL/SDL_keysym.h"
 #include "vehicle.hpp"
 
+pBody Body::create (WorldObject * container, XmlTag * tag)
+{
+    pBody tmp (new Body(container, tag));
+    return tmp;
+}
 Body::Body (WorldObject * container, XmlTag * tag)
     :WorldObject(container, "body")
 {
@@ -74,7 +79,7 @@ Body::~Body ()
 void Body::stepPhysics ()
 {
     dBodyID bodyID = getMainOdeObject()->getBodyID();
-    if (this == World::get()->vehicles.begin()->second->getObject("body"))
+    if (this == World::get()->vehicles.begin()->second->getObject("body").get())
     {
         double moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
         moveZ += System::get()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;

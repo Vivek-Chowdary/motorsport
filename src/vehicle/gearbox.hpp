@@ -12,6 +12,7 @@
 #include "driveMass.hpp"
 #include "wheel.hpp"
 
+SHARED_PTR(GearboxGear, pGearboxgear);
 class GearboxGear : public WorldObject
 {
   public:
@@ -24,14 +25,16 @@ class GearboxGear : public WorldObject
     double getRatio() { return ratio; } ;
     bool isEnabled() { return enabled; } ;
 }; 
+SHARED_PTR(Gearbox, pGearbox);
 class Gearbox : public DriveMass 
 {
   private:
     std::map < int, GearboxGear *> gearMap;
     int currentGear;
     double gearRatio;
-  public:
     Gearbox (WorldObject * container, XmlTag * tag);
+  public:
+    static pGearbox create(WorldObject * container, XmlTag * tag);
     ~Gearbox ();
     void setGear (int inputGear)      { currentGear = inputGear; };
     double getGearRatio()             { return gearMap[currentGear]->ratio; };

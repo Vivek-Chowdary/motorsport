@@ -13,6 +13,12 @@
 #include "ode/ode.h"
 #include "SDL/SDL_keysym.h"
 
+pFinalDrive FinalDrive::create(WorldObject * container, XmlTag * tag)
+{
+    pFinalDrive tmp(new FinalDrive(container, tag));
+    return tmp;
+}
+
 FinalDrive::FinalDrive (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "finalDrive")
 {

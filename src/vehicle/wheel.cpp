@@ -19,6 +19,12 @@
 #include "vehicle.hpp"
 #include "suspension.hpp"
 
+pWheel Wheel::create(WorldObject * container, XmlTag * tag)
+{
+    pWheel tmp(new Wheel(container, tag));
+    return tmp;
+}
+
 Wheel::Wheel (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "wheel")
 {
@@ -69,7 +75,7 @@ Wheel::~Wheel ()
 {
 }
 
-void Wheel::setBrakePedal (Pedal * pedal)
+void Wheel::setBrakePedal (pPedal pedal)
 {
     brakePedal = pedal;
 }

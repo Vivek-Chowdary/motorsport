@@ -12,7 +12,7 @@
 #include "vector3d.hpp"
 
 unsigned int WorldObject::instancesCount = 0;
-WorldObjects WorldObject::worldObjects;
+WorldObjectsC WorldObject::worldObjects;
 
 WorldObject::WorldObject (WorldObject * container, const std::string & name)
 {
@@ -51,7 +51,7 @@ WorldObject::~WorldObject ()
 void WorldObject::logAll()
 {
     pLogEngine log (LogEngine::create(LOG_DEVELOPER, "WorldObjects"));
-    WorldObjectsIt i = worldObjects.begin();
+    WorldObjectsCIt i = worldObjects.begin();
     for(;i != worldObjects.end(); i++)
     {
         if (i->second != NULL)

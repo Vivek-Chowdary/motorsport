@@ -13,20 +13,20 @@
 #include "ode/objects.h"
 #include "xmlTag.hpp"
 
-//forward declarations
-class Body;
-class Engine;
-class Clutch;
-class Gear;
-class Gearbox;
-class GearboxGear;
-class FinalDrive;
-class DriveJoint;
-class DriveMass;
-class LSD;
-class Wheel;
-class Pedal;
-class Suspension;
+// Forward declarations
+SHARED_PTR(Body, pBody);
+SHARED_PTR(Engine, pEngine);
+SHARED_PTR(Clutch, pClutch);
+SHARED_PTR(Gear, pGear);
+SHARED_PTR(Gearbox, pGearbox);
+SHARED_PTR(GearboxGear, pGearboxGear);
+SHARED_PTR(FinalDrive, pFinalDrive);
+SHARED_PTR(DriveJoint, pDriveJoint);
+SHARED_PTR(DriveMass, pDriveMass);
+SHARED_PTR(LSD, pLSD);
+SHARED_PTR(Wheel, pWheel);
+SHARED_PTR(Pedal, pPedal);
+SHARED_PTR(Suspension, pSuspension);
 class Vector3d;
 class Quaternion;
 class CameraPosition;
@@ -53,20 +53,22 @@ class Vehicle : public WorldObject
     static pVehicle create(WorldObject * container, std::string vehicleName);
     ~Vehicle ();
     Cameras cameras;
-    Body *          getBody         (std::string name);
-    DriveJoint *    getDriveJoint   (std::string name);
-    DriveMass *     getDriveMass    (std::string name);
-    Clutch *        getClutch       (std::string name);
-    Gear *          getGear         (std::string name);
-    LSD *           getLSD          (std::string name);
-    Engine *        getEngine       (std::string name);
-    FinalDrive *    getFinalDrive   (std::string name);
-    Gearbox *       getGearbox      (std::string name);
-    GearboxGear *   getGearboxGear  (std::string name);
-    Pedal *         getPedal        (std::string name);
-    Suspension *    getSuspension   (std::string name);
-    Wheel *         getWheel        (std::string name);
-    WorldObject *   getObject       (std::string name);
+
+    pBody getBody (std::string name);
+    pDriveJoint getDriveJoint (std::string name);
+    pDriveMass getDriveMass (std::string name);
+    pClutch getClutch (std::string name);
+    pGear getGear (std::string name);
+    pLSD getLSD (std::string name);
+    pEngine getEngine (std::string name);
+    pFinalDrive getFinalDrive (std::string name);
+    pGearbox getGearbox (std::string name);
+    pGearboxGear getGearboxGear (std::string name);
+    pPedal getPedal (std::string name);
+    pSuspension getSuspension (std::string name);
+    pWheel getWheel (std::string name);
+    pWorldObject getObject (std::string name);
+
     void setUserDriver ();
     void stepPhysics ();
     void setPosition (Vector3d position);

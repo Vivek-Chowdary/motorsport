@@ -20,6 +20,18 @@ DriveJoint::DriveJoint (WorldObject * container, std::string name)
 DriveJoint::~DriveJoint ()
 {
 }
+pClutch Clutch::create (WorldObject * container, XmlTag * tag)
+{
+    pClutch tmp(new Clutch(container, tag));
+    return tmp;
+}
+
+pClutch Clutch::create (WorldObject * container)
+{
+    pClutch tmp(new Clutch(container));
+    return tmp;
+}
+
 Clutch::Clutch (WorldObject * container, XmlTag * tag)
     :DriveJoint(container, "clutch")
 {
@@ -49,12 +61,22 @@ Clutch::~Clutch ()
 {
 }
 
-void Clutch::setClutchPedal(Pedal * pedal)
+void Clutch::setClutchPedal(pPedal pedal)
 {
     clutchPedal = pedal;
 }
 
 
+pGear Gear::create (WorldObject * container, XmlTag * tag)
+{
+    pGear tmp (new Gear(container, tag));
+    return tmp;
+}
+pGear Gear::create (WorldObject * container)
+{
+    pGear tmp (new Gear(container));
+    return tmp;
+}
 
 Gear::Gear (WorldObject * container, XmlTag * tag)
     :DriveJoint(container, "gear")
@@ -92,6 +114,16 @@ Gear::~Gear ()
 {
 }
 
+pLSD LSD::create (WorldObject * container, XmlTag * tag)
+{
+    pLSD tmp (new LSD(container, tag));
+    return tmp;
+}
+pLSD LSD::create (WorldObject * container)
+{
+    pLSD tmp (new LSD(container));
+    return tmp;
+}
 LSD::LSD (WorldObject * container, XmlTag * tag)
     :DriveJoint(container, "lsd")
 {
@@ -126,7 +158,6 @@ LSD::LSD (WorldObject * container)
     prevOutputsRelAngle = 0.0;
     outputsRelAngularVel = 0.0;
     prevOutputsRelAngularVel = 0.0;
-
 }
 
 LSD::~LSD ()

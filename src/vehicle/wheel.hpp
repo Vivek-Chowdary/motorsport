@@ -14,28 +14,30 @@
 #include "worldObject.hpp"
 #include "paths.hpp"
 
-//forward declarations
+// Forward declarations
 class Vector3d;
 class Quaternion;
 namespace Ogre {
   class Entity;
   class SceneNode;
 }
-class Suspension;
+SHARED_PTR(Suspension, pSuspension);
 
+SHARED_PTR(Wheel, pWheel);
 class Wheel : public DriveMass
 {
   private:
     bool userDriver;
     double powered;
-    Suspension * baseSuspension;
-    Pedal * brakePedal;
-  public:
+    pSuspension baseSuspension;
+    pPedal brakePedal;
     Wheel (WorldObject * container, XmlTag * tag);
+  public:
+    static pWheel create(WorldObject * container, XmlTag * tag);
     ~Wheel ();
-    void setSusp(Suspension * suspension) { baseSuspension = suspension; };
+    void setSusp(pSuspension suspension) { baseSuspension = suspension; };
     void setUserDriver ();
-    void setBrakePedal (Pedal * pedal);
+    void setBrakePedal (pPedal pedal);
     void stepPhysics ();
     double getInputAngularVel();
 };

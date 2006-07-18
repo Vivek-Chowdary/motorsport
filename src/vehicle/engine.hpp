@@ -12,19 +12,22 @@
 #include "driveMass.hpp"
 #include "driveJoint.hpp"
 
-class Pedal;
+// Forward declarations
+SHARED_PTR(Pedal, pPedal);
 
+SHARED_PTR(Engine, pEngine);
 class Engine : public DriveMass
 {
   private:
     double torqueLinearMultiplier;
     double telemetryTorque;
     double angularVelLimit;
-    Pedal * gasPedal;
-  public:
+    pPedal gasPedal;
     Engine (WorldObject * container, XmlTag * tag);
+  public:
+    static pEngine create (WorldObject * container, XmlTag * tag);
     ~Engine ();
-    void setGasPedal (Pedal * pedal);
+    void setGasPedal (pPedal pedal);
     void stepPhysics ();
     double getOutputTorque();
 };

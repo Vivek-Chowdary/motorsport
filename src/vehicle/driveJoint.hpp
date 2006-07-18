@@ -12,9 +12,11 @@
 #include "driveMass.hpp"
 #include "worldObject.hpp"
 
-class DriveMass;
-class Pedal;
+// Forward declarations
+SHARED_PTR(Pedal, pPedal);
+SHARED_PTR(DriveMass, pDriveMass);
 
+SHARED_PTR(DriveJoint, pDriveJoint);
 class DriveJoint : public WorldObject
 {
   protected:
@@ -27,8 +29,8 @@ class DriveJoint : public WorldObject
     double prevRelAngle;
     double relAngularVel;
     double prevRelAngularVel;
-    DriveMass *inputDrive;
-    DriveMass *outputDrive;
+    pDriveMass inputDrive;
+    pDriveMass outputDrive;
     bool enabled;
   public:
     DriveJoint (WorldObject * container, std::string name);
@@ -39,27 +41,31 @@ class DriveJoint : public WorldObject
     double getOutputTorque ()               { return outputTorqueTransfer; } ;
     double getInputTorque ()                { return inputTorqueTransfer; } ;
     double getRelAngle ()                   { return relAngle; } ;
-    void setOutputPointer (DriveMass *output)   { outputDrive = output; } ;
-    void setInputPointer (DriveMass *input)     { inputDrive = input; } ;
+    void setOutputPointer (pDriveMass output)   { outputDrive = output; } ;
+    void setInputPointer (pDriveMass input)     { inputDrive = input; } ;
 };
 
+SHARED_PTR(Clutch, pClutch);
 class Clutch : public DriveJoint
 {
   private:
-    Pedal * clutchPedal;
+    pPedal clutchPedal;
     double coeffStaticFriction;
     double coeffDynamicFriction;
     double maxTorqueTransfer;
     double lockedParam;
     bool locked;
-  public:
     Clutch (WorldObject * container, XmlTag * tag);
     Clutch (WorldObject * container);
+  public:
+    static pClutch create (WorldObject * container, XmlTag * tag);
+    static pClutch create (WorldObject * container);
     ~Clutch ();
-    void setClutchPedal(Pedal * pedal);
+    void setClutchPedal(pPedal pedal);
     void stepPhysics ();
 };
 
+SHARED_PTR(Gear, pGear);
 class Gear : public DriveJoint
 {
   private:
@@ -67,18 +73,21 @@ class Gear : public DriveJoint
     double springConstant;
     double dampConstant;
     void startPhysics (XmlTag * tag);
-  public:
     Gear (WorldObject * container, XmlTag * tag);
     Gear (WorldObject * container);
+  public:
+    static pGear create (WorldObject * container, XmlTag * tag);
+    static pGear create (WorldObject * container);
     ~Gear ();
     void processXmlRootNode (XmlTag * tag);
     void stepPhysics ();
 };
 
+SHARED_PTR(LSD, pLSD);
 class LSD : public DriveJoint
 {
   private:
-    DriveMass *outputDrive2;
+    pDriveMass outputDrive2;
     double outputsRelAngle;
     double prevOutputsRelAngle;
     double outputsRelAngularVel;
@@ -88,12 +97,14 @@ class LSD : public DriveJoint
     double dampConstant;
     double limitedSlipClutchFriction;
     void startPhysics (XmlTag * tag);
-  public:
     LSD (WorldObject * container, XmlTag * tag);
     LSD (WorldObject * container);
+  public:
+    static pLSD create (WorldObject * container, XmlTag * tag);
+    static pLSD create (WorldObject * container);
     ~LSD ();
     void processXmlRootNode (XmlTag * tag);
-    void setOutputPointer2 (DriveMass *output)   { outputDrive2 = output; } ;
+    void setOutputPointer2 (pDriveMass output)   { outputDrive2 = output; } ;
     void stepPhysics ();
 };
 

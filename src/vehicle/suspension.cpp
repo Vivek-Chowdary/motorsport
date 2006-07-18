@@ -22,7 +22,7 @@
 #include <cmath>
 
 Suspension::Suspension (WorldObject * container, std::string name)
-    :WorldObject(container, name)
+    : WorldObject(container, name)
 {
     position = Vector3d (0, 0, 0);
     rotation = Quaternion (1, 0, 0, 0);
@@ -133,6 +133,11 @@ void Unidimensional::setVelocity(double velocity)
     dJointSetHinge2Param(jointID, dParamVel, 0);
 }
 
+pUnidimensional Unidimensional::create (WorldObject * container, XmlTag * tag)
+{
+    pUnidimensional tmp(new Unidimensional(container, tag));
+    return tmp;
+}
 Unidimensional::Unidimensional (WorldObject * container, XmlTag * tag)
     :Suspension(container, "suspension.unidimensional")
 {
@@ -170,12 +175,17 @@ Unidimensional::~Unidimensional()
 {
     dJointDestroy (jointID);
 }
-void Unidimensional::attach(WorldObject * base, WorldObject * object)
+void Unidimensional::attach(pWorldObject base, pWorldObject object)
 {
-    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    //FIXME: remove all unnecessary comments
+    //Wheel * wheel = dynamic_cast<Wheel*>(object);
+    pWheel wheel = boost::dynamic_pointer_cast<Wheel>(object);
+    //pWheel wheel ( boost::dynamic_pointer_cast<pWheel>(object) );
+    //pWheel wheel = boost::dynamic_pointer_cast<pWheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(this);
+    wheel->setSusp(shared_from_this());
+    //wheel->setSusp(this);
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
     // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis, and updated every frame
@@ -197,7 +207,11 @@ void Unidimensional::attach(WorldObject * base, WorldObject * object)
 }
 
 
-
+pFixed Fixed::create(WorldObject * container, XmlTag * tag)
+{
+    pFixed tmp(new Fixed(container, tag));
+    return tmp;
+}
 
 Fixed::Fixed (WorldObject * container, XmlTag * tag)
     :Suspension(container, "suspension.unidimensional")
@@ -220,12 +234,13 @@ Fixed::~Fixed()
 {
     dJointDestroy (jointID);
 }
-void Fixed::attach(WorldObject * base, WorldObject * object)
+void Fixed::attach(pWorldObject base, pWorldObject object)
 {
-    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    //Wheel * wheel = dynamic_cast<Wheel*>(object.get());
+    pWheel wheel = boost::dynamic_pointer_cast<Wheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(this);
+    wheel->setSusp(shared_from_this());
     dJointAttach (jointID, base->getMainOdeObject()->getBodyID(), object->getMainOdeObject()->getBodyID());
 
     // finite rotation on wheels helps avoid explosions, FIXME prolly needs to be relative to suspension axis
@@ -253,6 +268,12 @@ Vector3d Fixed::getAxis()
 void Fixed::setVelocity(double velocity)
 {
     dJointSetHingeParam(jointID, dParamVel, 0);
+}
+
+pDoubleWishbone DoubleWishbone::create(WorldObject * container, XmlTag * tag)
+{
+    pDoubleWishbone tmp(new DoubleWishbone(container, tag));
+    return tmp;
 }
 
 DoubleWishbone::DoubleWishbone(WorldObject * container, XmlTag * tag)
@@ -365,12 +386,13 @@ DoubleWishbone::~DoubleWishbone()
     //empty
 }
 
-void DoubleWishbone::attach(WorldObject * base, WorldObject * object)
+void DoubleWishbone::attach(pWorldObject base, pWorldObject object)
 {
-    Wheel * wheel = dynamic_cast<Wheel*>(object);
+    //Wheel * wheel = dynamic_cast<Wheel*>(object.get());
+    pWheel wheel = boost::dynamic_pointer_cast<Wheel>(object);
     if (wheel == NULL) log->__format(LOG_ERROR, "Trying to attach a non-wheel object to the suspension!");
     if (base->getMainOdeObject() == NULL) log->__format(LOG_ERROR, "Trying to attach a wheel object to an object with no physics!");
-    wheel->setSusp(this);
+    wheel->setSusp(shared_from_this());
 
     double dirMult = 1.0;
     if (!right) dirMult *= -1;

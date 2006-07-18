@@ -11,14 +11,16 @@
 #define PEDAL_HPP
 #include "worldObject.hpp"
 
+SHARED_PTR(Pedal, pPedal);
 class Pedal : public WorldObject
 {
   private:
     bool userDriver;
     double angleRange;
     double currentAngle;
-  public:
     Pedal (WorldObject * container, XmlTag * tag);
+  public:
+    static pPedal create(WorldObject * container, XmlTag * tag);
     ~Pedal ();
     void setUserDriver ();
     void stepPhysics ();

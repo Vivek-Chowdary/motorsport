@@ -141,6 +141,7 @@ SYSTEM_INCLUDE_DIRS := \
 	$(BASE_INCLUDE_DIR)/SDL \
 	$(BASE_INCLUDE_DIR)/OGRE \
 	$(BASE_INCLUDE_DIR)/xercesc \
+	$(BASE_INCLUDE_DIR)/boost \
 	$(BASE_INCLUDE_DIR)/../local/include/ode \
 	$(BASE_INCLUDE_DIR)/freetype2 \
 	$(BASE_INCLUDE_DIR)/SDL \

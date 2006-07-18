@@ -11,13 +11,15 @@
 #define FINALDRIVE_HPP
 #include "driveMass.hpp"
 
+SHARED_PTR(FinalDrive, pFinalDrive);
 class FinalDrive : public DriveMass
 {
   private:
     double finalDriveRatio;
     DriveJoint *outputJoint2; 
-  public:
     FinalDrive (WorldObject * container, XmlTag * tag);
+  public:
+    static pFinalDrive create (WorldObject * container, XmlTag * tag);
     ~FinalDrive ();
     void stepPhysics ();
 };

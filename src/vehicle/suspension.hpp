@@ -24,7 +24,7 @@ namespace Ogre {
   class SceneNode;
 }
 
-class Suspension : public WorldObject
+class Suspension : public boost::enable_shared_from_this <Suspension> , public WorldObject
 {
     protected:
         Suspension (WorldObject * container, std::string name);
@@ -43,9 +43,10 @@ class Suspension : public WorldObject
         virtual double getRate()=0;
         virtual Vector3d getAxis()=0;
         virtual void setVelocity(double velocity)=0;
-        virtual void attach(WorldObject * base, WorldObject * object)=0;
+        virtual void attach(pWorldObject base, pWorldObject object)=0;
 };
 
+SHARED_PTR(Unidimensional, pUnidimensional);
 class Unidimensional : public Suspension
 {
     protected:
@@ -54,30 +55,35 @@ class Unidimensional : public Suspension
         double dampingConstant;
         double maxSteeringAngle;
         double getSteeringAngle();
-    public:
         Unidimensional (WorldObject * container, XmlTag * tag);
+    public:
+        static pUnidimensional create(WorldObject * container, XmlTag * tag);
         ~Unidimensional();
 
         void stepPhysics();
         double getRate();
         Vector3d getAxis();
         void setVelocity(double velocity);
-        void attach(WorldObject * base, WorldObject * object);
+        void attach(pWorldObject base, pWorldObject object);
 };
+
+SHARED_PTR(Fixed, pFixed);
 class Fixed : public Suspension
 {
     protected:
         dJointID jointID;
-    public:
         Fixed (WorldObject * container, XmlTag * tag);
+    public:
+        static pFixed create(WorldObject * container, XmlTag * tag);
         ~Fixed();
 
         void stepPhysics();
         double getRate();
         Vector3d getAxis();
         void setVelocity(double velocity);
-        void attach(WorldObject * base, WorldObject * object);
+        void attach(pWorldObject base, pWorldObject object);
 };
+SHARED_PTR(DoubleWishbone, pDoubleWishbone);
 class DoubleWishbone : public Suspension
 {
     protected:
@@ -106,14 +112,16 @@ class DoubleWishbone : public Suspension
 
         Vector3d getFirstLinkPosition (){return firstPosition;};
         Quaternion getFirstLinkRotation (){return firstRotation;};
-    public:
         DoubleWishbone (WorldObject * container, XmlTag * tag);
+    public:
+        static pDoubleWishbone create(WorldObject * container, XmlTag * tag);
         ~DoubleWishbone();
+
         void stepPhysics();
         double getRate();
         Vector3d getAxis();
         void setVelocity(double velocity);
-        void attach(WorldObject * base, WorldObject * object);
+        void attach(pWorldObject base, pWorldObject object);
 };
 #endif
 

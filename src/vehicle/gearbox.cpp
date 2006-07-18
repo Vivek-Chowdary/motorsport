@@ -12,6 +12,12 @@
 #include "system.hpp"
 #include "SDL/SDL_keysym.h"
 
+pGearbox Gearbox::create(WorldObject * container, XmlTag * tag)
+{
+    pGearbox tmp(new Gearbox(container, tag));
+    return tmp;
+}
+
 Gearbox::Gearbox (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "gearbox")
 {

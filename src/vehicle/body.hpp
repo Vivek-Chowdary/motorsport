@@ -13,13 +13,12 @@
 #include "vector3d.hpp"
 #include "paths.hpp"
 
-//forward declarations
-namespace Ogre {
-  class Entity;
-  class SceneNode;
-}
+// Forward declarations
+namespace Ogre { class Entity; class SceneNode; }
 class Quaternion;
 class Vehicle;
+
+SHARED_PTR(Body, pBody);
 
 class Body : public WorldObject
 {
@@ -28,8 +27,9 @@ class Body : public WorldObject
     double frontalArea;
     void stopPhysics ();
     void stopGraphics ();
-  public:
     Body (WorldObject * container, XmlTag * tag);
+  public:
+    static pBody create (WorldObject * container, XmlTag * tag);
     ~Body ();
     void stepPhysics ();
 };

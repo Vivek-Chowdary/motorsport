@@ -13,8 +13,11 @@
 #include "SDL/SDL_keysym.h"
 #include "pedal.hpp"
 
-
-class Pedal;
+pEngine Engine::create(WorldObject * container, XmlTag * tag)
+{
+    pEngine tmp(new Engine(container, tag));
+    return tmp;
+}
 
 Engine::Engine (WorldObject * container, XmlTag * tag)
     :DriveMass(container, "engine")
@@ -40,7 +43,7 @@ Engine::~Engine ()
 }
 
 
-void Engine::setGasPedal (Pedal * pedal)
+void Engine::setGasPedal (pPedal pedal)
 {
     gasPedal = pedal;
 }

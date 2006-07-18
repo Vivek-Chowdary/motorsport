@@ -20,16 +20,16 @@ class Quaternion;
 class Vector3d;
 SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt);
 SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt);
-class WorldObject;
-typedef std::map <std::string, WorldObject *> WorldObjects;
-typedef std::map <std::string, WorldObject *>::iterator WorldObjectsIt;
+SHARED_PTR_MAP(WorldObject, pWorldObject, WorldObjects, WorldObjectsIt);
+typedef std::map <std::string, WorldObject *> WorldObjectsC;
+typedef std::map <std::string, WorldObject *>::iterator WorldObjectsCIt;
 
 class WorldObject
 {
     private:
         virtual void hack(){};
         static unsigned int instancesCount;
-        static WorldObjects worldObjects;
+        static WorldObjectsC worldObjects;
         std::string id;
         std::string name;
         std::string path;
@@ -40,8 +40,8 @@ class WorldObject
         WorldObject * container;
         OgreObjects ogreObjects;
         OdeObjects odeObjects;
-    public:
         WorldObject (WorldObject * container, const std::string & name);
+    public:
         virtual ~WorldObject ();
         WorldObject * getContainer();
         std::string getId();
