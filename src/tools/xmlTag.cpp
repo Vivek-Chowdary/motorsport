@@ -109,7 +109,7 @@ XmlTag::~XmlTag()
     {
         if (!(i->second))
         {
-            if (i->first != "xmlns" && i->first != "xmlns:xsi" && i->first != "xsi:schemaLocation")
+            if (i->first != "xmlns" && i->first != "xmlns:xsi" && i->first != "xsi:schemaLocation" && i->first[0] != '_')
             {
                 if (log) log->__format(LOG_WARNING, "Attribute \"%s\" in \"%s\" has not been used!", i->first.c_str(), getFullName().c_str());
                 else     std::cout << "Warning! Attribute \"" << i->first << "\" in \"" << getFullName() << "\" has not been used!" << std::endl;

@@ -4,7 +4,6 @@ set proper coords system in the world
 finish suspension rotations thing
 rename mosp window
 check what happens when getName() of root nodes... doesn't exist.. you know waht i mean, the xmlTag-using code..
-check if vehicle map thingies are right, o replaced while constructed, or whatever. name clashing, double destruction, etc...
 refactorize the world and area (ground, sky, ...)
 redefine vehicle.xml format, so that it allows links between objects.
 allow objects to be created from an xml file, not just xml tag

@@ -8,6 +8,7 @@ d=$origin/include
     ln -s $d/OGRE
     ln -s $d/SDL
     ln -s $d/xercesc
+    ln -s $d/boost
 cd ..
 
 cd lib

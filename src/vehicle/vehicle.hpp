@@ -69,6 +69,7 @@ class Vehicle : public WorldObject
     pSuspension getSuspension (std::string name);
     pWheel getWheel (std::string name);
     pWorldObject getObject (std::string name);
+    pWorldObject getWorldObject (std::string name);
 
     void setUserDriver ();
     void stepPhysics ();

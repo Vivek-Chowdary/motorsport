@@ -63,7 +63,7 @@ void Vehicle::setUserDriver ()
     log->log (LOG_ENDUSER, LOG_TELEMETRY, "VehSpeed EngineSpeed DiffAngularVel RRWhAngulVel RLWhAngulVel Gear Distance");
 
     // engage neutral gear
-    getGearbox("gearbox")->setGear(2);
+    getGearbox("main")->setGear(2);
 
     // spread the news to the necessary (input-able) vehicle parts
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
@@ -87,60 +87,44 @@ void Vehicle::construct (XmlTag * tag)
         contact =     tag->getAttribute("contact");
         license =     tag->getAttribute("license");
 
-        components["rearDiff"] = LSD::create();
-        components["transfer"] = Gear::create();
+        pLSD  lsd  = LSD::create();  lsd->setName("rear diff");  components[lsd->getName()] = lsd;
+        pGear gear = Gear::create(); gear->setName("transfer"); components[gear->getName()] = gear;
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
-            if (t->getName() == "body")         components["body"]       = Body::create       (t);
-            if (t->getName() == "engine")       components["engine"]     = Engine::create     (t);
-            if (t->getName() == "clutch")       components["clutch"]     = Clutch::create     (t);
-            if (t->getName() == "gearbox")      components["gearbox"]    = Gearbox::create    (t);
-            if (t->getName() == "finalDrive")   components["finalDrive"] = FinalDrive::create (t);
+            bool u=false; //update graphics display; render one frame
+            if (t->getName() == "body")
+                { pBody tmp = Body::create(t); components[tmp->getName()]=tmp; }
+            if (t->getName() == "engine")
+                { pEngine tmp = Engine::create(t); components[tmp->getName()]=tmp; }
+            if (t->getName() == "clutch")
+                { pClutch tmp = Clutch::create(t); components[tmp->getName()]=tmp; }
+            if (t->getName() == "gearbox")
+                { pGearbox tmp = Gearbox::create(t); components[tmp->getName()]=tmp; }
+            if (t->getName() == "finalDrive")
+                { pFinalDrive tmp = FinalDrive::create(t); components[tmp->getName()]=tmp; }
             if (t->getName() == "pedal")
-            {
-                pPedal tmp = Pedal::create (t);
-                components[tmp->getName()] = tmp;
-            }
+                { pPedal tmp = Pedal::create(t); components[tmp->getName()]=tmp; }
             if (t->getName() == "wheel")
-            {
-                pWheel tmp = Wheel::create (t);
-                components[tmp->getName()] = tmp;
-                System::get()->ogreWindow->update ();
-            }
+                { pWheel tmp = Wheel::create(t); components[tmp->getName()]=tmp; u=true;}
             if (t->getName() == "suspension.unidimensional")
-            {
-                pUnidimensional tmp = Unidimensional::create (t);
-                components[tmp->getName()] = tmp;
-                System::get()->ogreWindow->update ();
-            }
+                { pUnidimensional tmp = Unidimensional::create(t); components[tmp->getName()]=tmp; u=true;}
             if (t->getName() == "suspension.fixed")
-            {
-                pFixed tmp = Fixed::create (t);
-                components[tmp->getName()] = tmp;
-                System::get()->ogreWindow->update ();
-            }
+                { pFixed tmp = Fixed::create(t); components[tmp->getName()]=tmp; u=true;}
             if (t->getName() == "suspension.doublewishbone")
-            {
-                pDoubleWishbone tmp = DoubleWishbone::create (t);
-                components[tmp->getName()] = tmp;
-                System::get()->ogreWindow->update ();
-            }
+                { pDoubleWishbone tmp = DoubleWishbone::create(t); components[tmp->getName()]=tmp; u=true;}
             if (t->getName() == "camera")
-            {
-                pCamera tmp = Camera::create (t);
-                cameras[tmp->getName()] = tmp;
-            }
+                { pCamera tmp = Camera::create(t); cameras[tmp->getName()]=tmp; u=true;}
+            if (u) System::get()->ogreWindow->update ();
         }
     }
-
     // spread the news to the necessary (input-able) vehicle parts
     log->__format(LOG_DEVELOPER, "Setting some drive joint pointers...");
-    getDriveJoint("clutch")->setOutputPointer(getDriveMass("gearbox"));
-    getDriveJoint("transfer")->setOutputPointer(getDriveMass("finalDrive"));
+    getClutch("main")->setOutputPointer(getGearbox("main"));
+    getDriveJoint("transfer")->setOutputPointer(getFinalDrive("main"));
     
-    getDriveJoint("clutch")->setInputPointer(getDriveMass("engine"));
-    getDriveJoint("transfer")->setInputPointer(getDriveMass("gearbox"));
-    getDriveJoint("rearDiff")->setInputPointer(getDriveMass("finalDrive"));
+    getClutch("main")->setInputPointer(getEngine("main"));
+    getDriveJoint("transfer")->setInputPointer(getGearbox("main"));
+    getDriveJoint("rear diff")->setInputPointer(getFinalDrive("main"));
         
     log->__format(LOG_DEVELOPER, "Placing wheels on suspensions...");
     placeWheelsOnSuspensions();
@@ -148,27 +132,27 @@ void Vehicle::construct (XmlTag * tag)
     boltWheelsToSuspensions();
 
     log->__format(LOG_DEVELOPER, "Setting some more drive joint pointers...");
-    getDriveJoint("rearDiff")->setOutputPointer(getDriveMass("rr wheel"));
-    getLSD("rearDiff")->setOutputPointer2(getDriveMass("rl wheel"));
+    getDriveJoint("rear diff")->setOutputPointer(getWheel("rr"));
+    getLSD("rear diff")->setOutputPointer2(getWheel("rl"));
 
-    getEngine("engine")->setGasPedal(getPedal("gasPedal"));
-    getClutch("clutch")->setClutchPedal(getPedal("clutchPedal"));
+    getEngine("main")->setGasPedal(getPedal("gas"));
+    getClutch("main")->setClutchPedal(getPedal("clutch"));
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
         Wheel * tmpWheel;
         if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0)
         {
-            tmpWheel->setBrakePedal(getPedal("brakePedal"));
+            tmpWheel->setBrakePedal(getPedal("brake"));
         }
     }
 
-    getDriveJoint("clutch")->enable();
+    getClutch("main")->enable();
     getDriveJoint("transfer")->enable();
-    getDriveJoint("rearDiff")->enable();
+    getDriveJoint("rear diff")->enable();
     
     //start in 1st gear (hardcoded to 2)
     // this helps brake the vehicle (since it's not user-controlled by default and would roll around freely otherwise)
-    getGearbox("gearbox")->setGear(2);
+    getGearbox("main")->setGear(2);
 
     stepGraphics();
 }
@@ -177,11 +161,12 @@ void Vehicle::setContainer (pWorldObject container)
 {
     WorldObject::setContainer(container);
     // tell all the objects who's the boss.
+    pWorldObject t = shared_from_this();
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        i->second->setContainer(shared_from_this());
+        if (i->second) i->second->setContainer(t);
     }
-    getGearbox("gearbox")->setContainer(shared_from_this());
+    getGearbox("main")->setContainer(shared_from_this());
     for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
     {
         i->second->setContainer(shared_from_this());
@@ -206,14 +191,14 @@ void Vehicle::stepGraphics ()
 
 pOdeObject Vehicle::getMainOdeObject()
 {
-    return getObject("body")->getMainOdeObject();
+    return getObject("(Body)main")->getMainOdeObject();
 }
 
 void Vehicle::setPosition (Vector3d position)
 {
     Vector3d posDiff = position - getPosition();
     log->__format (LOG_DEVELOPER,"Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
-    getObject("body")->setPosition ( getObject("body")->getPosition() + posDiff );
+    getObject("(Body)main")->setPosition ( getObject("(Body)main")->getPosition() + posDiff );
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
         Wheel * tmpWheel;
@@ -227,7 +212,7 @@ void Vehicle::setPosition (Vector3d position)
 
 Vector3d Vehicle::getPosition ()
 {
-    return getObject("body")->getPosition();
+    return getObject("(Body)main")->getPosition();
 }
 
 void Vehicle::applyRotation (Quaternion rotation)
@@ -243,32 +228,32 @@ void Vehicle::applyRotation (Quaternion rotation)
             tmpSusp->applyRotation (rotation);
     }
     // apply rotation to body
-    getObject("body")->applyRotation (rotation);
+    getObject("(Body)main")->applyRotation (rotation);
 }
 
 Quaternion Vehicle::getRotation ()
 {
-    return getObject("body")->getRotation();
+    return getObject("(Body)main")->getRotation();
 }
 
 void Vehicle::placeWheelsOnSuspensions()
 {
-    getWheel("fr wheel")->applyRotation(getSuspension("fr suspension")->getSecondLinkRotation());
-    getWheel("fr wheel")->setPosition(getSuspension("fr suspension")->getSecondLinkPosition());
-    getWheel("fl wheel")->applyRotation(getSuspension("fl suspension")->getSecondLinkRotation());
-    getWheel("fl wheel")->setPosition(getSuspension("fl suspension")->getSecondLinkPosition());
-    getWheel("rr wheel")->applyRotation(getSuspension("rr suspension")->getSecondLinkRotation());
-    getWheel("rr wheel")->setPosition(getSuspension("rr suspension")->getSecondLinkPosition());
-    getWheel("rl wheel")->applyRotation(getSuspension("rl suspension")->getSecondLinkRotation());
-    getWheel("rl wheel")->setPosition(getSuspension("rl suspension")->getSecondLinkPosition());
+    getWheel("fr")->applyRotation(getSuspension("fr")->getSecondLinkRotation());
+    getWheel("fr")->setPosition(getSuspension("fr")->getSecondLinkPosition());
+    getWheel("fl")->applyRotation(getSuspension("fl")->getSecondLinkRotation());
+    getWheel("fl")->setPosition(getSuspension("fl")->getSecondLinkPosition());
+    getWheel("rr")->applyRotation(getSuspension("rr")->getSecondLinkRotation());
+    getWheel("rr")->setPosition(getSuspension("rr")->getSecondLinkPosition());
+    getWheel("rl")->applyRotation(getSuspension("rl")->getSecondLinkRotation());
+    getWheel("rl")->setPosition(getSuspension("rl")->getSecondLinkPosition());
 }
 
 void Vehicle::boltWheelsToSuspensions()
 {
-    getSuspension("fr suspension")->attach(getObject("body"), getObject("fr wheel"));
-    getSuspension("fl suspension")->attach(getObject("body"), getObject("fl wheel"));
-    getSuspension("rr suspension")->attach(getObject("body"), getObject("rr wheel"));
-    getSuspension("rl suspension")->attach(getObject("body"), getObject("rl wheel"));
+    getSuspension("fr")->attach(getObject("(Body)main"), getObject("(Wheel)fr"));
+    getSuspension("fl")->attach(getObject("(Body)main"), getObject("(Wheel)fl"));
+    getSuspension("rr")->attach(getObject("(Body)main"), getObject("(Wheel)rr"));
+    getSuspension("rl")->attach(getObject("(Body)main"), getObject("(Wheel)rl"));
 }
 
 void Vehicle::stepPhysics ()
@@ -286,24 +271,24 @@ void Vehicle::stepPhysics ()
         // check the gearshift levers
         if(System::get()->axisMap[getIDKeyboardKey(SDLK_a)]->getValue() == 1)
         {
-            getGearbox("gearbox")->gearUp();
+            getGearbox("main")->gearUp();
         }
         if(System::get()->axisMap[getIDKeyboardKey(SDLK_z)]->getValue() == 1)
         {
-            getGearbox("gearbox")->gearDown();
+            getGearbox("main")->gearDown();
         }
     }
 
     // step torque transfer components first
-    getClutch("clutch")->stepPhysics();
+    getClutch("main")->stepPhysics();
     getGear("transfer")->stepPhysics();
-    getLSD("rearDiff")->stepPhysics();
+    getLSD("rear diff")->stepPhysics();
         
     // step rigid bodies    
-    getEngine("engine")->stepPhysics();
-    getGearbox("gearbox")->stepPhysics();
-    getFinalDrive("finalDrive")->stepPhysics();
-    getBody("body")->stepPhysics();
+    getEngine("main")->stepPhysics();
+    getGearbox("main")->stepPhysics();
+    getFinalDrive("main")->stepPhysics();
+    getBody("main")->stepPhysics();
     std::map < std::string, Suspension * >::const_iterator suspIter;
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
@@ -316,96 +301,167 @@ void Vehicle::stepPhysics ()
     // print telemetry data
     if ( userDriver )
     {
-        const dReal * tmp = dBodyGetLinearVel(getObject("body")->getMainOdeObject()->getBodyID());
+        const dReal * tmp = dBodyGetLinearVel(getObject("(Body)main")->getMainOdeObject()->getBodyID());
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        tmp = dBodyGetPosition(getObject("body")->getMainOdeObject()->getBodyID());
+        tmp = dBodyGetPosition(getObject("(Body)main")->getMainOdeObject()->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getDriveMass("engine")->getOutputAngularVel(), getDriveMass("finalDrive")->getInputAngularVel(), getWheel("rr wheel")->getInputAngularVel(), getWheel("rl wheel")->getInputAngularVel(), getGearbox("gearbox")->getCurrentGearName().c_str(), distance);
+        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getEngine("main")->getOutputAngularVel(), getFinalDrive("main")->getInputAngularVel(), getWheel("rr")->getInputAngularVel(), getWheel("rl")->getInputAngularVel(), getGearbox("main")->getCurrentGearName().c_str(), distance);
     }
 }
 
 pBody Vehicle::getBody (std::string name)
 {
-    pBody tmp = boost::dynamic_pointer_cast<Body>(components[name]);
+    pBody tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Body)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Body>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Body");
-    return (tmp);
-    //return (components[name]);
+    return tmp;
 }
 pDriveMass Vehicle::getDriveMass (std::string name)
 {
-    pDriveMass tmp = boost::dynamic_pointer_cast<DriveMass>(components[name]);
+    pDriveMass tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(DriveMass)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
+        if (i->first == ("(Engine)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
+        if (i->first == ("(FinalDrive)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
+        if (i->first == ("(Gearbox)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
+        if (i->first == ("(Wheel)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "DriveMass");
-    return (tmp);
+    return tmp;
 }
 pDriveJoint Vehicle::getDriveJoint (std::string name)
 {
-    pDriveJoint tmp = boost::dynamic_pointer_cast<DriveJoint>(components[name]);
+    pDriveJoint tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(DriveJoint)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveJoint>(i->second)) break;
+        if (i->first == ("(Clutch)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Clutch>(i->second)) break;
+        if (i->first == ("(Gear)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Gear>(i->second)) break;
+        if (i->first == ("(LSD)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<LSD>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "DriveJoint");
-    return (tmp);
+    return tmp;
 }
 pClutch Vehicle::getClutch (std::string name)
 {
-    pClutch tmp = boost::dynamic_pointer_cast<Clutch>(components[name]);
+    pClutch tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Clutch)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Clutch>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Clutch");
-    return (tmp);
+    return tmp;
 }
 pGear Vehicle::getGear (std::string name)
 {
-    pGear tmp = boost::dynamic_pointer_cast<Gear>(components[name]);
+    pGear tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Gear)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Gear>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Gear");
-    return (tmp);
+    return tmp;
 }
 pLSD Vehicle::getLSD (std::string name)
 {
-    pLSD tmp = boost::dynamic_pointer_cast<LSD>(components[name]);
+    pLSD tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(LSD)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<LSD>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "LSD");
-    return (tmp);
+    return tmp;
 }
 pEngine Vehicle::getEngine (std::string name)
 {
-    pEngine tmp = boost::dynamic_pointer_cast<Engine>(components[name]);
+    pEngine tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Engine)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Engine>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Engine");
-    return (tmp);
+    return tmp;
 }
 pFinalDrive Vehicle::getFinalDrive (std::string name)
 {
-    pFinalDrive tmp = boost::dynamic_pointer_cast<FinalDrive>(components[name]);
+    pFinalDrive tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(FinalDrive)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<FinalDrive>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "FinalDrive");
-    return (tmp);
+    return tmp;
 }
 pGearbox Vehicle::getGearbox (std::string name)
 {
-    pGearbox tmp = boost::dynamic_pointer_cast<Gearbox>(components[name]);
+    pGearbox tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Gearbox)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Gearbox>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Gearbox");
-    return (tmp);
+    return tmp;
 }
 pGearboxGear Vehicle::getGearboxGear (std::string name)
 {
-    pGearboxGear tmp = boost::dynamic_pointer_cast<GearboxGear>(components[name]);
+    pGearboxGear tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(GearboxGear)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<GearboxGear>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "GearboxGear");
-    return (tmp);
+    return tmp;
 }
 pPedal Vehicle::getPedal (std::string name)
 {
-    pPedal tmp = boost::dynamic_pointer_cast<Pedal>(components[name]);
+    pPedal tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Pedal)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Pedal>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Pedal");
-    return (tmp);
+    return tmp;
 }
 pSuspension Vehicle::getSuspension (std::string name)
 {
-    pSuspension tmp = boost::dynamic_pointer_cast<Suspension>(components[name]);
+    pSuspension tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Suspension)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Suspension>(i->second)) break;
+        if (i->first == ("(DoubleWishbone)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) break;
+        if (i->first == ("(Fixed)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Fixed>(i->second)) break;
+        if (i->first == ("(Unidimensional)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Suspension");
-    return (tmp);
+    return tmp;
 }
 pWheel Vehicle::getWheel (std::string name)
 {
-    pWheel tmp = boost::dynamic_pointer_cast<Wheel>(components[name]);
+    pWheel tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(Wheel)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Wheel>(i->second)) break;
+    }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Wheel");
-    return (tmp);
+    return tmp;
 }
 pWorldObject Vehicle::getObject (std::string name)
 {
    if (components.find(name) == components.end())
-   log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "WorldObject");
+   log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" from generic type \"%s\"", name.c_str(), "WorldObject");
    return components[name];
+}
+pWorldObject Vehicle::getWorldObject (std::string name)
+{
+    pWorldObject tmp;
+    for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
+    {
+        if (i->first == ("(WorldObject)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<WorldObject>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "WorldObject");
+    return tmp;
 }

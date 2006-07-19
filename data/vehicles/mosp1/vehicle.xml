@@ -24,7 +24,7 @@
         wheel-pedal                     wheel pedal = brakePedal
     </links>
     <body
-        name = "body"
+        name = "main"
         length = "4.66"
         width = "2.08"
         height = "1.2" 
@@ -42,23 +42,23 @@
         </mesh>
     </body>
     <pedal
-        name = "clutchPedal"
+        name = "clutch"
         angleRange = "1.047975"
         _angleRange = "radians = degrees * 2 * PI / 360"
         >
     </pedal>
     <pedal
-        name = "gasPedal"
+        name = "gas"
         angleRange = "0.6981317"
         >
     </pedal>
     <pedal
-        name = "brakePedal"
+        name = "brake"
         angleRange = "0.6981317"
         >
     </pedal>
     <engine
-        name = "v8 engine"
+        name = "main"
         torqueLinearMultiplier = "246"
         engineInertia = "0.4"
         engineFriction = "0.1"
@@ -67,7 +67,7 @@
         >
     </engine>
     <clutch
-        name = "clutch"
+        name = "main"
         coeffStaticFriction = "1"
         coeffDynamicFriction = "0.8"
         maxTorqueTransfer = "260"
@@ -82,7 +82,7 @@
         >
     </shiftDownPaddle>
     <gearbox
-        name = "gearbox"
+        name = "main"
         gearboxFriction = "0.01"
         gearboxInertia = "0.2"
         >
@@ -130,7 +130,7 @@
         </gear>    
     </gearbox>
     <finalDrive
-        name = "final drive"
+        name = "main"
         diffInertia = "0.1"
         diffFriction = "0.001"
         finalDriveRatio = "3.6"
@@ -143,7 +143,7 @@
     </steeringWheel>
 <!--
     <suspension.unidimensional
-        name = "fr suspension"
+        name = "fr"
         springConstant =  "80500"
         dampingConstant = "2000"
         position = "+1.44 +0.857 -0.45"
@@ -152,7 +152,7 @@
         >
     </suspension.unidimensional>
     <suspension.unidimensional
-        name = "fl suspension"
+        name = "fl"
         springConstant =  "80500"
         dampingConstant = "2000"
         position = "+1.44 -0.857 -0.45"
@@ -162,7 +162,7 @@
     </suspension.unidimensional>
 -->
     <suspension.doublewishbone
-        name = "fl suspension"
+        name = "fl"
         springStiffness =  "80500"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -178,7 +178,7 @@
         >
     </suspension.doublewishbone>
     <suspension.doublewishbone
-        name = "fr suspension"
+        name = "fr"
         springStiffness =  "80500"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -194,7 +194,7 @@
         >
     </suspension.doublewishbone>
     <suspension.doublewishbone
-        name = "rl suspension"
+        name = "rl"
         springStiffness =  "80900"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -210,7 +210,7 @@
         >
     </suspension.doublewishbone>
     <suspension.doublewishbone
-        name = "rr suspension"
+        name = "rr"
         springStiffness =  "80900"
         springLengthAtEase =  "0.5"
         damperFastBump = "2000"
@@ -227,7 +227,7 @@
     </suspension.doublewishbone>
 <!--
     <suspension.unidimensional
-        name = "rr suspension"
+        name = "rr"
         springConstant =  "80900"
         dampingConstant = "2000"
         position = "-1.35 +0.88 -0.45"
@@ -236,7 +236,7 @@
         >
     </suspension.unidimensional>
     <suspension.unidimensional
-        name = "rl suspension"
+        name = "rl"
         springConstant =  "80900"
         dampingConstant = "2000"
         position = "-1.35 -0.88 -0.45"
@@ -245,13 +245,13 @@
         >
     </suspension.unidimensional>
     <suspension.fixed
-        name = "rr suspension"
+        name = "rr"
         position = "-1.35 +0.88 -0.45"
         rotation = "-90 0 0"
         >
     </suspension.fixed>
     <suspension.fixed
-        name = "rl suspension"
+        name = "rl"
         position = "-1.35 -0.88 -0.45"
         rotation = "+90 0 0"
         steeringAngle = "0"
@@ -259,7 +259,7 @@
     </suspension.fixed>
 -->
     <wheel
-        name = "fr wheel"
+        name = "fr"
         mass = "15.1"
         radius = "0.34"
         width = "0.125"
@@ -275,7 +275,7 @@
         </mesh>
     </wheel>
     <wheel
-        name = "fl wheel"
+        name = "fl"
         mass = "15.1"
         radius = "0.34"
         width = "0.125"
@@ -291,7 +291,7 @@
         </mesh>
     </wheel>
     <wheel
-        name = "rr wheel"
+        name = "rr"
         mass = "15.0"
         radius = "0.34"
         width = "0.125"
@@ -307,7 +307,7 @@
         </mesh>
     </wheel>
     <wheel
-        name = "rl wheel"
+        name = "rl"
         mass = "15.0"
         radius = "0.34"
         width = "0.125"

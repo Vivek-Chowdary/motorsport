@@ -11,6 +11,22 @@
 #include "quaternion.hpp"
 #include "vector3d.hpp"
 
+#include "area.hpp"
+#include "part.hpp"
+#include "world.hpp"
+#include "driveMass.hpp"
+#include "body.hpp"
+#include "finalDrive.hpp"
+#include "gearbox.hpp"
+#include "pedal.hpp"
+#include "suspension.hpp"
+#include "vehicle.hpp"
+#include "wheel.hpp"
+#include "driveJoint.hpp"
+#include "engine.hpp"
+#include "camera.hpp"
+
+
 unsigned int WorldObject::instancesCount = 0;
 WorldObjectsC WorldObject::worldObjects;
 
@@ -28,6 +44,7 @@ WorldObject::WorldObject (const std::string & name)
     instancesCount++;
 
     //FIXME what to use, id# or name?
+    //log = LogEngine::create (LOG_DEVELOPER, this->getId());
     log = LogEngine::create (LOG_DEVELOPER, this->getFullName());
     log->__format(LOG_CCREATOR, "New world object! Id #%s.", id.c_str());
     worldObjects[this->id] = this;
@@ -44,7 +61,7 @@ void WorldObject::setContainer(pWorldObject container)
         dBodySetData (j->second->getBodyID(), (void*) container.get());
     }
     log->setName(this->getFullName());
-    log->__format(LOG_CCREATOR, "New container! Old full name: %s. New full name: %s", id.c_str(), oldName.c_str(), getFullName().c_str());
+    log->__format(LOG_CCREATOR, "New container! Old full name: %s. New full name: %s", oldName.c_str(), getFullName().c_str());
 
 }
 
@@ -69,9 +86,35 @@ std::string WorldObject::getId()
 {
     return id;
 }
+
 std::string WorldObject::getName()
 {
-    return name;
+    std::string type;
+    if (0) type.clear();
+    else if (dynamic_cast<DoubleWishbone *>(this)) type = "DoubleWishbone";
+    else if (dynamic_cast<Fixed          *>(this)) type = "Fixed";
+    else if (dynamic_cast<Unidimensional *>(this)) type = "Unidimensional";
+    else if (dynamic_cast<Suspension    *>(this)) type = "Suspension";
+    else if (dynamic_cast<Engine         *>(this)) type = "Engine";
+    else if (dynamic_cast<Gearbox        *>(this)) type = "Gearbox";
+    else if (dynamic_cast<Wheel          *>(this)) type = "Wheel";
+    else if (dynamic_cast<FinalDrive     *>(this)) type = "FinalDrive";
+    else if (dynamic_cast<DriveMass     *>(this)) type = "DriveMass";
+    else if (dynamic_cast<Gear           *>(this)) type = "Gear";
+    else if (dynamic_cast<LSD            *>(this)) type = "LSD";
+    else if (dynamic_cast<Clutch         *>(this)) type = "Clutch";
+    else if (dynamic_cast<DriveJoint    *>(this)) type = "DriveJoint";
+    else if (dynamic_cast<GearboxGear   *>(this)) type = "GearboxGear";
+    else if (dynamic_cast<Body          *>(this)) type = "Body";
+    else if (dynamic_cast<Pedal         *>(this)) type = "Pedal";
+    else if (dynamic_cast<Part          *>(this)) type = "Part";
+    else if (dynamic_cast<Vehicle       *>(this)) type = "Vehicle";
+    else if (dynamic_cast<Area          *>(this)) type = "Area";
+    else if (dynamic_cast<World         *>(this)) type = "World";
+    else if (dynamic_cast<Camera        *>(this)) type = "Camera";
+    else if (dynamic_cast<WorldObject  *>(this)) type = "WorldObject";
+    else log->__format(LOG_ERROR, "Couldn't find out object #%s type. This should *NOT* have happened.", getId().c_str());
+    return "(" + type + ")" + name;
 }
 void WorldObject::setName(std::string name)
 {
@@ -81,8 +124,8 @@ void WorldObject::setName(std::string name)
 std::string WorldObject::getFullName()
 {
     pWorldObject pcontainer = container.lock();
-    if (pcontainer == NULL) return name;
-    return pcontainer->getFullName() + "." + name;
+    if (pcontainer == NULL) return getName();
+    return pcontainer->getFullName() + "." + getName();
 }
 std::string WorldObject::getPath()
 {

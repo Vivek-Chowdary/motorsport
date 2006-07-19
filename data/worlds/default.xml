@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <world
-    name = "Test World"
+    name = "Test"
     description = "Drive the Mosp1 car in the testing grounds!"
     useAreaCamera = "false"
     gravityX = "0.0"
@@ -64,7 +64,7 @@
     </vehicleList>
     <area
         directory = "mospland"
-        _directory = "mospland2006.r6"
+        _directory = "mospland2006.r7"
         >
     </area>
 </world>
