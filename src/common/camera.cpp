@@ -143,7 +143,7 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
-    if (this == World::get()->getActiveCamera().get() )
+    if (World::get()->isActiveCamera(boost::dynamic_pointer_cast<Camera>(shared_from_this())))
     {
         static bool wasPressed = false;
         if (System::get()->axisMap[getIDKeyboardKey(SDLK_x)]->getValue() == 1)

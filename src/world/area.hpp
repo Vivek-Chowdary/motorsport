@@ -23,6 +23,7 @@ SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt, wCamera);
 SHARED_PTR_MAP(Part, pPart, Parts, PartsIt, wPart);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
+SHARED_PTR(Vehicle, pVehicle, wVehicle);
 
 class Area : public WorldObject
 {
@@ -31,6 +32,9 @@ class Area : public WorldObject
         std::string author;
         std::string contact;
         std::string license;
+        Locations locations;
+        Cameras cameras;
+        pCamera activeCamera;
         void construct (XmlTag * tag);
         Area (std::string areaName);
     public:
@@ -38,11 +42,16 @@ class Area : public WorldObject
         void setContainer(pWorldObject worldObject);
         ~Area ();
 
-        Locations locations;
+        pLocation getLocation (std::string name);
+        pCamera getCamera (std::string name);
+        void pointCameras(pVehicle target);
         Parts parts;
-        Cameras cameras;
 
         dBodyID areaBodyID;
+        void stepGraphics();
+        void stepPhysics();
+        pCamera switchNextCamera();
+        pCamera getClosestCamera(Vector3d location);
 
         Ogre::SceneNode * planeNode;
         Ogre::Entity * planeEntity;

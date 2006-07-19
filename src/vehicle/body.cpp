@@ -26,6 +26,7 @@ pBody Body::create (XmlTag * tag)
 Body::Body (XmlTag * tag)
     :WorldObject("body")
 {
+    userDriver = false;
     dragCoefficient = 0.3;
     frontalArea = 0;
     pBodyOdeData data(new BodyOdeData);
@@ -79,7 +80,7 @@ Body::~Body ()
 void Body::stepPhysics ()
 {
     dBodyID bodyID = getMainOdeObject()->getBodyID();
-    if (this == World::get()->vehicles.begin()->second->getObject("(Body)main").get())
+    if (userDriver)
     {
         double moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
         moveZ += System::get()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
@@ -102,4 +103,8 @@ void Body::stepPhysics ()
     dBodyAddForce (bodyID, force.x, force.y, force.z);
 
     log->__format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
+}
+void Body::setUserDriver ()
+{
+    userDriver = true;
 }

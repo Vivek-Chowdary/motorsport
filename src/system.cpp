@@ -66,7 +66,6 @@ System::System ()
         height = 1;
         width = 1;
         videoRecordTimestep = 0;
-        cameraDirector = false;
     }
 }
 

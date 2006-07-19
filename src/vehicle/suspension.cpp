@@ -26,6 +26,7 @@ Suspension::Suspension (std::string name)
 {
     position = Vector3d (0, 0, 0);
     rotation = Quaternion (1, 0, 0, 0);
+    userDriver = false;
 }
 
 Suspension::~Suspension ()

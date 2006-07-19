@@ -206,11 +206,6 @@ void computeLogic (pLogEngine log)
         log->__format (LOG_DEVELOPER, "Processing a SDLK_KP_PLUS keypress...");
         system->increaseDesiredPhysicsRate();
     }
-    if (system->axisMap[getIDKeyboardKey(SDLK_b)]->getValue() == 1)
-    {
-        system->cameraDirector = !(system->cameraDirector);
-        system->axisMap[getIDKeyboardKey(SDLK_b)]->setNewRawValue(0);
-    }
 }
 
 void recordVideoFrames ()

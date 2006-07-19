@@ -14,6 +14,7 @@
 #include "system.hpp"
 #include "camera.hpp"
 #include "part.hpp"
+#include "vehicle.hpp"
 #include "ode/ode.h"
 #include "location.hpp"
 #include "world.hpp"
@@ -186,6 +187,15 @@ void Area::setContainer(pWorldObject container)
         i->second->setContainer(shared_from_this());
     }
 }
+void Area::pointCameras(pVehicle target)
+{
+    CamerasIt i = cameras.begin();
+    for(;i != cameras.end(); i++)
+    {
+        i->second->setPositionID(areaBodyID);
+        i->second->setTarget(target->getMainOdeObject());
+    }
+}
 void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);
@@ -322,4 +332,97 @@ void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &
         ibuf->unlock ();
         current_offset = next_offset;
     }
+}
+
+pLocation Area::getLocation (std::string name)
+{
+    pLocation tmp;
+    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    {
+        if (i->first == name && i->second) if (tmp = boost::dynamic_pointer_cast<Location>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Location");
+    return tmp;
+}
+
+void Area::stepGraphics()
+{
+    base->stepGraphics();
+
+    PartsIt k = parts.begin();
+    for (; k != parts.end(); k++)
+    {
+        k->second->stepGraphics();
+    }
+    CamerasIt i = cameras.begin();
+    for (;i != cameras.end(); i++)
+    {
+        i->second->stepGraphics();
+    }
+}
+
+void Area::stepPhysics()
+{
+    PartsIt k = parts.begin();
+    for (; k != parts.end(); k++)
+    {
+        k->second->stepPhysics();
+    }
+    CamerasIt i = cameras.begin();
+    for (;i != cameras.end(); i++)
+    {
+        i->second->stepPhysics();
+    }
+}
+pCamera Area::getCamera (std::string name)
+{
+    pCamera tmp;
+    for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
+    {
+        if (i->first == ("(Camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Camera");
+    return tmp;
+}
+pCamera Area::switchNextCamera()
+{
+    CamerasIt i = cameras.begin();
+    pCamera nextCam = i->second;
+    bool found = false;
+    for (;i != cameras.end(); i++)
+    {
+        if (found == true)
+        {
+            nextCam = i->second;
+            found = false;
+        }
+        if (activeCamera == i->second)
+        {
+            found = true;
+        } 
+    }
+    activeCamera = nextCam;
+    return activeCamera;
+}
+
+pCamera Area::getClosestCamera(Vector3d location)
+{
+    log->__format(LOG_DEVELOPER, "Finding closest camera");
+    double closestDistance = 99999999999.0;
+    CamerasIt i = cameras.begin();
+    pCamera closestCam = i->second;
+    for (;i != cameras.end(); i++)
+    {
+        log->__format(LOG_DEVELOPER, "Checking cam id: %s", i->second->getName().c_str());
+        Ogre::Vector3 p = i->second->ogreCamera->getPosition();
+        Vector3d cPos (p.x, p.y, p.z);
+        double distance = cPos.distance(location);
+        if (distance < closestDistance)
+        {
+            closestDistance = distance;
+            closestCam = i->second;
+        }
+    }
+    activeCamera = closestCam;
+    return activeCamera;
 }

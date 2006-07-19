@@ -68,12 +68,14 @@ void Vehicle::setUserDriver ()
     // spread the news to the necessary (input-able) vehicle parts
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Pedal * tmpPedal;
-        if ( (tmpPedal = dynamic_cast<Pedal*>(i->second.get())) != 0) tmpPedal->setUserDriver();
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0) tmpWheel->setUserDriver();
-        Suspension * tmpSusp;
-        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second.get())) != 0) tmpSusp->setUserDriver();
+        pBody tmpBody;
+        if ( (tmpBody = boost::dynamic_pointer_cast<Body>(i->second))) tmpBody->setUserDriver();
+        pPedal tmpPedal;
+        if ( (tmpPedal = boost::dynamic_pointer_cast<Pedal>(i->second))) tmpPedal->setUserDriver();
+        pWheel tmpWheel;
+        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second))) tmpWheel->setUserDriver();
+        pSuspension tmpSusp;
+        if ( (tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second))) tmpSusp->setUserDriver();
     }
 }
 
@@ -117,6 +119,8 @@ void Vehicle::construct (XmlTag * tag)
             if (u) System::get()->ogreWindow->update ();
         }
     }
+    //initialize cameras...
+    pointCameras();
     // spread the news to the necessary (input-able) vehicle parts
     log->__format(LOG_DEVELOPER, "Setting some drive joint pointers...");
     getClutch("main")->setOutputPointer(getGearbox("main"));
@@ -139,8 +143,8 @@ void Vehicle::construct (XmlTag * tag)
     getClutch("main")->setClutchPedal(getPedal("clutch"));
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0)
+        pWheel tmpWheel;
+        if ((tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second)))
         {
             tmpWheel->setBrakePedal(getPedal("brake"));
         }
@@ -177,42 +181,47 @@ void Vehicle::stepGraphics ()
 {
     base->stepGraphics();
 
-    std::map < std::string, Suspension * >::const_iterator suspIter;
+    CamerasIt i = cameras.begin();
+    for (;i != cameras.end(); i++)
+    {
+        if (i->second == NULL) log->__format(LOG_ERROR, "Camera %s doesn't exist", i->first.c_str());
+        i->second->stepGraphics();
+    }
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        DoubleWishbone * tmpSusp;
-        if ( (tmpSusp = dynamic_cast<DoubleWishbone*>(i->second.get())) != 0) tmpSusp->stepGraphics();
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0) tmpWheel->stepGraphics();
-        Body * tmpBody;
-        if ( (tmpBody = dynamic_cast<Body*>(i->second.get())) != 0) tmpBody->stepGraphics();
+        pDoubleWishbone tmpSusp;
+        if ( (tmpSusp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second))) tmpSusp->stepGraphics();
+        pWheel tmpWheel;
+        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second))) tmpWheel->stepGraphics();
+        pBody tmpBody;
+        if ( (tmpBody = boost::dynamic_pointer_cast<Body>(i->second))) tmpBody->stepGraphics();
     }
 }
 
 pOdeObject Vehicle::getMainOdeObject()
 {
-    return getObject("(Body)main")->getMainOdeObject();
+    return getBody("main")->getMainOdeObject();
 }
 
 void Vehicle::setPosition (Vector3d position)
 {
     Vector3d posDiff = position - getPosition();
     log->__format (LOG_DEVELOPER,"Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
-    getObject("(Body)main")->setPosition ( getObject("(Body)main")->getPosition() + posDiff );
+    getBody("main")->setPosition ( getBody("main")->getPosition() + posDiff );
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0)
+        pWheel tmpWheel;
+        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second)))
             tmpWheel->getMainOdeObject()->setPosition ( tmpWheel->getMainOdeObject()->getPosition() + posDiff );
-        Suspension * tmpSusp;
-        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second.get())) != 0)
+        pSuspension tmpSusp;
+        if ( (tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second)))
             tmpSusp->setPosition ( tmpSusp->getPosition() + posDiff );
     }
 }
 
 Vector3d Vehicle::getPosition ()
 {
-    return getObject("(Body)main")->getPosition();
+    return getBody("main")->getPosition();
 }
 
 void Vehicle::applyRotation (Quaternion rotation)
@@ -220,48 +229,51 @@ void Vehicle::applyRotation (Quaternion rotation)
     // apply rotation to wheels
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0)
-            tmpWheel->applyRotation (rotation);
-        Suspension * tmpSusp;
-        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second.get())) != 0)
-            tmpSusp->applyRotation (rotation);
+        pWheel tmpWheel;
+        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second))) tmpWheel->applyRotation (rotation);
+        pSuspension tmpSusp;
+        if ( (tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second))) tmpSusp->applyRotation (rotation);
     }
     // apply rotation to body
-    getObject("(Body)main")->applyRotation (rotation);
+    getBody("main")->applyRotation (rotation);
 }
 
 Quaternion Vehicle::getRotation ()
 {
-    return getObject("(Body)main")->getRotation();
+    return getBody("main")->getRotation();
 }
 
 void Vehicle::placeWheelsOnSuspensions()
 {
     getWheel("fr")->applyRotation(getSuspension("fr")->getSecondLinkRotation());
-    getWheel("fr")->setPosition(getSuspension("fr")->getSecondLinkPosition());
+    getWheel("fr")->setPosition  (getSuspension("fr")->getSecondLinkPosition());
     getWheel("fl")->applyRotation(getSuspension("fl")->getSecondLinkRotation());
-    getWheel("fl")->setPosition(getSuspension("fl")->getSecondLinkPosition());
+    getWheel("fl")->setPosition  (getSuspension("fl")->getSecondLinkPosition());
     getWheel("rr")->applyRotation(getSuspension("rr")->getSecondLinkRotation());
-    getWheel("rr")->setPosition(getSuspension("rr")->getSecondLinkPosition());
+    getWheel("rr")->setPosition  (getSuspension("rr")->getSecondLinkPosition());
     getWheel("rl")->applyRotation(getSuspension("rl")->getSecondLinkRotation());
-    getWheel("rl")->setPosition(getSuspension("rl")->getSecondLinkPosition());
+    getWheel("rl")->setPosition  (getSuspension("rl")->getSecondLinkPosition());
 }
 
 void Vehicle::boltWheelsToSuspensions()
 {
-    getSuspension("fr")->attach(getObject("(Body)main"), getObject("(Wheel)fr"));
-    getSuspension("fl")->attach(getObject("(Body)main"), getObject("(Wheel)fl"));
-    getSuspension("rr")->attach(getObject("(Body)main"), getObject("(Wheel)rr"));
-    getSuspension("rl")->attach(getObject("(Body)main"), getObject("(Wheel)rl"));
+    getSuspension("fr")->attach(getBody("main"), getWheel("fr"));
+    getSuspension("fl")->attach(getBody("main"), getWheel("fl"));
+    getSuspension("rr")->attach(getBody("main"), getWheel("rr"));
+    getSuspension("rl")->attach(getBody("main"), getWheel("rl"));
 }
 
 void Vehicle::stepPhysics ()
 {
+    for(CamerasIt c = cameras.begin() ;c !=cameras.end();c++)
+    {
+        c->second->stepPhysics();
+    }
+
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Pedal * tmpPedal;
-        if ( (tmpPedal = dynamic_cast<Pedal*>(i->second.get())) != 0)
+        pPedal tmpPedal;
+        if ( (tmpPedal = boost::dynamic_pointer_cast<Pedal>(i->second)))
         {
             tmpPedal->stepPhysics();
         }
@@ -289,21 +301,20 @@ void Vehicle::stepPhysics ()
     getGearbox("main")->stepPhysics();
     getFinalDrive("main")->stepPhysics();
     getBody("main")->stepPhysics();
-    std::map < std::string, Suspension * >::const_iterator suspIter;
     for (WorldObjectsIt i = components.begin(); i != components.end(); i++)
     {
-        Suspension * tmpSusp;
-        if ( (tmpSusp = dynamic_cast<Suspension*>(i->second.get())) != 0) tmpSusp->stepPhysics();
-        Wheel * tmpWheel;
-        if ( (tmpWheel = dynamic_cast<Wheel*>(i->second.get())) != 0) tmpWheel->stepPhysics();
+        pSuspension tmpSusp;
+        if ((tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second))) tmpSusp->stepPhysics();
+        pWheel tmpWheel;
+        if ((tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second))) tmpWheel->stepPhysics();
     }
 
     // print telemetry data
     if ( userDriver )
     {
-        const dReal * tmp = dBodyGetLinearVel(getObject("(Body)main")->getMainOdeObject()->getBodyID());
+        const dReal * tmp = dBodyGetLinearVel(getBody("main")->getMainOdeObject()->getBodyID());
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        tmp = dBodyGetPosition(getObject("(Body)main")->getMainOdeObject()->getBodyID());
+        tmp = dBodyGetPosition(getBody("main")->getMainOdeObject()->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getEngine("main")->getOutputAngularVel(), getFinalDrive("main")->getInputAngularVel(), getWheel("rr")->getInputAngularVel(), getWheel("rl")->getInputAngularVel(), getGearbox("main")->getCurrentGearName().c_str(), distance);
     }
@@ -464,4 +475,45 @@ pWorldObject Vehicle::getWorldObject (std::string name)
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "WorldObject");
     return tmp;
+}
+pCamera Vehicle::getCamera (std::string name)
+{
+    pCamera tmp;
+    for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
+    {
+        if (i->first == (name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
+        if (i->first == ("(Camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Camera");
+    return tmp;
+}
+
+pCamera Vehicle::switchNextCamera()
+{
+    CamerasIt i = cameras.begin();
+    pCamera nextCam = i->second;
+    bool found = false;
+    for (;i != cameras.end(); i++)
+    {
+        if (found == true)
+        {
+            nextCam = i->second;
+            found = false;
+        }
+        if (activeCamera == i->second)
+        {
+            found = true;
+        } 
+    }
+    activeCamera = nextCam;
+    return activeCamera;
+}
+void Vehicle::pointCameras()
+{
+    CamerasIt i = cameras.begin();
+    for(;i != cameras.end(); i++)
+    {
+        i->second->setPositionID( getMainOdeObject()->getBodyID());
+        i->second->setTarget( getMainOdeObject());
+    }
 }

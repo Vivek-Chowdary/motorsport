@@ -31,6 +31,7 @@ Wheel::Wheel (XmlTag * tag)
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     pWheelOdeData data(new WheelOdeData);
     pOgreObjectData ogreData(new OgreObjectData);
+    userDriver = false;
     powered = 0;
     inputAngularVel = 0.0;
     outputAngularVel = 0.0;

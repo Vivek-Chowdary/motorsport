@@ -67,6 +67,7 @@ World::World (std::string name)
         pWorld tmp(this);
         world = tmp;
         setPath(Paths::world(name));
+        setName(name);
         setXmlPath(Paths::worldXml(name));
         log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
         XmlTag * tag = new XmlTag (getXmlPath().c_str());
@@ -78,8 +79,6 @@ World::World (std::string name)
 World::~World ()
 {
     activeCamera.reset();
-    activeAreaCamera.reset();
-    activeVehicleCamera.reset();
 
     //shouldn't be necessary, but vehicle and area geoms can't be deleted after ode world so we must make sure!
     vehicles.clear();
@@ -94,38 +93,107 @@ World::~World ()
     dJointGroupDestroy (jointGroupID);
 }
 
+pLocation World::getLocationObject(std::string fullname)
+{
+    pLocation location;
+
+    std::string type;
+    std::string name;
+    std::string locname;
+    bool error = false;
+    std::string errorMessage = "";
+
+    if (fullname.find_first_of('(') == 0)
+    {
+        //(
+        unsigned int typeend;
+        if ((typeend = fullname.find_first_of(')',0)) != std::string::npos)
+        {
+            //(type)
+            type = fullname.substr(1,typeend-1);
+            unsigned int nameend;
+            if ((nameend = fullname.find_first_of('/')) != std::string::npos)
+            {
+                //(type)name/
+                name = fullname.substr(typeend+1,nameend-(typeend+1));
+                locname = fullname.substr(nameend+1);
+            } else {
+                //(type)name
+                error = true;
+                errorMessage = "'/' not found";
+            }
+        } else {
+            //(type
+            error = true;
+            errorMessage = "')' not found";
+        }
+    } else {
+        //name
+        log->__format (LOG_DEVELOPER, "Not found '('!");
+    }
+    if (error)
+    {
+        log->__format (LOG_ERROR, "XML mosp object location syntax error \"%s\": %s", fullname.c_str(), errorMessage.c_str());
+    } else {
+        log->__format (LOG_DEVELOPER, "Type: '%s', Name: '%s'. LocationName: '%s'", type.c_str(), name.c_str(), locname.c_str());
+        if (type == "area")
+        {
+            pArea tmp = getArea(name);
+            location = tmp->getLocation(locname);
+        }
+    }
+    return location;
+}
+pVehicle World::getVehicleObject(std::string fullname)
+{
+    pVehicle vehicle;
+
+    std::string type;
+    std::string name;
+    bool error = false;
+    std::string errorMessage = "";
+
+    if (fullname.find_first_of('(') == 0)
+    {
+        //(
+        unsigned int typeend;
+        if ((typeend = fullname.find_first_of(')',0)) != std::string::npos)
+        {
+            //(type)
+            type = fullname.substr(1,typeend-1);
+            unsigned int nameend;
+            if ((nameend = fullname.find_first_of('/')) != std::string::npos)
+            {
+                //(type)name/
+                name = fullname.substr(typeend+1,nameend-(typeend+1));
+            } else {
+                //(type)name
+                name = fullname.substr(typeend+1);
+            }
+        } else {
+            //(type
+            error = true;
+            errorMessage = "')' not found";
+        }
+    } else {
+        //name
+        log->__format (LOG_DEVELOPER, "Not found '('!");
+    }
+    if (error)
+    {
+        log->__format (LOG_ERROR, "XML mosp object location syntax error \"%s\": %s", fullname.c_str(), errorMessage.c_str());
+    } else {
+        log->__format (LOG_DEVELOPER, "Type: '%s', Name: '%s'.", type.c_str(), name.c_str());
+        if (type == "vehicle")
+        {
+            vehicle = getVehicle(name);
+        }
+    }
+    return vehicle;
+}
 
 void World::processXmlRootNode (XmlTag * tag)
 {
-    description = "none";
-    double gravityX = 0.0;
-    double gravityY = 0.0;
-    double gravityZ = 0.0;
-    XmlTag * vehiclesTag = NULL;
-    bool useAreaCamera = true;    //if false, use vehicle camera
-    std::string areaDirectory = "testingGround";
-
-    if (tag->getName() == "world")
-    {
-        setName(tag->getAttribute("name"));
-        description = tag->getAttribute("description");
-        useAreaCamera = stob(tag->getAttribute("useAreaCamera"));
-        gravityX = stod(tag->getAttribute("gravityX"));
-        gravityY = stod(tag->getAttribute("gravityY"));
-        gravityZ = stod(tag->getAttribute("gravityZ"));
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
-            if (t->getName() == "vehicleList")
-            {
-                vehiclesTag = t;
-            }
-            if (t->getName() == "area")
-            {
-                areaDirectory = t->getAttribute("directory");
-            }
-        }
-    }
-    
     log->__format (LOG_DEVELOPER, "Temporary parsing data already loaded into memory...");
     log->loadscreen (LOG_DEVELOPER, "Creating ODE world");
     dRandSetSeed(0);
@@ -133,7 +201,7 @@ void World::processXmlRootNode (XmlTag * tag)
     ghostWorldID = dWorldCreate ();
     spaceID = dHashSpaceCreate (0);
     jointGroupID = dJointGroupCreate (0);
-    
+
     if (System::get()->getCfmValue() != -1)
     {
         log->__format (LOG_DEVELOPER, "Setting ODE cfm value to %f", System::get()->getCfmValue());
@@ -145,47 +213,82 @@ void World::processXmlRootNode (XmlTag * tag)
         dWorldSetERP (worldID, System::get()->getErpValue());
     }
 
-    log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
-    dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
-    dWorldSetGravity (ghostWorldID, 0, 0, 0);
+    bool useAreaCamera = true;    //if false, use vehicle camera
+    if (tag->getName() == "world")
+    {
+        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+        {
+            if (t->getName() == "customData")
+            {
+                description = t->getAttribute("description");
+                useAreaCamera = stob(t->getAttribute("useAreaCamera"));
 
-    // load area (and its cameras)
-    log->loadscreen (LOG_CCREATOR, "Creating a area");
-    pArea area = Area::create (areaDirectory);
-    //FIXME shared ptr container set??
-    //area->setPosition (0.0, 0.0, 0.0); //evo2 maybe... ;)
-    areas[area->getName()] = area;
+                double gravityX = stod(t->getAttribute("gravityX"));
+                double gravityY = stod(t->getAttribute("gravityY"));
+                double gravityZ = stod(t->getAttribute("gravityZ"));
+                log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
+                dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
+                dWorldSetGravity (ghostWorldID, 0, 0, 0);
+            }
+            if (t->getName() == "sharedobject")
+            {
+                std::string sobjname = t->getAttribute("name");
+                XmlTag * o = t->getTag(0); for (int i = 0; i < t->nTags(); o = t->getTag(++i))
+                {
+                    if (o->getName() == "vehicle")
+                    {
+                        log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
+                        std::string model = o->getAttribute("model");
+                        pVehicle tmp= Vehicle::create(model);
+                        tmp->setName(sobjname);
+                        vehicles[tmp->getName()] = tmp;
+                    }
+                    if (o->getName() == "area")
+                    {
+                        log->loadscreen (LOG_CCREATOR, "Creating an area");
+                        std::string model = o->getAttribute("model");
+                        pArea tmp = Area::create (model);
+                        tmp->setName(sobjname);
+                        areas[tmp->getName()] = tmp;
+                    }
+                }
+            }
+            if (t->getName() == "location-vehicle")
+            {
+                log->__format (LOG_CCREATOR, "Setting vehicle location");
+                std::string f= t->getAttribute("first");
+                std::string s= t->getAttribute("second");
+                pLocation first = getLocationObject(f);
+                pVehicle second = getVehicleObject(s);
 
-    // load all vehicles
-    log->loadscreen (LOG_CCREATOR, "Creating all vehicles");
-    processXmlVehicleListNode (vehiclesTag);
-
+                second->setPosition(Vector3d(0, 0, 0));
+                second->applyRotation(first->getRotation());
+                second->setPosition(first->getPosition());
+                log->__format(LOG_DEVELOPER, "Rotation: x%f, y%f, z%f, w%f. Rotation: %f, %f, %f", first->getRotation().x,first->getRotation().y,first->getRotation().z,first->getRotation().w,first->getPosition().x,first->getPosition().y,first->getPosition().z);
+            }
+            if (t->getName() == "vehicle-driver")
+            {
+                log->__format (LOG_CCREATOR, "Setting vehicle ver");
+                std::string f= t->getAttribute("first");
+                std::string s= t->getAttribute("second");
+                pVehicle tmp = getVehicleObject(f);
+                if (s == "user" ) tmp->setUserDriver();
+            }
+        }
+    }
     // initialize cameras (pointing to car 0 by default)
-    CamerasIt i = areas.begin()->second->cameras.begin();
-    for(;i != areas.begin()->second->cameras.end(); i++)
-    {
-        i->second->setPositionID( areas.begin()->second->areaBodyID );
-        i->second->setTarget( vehicles.begin()->second->getMainOdeObject());
-    }
-    i = vehicles.begin()->second->cameras.begin();
-    for(;i != vehicles.begin()->second->cameras.end(); i++)
-    {
-        i->second->setPositionID( vehicles.begin()->second->getMainOdeObject()->getBodyID());
-        i->second->setTarget( vehicles.begin()->second->getMainOdeObject() );
-    }
+    getArea("main")->pointCameras(getVehicle("main"));
 
     // set active camera
     log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
     if (useAreaCamera)
     {
         //err... use... area camera, i guess.
-        setActiveCamera (areas.begin()->second->cameras.begin()->second);
+        setActiveCamera (getArea("main")->getCamera("main"));
     } else {
         //don't use area camera: use vehicle camera
-        setActiveCamera (vehicles.begin()->second->cameras.begin()->second);
+        setActiveCamera (getVehicle("main")->getCamera("main"));
     }
-    activeAreaCamera = areas.begin()->second->cameras.begin()->second;
-    activeVehicleCamera = vehicles.begin()->second->cameras.begin()->second;
 }
 
 void World::setActiveCamera (pCamera camera)
@@ -196,59 +299,6 @@ void World::setActiveCamera (pCamera camera)
     log->__format (LOG_ENDUSER, "Changed camera...");
 }
 
-pCamera World::getActiveCamera (void)
-{
-    return activeCamera;
-}
-
-pCamera World::getActiveAreaCamera()
-{
-    return areas.begin()->second->cameras[activeAreaCamera->getName()];
-}
-
-pCamera World::getActiveVehicleCamera()
-{
-    return vehicles.begin()->second->cameras[activeVehicleCamera->getName()];
-}
-
-void World::processXmlVehicleListNode (XmlTag * tag)
-{
-    if (tag->getName() == "vehicleList")
-    {
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
-            if (t->getName() == "vehicle")
-            {
-                std::string vehicleDirectory = "mosp1";
-                std::string vehicleStartPosition = "grid01";   //first 'grid' position
-                std::string driver = "user"; //still no other option, but in the future: ai, net, user, replay, ghostReplay, none, etc...
-                vehicleDirectory = t->getAttribute("directory");
-                driver = t->getAttribute("driver");
-                vehicleStartPosition = t->getAttribute("startPosition");
-
-                log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-                pVehicle tmpVehicle  = Vehicle::create(vehicleDirectory);
-                if (driver == "user" )
-                {
-                    tmpVehicle->setUserDriver();
-                }
-                vehicles[tmpVehicle->getName()] = tmpVehicle;
-                //FIXME setcontainer??
-
-                log->__format (LOG_CCREATOR, "Setting vehicle starting relative rotation");
-                if (areas.begin()->second->locations.count(vehicleStartPosition) == 0)
-                {
-                    log->__format(LOG_ERROR, "Vehicle start position \"%s\" hasn't been defined in the area!", vehicleStartPosition.c_str());
-                }
-                tmpVehicle->setPosition (Vector3d(0, 0, 0));
-                tmpVehicle->applyRotation ( areas.begin()->second->locations[vehicleStartPosition]->getRotation() );
-
-                log->__format (LOG_CCREATOR, "Setting vehicle starting position");
-                tmpVehicle->setPosition (areas.begin()->second->locations[vehicleStartPosition]->getPosition());
-            }
-        }
-    }
-}
 void World::setContainer()
 {
     //NOTE: world is hardcoded not to have a parent, therefore we don't run this line:
@@ -264,4 +314,80 @@ void World::setContainer()
     {
         v->second->setContainer(shared_from_this());
     }
+}
+
+pArea World::getArea(std::string name)
+{
+    pArea tmp;
+    for (AreasIt i = areas.begin(); i != areas.end(); i++)
+    {
+        if (i->first == ("(Area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Area");
+    return tmp;
+}
+
+pVehicle World::getVehicle(std::string name)
+{
+    pVehicle tmp;
+    for (VehiclesIt i = vehicles.begin(); i != vehicles.end(); i++)
+    {
+        if (i->first == ("(Vehicle)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Vehicle>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Vehicle");
+    return tmp;
+}
+
+void World::stepGraphics()
+{
+    base->stepGraphics();
+
+    // Update Ogre's vehicles positions with Ode's positions.
+    VehiclesIt j = vehicles.begin();
+    for (; j != vehicles.end(); j++)
+    {
+        j->second->stepGraphics();
+    }
+    AreasIt i = areas.begin();
+    for (; i != areas.end(); i++)
+    {
+        i->second->stepGraphics();
+    }
+    if (cameraDirector == true)
+    {
+        setActiveCamera( getArea("main")->getClosestCamera(getVehicle("main")->getPosition()));
+    }
+}
+void World::stepPhysics()
+{
+    // Update Ogre's vehicles positions with Ode's positions.
+    VehiclesIt j = vehicles.begin();
+    for (; j != vehicles.end(); j++)
+    {
+        j->second->stepPhysics();
+    }
+    AreasIt i = areas.begin();
+    for (; i != areas.end(); i++)
+    {
+        i->second->stepPhysics();
+    }
+
+}
+void World::switchNextAreaCamera()
+{
+    setActiveCamera (getArea("main")->switchNextCamera());
+    cameraDirector = false;
+}
+void World::switchNextVehicleCamera()
+{
+    setActiveCamera (getVehicle("main")->switchNextCamera());
+    cameraDirector = false;
+}
+void World::switchCameraDirector()
+{
+    cameraDirector = !cameraDirector;
+}
+bool World::isActiveCamera(pCamera camera)
+{
+    return activeCamera == camera;
 }

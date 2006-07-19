@@ -25,12 +25,12 @@ Pedal::Pedal (XmlTag * tag)
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     angleRange = 180;
     currentAngle = 0.0;
+    userDriver = false;
     if (tag->getName() == "pedal")
     {
         setName (     tag->getAttribute("name"));
         angleRange = stod (tag->getAttribute("angleRange"));
     }
-    userDriver = false;
 }
 
 Pedal::~Pedal ()
@@ -48,7 +48,7 @@ void Pedal::stepPhysics ()
     currentAngle = 0;
     if ( userDriver )
     {
-        if (getName() == "gasPedal")
+        if (getName() == "(Pedal)gas")
         {
             currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,2)]->getValue();
             if (currentAngle == 0) {
@@ -60,7 +60,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (getName() == "brakePedal")
+        } else if (getName() == "(Pedla)brake")
         {
             currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,1)]->getValue();
             if (currentAngle == 0) {
@@ -72,7 +72,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (getName() == "clutchPedal")
+        } else if (getName() == "(Pedal)clutch")
         {
             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
             if (currentAngle == 0) {

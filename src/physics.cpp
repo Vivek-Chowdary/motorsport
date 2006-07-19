@@ -126,27 +126,8 @@ void Physics::nearCallback (void *data, dGeomID o1, dGeomID o2)
 }
 
 int Physics::computeStep (void)
-//makes the graphics engine draw one frame
 {
-    // mega-verbosity
-    log->__format (LOG_DEVELOPER, "Doing an step: calculating a physics step");
-
-    PartsIt k = World::get()->areas.begin()->second->parts.begin();
-    for (; k != World::get()->areas.begin()->second->parts.end(); k++)
-    {
-        k->second->stepPhysics();
-    }
-
-    CamerasIt i = World::get()->areas.begin()->second->cameras.begin();
-    for(;i != World::get()->areas.begin()->second->cameras.end();i++)
-    {
-        i->second->stepPhysics();
-    }
-    i = World::get()->vehicles.begin()->second->cameras.begin();
-    for(;i != World::get()->vehicles.begin()->second->cameras.end();i++)
-    {
-        i->second->stepPhysics();
-    }
+    World::get()->stepPhysics();
 
     checkpointPassed = false;
     dSpaceCollide (World::get()->spaceID, 0, &nearCallback);
@@ -162,12 +143,6 @@ int Physics::computeStep (void)
         dWorldStepFast1 (World::get()->worldID, system->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     }
-    VehiclesIt j = World::get()->vehicles.begin();
-    for (; j != World::get()->vehicles.end(); j++)
-    {
-        j->second->stepPhysics();
-    }
-
     dJointGroupEmpty (World::get()->jointGroupID);
     
     // check if a car has passed the checkpoint

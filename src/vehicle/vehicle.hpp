@@ -48,13 +48,16 @@ class Vehicle : public WorldObject
     void boltWheelsToSuspensions();
     void stopGraphics ();
     WorldObjects components;
+    Cameras cameras;
+    pCamera activeCamera;
+    void pointCameras();
     Vehicle (std::string vehicleName);
   public:
     static pVehicle create(std::string vehicleName);
     void setContainer (pWorldObject container);
     ~Vehicle ();
-    Cameras cameras;
 
+    pCamera getCamera (std::string name);
     pBody getBody (std::string name);
     pDriveJoint getDriveJoint (std::string name);
     pDriveMass getDriveMass (std::string name);
@@ -71,6 +74,7 @@ class Vehicle : public WorldObject
     pWorldObject getObject (std::string name);
     pWorldObject getWorldObject (std::string name);
 
+    pCamera switchNextCamera();
     void setUserDriver ();
     void stepPhysics ();
     void setPosition (Vector3d position);

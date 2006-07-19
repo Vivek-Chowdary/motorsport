@@ -17,6 +17,7 @@
 SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt, wCamera);
 SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt, wVehicle);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
 SHARED_PTR(World,pWorld, wWorld);
 
 class World : public WorldObject
@@ -25,10 +26,15 @@ class World : public WorldObject
     static pWorld world;
     static std::string newWorld;
     std::string description;
+    Areas areas;
+    Vehicles vehicles;
     pCamera activeCamera;
-    void processXmlVehicleListNode (XmlTag * tag);
+    bool cameraDirector;
+    void setActiveCamera(pCamera camera);
     void processXmlRootNode (XmlTag * tag);
     World (std::string name);
+    pLocation getLocationObject(std::string fullname);
+    pVehicle getVehicleObject(std::string fullname);
   public:
     static pWorld get();
     static void setNewWorld(std::string name);
@@ -41,15 +47,15 @@ class World : public WorldObject
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 
-    Areas areas;
-    Vehicles vehicles;
+    pArea getArea(std::string name);
+    pVehicle getVehicle(std::string name);
+    void switchCameraDirector();
+    void switchNextAreaCamera();
+    void switchNextVehicleCamera();
+    bool isActiveCamera(pCamera camera);
 
-    void setActiveCamera (pCamera camera);
-    pCamera getActiveCamera();
-    pCamera activeAreaCamera;
-    pCamera activeVehicleCamera;
-    pCamera getActiveAreaCamera();
-    pCamera getActiveVehicleCamera();
+    void stepGraphics();
+    void stepPhysics();
 };
 
 #endif

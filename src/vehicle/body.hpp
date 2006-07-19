@@ -23,6 +23,7 @@ SHARED_PTR(Body, pBody, wBody);
 class Body : public WorldObject
 {
   private:
+    bool userDriver;
     double dragCoefficient;
     double frontalArea;
     void stopPhysics ();
@@ -32,5 +33,6 @@ class Body : public WorldObject
     static pBody create (XmlTag * tag);
     ~Body ();
     void stepPhysics ();
+    void setUserDriver ();
 };
 #endif
