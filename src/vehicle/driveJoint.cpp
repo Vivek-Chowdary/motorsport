@@ -174,7 +174,7 @@ void Clutch::stepPhysics ()
         } else
         {
             outputTorqueTransfer = lockedParam*(inputDrive->getOutputAngularVel()-outputDrive->getInputAngularVel());
-            log->__format(LOG_DEVELOPER, "torqueTransfer=%f", outputTorqueTransfer);
+            //log->__format(LOG_DEVELOPER, "torqueTransfer=%f", outputTorqueTransfer);
 
             if(outputTorqueTransfer > maxTorqueTransfer)
             {
@@ -190,7 +190,7 @@ void Clutch::stepPhysics ()
         outputDrive->addInputTorque(outputTorqueTransfer);   
 
         // rotationalVelocity = pOutTorque->getInputAngularVel();
-        log->__format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
+        //log->__format(LOG_DEVELOPER, "inputTorque=%f outputTorque=%f inputVel=%f outputVel=%f", inputTorqueTransfer, outputTorqueTransfer,inputDrive->getOutputAngularVel(),outputDrive->getInputAngularVel());
     }
 }
 
@@ -216,7 +216,7 @@ void Gear::stepPhysics ()
     inputDrive->addOutputTorque(inputTorqueTransfer);
     outputDrive->addInputTorque(outputTorqueTransfer);   
              
-    log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
   }
   else {
     relAngle = 0;
@@ -246,7 +246,7 @@ void LSD::stepPhysics ()
     outputDrive->addInputTorque(outputTorqueTransfer/2);
     outputDrive2->addInputTorque(outputTorqueTransfer/2);   
              
-    log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
   }
   else {
     relAngle = 0;

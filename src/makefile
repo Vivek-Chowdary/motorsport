@@ -217,6 +217,7 @@ LIBRARIES := \
 ###########################################
 #Sources
 SOURCES := \
+	tools/mospPath.cpp \
 	tools/xmlTag.cpp \
         common/worldObject.cpp \
         common/ogreObject.cpp \

@@ -80,7 +80,7 @@ void FinalDrive::stepPhysics ()
     angularAcc = (inputAngularVel-prevAngularVel)/System::get()->getDesiredPhysicsTimestep();
     outputAngularVel = inputAngularVel/finalDriveRatio;
 */
-    log->__format(LOG_DEVELOPER, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);
+    //log->__format(LOG_DEVELOPER, "angVel=%f angAcc=%f torque=%f", inputAngularVel, angularAcc, outputTorqueTransfer);
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
 }

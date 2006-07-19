@@ -12,6 +12,7 @@
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "xmlTag.hpp"
+#include "mospPath.hpp"
 #include "area.hpp"
 #include "log/logEngine.hpp"
 #include "ode/ode.h"
@@ -21,7 +22,20 @@
 #include "location.hpp"
 #include "SDL.h"
 
-//pWorld World::world = NULL;
+#include "area.hpp"
+#include "part.hpp"
+#include "world.hpp"
+#include "driveMass.hpp"
+#include "body.hpp"
+#include "finalDrive.hpp"
+#include "gearbox.hpp"
+#include "pedal.hpp"
+#include "suspension.hpp"
+#include "vehicle.hpp"
+#include "wheel.hpp"
+#include "driveJoint.hpp"
+#include "engine.hpp"
+#include "camera.hpp"
 pWorld World::world;
 std::string World::newWorld = "";
 
@@ -81,8 +95,8 @@ World::~World ()
     activeCamera.reset();
 
     //shouldn't be necessary, but vehicle and area geoms can't be deleted after ode world so we must make sure!
-    vehicles.clear();
-    areas.clear();
+    objects.clear();
+    objects.clear();
     
     log->__format (LOG_DEVELOPER, "Destroying ODE world");
     dSpaceDestroy (spaceID);
@@ -93,103 +107,40 @@ World::~World ()
     dJointGroupDestroy (jointGroupID);
 }
 
+
 pLocation World::getLocationObject(std::string fullname)
 {
-    pLocation location;
-
-    std::string type;
-    std::string name;
-    std::string locname;
-    bool error = false;
-    std::string errorMessage = "";
-
-    if (fullname.find_first_of('(') == 0)
+    pLocation tmp;
+    if (MospPath::getType(fullname) == "area")
     {
-        //(
-        unsigned int typeend;
-        if ((typeend = fullname.find_first_of(')',0)) != std::string::npos)
-        {
-            //(type)
-            type = fullname.substr(1,typeend-1);
-            unsigned int nameend;
-            if ((nameend = fullname.find_first_of('/')) != std::string::npos)
-            {
-                //(type)name/
-                name = fullname.substr(typeend+1,nameend-(typeend+1));
-                locname = fullname.substr(nameend+1);
-            } else {
-                //(type)name
-                error = true;
-                errorMessage = "'/' not found";
-            }
-        } else {
-            //(type
-            error = true;
-            errorMessage = "')' not found";
-        }
-    } else {
-        //name
-        log->__format (LOG_DEVELOPER, "Not found '('!");
+        pArea a = getArea(MospPath::getName(fullname));
+        log->__format(LOG_DEVELOPER, "Area name=%s", a->getName().c_str());
+        tmp = a->getLocation(MospPath::getName(MospPath::getSubFullname(fullname)));
     }
-    if (error)
-    {
-        log->__format (LOG_ERROR, "XML mosp object location syntax error \"%s\": %s", fullname.c_str(), errorMessage.c_str());
-    } else {
-        log->__format (LOG_DEVELOPER, "Type: '%s', Name: '%s'. LocationName: '%s'", type.c_str(), name.c_str(), locname.c_str());
-        if (type == "area")
-        {
-            pArea tmp = getArea(name);
-            location = tmp->getLocation(locname);
-        }
-    }
-    return location;
+    log->__format(LOG_DEVELOPER, "Location name=%s", tmp->getName().c_str());
+    return tmp;
 }
 pVehicle World::getVehicleObject(std::string fullname)
 {
-    pVehicle vehicle;
-
-    std::string type;
-    std::string name;
-    bool error = false;
-    std::string errorMessage = "";
-
-    if (fullname.find_first_of('(') == 0)
-    {
-        //(
-        unsigned int typeend;
-        if ((typeend = fullname.find_first_of(')',0)) != std::string::npos)
-        {
-            //(type)
-            type = fullname.substr(1,typeend-1);
-            unsigned int nameend;
-            if ((nameend = fullname.find_first_of('/')) != std::string::npos)
-            {
-                //(type)name/
-                name = fullname.substr(typeend+1,nameend-(typeend+1));
-            } else {
-                //(type)name
-                name = fullname.substr(typeend+1);
-            }
-        } else {
-            //(type
-            error = true;
-            errorMessage = "')' not found";
-        }
-    } else {
-        //name
-        log->__format (LOG_DEVELOPER, "Not found '('!");
-    }
-    if (error)
-    {
-        log->__format (LOG_ERROR, "XML mosp object location syntax error \"%s\": %s", fullname.c_str(), errorMessage.c_str());
-    } else {
-        log->__format (LOG_DEVELOPER, "Type: '%s', Name: '%s'.", type.c_str(), name.c_str());
-        if (type == "vehicle")
-        {
-            vehicle = getVehicle(name);
-        }
-    }
-    return vehicle;
+    pVehicle tmp;
+    if ((tmp = boost::dynamic_pointer_cast<Vehicle>(getFirstObject(fullname))) == NULL)
+        log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
+    log->__format(LOG_DEVELOPER, "Vehicle name=%s", tmp->getName().c_str());
+    return tmp;
+}
+pWorldObject World::getFirstObject(std::string fullname)
+{
+    std::string type = MospPath::getType(fullname);
+    std::string name = MospPath::getName(fullname);
+    pWorldObject tmp = getObject("(" + type + ")" + name);
+    log->__format(LOG_DEVELOPER, "Object name=%s", tmp->getName().c_str());
+    return tmp;
+}
+pWorldObject World::getObject (std::string name)
+{
+   if (objects.find(name) == objects.end())
+   log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" from generic type \"%s\"", name.c_str(), "WorldObject");
+   return objects[name];
 }
 
 void World::processXmlRootNode (XmlTag * tag)
@@ -241,7 +192,7 @@ void World::processXmlRootNode (XmlTag * tag)
                         std::string model = o->getAttribute("model");
                         pVehicle tmp= Vehicle::create(model);
                         tmp->setName(sobjname);
-                        vehicles[tmp->getName()] = tmp;
+                        objects[tmp->getName()] = tmp;
                     }
                     if (o->getName() == "area")
                     {
@@ -249,7 +200,7 @@ void World::processXmlRootNode (XmlTag * tag)
                         std::string model = o->getAttribute("model");
                         pArea tmp = Area::create (model);
                         tmp->setName(sobjname);
-                        areas[tmp->getName()] = tmp;
+                        objects[tmp->getName()] = tmp;
                     }
                 }
             }
@@ -268,7 +219,7 @@ void World::processXmlRootNode (XmlTag * tag)
             }
             if (t->getName() == "vehicle-driver")
             {
-                log->__format (LOG_CCREATOR, "Setting vehicle ver");
+                log->__format (LOG_CCREATOR, "Setting vehicle driver");
                 std::string f= t->getAttribute("first");
                 std::string s= t->getAttribute("second");
                 pVehicle tmp = getVehicleObject(f);
@@ -303,25 +254,19 @@ void World::setContainer()
 {
     //NOTE: world is hardcoded not to have a parent, therefore we don't run this line:
     //WorldObject::setContainer(container);
-
-    AreasIt i = areas.begin();
-    for(;i != areas.end(); i++)
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
     {
         i->second->setContainer(shared_from_this());
-    }
-    VehiclesIt v = vehicles.begin();
-    for(;v != vehicles.end(); v++)
-    {
-        v->second->setContainer(shared_from_this());
     }
 }
 
 pArea World::getArea(std::string name)
 {
     pArea tmp;
-    for (AreasIt i = areas.begin(); i != areas.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
     {
-        if (i->first == ("(Area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
+        if (i->first == ("(area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Area");
     return tmp;
@@ -330,9 +275,9 @@ pArea World::getArea(std::string name)
 pVehicle World::getVehicle(std::string name)
 {
     pVehicle tmp;
-    for (VehiclesIt i = vehicles.begin(); i != vehicles.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
     {
-        if (i->first == ("(Vehicle)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Vehicle>(i->second)) break;
+        if (i->first == ("(vehicle)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Vehicle>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Vehicle");
     return tmp;
@@ -341,37 +286,69 @@ pVehicle World::getVehicle(std::string name)
 void World::stepGraphics()
 {
     base->stepGraphics();
-
-    // Update Ogre's vehicles positions with Ode's positions.
-    VehiclesIt j = vehicles.begin();
-    for (; j != vehicles.end(); j++)
-    {
-        j->second->stepGraphics();
-    }
-    AreasIt i = areas.begin();
-    for (; i != areas.end(); i++)
-    {
-        i->second->stepGraphics();
-    }
     if (cameraDirector == true)
     {
         setActiveCamera( getArea("main")->getClosestCamera(getVehicle("main")->getPosition()));
     }
+    WorldObjectsIt i = objects.begin();
+    for (; i != objects.end(); i++)
+    {
+        if (0);
+        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepGraphics();
+        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepGraphics();
+        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepGraphics();
+        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepGraphics();
+        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepGraphics();
+        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepGraphics();
+        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepGraphics();
+        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepGraphics();
+        else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepGraphics();
+        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepGraphics();
+        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepGraphics();
+        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepGraphics();
+        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepGraphics();
+        else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepGraphics();
+        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepGraphics();
+        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepGraphics();
+        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepGraphics();
+        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepGraphics();
+        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepGraphics();
+        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepGraphics();
+        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepGraphics();
+        else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepGraphics();
+        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
+    }
 }
 void World::stepPhysics()
 {
-    // Update Ogre's vehicles positions with Ode's positions.
-    VehiclesIt j = vehicles.begin();
-    for (; j != vehicles.end(); j++)
+    WorldObjectsIt i = objects.begin();
+    for (; i != objects.end(); i++)
     {
-        j->second->stepPhysics();
+        if (0);
+        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepPhysics();
+        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepPhysics();
+        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepPhysics();
+        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepPhysics();
+        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepPhysics();
+        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepPhysics();
+        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepPhysics();
+        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepPhysics();
+      //else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepPhysics();
+        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepPhysics();
+        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepPhysics();
+        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepPhysics();
+      //else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepPhysics();
+      //else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepPhysics();
+        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepPhysics();
+        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepPhysics();
+        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepPhysics();
+        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepPhysics();
+        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepPhysics();
+        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepPhysics();
+        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepPhysics();
+      //else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepPhysics();
+        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
     }
-    AreasIt i = areas.begin();
-    for (; i != areas.end(); i++)
-    {
-        i->second->stepPhysics();
-    }
-
 }
 void World::switchNextAreaCamera()
 {

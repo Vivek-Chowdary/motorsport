@@ -379,7 +379,7 @@ pCamera Area::getCamera (std::string name)
     pCamera tmp;
     for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
     {
-        if (i->first == ("(Camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
+        if (i->first == ("(camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Camera");
     return tmp;

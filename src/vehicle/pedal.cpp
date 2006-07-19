@@ -40,6 +40,7 @@ Pedal::~Pedal ()
 
 void Pedal::setUserDriver ()
 {
+    log->__format(LOG_ENDUSER, "Pedal %s will now be driven by a human.", getName().c_str());
     userDriver = true;
 }
 
@@ -48,7 +49,7 @@ void Pedal::stepPhysics ()
     currentAngle = 0;
     if ( userDriver )
     {
-        if (getName() == "(Pedal)gas")
+        if (getName() == "(pedal)gas")
         {
             currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,2)]->getValue();
             if (currentAngle == 0) {
@@ -60,7 +61,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (getName() == "(Pedla)brake")
+        } else if (getName() == "(pedal)brake")
         {
             currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,1)]->getValue();
             if (currentAngle == 0) {
@@ -72,7 +73,7 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_DOWN)]->getValue() * 3 / 3;
             }   }   }   }
-        } else if (getName() == "(Pedal)clutch")
+        } else if (getName() == "(pedal)clutch")
         {
             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_KP7)]->getValue() * 3 / 3;
             if (currentAngle == 0) {
@@ -89,6 +90,5 @@ void Pedal::stepPhysics ()
 
 double Pedal::getNormalizedAngle()
 {
-    log->__format (LOG_CCREATOR, "Reading pedal \"%s\" angle: %f", getName().c_str(), currentAngle );
     return (currentAngle / angleRange);
 }

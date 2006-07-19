@@ -1,70 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<world
-    name = "Test"
-    description = "Drive the Mosp1 car in the testing grounds!"
-    useAreaCamera = "false"
-    gravityX = "0.0"
-    gravityY = "0.0"
-    gravityZ = "-9.8"
-    >
-    <vehicleList>
-        <!-- explanation
-        <vehicle
-            directory = "mosp1"         vehicle dir, located in data/vehicles.
-            driver = "none"             type of driver. functional: "none" and "user". planned in the future: "ai", "net", "replay", maybe more.
-            startPosition = "grid01"    reference to a position, which must be defined in the current area xml file.
-            >
-        </vehicle>
-        -->
-        <vehicle
-            directory = "mosp1"
-            _directory = "quattros1"
-            driver = "user"
-            startPosition = "paceCar"
-            >
-        </vehicle>
-        <!--
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid01"
-            >
-        </vehicle>
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid02"
-            >
-        </vehicle>
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid03"
-            >
-        </vehicle>
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid04"
-            >
-        </vehicle>
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid05"
-            >
-        </vehicle>
-        <vehicle
-            directory = "mosp1"
-            driver = "none"
-            startPosition = "grid06"
-            >
-        </vehicle>
-        -->
-    </vehicleList>
-    <area
-        directory = "mospland"
-        _directory = "mospland2006.r7"
+<world xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData
+        description = "Drive the Mosp1 car in the testing grounds!"
+        useAreaCamera ="false"
+        gravityX = "0.0" gravityY = "0.0" gravityZ = "-9.8"
         >
-    </area>
+    </customData>
+    <sharedobject name="main"><area
+        model="mospland"
+        _model="mospland2006.r7"
+        >
+    </area></sharedobject>
+    <sharedobject name="main"><vehicle
+        model="mosp1"
+        _model="quattros1"
+        >
+    </vehicle></sharedobject>
+    <location-vehicle first="(area)main/paceCar" second="(vehicle)main" />
+    <vehicle-driver first="(vehicle)main" second="user" />
 </world>

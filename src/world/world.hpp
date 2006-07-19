@@ -35,6 +35,8 @@ class World : public WorldObject
     World (std::string name);
     pLocation getLocationObject(std::string fullname);
     pVehicle getVehicleObject(std::string fullname);
+    pWorldObject getFirstObject(std::string fullname);
+    pWorldObject getObject (std::string name);
   public:
     static pWorld get();
     static void setNewWorld(std::string name);

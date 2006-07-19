@@ -335,7 +335,7 @@
         >
     </camera>
     <camera
-        name = "chase"
+        name = "main"
         position = "-10 0 2"
         target = "2 0 0"
         >

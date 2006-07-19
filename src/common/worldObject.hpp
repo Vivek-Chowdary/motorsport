@@ -41,6 +41,7 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         wWorldObject container;
         OgreObjects ogreObjects;
         OdeObjects odeObjects;
+        WorldObjects objects;
         WorldObject (const std::string & name);
     public:
         virtual ~WorldObject ();

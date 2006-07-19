@@ -83,6 +83,7 @@ void Body::stepPhysics ()
     if (userDriver)
     {
         double moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
+        log->__format(LOG_DEVELOPER,"Physics of body..............%f", moveZ);
         moveZ += System::get()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
         moveZ -= System::get()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
         dBodyAddForce (bodyID, 0, 0, moveZ);
@@ -102,9 +103,10 @@ void Body::stepPhysics ()
 
     dBodyAddForce (bodyID, force.x, force.y, force.z);
 
-    log->__format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
+    //log->__format(LOG_DEVELOPER, "Body air drag force = (%f, %f, %f)", force.x, force.y, force.z);
 }
 void Body::setUserDriver ()
 {
+    log->__format(LOG_ENDUSER, "Body %s will now be driven by a human.", getName().c_str());
     userDriver = true;
 }

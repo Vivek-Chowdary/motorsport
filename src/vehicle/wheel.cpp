@@ -83,6 +83,7 @@ void Wheel::setBrakePedal (pPedal pedal)
 
 void Wheel::setUserDriver ()
 {
+    log->__format(LOG_ENDUSER, "Wheel %s will now be driven by a human.", getName().c_str());
     userDriver = true;
 }
 void Wheel::stepPhysics ()
@@ -120,7 +121,7 @@ void Wheel::stepPhysics ()
     // finally, apply the torques
     dBodyAddTorque (getMainOdeObject()->getBodyID(), tAxis.x, tAxis.y, tAxis.z);
 
-    log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",getName().c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
+    //log->__format(LOG_DEVELOPER, "%s:angVel=%f angAcc=%f torque=%f powered=%f axis=(%f,%f,%f)",getName().c_str(), inputAngularVel, angularAcc, inputTorqueTransfer, powered, tAxis.x, tAxis.y, tAxis.z);
     
     // zero the accumulators
     inputTorqueTransfer = 0;

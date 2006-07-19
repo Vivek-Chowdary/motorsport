@@ -35,6 +35,7 @@ Suspension::~Suspension ()
 
 void Suspension::setUserDriver ()
 {
+    log->__format(LOG_ENDUSER, "Suspension %s will now be driven by a human.", getName().c_str());
     userDriver = true;
 }
 

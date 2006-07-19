@@ -78,7 +78,7 @@ void Engine::stepPhysics ()
     inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
     angularAcc = (inputAngularVel-prevAngularVel)/ dt;
     outputAngularVel = inputAngularVel; */
-    log->__format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
+    //log->__format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;
