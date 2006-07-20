@@ -86,10 +86,23 @@ int main (int argc, char **argv)
     log->loadscreen (LOG_ENDUSER, "Hiding load screen");
     gui->hideLoadscreen();
     log->__format (LOG_DEVELOPER, "Starting main loop");
+
+    double gfxTime = 0.0;
+    double guiTime = 0.0;
+    double fsxTime = 0.0;
+    double inpTime = 0.0;
+    double startTime = 0.0;
     while (system->isMainLoopEnabled ())
     {
         // Update current real loop time.
         system->realTime = SDL_GetTicks () / 1000.0;
+        // Log engine stats every few tenths of second.
+        if (system->simulationTime - system->statisticsTime >= 0.2)
+        {
+            double totalTime = gfxTime + guiTime + fsxTime + inpTime;
+            log->__format (LOG_DEVELOPER, "Total[%5.3f]\t= GFX %5.2f+ GUI %5.2f + FSX %5.2f + INP %5.2f", totalTime, gfxTime*100.0/totalTime, guiTime*100.0/totalTime, fsxTime*100.0/totalTime, inpTime*100.0/totalTime);
+            gfxTime = guiTime = fsxTime = inpTime = 0.0;
+        }
         // Update statistics data every second.
         if (system->simulationTime - system->statisticsTime >= 1)
         {
@@ -97,16 +110,23 @@ int main (int argc, char **argv)
             system->setCurrentPhysicsFrequency (system->physicsSteps);
             system->graphicsSteps = system->physicsSteps = 0;
             system->statisticsTime += 1;
-            log->__format (LOG_DEVELOPER, "Main Loop Stats: graphicsFps=%i - physicsFps=%i", system->graphicsFrequency, system->getCurrentPhysicsFrequency());
         }
+        startTime = SDL_GetTicks()/1000.0;
         input->computeStep ();
+        inpTime += (SDL_GetTicks()/1000.0)-startTime;
         // Run the gui engine.
+        startTime = SDL_GetTicks()/1000.0;
         gui->computeStep ();
+        guiTime += (SDL_GetTicks()/1000.0)-startTime;
         // Run the graphics engine.
+        startTime = SDL_GetTicks()/1000.0;
         graphics->computeStep ();
         system->graphicsSteps++;
+        gfxTime += (SDL_GetTicks()/1000.0)-startTime;
         // Clear all event-like behaving axis. This must be moved to the input engine as axis filters asap. TODO
+        startTime = SDL_GetTicks()/1000.0;
         input->clearGraphicsEventAxis ();
+        inpTime += (SDL_GetTicks()/1000.0)-startTime;
         // Run the physics engine until the game time is in sync with the real loop time.
         while (((system->realTime - system->simulationTime) >= system->getDesiredPhysicsTimestep()) && (system->isMainLoopEnabled ()))
         {
@@ -119,16 +139,22 @@ int main (int argc, char **argv)
                 static int steps = 1;
                 if ((system->pauseStep != 0 && steps < system->pauseStep) || (system->pauseStep == 0))
                 {
+        startTime = SDL_GetTicks()/1000.0;
                     computeLogic (log);
                     input->clearLogicEventAxis ();
                     input->computeStep ();
+        inpTime += (SDL_GetTicks()/1000.0)-startTime;
+        startTime = SDL_GetTicks()/1000.0;
                     physics->computeStep ();
                     steps++;
+        fsxTime += (SDL_GetTicks()/1000.0)-startTime;
+        startTime = SDL_GetTicks()/1000.0;
                     if (System::get()->videoRecordTimestep > 0)
                     {
                         recordVideoFrames ();
                     }
                 }
+        guiTime += (SDL_GetTicks()/1000.0)-startTime;
                 step = system->timeScale;
             }
         }

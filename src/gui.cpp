@@ -72,7 +72,6 @@ Gui::Gui ()
 int Gui::computeStep (void)
 //makes the graphics engine draw one frame
 {
-    log->__format (LOG_DEVELOPER, "Doing an step...");
     //update all statistics every second
     static double lastRefreshTime = 0;
     if (SDL_GetTicks ()/1000.0 - lastRefreshTime >= 1)
