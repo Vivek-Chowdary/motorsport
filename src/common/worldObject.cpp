@@ -26,7 +26,6 @@
 #include "engine.hpp"
 #include "camera.hpp"
 
-
 unsigned int WorldObject::instancesCount = 0;
 WorldObjectsC WorldObject::worldObjects;
 
@@ -159,12 +158,71 @@ pOdeObject WorldObject::getMainOdeObject()
     //if (odeObjects.empty()) return NULL;
     return odeObjects.begin()->second;
 }
+void WorldObject::stepPhysics ()
+{
+    WorldObjectsIt i = objects.begin();
+    for (; i != objects.end(); i++)
+    {
+        if (0);
+        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepPhysics();
+        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepPhysics();
+        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepPhysics();
+        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepPhysics();
+        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepPhysics();
+        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepPhysics();
+        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepPhysics();
+        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepPhysics();
+        else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepPhysics();
+        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepPhysics();
+        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepPhysics();
+        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepPhysics();
+        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepPhysics();
+        else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepPhysics();
+        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepPhysics();
+        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepPhysics();
+        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepPhysics();
+        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepPhysics();
+        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepPhysics();
+        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepPhysics();
+        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepPhysics();
+        else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepPhysics();
+        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
+    }
+}
 void WorldObject::stepGraphics ()
 {
-    OgreObjectsIt i = ogreObjects.begin();
-    for(;i != ogreObjects.end(); i++)
+    OgreObjectsIt o = ogreObjects.begin();
+    for(;o != ogreObjects.end(); o++)
     {
-        i->second->stepGraphics();
+        o->second->stepGraphics();
+    }
+    WorldObjectsIt i = objects.begin();
+    for (; i != objects.end(); i++)
+    {
+        if (0);
+        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepGraphics();
+        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepGraphics();
+        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepGraphics();
+        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepGraphics();
+        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepGraphics();
+        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepGraphics();
+        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepGraphics();
+        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepGraphics();
+        else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepGraphics();
+        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepGraphics();
+        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepGraphics();
+        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepGraphics();
+        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepGraphics();
+        else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepGraphics();
+        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepGraphics();
+        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepGraphics();
+        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepGraphics();
+        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepGraphics();
+        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepGraphics();
+        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepGraphics();
+        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepGraphics();
+        else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepGraphics();
+        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
     }
 }
 void WorldObject::setPosition (Vector3d position)
@@ -200,4 +258,25 @@ void WorldObject::applyRotation (Quaternion rotation)
         Quaternion finalRotation = rotation * j->second->getRotation();
         j->second->setRotation (finalRotation);
     }
+}
+pArea WorldObject::getArea(std::string name)
+{
+    pArea tmp;
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        if (i->first == ("(area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Area");
+    return tmp;
+}
+
+pVehicle WorldObject::getVehicle(std::string name)
+{
+    pVehicle tmp;
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        if (i->first == ("(vehicle)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Vehicle>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Vehicle");
+    return tmp;
 }

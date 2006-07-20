@@ -26,8 +26,6 @@ class World : public WorldObject
     static pWorld world;
     static std::string newWorld;
     std::string description;
-    Areas areas;
-    Vehicles vehicles;
     pCamera activeCamera;
     bool cameraDirector;
     void setActiveCamera(pCamera camera);
@@ -49,15 +47,12 @@ class World : public WorldObject
     dSpaceID spaceID;
     dJointGroupID jointGroupID;
 
-    pArea getArea(std::string name);
-    pVehicle getVehicle(std::string name);
     void switchCameraDirector();
     void switchNextAreaCamera();
     void switchNextVehicleCamera();
     bool isActiveCamera(pCamera camera);
 
     void stepGraphics();
-    void stepPhysics();
 };
 
 #endif

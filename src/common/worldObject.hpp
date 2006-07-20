@@ -25,6 +25,11 @@ SHARED_PTR_MAP(WorldObject, pWorldObject, WorldObjects, WorldObjectsIt, wWorldOb
 typedef std::map <std::string, WorldObject *> WorldObjectsC;
 typedef std::map <std::string, WorldObject *>::iterator WorldObjectsCIt;
 
+SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt, wCamera);
+SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt, wVehicle);
+SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
+SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
+
 class WorldObject: public boost::enable_shared_from_this <WorldObject>
 {
     private:
@@ -60,6 +65,7 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         pLogEngine getLog();
 
         void stepGraphics ();
+        void stepPhysics ();
 
         pOdeObject getMainOdeObject();
         
@@ -68,5 +74,8 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         void applyRotation (Quaternion rotation);
+
+        pArea getArea(std::string name);
+        pVehicle getVehicle(std::string name);
 };
 #endif
