@@ -28,6 +28,7 @@ pPart Part::create(const std::string & name)
 Part::Part (const std::string & name)
     :WorldObject(name)
 {
+    log->__format(LOG_WARNING, "BP 1");
     setPath(Paths::part(name));
     setXmlPath(Paths::partXml(name));
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "parts." + name);
@@ -36,12 +37,15 @@ Part::Part (const std::string & name)
     pOgreObjectData ogreData(new OgreObjectData);
     pPartOdeData data(new PartOdeData);
     std::string shape = "none";
+    log->__format(LOG_WARNING, "BP 2");
     if (tag->getName() == "part")
     {
+    log->__format(LOG_WARNING, "BP 3");
         setName(tag->getAttribute("name"));
         data->mass = stod(tag->getAttribute("mass"));
         XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
         {
+    log->__format(LOG_WARNING, "BP 4");
             data->shape = t->getName();
             if (data->shape == "box")
             {
@@ -101,22 +105,6 @@ void Part::stepPhysics ()
     // //////////////simplified air friction (test)(should be forces!)
     dBodySetAngularVel (partID, (*(dReal *) (dBodyGetAngularVel (partID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 2)) * (dReal) (0.999));
     // ////////////////////////////////////simplified air friction
-    // applying user input [forces]
-    if (this == World::get()->getArea("main")->parts.begin()->second.get())
-    {
-        float moveX = System::get()->axisMap[getIDKeyboardKey(SDLK_l)]->getValue();
-        float moveY = System::get()->axisMap[getIDKeyboardKey(SDLK_i)]->getValue();
-        moveX *= 100;
-        moveY *= 100;
-        dBodyAddForce (partID, moveX, moveY, 0.0f);
-        moveX = -System::get()->axisMap[getIDKeyboardKey(SDLK_j)]->getValue();
-        moveY = -System::get()->axisMap[getIDKeyboardKey(SDLK_k)]->getValue();
-        moveX *= 100;
-        moveY *= 100;
-        dBodyAddForce (partID, moveX, moveY, 0.0f);
-        float moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_SPACE)]->getValue() * 500;
-        dBodyAddForce (partID, 0, 0, moveZ);
-    }
     const dReal * pos;
     pos = dBodyGetPosition(partID);
 }

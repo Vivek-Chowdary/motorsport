@@ -28,8 +28,6 @@ class Part : public WorldObject
 {
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startPhysics (XERCES_CPP_NAMESPACE::DOMNode * n);
-    void startGraphics (XERCES_CPP_NAMESPACE::DOMNode * n);
     Part (const std::string & name);
   public:
     static pPart create (const std::string & name);

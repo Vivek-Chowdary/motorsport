@@ -33,24 +33,15 @@ class Area : public WorldObject
         std::string contact;
         std::string license;
         Locations locations;
-        Cameras cameras;
-        pCamera activeCamera;
         void construct (XmlTag * tag);
         Area (std::string areaName);
     public:
         static pArea create(std::string areaName);
-        void setContainer(pWorldObject worldObject);
         ~Area ();
 
         pLocation getLocation (std::string name);
-        pCamera getCamera (std::string name);
-        void pointCameras(pVehicle target);
-        Parts parts;
 
         dBodyID areaBodyID;
-        void stepGraphics();
-        void stepPhysics();
-        pCamera switchNextCamera();
         pCamera getClosestCamera(Vector3d location);
 
         Ogre::SceneNode * planeNode;

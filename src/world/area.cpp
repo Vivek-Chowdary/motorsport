@@ -124,7 +124,7 @@ void Area::construct (XmlTag * tag)
                     pPart tmp = Part::create (u->getName());
                     tmp->setPosition (position);
                     tmp->setRotation (rotation);
-                    parts[tmp->getName()] = tmp;
+                    objects[tmp->getName()] = tmp;
                     tmp->stepGraphics();
                     System::get()->ogreWindow->update ();
                 }
@@ -137,11 +137,10 @@ void Area::construct (XmlTag * tag)
             if (t->getName() == "camera")
             {
                 pCamera tmp = Camera::create (t);
-                cameras[tmp->getName()] = tmp;
+                objects[tmp->getName()] = tmp;
             }
         }
     }
-
     log->loadscreen (LOG_CCREATOR, "Creating the area ground");
 
     log->__format (LOG_DEVELOPER, "Creating the ode plane");
@@ -158,6 +157,7 @@ void Area::construct (XmlTag * tag)
     planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
     planeNode->attachObject(planeEntity);
     areaBodyID = dBodyCreate (World::get()->ghostWorldID);
+    positionCameras(areaBodyID);
     System::get()->ogreWindow->update ();
 
     // FIXME should be part of the world, not the area
@@ -173,29 +173,6 @@ void Area::construct (XmlTag * tag)
     dGeomSetPosition (checkpointID, checkpointPosition.x, checkpointPosition.y, checkpointPosition.z); 
 }
 
-void Area::setContainer(pWorldObject container)
-{
-    WorldObject::setContainer(container);
-    PartsIt p = parts.begin();
-    for(;p != parts.end(); p++)
-    {
-        p->second->setContainer(shared_from_this());
-    }
-    CamerasIt i = cameras.begin();
-    for(;i != cameras.end(); i++)
-    {
-        i->second->setContainer(shared_from_this());
-    }
-}
-void Area::pointCameras(pVehicle target)
-{
-    CamerasIt i = cameras.begin();
-    for(;i != cameras.end(); i++)
-    {
-        i->second->setPositionID(areaBodyID);
-        i->second->setTarget(target->getMainOdeObject());
-    }
-}
 void Area::setCastShadows(bool castShadows)
 {
     planeEntity->setCastShadows(castShadows);
@@ -218,10 +195,13 @@ void Area::setRenderDetail(int renderMode)
         mode = Ogre::PM_SOLID;
         break;
     }
-    CamerasIt i = cameras.begin();
-    for(;i != cameras.end(); i++)
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
     {
-        i->second->ogreCamera->setPolygonMode(mode);
+        if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
+        {
+            tmp->ogreCamera->setPolygonMode(mode);
+        }
     }
 }
 
@@ -345,83 +325,31 @@ pLocation Area::getLocation (std::string name)
     return tmp;
 }
 
-void Area::stepGraphics()
-{
-    base->stepGraphics();
-
-    PartsIt k = parts.begin();
-    for (; k != parts.end(); k++)
-    {
-        k->second->stepGraphics();
-    }
-    CamerasIt i = cameras.begin();
-    for (;i != cameras.end(); i++)
-    {
-        i->second->stepGraphics();
-    }
-}
-
-void Area::stepPhysics()
-{
-    WorldObject::stepPhysics();
-    PartsIt k = parts.begin();
-    for (; k != parts.end(); k++)
-    {
-        k->second->stepPhysics();
-    }
-    CamerasIt i = cameras.begin();
-    for (;i != cameras.end(); i++)
-    {
-        i->second->stepPhysics();
-    }
-}
-pCamera Area::getCamera (std::string name)
-{
-    pCamera tmp;
-    for (CamerasIt i = cameras.begin(); i != cameras.end(); i++)
-    {
-        if (i->first == ("(camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
-    }
-    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Camera");
-    return tmp;
-}
-pCamera Area::switchNextCamera()
-{
-    CamerasIt i = cameras.begin();
-    pCamera nextCam = i->second;
-    bool found = false;
-    for (;i != cameras.end(); i++)
-    {
-        if (found == true)
-        {
-            nextCam = i->second;
-            found = false;
-        }
-        if (activeCamera == i->second)
-        {
-            found = true;
-        } 
-    }
-    activeCamera = nextCam;
-    return activeCamera;
-}
-
 pCamera Area::getClosestCamera(Vector3d location)
 {
     log->__format(LOG_DEVELOPER, "Finding closest camera");
     double closestDistance = 99999999999.0;
-    CamerasIt i = cameras.begin();
-    pCamera closestCam = i->second;
-    for (;i != cameras.end(); i++)
+    WorldObjectsIt i = objects.begin();
+    pCamera closestCam;
+    bool first = false;
+    for (;i != objects.end(); i++)
     {
-        log->__format(LOG_DEVELOPER, "Checking cam id: %s", i->second->getName().c_str());
-        Ogre::Vector3 p = i->second->ogreCamera->getPosition();
-        Vector3d cPos (p.x, p.y, p.z);
-        double distance = cPos.distance(location);
-        if (distance < closestDistance)
+        if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
-            closestDistance = distance;
-            closestCam = i->second;
+            if (first == false)
+            {
+                closestCam = tmp;
+                first = true;
+            }
+            log->__format(LOG_DEVELOPER, "Checking cam id: %s", tmp->getName().c_str());
+            Ogre::Vector3 p = tmp->ogreCamera->getPosition();
+            Vector3d cPos (p.x, p.y, p.z);
+            double distance = cPos.distance(location);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                closestCam = tmp;
+            }
         }
     }
     activeCamera = closestCam;

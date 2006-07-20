@@ -29,6 +29,19 @@ SHARED_PTR_MAP(Camera, pCamera, Cameras, CamerasIt, wCamera);
 SHARED_PTR_MAP(Vehicle, pVehicle, Vehicles, VehiclesIt, wVehicle);
 SHARED_PTR_MAP(Area, pArea, Areas, AreasIt, wArea);
 SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
+SHARED_PTR(Body, pBody, wBody);
+SHARED_PTR(Engine, pEngine, wEngine);
+SHARED_PTR(Clutch, pClutch, wClutch);
+SHARED_PTR(Gear, pGear, wGear);
+SHARED_PTR(Gearbox, pGearbox, wGearbox);
+SHARED_PTR(GearboxGear, pGearboxGear, wGearboxGear);
+SHARED_PTR(FinalDrive, pFinalDrive, wFinalDrive);
+SHARED_PTR(DriveJoint, pDriveJoint, wDriveJoint);
+SHARED_PTR(DriveMass, pDriveMass, wDriveMass);
+SHARED_PTR(LSD, pLSD, wLSD);
+SHARED_PTR(Wheel, pWheel, wWheel);
+SHARED_PTR(Pedal, pPedal, wPedal);
+SHARED_PTR(Suspension, pSuspension, wSuspension);
 
 class WorldObject: public boost::enable_shared_from_this <WorldObject>
 {
@@ -41,6 +54,7 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         std::string path;
         std::string xmlPath;
     protected:
+        pCamera activeCamera;
         pLogEngine log;
         WorldObject * base;
         wWorldObject container;
@@ -67,6 +81,10 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         void stepGraphics ();
         void stepPhysics ();
 
+        pCamera switchNextCamera();
+        void pointCameras(pVehicle target);
+        void positionCameras(dBodyID baseID);
+        void positionCameras(pVehicle base);
         pOdeObject getMainOdeObject();
         
         Vector3d getPosition ();
@@ -77,5 +95,21 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
 
         pArea getArea(std::string name);
         pVehicle getVehicle(std::string name);
+        pCamera getCamera (std::string name);
+        pBody getBody (std::string name);
+        pDriveJoint getDriveJoint (std::string name);
+        pDriveMass getDriveMass (std::string name);
+        pClutch getClutch (std::string name);
+        pGear getGear (std::string name);
+        pLSD getLSD (std::string name);
+        pEngine getEngine (std::string name);
+        pFinalDrive getFinalDrive (std::string name);
+        pGearbox getGearbox (std::string name);
+        pGearboxGear getGearboxGear (std::string name);
+        pPedal getPedal (std::string name);
+        pSuspension getSuspension (std::string name);
+        pWheel getWheel (std::string name);
+        pWorldObject getObject (std::string name);
+        pWorldObject getWorldObject (std::string name);
 };
 #endif
