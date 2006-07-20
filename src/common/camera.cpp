@@ -143,6 +143,7 @@ void Camera::stopPhysics ()
 
 void Camera::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     if (World::get()->isActiveCamera(boost::dynamic_pointer_cast<Camera>(shared_from_this())))
     {
         static bool wasPressed = false;

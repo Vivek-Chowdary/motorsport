@@ -166,6 +166,7 @@ LSD::~LSD ()
 
 void Clutch::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     if(enabled) {
         double clutch = clutchPedal->getNormalizedAngle();
         if(clutch) {
@@ -196,59 +197,61 @@ void Clutch::stepPhysics ()
 
 void Gear::stepPhysics ()
 { 
-  if(enabled) {
-    double dt;
-    dt = System::get()->getDesiredPhysicsTimestep();
-    prevRelAngle = relAngle;
-    prevRelAngularVel = relAngularVel;
+    WorldObject::stepPhysics();
+    if(enabled) {
+        double dt;
+        dt = System::get()->getDesiredPhysicsTimestep();
+        prevRelAngle = relAngle;
+        prevRelAngularVel = relAngularVel;
 
-    relAngularVel = inputDrive->getOutputAngularVel()/ratio - outputDrive->getInputAngularVel();
+        relAngularVel = inputDrive->getOutputAngularVel()/ratio - outputDrive->getInputAngularVel();
 
-    // trapezoidal integration
-    relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
+        // trapezoidal integration
+        relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
 
-//    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
-    
-    outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
-        
-    inputTorqueTransfer = -1*outputTorqueTransfer/ratio;
-    
-    inputDrive->addOutputTorque(inputTorqueTransfer);
-    outputDrive->addInputTorque(outputTorqueTransfer);   
-             
-    //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
-  }
-  else {
-    relAngle = 0;
-  }
+        //    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
+
+        outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
+
+        inputTorqueTransfer = -1*outputTorqueTransfer/ratio;
+
+        inputDrive->addOutputTorque(inputTorqueTransfer);
+        outputDrive->addInputTorque(outputTorqueTransfer);   
+
+        //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    }
+    else {
+        relAngle = 0;
+    }
 }
 
 void LSD::stepPhysics ()
 {
-  if(enabled) {
-    double dt;
-    dt = System::get()->getDesiredPhysicsTimestep();
-    prevRelAngle = relAngle;
-    prevRelAngularVel = relAngularVel;
+    WorldObject::stepPhysics();
+    if(enabled) {
+        double dt;
+        dt = System::get()->getDesiredPhysicsTimestep();
+        prevRelAngle = relAngle;
+        prevRelAngularVel = relAngularVel;
 
-    relAngularVel = inputDrive->getOutputAngularVel()/ratio - (outputDrive->getInputAngularVel()+outputDrive2->getInputAngularVel())/2;
+        relAngularVel = inputDrive->getOutputAngularVel()/ratio - (outputDrive->getInputAngularVel()+outputDrive2->getInputAngularVel())/2;
 
-    // trapezoidal integration
-    relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
+        // trapezoidal integration
+        relAngle = prevRelAngle + dt / 2 * (prevRelAngularVel + relAngularVel); 
 
-//    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
-    
-    outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
-        
-    inputTorqueTransfer = -1*outputTorqueTransfer/ratio;
-    
-    inputDrive->addOutputTorque(inputTorqueTransfer);
-    outputDrive->addInputTorque(outputTorqueTransfer/2);
-    outputDrive2->addInputTorque(outputTorqueTransfer/2);   
-             
-    //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
-  }
-  else {
-    relAngle = 0;
-  }
+        //    relAngle = relAngle + inputDrive->getOutputAngularVel()*dt/ratio - outputDrive->getInputAngularVel()*dt;
+
+        outputTorqueTransfer = springConstant*relAngle+dampConstant*relAngularVel;
+
+        inputTorqueTransfer = -1*outputTorqueTransfer/ratio;
+
+        inputDrive->addOutputTorque(inputTorqueTransfer);
+        outputDrive->addInputTorque(outputTorqueTransfer/2);
+        outputDrive2->addInputTorque(outputTorqueTransfer/2);   
+
+        //log->__format(LOG_DEVELOPER, "inTorque=%f outTorque=%f relVel=%f relAngle=%f", inputTorqueTransfer, outputTorqueTransfer,relAngularVel,relAngle);
+    }
+    else {
+        relAngle = 0;
+    }
 }

@@ -88,6 +88,7 @@ void Wheel::setUserDriver ()
 }
 void Wheel::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     prevAngularVel = inputAngularVel;
 
     // use hinge's angular rate as angular velocity of wheel (rad/s)

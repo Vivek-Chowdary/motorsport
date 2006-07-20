@@ -79,6 +79,7 @@ Body::~Body ()
 
 void Body::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     dBodyID bodyID = getMainOdeObject()->getBodyID();
     if (userDriver)
     {

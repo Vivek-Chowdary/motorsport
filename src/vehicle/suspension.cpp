@@ -162,6 +162,7 @@ Unidimensional::Unidimensional (XmlTag * tag)
 }
 void Unidimensional::stepPhysics()
 {
+    WorldObject::stepPhysics();
     double angle = getSteeringAngle();
     // Set wheel steering limits. one needs to be done before the other, can't recall which one, so it's dupped
     dJointSetHinge2Param (jointID, dParamHiStop, angle+0.0000001);
@@ -227,10 +228,6 @@ Fixed::Fixed (XmlTag * tag)
     }
     jointID = dJointCreateHinge (World::get()->worldID, 0);
     dJointAttach (jointID, 0, 0);
-}
-void Fixed::stepPhysics()
-{
-    // Empty...
 }
 Fixed::~Fixed()
 {
@@ -429,6 +426,7 @@ void DoubleWishbone::attach(pWorldObject base, pWorldObject object)
 }
 void DoubleWishbone::stepPhysics()
 {
+    WorldObject::stepPhysics();
     //compute steering
     double angle = getSteeringAngle();
     //if (right) angle *= -1;

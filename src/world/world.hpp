@@ -39,7 +39,6 @@ class World : public WorldObject
     static pWorld get();
     static void setNewWorld(std::string name);
     static void destroy();
-    void setContainer();
     ~World ();
 
     dWorldID worldID;

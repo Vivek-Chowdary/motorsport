@@ -39,7 +39,6 @@ class Suspension : public WorldObject
         void setPosition (Vector3d position);
         Vector3d getPosition();
 
-        virtual void stepPhysics ()=0;
         virtual double getRate()=0;
         virtual Vector3d getAxis()=0;
         virtual void setVelocity(double velocity)=0;
@@ -77,7 +76,6 @@ class Fixed : public Suspension
         static pFixed create(XmlTag * tag);
         ~Fixed();
 
-        void stepPhysics();
         double getRate();
         Vector3d getAxis();
         void setVelocity(double velocity);

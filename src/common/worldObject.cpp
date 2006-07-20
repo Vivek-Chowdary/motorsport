@@ -52,12 +52,21 @@ void WorldObject::setContainer(pWorldObject container)
 {
     std::string oldName = getFullName();
     this->container = container;
-    this->path = container->getPath();
-    this->xmlPath = container->getPath();
+    //if container == NULL then this is the root container, and its paths have already been set.
+    if (container != NULL)
+    {
+        this->path = container->getPath();
+        this->xmlPath = container->getPath();
+    }
     OdeObjectsIt j = odeObjects.begin();
     for(;j != odeObjects.end(); j++)
     {
         dBodySetData (j->second->getBodyID(), (void*) container.get());
+    }
+    pWorldObject t = shared_from_this();
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        if (i->second) i->second->setContainer(t);
     }
     log->setName(this->getFullName());
     log->__format(LOG_CCREATOR, "New container! Old full name: %s. New full name: %s", oldName.c_str(), getFullName().c_str());
@@ -112,7 +121,6 @@ std::string WorldObject::getName()
     else if (dynamic_cast<World          *> (this)) type = "world";
     else if (dynamic_cast<Camera         *> (this)) type = "camera";
     else if (dynamic_cast<WorldObject   *>  (this)) type = "worldobject";
-    else log->__format(LOG_ERROR, "Couldn't find out object #%s type. This should *NOT* have happened.", getId().c_str());
     return "(" + type + ")" + name;
 }
 void WorldObject::setName(std::string name)
@@ -161,7 +169,17 @@ pOdeObject WorldObject::getMainOdeObject()
 void WorldObject::stepPhysics ()
 {
     WorldObjectsIt i = objects.begin();
-    for (; i != objects.end(); i++)
+    //step torque transfer objects first
+    for (i = objects.begin(); i != objects.end(); i++)
+    {
+        if (0);
+        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepPhysics();
+        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepPhysics();
+        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepPhysics();
+        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepPhysics();
+    }
+    //step the rest of objects
+    for (i = objects.begin(); i != objects.end(); i++)
     {
         if (0);
         else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepPhysics();
@@ -173,10 +191,6 @@ void WorldObject::stepPhysics ()
         else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepPhysics();
         else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepPhysics();
         else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepPhysics();
-        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepPhysics();
-        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepPhysics();
-        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepPhysics();
-        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepPhysics();
         else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepPhysics();
         else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepPhysics();
         else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepPhysics();
@@ -186,7 +200,6 @@ void WorldObject::stepPhysics ()
         else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepPhysics();
         else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepPhysics();
         else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepPhysics();
-        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
     }
 }
 void WorldObject::stepGraphics ()
@@ -222,7 +235,6 @@ void WorldObject::stepGraphics ()
         else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepGraphics();
         else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepGraphics();
         else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepGraphics();
-        else log->__format(LOG_ERROR, "Couldn't find out object #%s (%s) type. This should *NOT* have happened.", i->second->getId().c_str(), i->first.c_str());
     }
 }
 void WorldObject::setPosition (Vector3d position)

@@ -41,7 +41,8 @@ pWorld World::get()
             newWorld = "default";
         }
         new World(World::newWorld);
-        world->setContainer();
+        pWorldObject container;
+        world->setContainer(container);
     }
     return (world);
 }
@@ -234,17 +235,6 @@ void World::setActiveCamera (pCamera camera)
     System::get()->ogreWindow->removeAllViewports ();
     System::get()->ogreWindow->addViewport (activeCamera->ogreCamera);
     log->__format (LOG_ENDUSER, "Changed camera...");
-}
-
-void World::setContainer()
-{
-    //NOTE: world is hardcoded not to have a parent, therefore we don't run this line:
-    //WorldObject::setContainer(container);
-    WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
-    {
-        i->second->setContainer(shared_from_this());
-    }
 }
 
 void World::stepGraphics()

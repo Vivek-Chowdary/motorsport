@@ -363,6 +363,7 @@ void Area::stepGraphics()
 
 void Area::stepPhysics()
 {
+    WorldObject::stepPhysics();
     PartsIt k = parts.begin();
     for (; k != parts.end(); k++)
     {

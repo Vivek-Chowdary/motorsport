@@ -47,8 +47,6 @@ class Vehicle : public WorldObject
     void placeWheelsOnSuspensions();
     void boltWheelsToSuspensions();
     void stopGraphics ();
-    WorldObjects components;
-    Cameras cameras;
     pCamera activeCamera;
     void pointCameras();
     Vehicle (std::string vehicleName);
@@ -83,6 +81,5 @@ class Vehicle : public WorldObject
     Quaternion getRotation ();
     double getOutputTorque ();
     pOdeObject getMainOdeObject();
-    void stepGraphics ();
 };
 #endif

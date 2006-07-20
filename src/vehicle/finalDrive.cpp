@@ -46,6 +46,7 @@ FinalDrive::~FinalDrive ()
 
 void FinalDrive::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     double dt;
     double torqueSum;
     

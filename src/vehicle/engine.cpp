@@ -50,7 +50,8 @@ void Engine::setGasPedal (pPedal pedal)
 
 void Engine::stepPhysics ()
 {
-//    double dtoverJe;
+    WorldObject::stepPhysics();
+    //    double dtoverJe;
     double engineTorque;
     double gas = gasPedal->getNormalizedAngle();
 
@@ -60,24 +61,24 @@ void Engine::stepPhysics ()
     } else {
         engineTorque = ((torqueLinearMultiplier/2) + (inputAngularVel * (torqueLinearMultiplier/2) / angularVelLimit)) * gas;
     }
-    
+
     double dt;
     double torqueSum;
-    
+
     dt = System::get()->getDesiredPhysicsTimestep();
     prevAngularVel = inputAngularVel;
-//    inputTorqueTransfer = inputJoint->getOutputTorque();
-//    outputTorqueTransfer += outputJoint->getInputTorque();
+    //    inputTorqueTransfer = inputJoint->getOutputTorque();
+    //    outputTorqueTransfer += outputJoint->getInputTorque();
     torqueSum = outputTorqueTransfer + engineTorque;
     angularAcc = (torqueSum - friction * prevAngularVel)/inertia;
-    
+
     // improved Euler ODE solve
     inputAngularVel = prevAngularVel + dt / 2 * (angularAcc + (torqueSum - friction*(prevAngularVel + angularAcc*dt))/inertia);
     outputAngularVel = inputAngularVel;
-/*    dtoverJe=dt/inertia;
-    inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
-    angularAcc = (inputAngularVel-prevAngularVel)/ dt;
-    outputAngularVel = inputAngularVel; */
+    /*    dtoverJe=dt/inertia;
+          inputAngularVel = (dtoverJe*(engineTorque+outputJoint->getInputTorque())+prevAngularVel)/(1+(dtoverJe*friction));
+          angularAcc = (inputAngularVel-prevAngularVel)/ dt;
+          outputAngularVel = inputAngularVel; */
     //log->__format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;

@@ -96,6 +96,7 @@ Part::~Part ()
 
 void Part::stepPhysics ()
 {
+    WorldObject::stepPhysics();
     dBodyID partID = odeObjects.begin()->second->getBodyID();
     // //////////////simplified air friction (test)(should be forces!)
     dBodySetAngularVel (partID, (*(dReal *) (dBodyGetAngularVel (partID) + 0)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 1)) * (dReal) (0.999), (*(dReal *) (dBodyGetAngularVel (partID) + 2)) * (dReal) (0.999));
