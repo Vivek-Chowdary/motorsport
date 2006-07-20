@@ -31,10 +31,7 @@ class World : public WorldObject
     void setActiveCamera(pCamera camera);
     void processXmlRootNode (XmlTag * tag);
     World (std::string name);
-    pLocation getLocationObject(std::string fullname);
-    pVehicle getVehicleObject(std::string fullname);
-    pWorldObject getFirstObject(std::string fullname);
-    pWorldObject getObject (std::string name);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pWorld get();
     static void setNewWorld(std::string name);

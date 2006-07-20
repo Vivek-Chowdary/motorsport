@@ -35,7 +35,7 @@ pVehicle Vehicle::create(std::string vehicleName)
     return vehicle;
 }
 Vehicle::Vehicle (std::string vehicleName)
-    :WorldObject(vehicleName)
+    :WorldObject("vehicle")
 {
     setPath(Paths::vehicle(vehicleName));
     System::get()->setCurrentPath(Paths::vehicle(vehicleName));
@@ -47,8 +47,6 @@ Vehicle::Vehicle (std::string vehicleName)
     XmlTag * tag = new XmlTag (getXmlPath());
     construct (tag);
     delete tag;
-
-    userDriver = false;
 }
 
 Vehicle::~Vehicle ()
@@ -84,46 +82,20 @@ void Vehicle::setUserDriver ()
     }
 }
 
+void Vehicle::readCustomDataTag(XmlTag * tag)
+{
+    description = tag->getAttribute("description");
+    author =      tag->getAttribute("author");
+    contact =     tag->getAttribute("contact");
+    license =     tag->getAttribute("license");
+}
 void Vehicle::construct (XmlTag * tag)
 {
-    if (tag->getName() == "vehicle")
-    {
-        setName (     tag->getAttribute("name"));
-        description = tag->getAttribute("description");
-        author =      tag->getAttribute("author");
-        contact =     tag->getAttribute("contact");
-        license =     tag->getAttribute("license");
+    pLSD  lsd  = LSD::create();  lsd->setName("rear diff");  objects[lsd->getName()] = lsd;
+    pGear gear = Gear::create(); gear->setName("transfer"); objects[gear->getName()] = gear;
 
-        pLSD  lsd  = LSD::create();  lsd->setName("rear diff");  objects[lsd->getName()] = lsd;
-        pGear gear = Gear::create(); gear->setName("transfer"); objects[gear->getName()] = gear;
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
-            bool u=false; //update graphics display; render one frame
-            if (t->getName() == "body")
-                { pBody tmp = Body::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "engine")
-                { pEngine tmp = Engine::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "clutch")
-                { pClutch tmp = Clutch::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "gearbox")
-                { pGearbox tmp = Gearbox::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "finalDrive")
-                { pFinalDrive tmp = FinalDrive::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "pedal")
-                { pPedal tmp = Pedal::create(t); objects[tmp->getName()]=tmp; }
-            if (t->getName() == "wheel")
-                { pWheel tmp = Wheel::create(t); objects[tmp->getName()]=tmp; u=true;}
-            if (t->getName() == "suspension.unidimensional")
-                { pUnidimensional tmp = Unidimensional::create(t); objects[tmp->getName()]=tmp; u=true;}
-            if (t->getName() == "suspension.fixed")
-                { pFixed tmp = Fixed::create(t); objects[tmp->getName()]=tmp; u=true;}
-            if (t->getName() == "suspension.doublewishbone")
-                { pDoubleWishbone tmp = DoubleWishbone::create(t); objects[tmp->getName()]=tmp; u=true;}
-            if (t->getName() == "camera")
-                { pCamera tmp = Camera::create(t); objects[tmp->getName()]=tmp; u=true;}
-            if (u) System::get()->ogreWindow->update ();
-        }
-    }
+    constructFromTag(tag);
+
     // spread the news to the necessary (input-able) vehicle parts
     log->__format(LOG_DEVELOPER, "Setting some drive joint pointers...");
     getClutch("main")->setOutputPointer(getGearbox("main"));
@@ -250,6 +222,6 @@ void Vehicle::stepPhysics ()
         double velocity = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
         tmp = dBodyGetPosition(getBody("main")->getMainOdeObject()->getBodyID());
         double distance = sqrt(tmp[0]*tmp[0]+tmp[1]*tmp[1]+tmp[2]*tmp[2]);
-        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getEngine("main")->getOutputAngularVel(), getFinalDrive("main")->getInputAngularVel(), getWheel("rr")->getInputAngularVel(), getWheel("rl")->getInputAngularVel(), getGearbox("main")->getCurrentGearName().c_str(), distance);
+        log->log (LOG_ENDUSER, LOG_TELEMETRY | LOG_FILE, "%9.5f %12.8f %12.8f %12.8f %12.8f %s %12.8f", velocity, getEngine("main")->getOutputAngularVel(), getFinalDrive("main")->getInputAngularVel(), getWheel("rr")->getInputAngularVel(), getWheel("rl")->getInputAngularVel(), getGearbox("main")->getCurrentGear()->getDescription().c_str(), distance);
     }
 }

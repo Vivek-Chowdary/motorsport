@@ -40,7 +40,7 @@ OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, std::st
 
     if (useMesh)
     {
-        entity = System::get()->ogreSceneManager->createEntity (id, meshPath);
+        entity = System::get()->ogreSceneManager->createEntity (id + name, meshPath);
         entity->setCastShadows(true);
         for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
         {

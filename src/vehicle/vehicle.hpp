@@ -24,7 +24,6 @@ SHARED_PTR_MAP(Camera, pCamera, Cameras, CameraIt, wCamera);
 class Vehicle : public WorldObject
 {
   private:
-    bool userDriver;
     std::string description;
     std::string author;
     std::string contact;
@@ -35,6 +34,7 @@ class Vehicle : public WorldObject
     void boltWheelsToSuspensions();
     void stopGraphics ();
     Vehicle (std::string vehicleName);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pVehicle create(std::string vehicleName);
     void setContainer (pWorldObject container);

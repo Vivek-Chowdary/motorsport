@@ -26,11 +26,11 @@ SHARED_PTR(Wheel, pWheel, wWheel);
 class Wheel : public DriveMass
 {
   private:
-    bool userDriver;
     double powered;
     pSuspension baseSuspension;
     pPedal brakePedal;
     Wheel (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pWheel create(XmlTag * tag);
     ~Wheel ();

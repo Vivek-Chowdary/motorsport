@@ -57,6 +57,7 @@ class Clutch : public DriveJoint
     bool locked;
     Clutch (XmlTag * tag);
     Clutch ();
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pClutch create (XmlTag * tag);
     static pClutch create ();
@@ -74,7 +75,7 @@ class Gear : public DriveJoint
     double dampConstant;
     void startPhysics (XmlTag * tag);
     Gear (XmlTag * tag);
-    Gear ();
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pGear create (XmlTag * tag);
     static pGear create ();
@@ -99,6 +100,7 @@ class LSD : public DriveJoint
     void startPhysics (XmlTag * tag);
     LSD (XmlTag * tag);
     LSD ();
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pLSD create (XmlTag * tag);
     static pLSD create ();

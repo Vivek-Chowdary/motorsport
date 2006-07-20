@@ -31,7 +31,6 @@ class Suspension : public WorldObject
         ~Suspension ();
         Quaternion rotation;
         Vector3d position;
-        bool userDriver;
     public:
         void setUserDriver ();
         Vector3d getSecondLinkPosition ();
@@ -55,6 +54,7 @@ class Unidimensional : public Suspension
         double maxSteeringAngle;
         double getSteeringAngle();
         Unidimensional (XmlTag * tag);
+        void readCustomDataTag(XmlTag * tag);
     public:
         static pUnidimensional create(XmlTag * tag);
         ~Unidimensional();
@@ -72,6 +72,7 @@ class Fixed : public Suspension
     protected:
         dJointID jointID;
         Fixed (XmlTag * tag);
+        void readCustomDataTag(XmlTag * tag);
     public:
         static pFixed create(XmlTag * tag);
         ~Fixed();
@@ -111,6 +112,7 @@ class DoubleWishbone : public Suspension
         Vector3d getFirstLinkPosition (){return firstPosition;};
         Quaternion getFirstLinkRotation (){return firstRotation;};
         DoubleWishbone (XmlTag * tag);
+        void readCustomDataTag(XmlTag * tag);
     public:
         static pDoubleWishbone create(XmlTag * tag);
         ~DoubleWishbone();

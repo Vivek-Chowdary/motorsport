@@ -26,7 +26,6 @@ Suspension::Suspension (std::string name)
 {
     position = Vector3d (0, 0, 0);
     rotation = Quaternion (1, 0, 0, 0);
-    userDriver = false;
 }
 
 Suspension::~Suspension ()
@@ -140,25 +139,24 @@ pUnidimensional Unidimensional::create (XmlTag * tag)
     pUnidimensional tmp(new Unidimensional(tag));
     return tmp;
 }
-Unidimensional::Unidimensional (XmlTag * tag)
-    :Suspension("suspension.unidimensional")
+void Unidimensional::readCustomDataTag(XmlTag * tag)
 {
-    userDriver = false;
     springConstant = 0;
     dampingConstant = 0;
     maxSteeringAngle = 0.0;
-    if (tag->getName() == "suspension.unidimensional")
-    {
-        setName (     tag->getAttribute("name"));
-        position = Vector3d (tag->getAttribute("position"));
-        rotation = Quaternion (tag->getAttribute("rotation"));
-        springConstant = stod(tag->getAttribute("springConstant"));
-        dampingConstant = stod(tag->getAttribute("dampingConstant"));
-        maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
-    }
+    position = Vector3d (tag->getAttribute("position"));
+    rotation = Quaternion (tag->getAttribute("rotation"));
+    springConstant = stod(tag->getAttribute("springConstant"));
+    dampingConstant = stod(tag->getAttribute("dampingConstant"));
+    maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
 //    jointID = dJointCreateHinge (World::get()->worldID, 0);
     jointID = dJointCreateHinge2 (World::get()->worldID, 0);
     dJointAttach (jointID, 0, 0);
+}
+Unidimensional::Unidimensional (XmlTag * tag)
+    :Suspension("suspension.unidimensional")
+{
+    constructFromTag(tag);
 }
 void Unidimensional::stepPhysics()
 {
@@ -216,18 +214,17 @@ pFixed Fixed::create(XmlTag * tag)
     return tmp;
 }
 
-Fixed::Fixed (XmlTag * tag)
-    :Suspension("suspension.unidimensional")
+void Fixed::readCustomDataTag(XmlTag * tag)
 {
-    userDriver = false;
-    if (tag->getName() == "suspension.fixed")
-    {
-        setName (     tag->getAttribute("name"));
-        position = Vector3d (tag->getAttribute("position"));
-        rotation = Quaternion (tag->getAttribute("rotation"));
-    }
+    position = Vector3d (tag->getAttribute("position"));
+    rotation = Quaternion (tag->getAttribute("rotation"));
     jointID = dJointCreateHinge (World::get()->worldID, 0);
     dJointAttach (jointID, 0, 0);
+}
+Fixed::Fixed (XmlTag * tag)
+    :Suspension("suspension.fixed")
+{
+    constructFromTag(tag);
 }
 Fixed::~Fixed()
 {
@@ -274,42 +271,30 @@ pDoubleWishbone DoubleWishbone::create(XmlTag * tag)
     pDoubleWishbone tmp(new DoubleWishbone(tag));
     return tmp;
 }
-
-DoubleWishbone::DoubleWishbone(XmlTag * tag)
-    :Suspension("suspension.doublewishbone")
+void DoubleWishbone::readCustomDataTag(XmlTag * tag)
 {
     pOgreObjectData upperBoneOData(new OgreObjectData);
     pOgreObjectData lowerBoneOData(new OgreObjectData);
     pOgreObjectData uprightBoneOData(new OgreObjectData);
-    userDriver = false;
     maxSteeringAngle = 0.0;
-    if (tag->getName() == "suspension.doublewishbone")
-    {
-        setName (     tag->getAttribute("name"));
-        position = Vector3d (tag->getAttribute("position"));
-        rotation = Quaternion (tag->getAttribute("rotation"));
-        firstPosition = Vector3d (tag->getAttribute("firstPosition"));
-        firstRotation = Quaternion (tag->getAttribute("firstRotation"));
-        maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
-        springStiffness = stod(tag->getAttribute("springStiffness"));
-        springLengthAtEase = stod(tag->getAttribute("springLengthAtEase"));
-        damperFastBump = stod(tag->getAttribute("damperFastBump"));
-        damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
-        upperBoneOData->meshPath = tag->getAttribute("upperBoneMesh");
-        lowerBoneOData->meshPath = tag->getAttribute("lowerBoneMesh");
-        uprightBoneOData->meshPath = tag->getAttribute("uprightBoneMesh");
-    }
-    else
-    {
-        log->__format(LOG_ERROR, "Suspension was supposed to be a double wishbone suspension, but tag name is different!");
-    }
+    position = Vector3d (tag->getAttribute("position"));
+    rotation = Quaternion (tag->getAttribute("rotation"));
+    firstPosition = Vector3d (tag->getAttribute("firstPosition"));
+    firstRotation = Quaternion (tag->getAttribute("firstRotation"));
+    maxSteeringAngle = stod(tag->getAttribute("steeringAngle"));
+    springStiffness = stod(tag->getAttribute("springStiffness"));
+    springLengthAtEase = stod(tag->getAttribute("springLengthAtEase"));
+    damperFastBump = stod(tag->getAttribute("damperFastBump"));
+    damperFastRebound = stod(tag->getAttribute("damperFastRebound"));
+    upperBoneOData->meshPath = tag->getAttribute("upperBoneMesh");
+    lowerBoneOData->meshPath = tag->getAttribute("lowerBoneMesh");
+    uprightBoneOData->meshPath = tag->getAttribute("uprightBoneMesh");
     springOldx =  springLengthAtEase;
     right = firstPosition.y > 0;
     uprightBoneLength = 0.4;
     //--------------------------------------------
     double dirMult = 1.0;
     if (!right) dirMult *= -1;
-
 
     //create upperWishbone body
     pBoneOdeData upperBoneData(new BoneOdeData);
@@ -376,6 +361,12 @@ DoubleWishbone::DoubleWishbone(XmlTag * tag)
     //limit its rotation
     dJointSetHingeParam ( lowerJoint, dParamLoStop, -2.0 );
     dJointSetHingeParam ( lowerJoint, dParamHiStop, 2.0 );
+}
+
+DoubleWishbone::DoubleWishbone(XmlTag * tag)
+    :Suspension("suspension.doublewishbone")
+{
+    constructFromTag(tag);
 }
 DoubleWishbone::~DoubleWishbone()
 {

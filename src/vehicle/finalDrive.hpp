@@ -18,6 +18,7 @@ class FinalDrive : public DriveMass
     double finalDriveRatio;
     DriveJoint *outputJoint2; 
     FinalDrive (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pFinalDrive create (XmlTag * tag);
     ~FinalDrive ();

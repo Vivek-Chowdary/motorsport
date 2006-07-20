@@ -19,6 +19,7 @@ class Pedal : public WorldObject
     double angleRange;
     double currentAngle;
     Pedal (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pPedal create(XmlTag * tag);
     ~Pedal ();

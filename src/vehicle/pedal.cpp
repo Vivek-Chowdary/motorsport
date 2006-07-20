@@ -22,15 +22,15 @@ pPedal Pedal::create(XmlTag * tag)
 Pedal::Pedal (XmlTag * tag)
     :WorldObject("pedal")
 {
+    constructFromTag(tag);
+}
+void Pedal::readCustomDataTag(XmlTag * tag)
+{
     log->__format (LOG_CCREATOR, "Starting to parse a pedal node");
     angleRange = 180;
     currentAngle = 0.0;
     userDriver = false;
-    if (tag->getName() == "pedal")
-    {
-        setName (     tag->getAttribute("name"));
-        angleRange = stod (tag->getAttribute("angleRange"));
-    }
+    angleRange = stod (tag->getAttribute("angleRange"));
 }
 
 Pedal::~Pedal ()

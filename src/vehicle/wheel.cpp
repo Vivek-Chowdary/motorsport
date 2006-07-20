@@ -28,6 +28,10 @@ pWheel Wheel::create(XmlTag * tag)
 Wheel::Wheel (XmlTag * tag)
     :DriveMass("wheel")
 {
+    constructFromTag(tag);
+}
+void Wheel::readCustomDataTag(XmlTag * tag)
+{
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
     pWheelOdeData data(new WheelOdeData);
     pOgreObjectData ogreData(new OgreObjectData);
@@ -41,35 +45,11 @@ Wheel::Wheel (XmlTag * tag)
     outputTorqueTransfer = 0.0;
     inertia = 1.0;
     friction = 0.1;
-    if (tag->getName() == "wheel")
-    {
-        setName (     tag->getAttribute("name"));
-        data->radius = stod(tag->getAttribute("radius"));
-        data->width = stod(tag->getAttribute("width"));
-        data->mass = stod(tag->getAttribute("mass"));
-        powered = stod(tag->getAttribute("powered"));
-        //create main mesh
-        ogreData->meshPath = getPath() + ogreData->meshPath;
-        pOgreObject ogreObject (new OgreObject(this, ogreData, getId(), false));
-        ogreObjects[ogreObject->getId()] = ogreObject;
-        odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
-        ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
-        //create child meshes
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        { 
-            if (t->getName() == "mesh")
-            {
-                pOgreObjectData childData(new OgreObjectData);
-                childData->meshPath = getPath() + t->getAttribute("file");
-                Vector3d posDiff (t->getAttribute("position"));
-                Vector3d scale (t->getAttribute("scale"));
-                Quaternion rotDiff (t->getAttribute("rotation"));
-                pOgreObject ogreChild (new OgreObject(this, childData, getId()));
-                ogreObjects[ogreChild->getId()] = ogreChild;
-                ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
-            }
-        }
-    }
+    data->radius = stod(tag->getAttribute("radius"));
+    data->width = stod(tag->getAttribute("width"));
+    data->mass = stod(tag->getAttribute("mass"));
+    powered = stod(tag->getAttribute("powered"));
+    odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
 }
 
 Wheel::~Wheel ()

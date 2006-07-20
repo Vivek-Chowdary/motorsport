@@ -32,20 +32,19 @@ pClutch Clutch::create ()
     return tmp;
 }
 
+void Clutch::readCustomDataTag(XmlTag * tag)
+{
+    coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
+    coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
+    maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
+}
 Clutch::Clutch (XmlTag * tag)
     :DriveJoint("clutch")
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     lockedParam = 1;
-     
-    if (tag->getName() == "clutch")
-    {
-        setName (     tag->getAttribute("name"));
-        coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
-        coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
-        maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
-    }
+    constructFromTag(tag);
 }
 
 Clutch::Clutch ()
@@ -74,31 +73,20 @@ pGear Gear::create (XmlTag * tag)
 }
 pGear Gear::create ()
 {
-    pGear tmp (new Gear());
+    pGear tmp (new Gear(NULL));
     return tmp;
 }
 
 Gear::Gear (XmlTag * tag)
     :DriveJoint("gear")
 {
+/*/
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     ratio = 1.0;
     springConstant = 1000;
     relAngle = 0.0;
-      
-    if (tag->getName() == "gear")
-    {
-        setName (     tag->getAttribute("name"));
-        //coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
-        //coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
-        //maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
-    }
-}
-
-Gear::Gear ()
-    :DriveJoint("gear")
-{
+//*/
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;
@@ -108,6 +96,12 @@ Gear::Gear ()
     prevRelAngularVel = 0.0;
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
+//*/
+
+    constructFromTag(tag);
+}
+void Gear::readCustomDataTag(XmlTag * tag)
+{
 }
 
 Gear::~Gear ()
@@ -127,24 +121,21 @@ pLSD LSD::create ()
 LSD::LSD (XmlTag * tag)
     :DriveJoint("lsd")
 {
+    constructFromTag(tag);
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     ratio = 1.0;
     springConstant = 1000;
     relAngle = 0.0;
-      
-    if (tag->getName() == "vehicle")
-    {
-        setName (     tag->getAttribute("name"));
-        //coeffStaticFriction = stod(tag->getAttribute("coeffStaticFriction"));
-        //coeffDynamicFriction = stod(tag->getAttribute("coeffDynamicFriction"));
-        //maxTorqueTransfer = stod(tag->getAttribute("maxTorqueTransfer"));
-    }
 }
 
+void LSD::readCustomDataTag(XmlTag * tag)
+{
+}
 LSD::LSD ()
     :DriveJoint("lsd")
 {
+    constructFromTag(NULL);
     ratio = 1.0;
     springConstant = 300.0;
     dampConstant = 8;

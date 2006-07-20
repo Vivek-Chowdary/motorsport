@@ -24,6 +24,7 @@ class Engine : public DriveMass
     double angularVelLimit;
     pPedal gasPedal;
     Engine (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pEngine create (XmlTag * tag);
     ~Engine ();

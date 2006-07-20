@@ -10,6 +10,7 @@
 #include "worldObject.hpp"
 #include "quaternion.hpp"
 #include "vector3d.hpp"
+#include "mospPath.hpp"
 
 #include "area.hpp"
 #include "part.hpp"
@@ -35,6 +36,7 @@ WorldObject::WorldObject (const std::string & name)
     this->name = name;
     this->path = "/unknownPath/";
     this->xmlPath = path + "unknownFilepath";
+    this->userDriver = false;
 
     const int numberStringSize = 64;
     char numberString[numberStringSize];
@@ -97,6 +99,7 @@ std::string WorldObject::getId()
 
 std::string WorldObject::getName()
 {
+    //TODO use a Class::mospInternalPath()
     std::string type;
     if (0) type.clear();
     else if (dynamic_cast<DoubleWishbone  *>(this)) type = "doublewishbone";
@@ -162,8 +165,8 @@ pWorldObject WorldObject::getContainer()
 }
 pOdeObject WorldObject::getMainOdeObject()
 {
-    //TODO: check what is returned when odeObjects is empty. prolly a reset shared pointer, but i'm not sure
-    //if (odeObjects.empty()) return NULL;
+    pOdeObject tmp;
+    if (odeObjects.empty()) return tmp;
     return odeObjects.begin()->second;
 }
 void WorldObject::stepPhysics ()
@@ -172,34 +175,12 @@ void WorldObject::stepPhysics ()
     //step torque transfer objects first
     for (i = objects.begin(); i != objects.end(); i++)
     {
-        if (0);
-        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepPhysics();
-        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepPhysics();
-        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepPhysics();
-        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepPhysics();
+        if (boost::dynamic_pointer_cast<DriveJoint>(i->second)) i->second->stepPhysics();
     }
     //step the rest of objects
     for (i = objects.begin(); i != objects.end(); i++)
     {
-        if (0);
-        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepPhysics();
-        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepPhysics();
-        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepPhysics();
-        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepPhysics();
-        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepPhysics();
-        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepPhysics();
-        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepPhysics();
-        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepPhysics();
-        else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepPhysics();
-        else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepPhysics();
-        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepPhysics();
-        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepPhysics();
-        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepPhysics();
-        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepPhysics();
-        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepPhysics();
-        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepPhysics();
-        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepPhysics();
-        else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepPhysics();
+        if (!(boost::dynamic_pointer_cast<DriveJoint>(i->second))) i->second->stepPhysics();
     }
 }
 void WorldObject::stepGraphics ()
@@ -212,29 +193,7 @@ void WorldObject::stepGraphics ()
     WorldObjectsIt i = objects.begin();
     for (; i != objects.end(); i++)
     {
-        if (0);
-        else if (pDoubleWishbone tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) tmp->stepGraphics();
-        else if (pFixed          tmp = boost::dynamic_pointer_cast<Fixed         >(i->second)) tmp->stepGraphics();
-        else if (pUnidimensional tmp = boost::dynamic_pointer_cast<Unidimensional>(i->second)) tmp->stepGraphics();
-        else if (pSuspension     tmp = boost::dynamic_pointer_cast<Suspension    >(i->second)) tmp->stepGraphics();
-        else if (pEngine         tmp = boost::dynamic_pointer_cast<Engine        >(i->second)) tmp->stepGraphics();
-        else if (pGearbox        tmp = boost::dynamic_pointer_cast<Gearbox       >(i->second)) tmp->stepGraphics();
-        else if (pWheel          tmp = boost::dynamic_pointer_cast<Wheel         >(i->second)) tmp->stepGraphics();
-        else if (pFinalDrive     tmp = boost::dynamic_pointer_cast<FinalDrive    >(i->second)) tmp->stepGraphics();
-        else if (pDriveMass      tmp = boost::dynamic_pointer_cast<DriveMass     >(i->second)) tmp->stepGraphics();
-        else if (pGear           tmp = boost::dynamic_pointer_cast<Gear          >(i->second)) tmp->stepGraphics();
-        else if (pLSD            tmp = boost::dynamic_pointer_cast<LSD           >(i->second)) tmp->stepGraphics();
-        else if (pClutch         tmp = boost::dynamic_pointer_cast<Clutch        >(i->second)) tmp->stepGraphics();
-        else if (pDriveJoint     tmp = boost::dynamic_pointer_cast<DriveJoint    >(i->second)) tmp->stepGraphics();
-        else if (pGearboxGear    tmp = boost::dynamic_pointer_cast<GearboxGear   >(i->second)) tmp->stepGraphics();
-        else if (pBody           tmp = boost::dynamic_pointer_cast<Body          >(i->second)) tmp->stepGraphics();
-        else if (pPedal          tmp = boost::dynamic_pointer_cast<Pedal         >(i->second)) tmp->stepGraphics();
-        else if (pPart           tmp = boost::dynamic_pointer_cast<Part          >(i->second)) tmp->stepGraphics();
-        else if (pVehicle        tmp = boost::dynamic_pointer_cast<Vehicle       >(i->second)) tmp->stepGraphics();
-        else if (pArea           tmp = boost::dynamic_pointer_cast<Area          >(i->second)) tmp->stepGraphics();
-        else if (pWorld          tmp = boost::dynamic_pointer_cast<World         >(i->second)) tmp->stepGraphics();
-        else if (pCamera         tmp = boost::dynamic_pointer_cast<Camera        >(i->second)) tmp->stepGraphics();
-        else if (pWorldObject    tmp = boost::dynamic_pointer_cast<WorldObject   >(i->second)) tmp->stepGraphics();
+        i->second->stepGraphics();
     }
 }
 void WorldObject::setPosition (Vector3d position)
@@ -534,3 +493,155 @@ pLocation WorldObject::getLocation (std::string name)
     return tmp;
 }
 
+void WorldObject::constructFromTag(XmlTag * tag)
+{
+    if (tag == NULL) return;
+    if (tag->getName() != name) log->__format(LOG_ERROR, "Expected a <%s> tag, got a <%s>", name.c_str(), tag->getName().c_str());
+    XmlTag * t;
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "sharedobject")
+        {
+            std::string sobjname = t->getAttribute("name");
+            if (t->nTags() == 1)
+            {
+                XmlTag * o = t->getTag(0);
+                if (o->getName() == "vehicle")
+                {
+                    log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
+                    std::string model = o->getAttribute("model");
+                    pVehicle tmp= Vehicle::create(model);
+                    tmp->setName(sobjname);
+                    objects[tmp->getName()] = tmp;
+                }
+                if (o->getName() == "area")
+                {
+                    log->loadscreen (LOG_CCREATOR, "Creating an area");
+                    std::string model = o->getAttribute("model");
+                    pArea tmp = Area::create (model);
+                    tmp->setName(sobjname);
+                    objects[tmp->getName()] = tmp;
+                }
+            }
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "subobject")
+        {
+            std::string sobjname = t->getAttribute("name");
+            if (t->nTags() == 1)
+            {
+                XmlTag * o = t->getTag(0);
+                if (o->getName() == "body")
+                { pBody tmp = Body::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "engine")
+                { pEngine tmp = Engine::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "clutch")
+                { pClutch tmp = Clutch::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "gearbox")
+                { pGearbox tmp = Gearbox::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "gearboxgear")
+                { pGearboxGear tmp = GearboxGear::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "gear")
+                { pGear tmp = Gear::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "finaldrive")
+                { pFinalDrive tmp = FinalDrive::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "pedal")
+                { pPedal tmp = Pedal::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "wheel")
+                { pWheel tmp = Wheel::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "suspension.unidimensional")
+                { pUnidimensional tmp = Unidimensional::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "suspension.fixed")
+                { pFixed tmp = Fixed::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "suspension.doublewishbone")
+                { pDoubleWishbone tmp = DoubleWishbone::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+                if (o->getName() == "camera")
+                { pCamera tmp = Camera::create(o); tmp->setName(sobjname); objects[tmp->getName()] = tmp; }
+            }
+            System::get()->ogreWindow->update ();
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "location-vehicle")
+        {
+            log->__format (LOG_CCREATOR, "Setting vehicle location");
+            std::string f= t->getAttribute("first");
+            std::string s= t->getAttribute("second");
+            pLocation first = getLocationObject(f);
+            pVehicle second = getVehicleObject(s);
+
+            second->setPosition(Vector3d(0, 0, 0));
+            second->applyRotation(first->getRotation());
+            second->setPosition(first->getPosition());
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "vehicle-driver")
+        {
+            log->__format (LOG_CCREATOR, "Setting vehicle driver");
+            std::string f= t->getAttribute("first");
+            std::string s= t->getAttribute("second");
+            pVehicle tmp = getVehicleObject(f);
+            if (s == "user" ) tmp->setUserDriver();
+        }
+    }
+    pOgreObjectData ogreData(new OgreObjectData);
+    ogreData->meshPath = getPath() + ogreData->meshPath;
+    pOgreObject ogreObject (new OgreObject(this, ogreData, getId(), false));
+    ogreObjects[ogreObject->getId()] = ogreObject;
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "graphicsMesh")
+        {
+            pOgreObjectData childData(new OgreObjectData);
+            childData->meshPath = getPath() + t->getAttribute("file");
+            Vector3d posDiff (t->getAttribute("position"));
+            Vector3d scale (t->getAttribute("scale"));
+            Quaternion rotDiff (t->getAttribute("rotation"));
+            pOgreObject ogreChild (new OgreObject(this, childData, getId()));
+            ogreObjects[ogreChild->getId()] = ogreChild;
+            ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
+            System::get()->ogreWindow->update ();
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "customData")
+        {
+            readCustomDataTag(t);
+        }
+    }
+    ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
+}
+pLocation WorldObject::getLocationObject(std::string fullname)
+{
+    pLocation tmp;
+    if (MospPath::getType(fullname) == "area")
+    {
+        pArea a = getArea(MospPath::getName(fullname));
+        log->__format(LOG_DEVELOPER, "Area name=%s", a->getName().c_str());
+        tmp = a->getLocation(MospPath::getName(MospPath::getSubFullname(fullname)));
+    }
+    log->__format(LOG_DEVELOPER, "Location name=%s", tmp->getName().c_str());
+    return tmp;
+}
+pVehicle WorldObject::getVehicleObject(std::string fullname)
+{
+    pVehicle tmp;
+    if ((tmp = boost::dynamic_pointer_cast<Vehicle>(getFirstObject(fullname))) == NULL)
+        log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
+    log->__format(LOG_DEVELOPER, "Vehicle name=%s", tmp->getName().c_str());
+    return tmp;
+}
+pWorldObject WorldObject::getFirstObject(std::string fullname)
+{
+    std::string type = MospPath::getType(fullname);
+    std::string name = MospPath::getName(fullname);
+    pWorldObject tmp = getObject("(" + type + ")" + name);
+    log->__format(LOG_DEVELOPER, "Object name=%s", tmp->getName().c_str());
+    return tmp;
+}

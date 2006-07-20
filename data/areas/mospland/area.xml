@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<area
+<area xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData
     name="MospLand"
     position="-3.000000 0.000000 0.000000"
     rotation="1.000000 0.000000 0.000000 0.000000"
@@ -11,12 +12,6 @@
     checkpointPosition="-166 -152 5"
     checkpointRadius="10.0"
     >
-    <vehicleLocation
-        name="paceCar"
-        position="-155.224152 -156.375732 1.418862"
-        rotation="0.004433 0.000000 0.000000 0.999990"
-        scale="1.000000 1.000000 1.000000"
-    />
     <ground
         name="ground"
         position="3.000000 0.000000 0.000000"
@@ -199,17 +194,6 @@
             file="Plane.009.mesh"
         />
     </ground>
-    <camera
-        name="camera.002"
-        position="-231.028122 -46.287857 12.560727"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
     <sky
         name="sky"
         position="3.000000 -1.000000 0.000000"
@@ -219,94 +203,6 @@
         materialName="skyboxMaterial"
         distance="5000.0"
         drawFirst="1"
-    />
-    <camera
-        name="camera.001"
-        position="-253.687897 -136.221863 9.050756"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.003"
-        position="-215.425842 64.894089 4.529526"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera"
-        position="-176.195297 -168.292038 2.956962"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.004"
-        position="-89.436378 72.925278 5.533426"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.006"
-        position="149.742828 -32.986179 2.521725"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.005"
-        position="63.658386 18.463703 2.521725"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.007"
-        position="237.333115 -79.165588 17.831203"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
-    />
-    <camera
-        name="camera.008"
-        position="63.136379 -90.007713 17.831203"
-        rotation="0.500000 0.500000 0.500000 0.500000"
-        scale="1.000000 1.000000 1.000000"
-        target="0 0 0"
-        projectionType="perspective"
-        fov="37.849289"
-        normal="0.0 0.0 -1.0"
-        clipping="0.100000 100.000000"
     />
     <parts
         name="parts"
@@ -357,4 +253,47 @@
             scale="2.000000 2.000000 2.000000"
         />
     </parts>
-    </area>
+    <vehicleLocation
+        name="paceCar"
+        position="-155.224152 -156.375732 1.418862"
+        rotation="0.004433 0.000000 0.000000 0.999990"
+        scale="1.000000 1.000000 1.000000"
+    />
+    </customData>
+    <subobject name="camera.002"><camera>
+        <customData position="-231.028122 -46.287857 12.560727" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.001"><camera>
+        <customData position="-253.687897 -136.221863 9.050756" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.003"><camera>
+        <customData position="-215.425842 64.894089 4.529526" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera"><camera>
+        <customData position="-176.195297 -168.292038 2.956962" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.004"><camera>
+        <customData position="-89.436378 72.925278 5.533426" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.006"><camera>
+        <customData position="149.742828 -32.986179 2.521725" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.005"><camera>
+        <customData position="63.658386 18.463703 2.521725" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.007"><camera>
+        <customData position="237.333115 -79.165588 17.831203" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+    <subobject name="camera.008"><camera>
+        <customData position="63.136379 -90.007713 17.831203" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
+        target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>
+    </camera></subobject>
+</area>

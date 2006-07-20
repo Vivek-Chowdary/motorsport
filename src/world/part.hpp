@@ -29,6 +29,7 @@ class Part : public WorldObject
   private:
     void processXmlRootNode (XERCES_CPP_NAMESPACE::DOMNode * n);
     Part (const std::string & name);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pPart create (const std::string & name);
     ~Part ();

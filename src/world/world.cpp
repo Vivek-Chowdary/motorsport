@@ -12,7 +12,6 @@
 #include "Ogre.h"
 #include "OgreNoMemoryMacros.h"
 #include "xmlTag.hpp"
-#include "mospPath.hpp"
 #include "area.hpp"
 #include "log/logEngine.hpp"
 #include "ode/ode.h"
@@ -59,7 +58,7 @@ void World::destroy()
 }
 
 World::World (std::string name)
-    :WorldObject(name)
+    :WorldObject("world")
 {
     if (world)
     {
@@ -68,11 +67,11 @@ World::World (std::string name)
         pWorld tmp(this);
         world = tmp;
         setPath(Paths::world(name));
-        setName(name);
         setXmlPath(Paths::worldXml(name));
         log->loadscreen (LOG_ENDUSER, "Starting to load the world (%s)", getXmlPath().c_str());
         XmlTag * tag = new XmlTag (getXmlPath().c_str());
         processXmlRootNode (tag);
+        setName(name);
         delete tag;
     }
 }
@@ -93,41 +92,23 @@ World::~World ()
     log->__format (LOG_DEVELOPER, "Destroying ODE joints group");
     dJointGroupDestroy (jointGroupID);
 }
+void World::readCustomDataTag(XmlTag * tag)
+{
+    description = tag->getAttribute("description");
 
+    log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
+    double gravityX = stod(tag->getAttribute("gravityX"));
+    double gravityY = stod(tag->getAttribute("gravityY"));
+    double gravityZ = stod(tag->getAttribute("gravityZ"));
+    dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
+    dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
-pLocation World::getLocationObject(std::string fullname)
-{
-    pLocation tmp;
-    if (MospPath::getType(fullname) == "area")
-    {
-        pArea a = getArea(MospPath::getName(fullname));
-        log->__format(LOG_DEVELOPER, "Area name=%s", a->getName().c_str());
-        tmp = a->getLocation(MospPath::getName(MospPath::getSubFullname(fullname)));
-    }
-    log->__format(LOG_DEVELOPER, "Location name=%s", tmp->getName().c_str());
-    return tmp;
-}
-pVehicle World::getVehicleObject(std::string fullname)
-{
-    pVehicle tmp;
-    if ((tmp = boost::dynamic_pointer_cast<Vehicle>(getFirstObject(fullname))) == NULL)
-        log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
-    log->__format(LOG_DEVELOPER, "Vehicle name=%s", tmp->getName().c_str());
-    return tmp;
-}
-pWorldObject World::getFirstObject(std::string fullname)
-{
-    std::string type = MospPath::getType(fullname);
-    std::string name = MospPath::getName(fullname);
-    pWorldObject tmp = getObject("(" + type + ")" + name);
-    log->__format(LOG_DEVELOPER, "Object name=%s", tmp->getName().c_str());
-    return tmp;
-}
-pWorldObject World::getObject (std::string name)
-{
-   if (objects.find(name) == objects.end())
-   log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" from generic type \"%s\"", name.c_str(), "WorldObject");
-   return objects[name];
+    bool useAreaCamera = true;    //if false, use vehicle camera
+    useAreaCamera = stob(tag->getAttribute("useAreaCamera"));
+    // set active camera
+    log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
+    if (useAreaCamera) setActiveCamera (getArea("main")->getCamera("main"));
+    else               setActiveCamera (getVehicle("main")->getCamera("main"));
 }
 
 void World::processXmlRootNode (XmlTag * tag)
@@ -150,85 +131,10 @@ void World::processXmlRootNode (XmlTag * tag)
         log->__format (LOG_DEVELOPER, "Setting ODE erp value to %f", System::get()->getErpValue());
         dWorldSetERP (worldID, System::get()->getErpValue());
     }
-
-    bool useAreaCamera = true;    //if false, use vehicle camera
-    if (tag->getName() == "world")
-    {
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
-            if (t->getName() == "customData")
-            {
-                description = t->getAttribute("description");
-                useAreaCamera = stob(t->getAttribute("useAreaCamera"));
-
-                double gravityX = stod(t->getAttribute("gravityX"));
-                double gravityY = stod(t->getAttribute("gravityY"));
-                double gravityZ = stod(t->getAttribute("gravityZ"));
-                log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
-                dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
-                dWorldSetGravity (ghostWorldID, 0, 0, 0);
-            }
-            if (t->getName() == "sharedobject")
-            {
-                std::string sobjname = t->getAttribute("name");
-                XmlTag * o = t->getTag(0); for (int i = 0; i < t->nTags(); o = t->getTag(++i))
-                {
-                    if (o->getName() == "vehicle")
-                    {
-                        log->loadscreen (LOG_CCREATOR, "Creating a vehicle");
-                        std::string model = o->getAttribute("model");
-                        pVehicle tmp= Vehicle::create(model);
-                        tmp->setName(sobjname);
-                        objects[tmp->getName()] = tmp;
-                    }
-                    if (o->getName() == "area")
-                    {
-                        log->loadscreen (LOG_CCREATOR, "Creating an area");
-                        std::string model = o->getAttribute("model");
-                        pArea tmp = Area::create (model);
-                        tmp->setName(sobjname);
-                        objects[tmp->getName()] = tmp;
-                    }
-                }
-            }
-            if (t->getName() == "location-vehicle")
-            {
-                log->__format (LOG_CCREATOR, "Setting vehicle location");
-                std::string f= t->getAttribute("first");
-                std::string s= t->getAttribute("second");
-                pLocation first = getLocationObject(f);
-                pVehicle second = getVehicleObject(s);
-
-                second->setPosition(Vector3d(0, 0, 0));
-                second->applyRotation(first->getRotation());
-                second->setPosition(first->getPosition());
-                log->__format(LOG_DEVELOPER, "Rotation: x%f, y%f, z%f, w%f. Rotation: %f, %f, %f", first->getRotation().x,first->getRotation().y,first->getRotation().z,first->getRotation().w,first->getPosition().x,first->getPosition().y,first->getPosition().z);
-            }
-            if (t->getName() == "vehicle-driver")
-            {
-                log->__format (LOG_CCREATOR, "Setting vehicle driver");
-                std::string f= t->getAttribute("first");
-                std::string s= t->getAttribute("second");
-                pVehicle tmp = getVehicleObject(f);
-                if (s == "user" ) tmp->setUserDriver();
-            }
-        }
-    }
+    constructFromTag(tag);
     // initialize cameras (pointing to car 0 by default)
     getArea("main")->pointCameras(getVehicle("main"));
-
-    // set active camera
-    log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
-    if (useAreaCamera)
-    {
-        //err... use... area camera, i guess.
-        setActiveCamera (getArea("main")->getCamera("main"));
-    } else {
-        //don't use area camera: use vehicle camera
-        setActiveCamera (getVehicle("main")->getCamera("main"));
-    }
 }
-
 void World::setActiveCamera (pCamera camera)
 {
     activeCamera = camera;
@@ -239,7 +145,7 @@ void World::setActiveCamera (pCamera camera)
 
 void World::stepGraphics()
 {
-    base->stepGraphics();
+    WorldObject::stepGraphics();
     if (cameraDirector == true)
     {
         setActiveCamera( getArea("main")->getClosestCamera(getVehicle("main")->getPosition()));

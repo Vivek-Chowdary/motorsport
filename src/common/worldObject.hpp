@@ -50,12 +50,13 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         static unsigned int instancesCount;
         static WorldObjectsC worldObjects;
         std::string id;
-        std::string name;
         std::string path;
         std::string xmlPath;
     protected:
+        std::string name;
         pCamera activeCamera;
         pLogEngine log;
+        bool userDriver;
         WorldObject * base;
         wWorldObject container;
         OgreObjects ogreObjects;
@@ -63,6 +64,8 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         WorldObjects objects;
         Locations locations;
         WorldObject (const std::string & name);
+        void constructFromTag(XmlTag * tag);
+        virtual void readCustomDataTag(XmlTag * tag) = 0;
     public:
         virtual ~WorldObject ();
         void setContainer(pWorldObject container);
@@ -79,8 +82,8 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         static void logAll();
         pLogEngine getLog();
 
-        void stepGraphics ();
-        void stepPhysics ();
+        virtual void stepGraphics ();
+        virtual void stepPhysics ();
 
         pCamera switchNextCamera();
         void pointCameras(pVehicle target);
@@ -93,6 +96,10 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         void applyRotation (Quaternion rotation);
+
+        pLocation getLocationObject(std::string fullname);
+        pVehicle getVehicleObject(std::string fullname);
+        pWorldObject getFirstObject(std::string fullname);
 
         pLocation getLocation (std::string name);
 

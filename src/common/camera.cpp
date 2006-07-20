@@ -30,6 +30,10 @@ pCamera Camera::create(XmlTag * tag)
 Camera::Camera (XmlTag * tag)
     :WorldObject("camera")
 {
+    constructFromTag(tag);
+}
+void Camera::readCustomDataTag(XmlTag * tag)
+{
     ogreCamera = System::get()->ogreSceneManager->createCamera (getId());
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     ogreCamera->setNearClipDistance (0.100);
@@ -40,25 +44,21 @@ Camera::Camera (XmlTag * tag)
     positionID = 0;
     targetID = 0;
     isFree = false;
-    if (tag->getName() == "camera")
+    delete positionOffset;
+    positionOffset =  new Vector3d (tag->getAttribute("position"));
+    std::string t = "";
+    if ( (t = tag->getAttribute("target")) != "")
     {
-        setName (     tag->getAttribute("name"));
-        delete positionOffset;
-        positionOffset =  new Vector3d (tag->getAttribute("position"));
-        std::string t = "";
-        if ( (t = tag->getAttribute("target")) != "")
-        {
-            delete targetOffset;
-            targetOffset = new Vector3d (t);
-        }
-        /*
-        else
-        {
-            //TODO create a target based on "rotation" tag.
-            log->__format(LOG_ERROR, "Camera has no readable target!");
-        }
-        */
+        delete targetOffset;
+        targetOffset = new Vector3d (t);
     }
+    /*
+       else
+       {
+    //TODO create a target based on "rotation" tag.
+    log->__format(LOG_ERROR, "Camera has no readable target!");
+    }
+    */
 }
 
 Camera::~Camera ()

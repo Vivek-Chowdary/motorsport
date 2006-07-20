@@ -1,11 +1,124 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<vehicle
-    name = "Mosp1"
-    description = "The first official Motorsport vehicle. Made by Habalux, it started its life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car."
-    author = "Habalux, STenyaK"
-    contact = "habalux AT gmail DOT com, stenyak AT gmx DOT net"
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-    >
+<vehicle xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData name="Mosp1" description="The first official Motorsport vehicle. Made by Habalux, it started its life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car." author="Habalux, STenyaK" contact="habalux AT gmail DOT com, stenyak AT gmx DOT net" license="Creative Commons Attribution-NonCommercial-ShareAlike License">
+    </customData>
+    <subobject name="main"><body>
+        <customData length="4.66" width="2.08" height="1.2" mass="1224.0" dragCoefficient="0.3" frontalArea="1.5"/>
+        <graphicsMesh name="main body" file="body.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
+    </body></subobject>
+    <subobject name="clutch"><pedal>
+        <customData angleRange="1.047975" _angleRange="radians = degrees * 2 * PI / 360"/>
+    </pedal></subobject>
+    <subobject name="gas"><pedal>
+        <customData angleRange="0.6981317"/>
+    </pedal></subobject>
+    <subobject name="brake"><pedal>
+        <customData angleRange="0.6981317" _angleRange="radians = degrees * 2 * PI / 360"/>
+    </pedal></subobject>
+    <subobject name="main"><engine>
+        <customData torqueLinearMultiplier="246" engineInertia="0.4" engineFriction="0.1" angularVelLimit="733.0382858"/>
+    </engine></subobject>
+    <subobject name="main"><clutch>
+        <customData coeffStaticFriction="1" coeffDynamicFriction="0.8" maxTorqueTransfer="260"/>
+    </clutch></subobject>
+    <subobject name="main"><gearbox>
+        <customData gearboxFriction="0.01" gearboxInertia="0.2"/>
+        <subobject name="0"><gearboxgear>
+            <customData description="reverse" ratio="-4.0"/>
+        </gearboxgear></subobject>
+        <subobject name="1"><gearboxgear>
+            <customData description="neutral" ratio="0.0"/>
+        </gearboxgear></subobject>
+        <subobject name="2"><gearboxgear>
+            <customData description="1st" ratio="3.71"/>
+        </gearboxgear></subobject>
+        <subobject name="3"><gearboxgear>
+            <customData description="2nd" ratio="2.24"/>
+        </gearboxgear></subobject>
+        <subobject name="4"><gearboxgear>
+            <customData description="3rd" ratio="1.5"/>
+        </gearboxgear></subobject>
+        <subobject name="5"><gearboxgear>
+            <customData description="4th" ratio="1.145"/>
+        </gearboxgear></subobject>
+        <subobject name="6"><gearboxgear>
+            <customData description="5th" ratio="0.94"/>
+        </gearboxgear></subobject>
+    </gearbox></subobject>
+    <subobject name="main"><finaldrive>
+        <customData diffInertia="0.1" diffFriction="0.001" ratio="3.6"/>
+    </finaldrive></subobject>
+<!--
+    <subobject name="fr"><suspension.unidimensional>
+        <customData springConstant =  "80500" dampingConstant = "2000" position = "+1.44 +0.857 -0.45" rotation = "-92.5 0 0" steeringAngle = "+80"/>
+    </suspension.unidimensional></subobject>
+    <subobject name="fl"><suspension.unidimensional>
+        <customData springConstant =  "80500" dampingConstant = "2000" position = "+1.44 -0.857 -0.45" rotation = "+92.5 0 0" steeringAngle = "-80"/>
+    </suspension.unidimensional></subobject>
+-->
+    <subobject name="fl"><suspension.doublewishbone>
+        <customData springStiffness="80500" springLengthAtEase="0.5" damperFastBump="2000" damperFastRebound="2100" firstPosition="+1.44 -0.557 -0.45" firstRotation="0 0 0" position="+1.44 -0.857 -0.45" rotation="+90 0 0" steeringAngle="-80" upperBoneMesh="susp/Cube.mesh" lowerBoneMesh="susp/Cube.mesh" uprightBoneMesh="susp/Cube.001.mesh"/>
+    </suspension.doublewishbone></subobject>
+    <subobject name="fr"><suspension.doublewishbone>
+        <customData springStiffness="80500" springLengthAtEase="0.5" damperFastBump="2000" damperFastRebound="2100" firstPosition="+1.44 +0.557 -0.45" firstRotation="0 0 0" position="+1.44 +0.857 -0.45" rotation="-90 0 0" steeringAngle="+50" upperBoneMesh="susp/Cube.mesh" lowerBoneMesh="susp/Cube.mesh" uprightBoneMesh="susp/Cube.001.mesh"/>
+    </suspension.doublewishbone></subobject>
+    <subobject name="rl"><suspension.doublewishbone>
+        <customData springStiffness="80900" springLengthAtEase="0.5" damperFastBump="2000" damperFastRebound="2100" firstPosition="-1.35 -0.58 -0.45" firstRotation="0 0 0" position="-1.35 -0.88 -0.45" rotation="+90 0 0" steeringAngle="+0" upperBoneMesh="susp/Cube.mesh" lowerBoneMesh="susp/Cube.mesh" uprightBoneMesh="susp/Cube.001.mesh"/>
+    </suspension.doublewishbone></subobject>
+    <subobject name="rr"><suspension.doublewishbone>
+        <customData springStiffness="80900" springLengthAtEase="0.5" damperFastBump="2000" damperFastRebound="2100" firstPosition="-1.35 +0.58 -0.45" firstRotation="0 0 0" position="-1.35 +0.88 -0.45" rotation="-90 0 0" steeringAngle="-0" upperBoneMesh="susp/Cube.mesh" lowerBoneMesh="susp/Cube.mesh" uprightBoneMesh="susp/Cube.001.mesh"/>
+    </suspension.doublewishbone></subobject>
+<!--
+    <subobject name="rr"><suspension.unidimensional>
+        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 +0.88 -0.45" rotation = "-91 0 0" steeringAngle = "0"/>
+    </suspension.unidimensional></subobject>
+    <subobject name="rl"><suspension.unidimensional>
+        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 -0.88 -0.45" rotation = "+91 0 0" steeringAngle = "0"/>
+    </suspension.unidimensional></subobject>
+    <subobject name="rr"><suspension.fixed>
+        <customData position = "-1.35 +0.88 -0.45" rotation = "-90 0 0"/>
+    </suspension.fixed></subobject>
+    <subobject name="rl"><suspension.fixed>
+        <customData position = "-1.35 -0.88 -0.45" rotation = "+90 0 0" steeringAngle = "0"/>
+    </suspension.fixed></subobject>
+-->
+    <subobject name="fr"><wheel>
+        <customData mass="15.1" radius="0.34" width="0.125" powered="-1" renderMode="solid"/>
+        <graphicsMesh name="wheel" file="wheel_front.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
+    </wheel></subobject>
+    <subobject name="fl"><wheel>
+        <customData mass="15.1" radius="0.34" width="0.125" powered="+1" renderMode="solid"/>
+        <graphicsMesh name="wheel" file="wheel_front.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
+    </wheel></subobject>
+    <subobject name="rr"><wheel>
+        <customData mass="15.0" radius="0.34" width="0.125" powered="-1" renderMode="solid"/>
+        <graphicsMesh name="wheel" file="wheel_rear.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
+    </wheel></subobject>
+    <subobject name="rl"><wheel>
+        <customData mass="15.0" radius="0.34" width="0.125" powered="+1" renderMode="solid"/>
+        <graphicsMesh name="wheel" file="wheel_rear.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
+    </wheel></subobject>
+    <subobject name="hood"><camera>
+        <customData position="0.2 0 0.5" target="1 0 0.5"/>
+    </camera></subobject>
+    <subobject name="bumper"><camera>
+        <customData position="2.3 0 -0.2" target="3 0 -0.2"/>
+    </camera></subobject>
+    <subobject name="main"><camera>
+        <customData position="-10 0 2" target="2 0 0"/>
+    </camera></subobject>
+    <subobject name="frontRightWheel"><camera>
+        <customData position="0.2 -1.2 -0.25" target="0.4 -1.2 -0.25"/>
+    </camera></subobject>
+    <subobject name="rightSide"><camera>
+        <customData position="-3.0 -1.2 -0.25" target="-2.8 -1.2 -0.25"/>
+    </camera></subobject>
+    <subobject name="leftSide"><camera>
+        <customData position="0 6 0" target="0 0 0"/>
+    </camera></subobject>
+    <subobject name="backTv"><camera>
+        <customData position="4 1.3 -0.3" target="0 -0.4 0.7"/>
+    </camera></subobject>
     <links>
         drivejoint-drivemass            clutch output = gearbox
         drivejoint-drivemass            clutch input = engine
@@ -23,345 +136,7 @@
         engine-pedal                    engine pedal = gaspedal
         wheel-pedal                     wheel pedal = brakePedal
     </links>
-    <body
-        name = "main"
-        length = "4.66"
-        width = "2.08"
-        height = "1.2" 
-        mass = "1224.0"
-        dragCoefficient = "0.3"
-        _frontalArea = "default"  comment="default = width * height * 0.6"
-        frontalArea = "1.5"
-        >
-        <mesh
-            file= "body.mesh"
-            scale = "1 1 1"
-            position = "0 0 0"
-            rotation = "0 0 0"
-            >
-        </mesh>
-    </body>
-    <pedal
-        name = "clutch"
-        angleRange = "1.047975"
-        _angleRange = "radians = degrees * 2 * PI / 360"
-        >
-    </pedal>
-    <pedal
-        name = "gas"
-        angleRange = "0.6981317"
-        >
-    </pedal>
-    <pedal
-        name = "brake"
-        angleRange = "0.6981317"
-        >
-    </pedal>
-    <engine
-        name = "main"
-        torqueLinearMultiplier = "246"
-        engineInertia = "0.4"
-        engineFriction = "0.1"
-        angularVelLimit = "733.0382858"
-        _angularVelLimit = "radians per second = rpm * 2 * PI / 60"
-        >
-    </engine>
-    <clutch
-        name = "main"
-        coeffStaticFriction = "1"
-        coeffDynamicFriction = "0.8"
-        maxTorqueTransfer = "260"
-        >
-    </clutch>
-    <shiftUpPaddle
-        inputAxis = "normalizedRelativeRotation"
-        >
-    </shiftUpPaddle>
-    <shiftDownPaddle
-        inputAxis = "normalizedRelativeRotation"
-        >
-    </shiftDownPaddle>
-    <gearbox
-        name = "main"
-        gearboxFriction = "0.01"
-        gearboxInertia = "0.2"
-        >
-        <gear
-            number = "0"
-            ratio = "-4.0"
-            name = "reverse"
-        >
-        </gear>    
-        <gear
-            number = "1"
-            ratio = "0.0"
-            name = "neutral"
-        >
-        </gear>    
-        <gear
-            number = "2"
-            ratio = "3.71"
-            name = "1st"
-        >
-        </gear>    
-        <gear
-            number = "3"
-            ratio = "2.24"
-            name = "2nd"
-        >
-        </gear>    
-        <gear
-            number = "4"
-            ratio = "1.5"
-            name = "3rd"
-        >
-        </gear>    
-        <gear
-            number = "5"
-            ratio = "1.145"
-            name = "4th"
-        >
-        </gear>    
-        <gear
-            number = "6"
-            ratio = "0.94"
-            name = "5th"
-        >
-        </gear>    
-    </gearbox>
-    <finalDrive
-        name = "main"
-        diffInertia = "0.1"
-        diffFriction = "0.001"
-        finalDriveRatio = "3.6"
-        >
-    </finalDrive>
-    <steeringWheel
-        inputAxis = "normalizedRelativeRotation"
-        maxAngle = "900"
-        >
-    </steeringWheel>
-<!--
-    <suspension.unidimensional
-        name = "fr"
-        springConstant =  "80500"
-        dampingConstant = "2000"
-        position = "+1.44 +0.857 -0.45"
-        rotation = "-92.5 0 0"
-        steeringAngle = "+80"
-        >
-    </suspension.unidimensional>
-    <suspension.unidimensional
-        name = "fl"
-        springConstant =  "80500"
-        dampingConstant = "2000"
-        position = "+1.44 -0.857 -0.45"
-        rotation = "+92.5 0 0"
-        steeringAngle = "-80"
-        >
-    </suspension.unidimensional>
--->
-    <suspension.doublewishbone
-        name = "fl"
-        springStiffness =  "80500"
-        springLengthAtEase =  "0.5"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "+1.44 -0.557 -0.45"
-        firstRotation = "0 0 0"
-        position = "+1.44 -0.857 -0.45"
-        rotation = "+90 0 0"
-        steeringAngle = "-80"
-        upperBoneMesh = "susp/Cube.mesh"
-        lowerBoneMesh = "susp/Cube.mesh"
-        uprightBoneMesh = "susp/Cube.001.mesh"
-        >
-    </suspension.doublewishbone>
-    <suspension.doublewishbone
-        name = "fr"
-        springStiffness =  "80500"
-        springLengthAtEase =  "0.5"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "+1.44 +0.557 -0.45"
-        firstRotation = "0 0 0"
-        position = "+1.44 +0.857 -0.45"
-        rotation = "-90 0 0"
-        steeringAngle = "+50"
-        upperBoneMesh = "susp/Cube.mesh"
-        lowerBoneMesh = "susp/Cube.mesh"
-        uprightBoneMesh = "susp/Cube.001.mesh"
-        >
-    </suspension.doublewishbone>
-    <suspension.doublewishbone
-        name = "rl"
-        springStiffness =  "80900"
-        springLengthAtEase =  "0.5"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "-1.35 -0.58 -0.45"
-        firstRotation = "0 0 0"
-        position = "-1.35 -0.88 -0.45"
-        rotation = "+90 0 0"
-        steeringAngle = "+0"
-        upperBoneMesh = "susp/Cube.mesh"
-        lowerBoneMesh = "susp/Cube.mesh"
-        uprightBoneMesh = "susp/Cube.001.mesh"
-        >
-    </suspension.doublewishbone>
-    <suspension.doublewishbone
-        name = "rr"
-        springStiffness =  "80900"
-        springLengthAtEase =  "0.5"
-        damperFastBump = "2000"
-        damperFastRebound = "2100"
-        firstPosition = "-1.35 +0.58 -0.45"
-        firstRotation = "0 0 0"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-90 0 0"
-        steeringAngle = "-0"
-        upperBoneMesh = "susp/Cube.mesh"
-        lowerBoneMesh = "susp/Cube.mesh"
-        uprightBoneMesh = "susp/Cube.001.mesh"
-        >
-    </suspension.doublewishbone>
-<!--
-    <suspension.unidimensional
-        name = "rr"
-        springConstant =  "80900"
-        dampingConstant = "2000"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-91 0 0"
-        steeringAngle = "0"
-        >
-    </suspension.unidimensional>
-    <suspension.unidimensional
-        name = "rl"
-        springConstant =  "80900"
-        dampingConstant = "2000"
-        position = "-1.35 -0.88 -0.45"
-        rotation = "+91 0 0"
-        steeringAngle = "0"
-        >
-    </suspension.unidimensional>
-    <suspension.fixed
-        name = "rr"
-        position = "-1.35 +0.88 -0.45"
-        rotation = "-90 0 0"
-        >
-    </suspension.fixed>
-    <suspension.fixed
-        name = "rl"
-        position = "-1.35 -0.88 -0.45"
-        rotation = "+90 0 0"
-        steeringAngle = "0"
-        >
-    </suspension.fixed>
--->
-    <wheel
-        name = "fr"
-        mass = "15.1"
-        radius = "0.34"
-        width = "0.125"
-        powered = "-1"
-        renderMode="solid"
-        >
-        <mesh
-            file = "wheel_front.mesh"
-            scale = "1 1 1"
-            position = "0 0 0"
-            rotation = "0 0 0"
-            >
-        </mesh>
-    </wheel>
-    <wheel
-        name = "fl"
-        mass = "15.1"
-        radius = "0.34"
-        width = "0.125"
-        powered = "+1"
-        renderMode="solid"
-        >
-        <mesh
-            file = "wheel_front.mesh"
-            scale = "1 1 1"
-            position = "0 0 0"
-            rotation = "0 0 0"
-            >
-        </mesh>
-    </wheel>
-    <wheel
-        name = "rr"
-        mass = "15.0"
-        radius = "0.34"
-        width = "0.125"
-        powered = "-1"
-        renderMode="solid"
-        >
-        <mesh
-            file= "wheel_rear.mesh"
-            scale = "1 1 1"
-            position = "0 0 0"
-            rotation = "0 0 0"
-            >
-        </mesh>
-    </wheel>
-    <wheel
-        name = "rl"
-        mass = "15.0"
-        radius = "0.34"
-        width = "0.125"
-        powered = "+1"
-        renderMode="solid"
-        >
-        <mesh
-            file = "wheel_rear.mesh"
-            scale = "1 1 1"
-            position = "0 0 0"
-            rotation = "0 0 0"
-            >
-        </mesh>
-    </wheel>
-    <camera
-        name = "hood"
-        position = "0.2 0 0.5"
-        target = "1 0 0.5"
-        >
-    </camera>
-    <camera
-        name = "bumper"
-        position = "2.3 0 -0.2"
-        target = "3 0 -0.2"
-        >
-    </camera>
-    <camera
-        name = "main"
-        position = "-10 0 2"
-        target = "2 0 0"
-        >
-    </camera>
-    <camera
-        name = "frontRightWheel"
-        position = "0.2 -1.2 -0.25"
-        target = "0.4 -1.2 -0.25"
-        >
-    </camera>
-    <camera
-        name = "rightSide"
-        position = "-3.0 -1.2 -0.25"
-        target = "-2.8 -1.2 -0.25"
-        >
-    </camera>
-    <camera
-        name = "leftSide"
-        position = "0 6 0"
-        target = "0 0 0"
-        >
-    </camera>
-    <camera
-        name = "backTv"
-        position = "4 1.3 -0.3"
-        target = "0 -0.4 0.7"
-        >
-    </camera>
+    <shiftUpPaddle inputAxis="normalizedRelativeRotation"/>
+    <shiftDownPaddle inputAxis="normalizedRelativeRotation"/>
+    <steeringWheel inputAxis="normalizedRelativeRotation" maxAngle="900"/>
 </vehicle>

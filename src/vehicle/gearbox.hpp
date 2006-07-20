@@ -17,32 +17,33 @@ class GearboxGear : public WorldObject
 {
   private:
     GearboxGear (XmlTag * tag);
-  public:
-    static pGearboxGear create(XmlTag * tag);
+    std::string description;
+    void readCustomDataTag(XmlTag * tag);
     bool enabled;
     double ratio;   
-    int number;
+  public:
+    static pGearboxGear create(XmlTag * tag);
     ~GearboxGear ();
-    int getNumber() { return number; } ;
-    double getRatio() { return ratio; } ;
-    bool isEnabled() { return enabled; } ;
+    int getNumber();
+    std::string getDescription();
+    double getRatio();
+    bool isEnabled();
 }; 
 SHARED_PTR(Gearbox, pGearbox, wGearbox);
 class Gearbox : public DriveMass 
 {
   private:
-    std::map < int, pGearboxGear> gearMap;
     int currentGear;
     double gearRatio;
+    std::string itos(int integer);
     Gearbox (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pGearbox create(XmlTag * tag);
-    void setContainer(pWorldObject container);
     ~Gearbox ();
-    void setGear (int inputGear)      { currentGear = inputGear; };
-    double getGearRatio()             { return gearMap[currentGear]->ratio; };
-    std::string getCurrentGearName() { return gearMap[currentGear]->getName(); };
-    int getCurrentGearIndex()         { return currentGear; };
+    void setGear (int inputGear);
+    int getCurrentGearIndex();
+    pGearboxGear getCurrentGear();
     void stepPhysics ();
     void gearUp ();
     void gearDown ();

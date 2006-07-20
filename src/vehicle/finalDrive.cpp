@@ -20,7 +20,11 @@ pFinalDrive FinalDrive::create(XmlTag * tag)
 }
 
 FinalDrive::FinalDrive (XmlTag * tag)
-    :DriveMass("finalDrive")
+    :DriveMass("finaldrive")
+{
+    constructFromTag(tag);
+}
+void FinalDrive::readCustomDataTag(XmlTag * tag)
 {
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
@@ -31,13 +35,9 @@ FinalDrive::FinalDrive (XmlTag * tag)
     inertia = 0.1;
     friction = 0.001;
     
-    if (tag->getName() == "finalDrive")
-    {
-        setName (     tag->getAttribute("name"));
-        friction = stod (tag->getAttribute("diffFriction"));
-        inertia = stod (tag->getAttribute("diffInertia"));
-        finalDriveRatio = stod (tag->getAttribute("finalDriveRatio"));
-    }
+    friction = stod (tag->getAttribute("diffFriction"));
+    inertia = stod (tag->getAttribute("diffInertia"));
+    finalDriveRatio = stod (tag->getAttribute("ratio"));
 }
 
 FinalDrive::~FinalDrive ()

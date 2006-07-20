@@ -34,6 +34,7 @@ class Area : public WorldObject
         std::string license;
         void construct (XmlTag * tag);
         Area (std::string areaName);
+        void readCustomDataTag(XmlTag * tag);
     public:
         static pArea create(std::string areaName);
         ~Area ();

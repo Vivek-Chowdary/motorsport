@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<part
-    name = "Traffic-cone"
-    description = "A typical traffic cone."
-    author = "Angelos Anadilinos (aka vagos)"
-    contact = "aggnos1 AT yahoo DOT com"
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License. For more info, read the readme.txt file."
-    mass = "3"
-    >
-    <mesh
-        file = "cone.mesh"
-        scale = "1 1 1"
-        position = "0 0 0"
-        rotation = "0 0 0"
-        >
-    </mesh>
+<part xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData name = "Traffic-cone" description = "A typical traffic cone." author = "Angelos Anadilinos (aka vagos)" contact = "aggnos1 AT yahoo DOT com" license = "Creative Commons Attribution-NonCommercial-ShareAlike License. For more info, read the readme.txt file." mass = "3">
     <box
         size = "0.5 0.5 0.8"
         >
@@ -30,4 +17,6 @@
         >
     </cappedCylinder>
 -->
+    </customData>
+    <graphicsMesh name="cone" file = "cone.mesh" scale = "1 1 1" position = "0 0 0" rotation = "0 0 0"/>
 </part>

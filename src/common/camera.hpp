@@ -31,6 +31,7 @@ class Camera : public WorldObject
     Vector3d * targetOffset;
     void stopPhysics();
     Camera (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pCamera create(XmlTag * tag);
     ~Camera ();

@@ -23,12 +23,12 @@ SHARED_PTR(Body, pBody, wBody);
 class Body : public WorldObject
 {
   private:
-    bool userDriver;
     double dragCoefficient;
     double frontalArea;
     void stopPhysics ();
     void stopGraphics ();
     Body (XmlTag * tag);
+    void readCustomDataTag(XmlTag * tag);
   public:
     static pBody create (XmlTag * tag);
     ~Body ();

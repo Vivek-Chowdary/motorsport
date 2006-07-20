@@ -21,7 +21,10 @@ pGearbox Gearbox::create(XmlTag * tag)
 Gearbox::Gearbox (XmlTag * tag)
     :DriveMass("gearbox")
 {
-    log->__format (LOG_CCREATOR, "Starting to parse a gearbox node");
+    constructFromTag(tag);
+}
+void Gearbox::readCustomDataTag(XmlTag * tag)
+{
     outputTorqueTransfer = 0.0;
     inputTorqueTransfer = 0.0;
     friction = 0.01;
@@ -30,38 +33,15 @@ Gearbox::Gearbox (XmlTag * tag)
     inputAngularVel = 0.0;
     outputAngularVel = 0.0;
     angularAcc = 0.0;
-    gearRatio = 0.0;
     currentGear = 0;
     
-    if (tag->getName() == "gearbox")
-    {
-        setName (     tag->getAttribute("name"));
-        friction = stod (tag->getAttribute("gearboxFriction"));
-        inertia = stod (tag->getAttribute("gearboxInertia"));
-        XmlTag * t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-        {
-            if (t->getName() == "gear")
-            {
-                pGearboxGear tmp = GearboxGear::create(t);
-                gearMap[tmp->getNumber()] = tmp;
-            }
-        }
-    }
+    friction = stod (tag->getAttribute("gearboxFriction"));
+    inertia = stod (tag->getAttribute("gearboxInertia"));
 }
 
 Gearbox::~Gearbox ()
 {
 }
-
-void Gearbox::setContainer(pWorldObject container)
-{
-    DriveMass::setContainer(container);
-    for(std::map<int,pGearboxGear>::iterator i = gearMap.begin(); i != gearMap.end(); i++)
-    {
-        i->second->setContainer(shared_from_this());
-    }
-}
-
 
 pGearboxGear GearboxGear::create(XmlTag * tag)
 {
@@ -69,28 +49,32 @@ pGearboxGear GearboxGear::create(XmlTag * tag)
     return tmp;
 }
 GearboxGear::GearboxGear (XmlTag * tag)
-    :WorldObject("gearboxGear")
+    :WorldObject("gearboxgear")
+{
+    constructFromTag(tag);
+}
+void GearboxGear::readCustomDataTag(XmlTag * tag)
 {
     log->__format (LOG_CCREATOR, "Starting to parse a gearbox gear node");
     ratio = 1.0;
-    number = 0;
-    if (tag->getName() == "gear")
-    {
-        setName (     tag->getAttribute("name"));
-        number = stoi (tag->getAttribute("number"));
-        ratio = stod (tag->getAttribute("ratio"));
-    }
+    ratio = stod (tag->getAttribute("ratio"));
+    description = tag->getAttribute("description");
 }
 
 GearboxGear::~GearboxGear()
 {
+}
+std::string GearboxGear::getDescription()
+{
+    return description;
 }
 void Gearbox::stepPhysics ()
 {
     double dt;
     double torqueSum;
     
-    gearRatio = gearMap[currentGear]->ratio;
+    double gearRatio = getCurrentGear()->getRatio();
+    //gearRatio = getGearboxGear(itos(currentGear))->getRatio();
     
     dt = System::get()->getDesiredPhysicsTimestep();
     prevAngularVel = inputAngularVel;
@@ -124,17 +108,48 @@ void Gearbox::stepPhysics ()
 void Gearbox::gearUp() {
     currentGear++;
 
-    int maxGear = gearMap.size() - 1;
+    //FIXME count number of actual gears, not objects (there could be more than gears in the future!)
+    int maxGear = objects.size() - 1;
     if(currentGear > maxGear) currentGear = maxGear;
 
-    gearRatio = gearMap[currentGear]->ratio;
-    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->getName().c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", getCurrentGear()->getName().c_str()); 
 }
 
 void Gearbox::gearDown() {
     currentGear--;
     if(currentGear < 0) currentGear = 0;
 
-    gearRatio = gearMap[currentGear]->ratio;
-    log->__format(LOG_DEVELOPER, "Gear set to %s", gearMap[currentGear]->getName().c_str()); 
+    log->__format(LOG_DEVELOPER, "Gear set to %s", getCurrentGear()->getName().c_str()); 
+}
+std::string Gearbox::itos(int integer)
+{
+    const int numberStringSize = 64;
+    char numberString[numberStringSize];
+    snprintf (numberString, numberStringSize, "%i", integer);
+    return std::string(numberString);
+}
+void Gearbox::setGear (int inputGear)     
+{
+    currentGear = inputGear;
+    log->__format(LOG_DEVELOPER, "Gear set to %s", getCurrentGear()->getName().c_str()); 
+}
+int Gearbox::getCurrentGearIndex()
+{
+    return currentGear;
+}
+pGearboxGear Gearbox::getCurrentGear()
+{
+    return getGearboxGear(itos(currentGear));
+}
+int GearboxGear::getNumber()
+{ 
+    return stoi(name);
+}
+double GearboxGear::getRatio()
+{
+    return ratio;
+}
+bool GearboxGear::isEnabled()
+{
+    return enabled;
 }

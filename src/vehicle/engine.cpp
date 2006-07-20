@@ -22,20 +22,19 @@ pEngine Engine::create(XmlTag * tag)
 Engine::Engine (XmlTag * tag)
     :DriveMass("engine")
 {
+    constructFromTag(tag);
+}
+void Engine::readCustomDataTag(XmlTag * tag)
+{
     inputAngularVel = 0.0;
     prevAngularVel = 0.0;
     outputAngularVel = 0.0;
     angularAcc = 0.0;
     log->__format (LOG_CCREATOR, "Starting to parse an engine node");
-    if (tag->getName() == "engine")
-    {
-        setName (tag->getAttribute("name"));
-        torqueLinearMultiplier = stod (tag->getAttribute("torqueLinearMultiplier"));
-        inertia = stod (tag->getAttribute("engineInertia"));
-        friction = stod (tag->getAttribute("engineFriction"));
-        angularVelLimit = stod (tag->getAttribute("angularVelLimit"));
-
-    }
+    torqueLinearMultiplier = stod (tag->getAttribute("torqueLinearMultiplier"));
+    inertia = stod (tag->getAttribute("engineInertia"));
+    friction = stod (tag->getAttribute("engineFriction"));
+    angularVelLimit = stod (tag->getAttribute("angularVelLimit"));
 }
 
 Engine::~Engine ()

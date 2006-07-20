@@ -1,33 +1,22 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<part
-    name = "Cube"
-    description = "A strange wooden cube"
-    author = "Bruno Gonzalez Campo (STenyaK)"
-    contact = "stenyak AT gmx DOT net"
-    license = "Creative Commons Attribution-NonCommercial-ShareAlike License"
-    mass = "2000"
-    >
-    <mesh
-        file = "cube.mesh"
-        scale = "1 1 1"
-        position = "0 0 0"
-        rotation = "0 0 0"
-        >
-    </mesh>
-    <box
-        size = "2 2 2"
-        >
-    </box>
-<!--
-    <sphere
-        radius = "2"
-        >
-    </sphere>
-    <cappedCylinder
-        length = "2"
-        radius = "1"
-        directionAxis = "z"
-        >
-    </cappedCylinder>
--->
+<part xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData name = "Cube" description = "A strange wooden cube" author = "Bruno Gonzalez Campo (STenyaK)" contact = "stenyak AT gmx DOT net" license = "Creative Commons Attribution-NonCommercial-ShareAlike License" mass = "2000">
+        <box
+            size = "2 2 2"
+            >
+        </box>
+        <!--
+        <sphere
+            radius = "2"
+            >
+        </sphere>
+        <cappedCylinder
+            length = "2"
+            radius = "1"
+            directionAxis = "z"
+            >
+        </cappedCylinder>
+        -->
+    </customData>
+    <graphicsMesh name="cube" file = "cube.mesh" scale = "1 1 1" position = "0 0 0" rotation = "0 0 0"/>
 </part>
