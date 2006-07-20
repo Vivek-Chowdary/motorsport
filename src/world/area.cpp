@@ -314,17 +314,6 @@ void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &
     }
 }
 
-pLocation Area::getLocation (std::string name)
-{
-    pLocation tmp;
-    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
-    {
-        if (i->first == name && i->second) if (tmp = boost::dynamic_pointer_cast<Location>(i->second)) break;
-    }
-    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Location");
-    return tmp;
-}
-
 pCamera Area::getClosestCamera(Vector3d location)
 {
     log->__format(LOG_DEVELOPER, "Finding closest camera");

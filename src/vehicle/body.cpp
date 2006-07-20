@@ -84,7 +84,6 @@ void Body::stepPhysics ()
     if (userDriver)
     {
         double moveZ = System::get()->axisMap[getIDKeyboardKey(SDLK_BACKSPACE)]->getValue() * 50000;
-        log->__format(LOG_DEVELOPER,"Physics of body..............%f", moveZ);
         moveZ += System::get()->axisMap[getIDKeyboardKey(SDLK_RETURN)]->getValue() * 12200;
         moveZ -= System::get()->axisMap[getIDKeyboardKey(SDLK_RSHIFT)]->getValue() * 10000;
         dBodyAddForce (bodyID, 0, 0, moveZ);

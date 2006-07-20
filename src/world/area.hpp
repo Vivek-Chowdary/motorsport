@@ -32,14 +32,11 @@ class Area : public WorldObject
         std::string author;
         std::string contact;
         std::string license;
-        Locations locations;
         void construct (XmlTag * tag);
         Area (std::string areaName);
     public:
         static pArea create(std::string areaName);
         ~Area ();
-
-        pLocation getLocation (std::string name);
 
         dBodyID areaBodyID;
         pCamera getClosestCamera(Vector3d location);

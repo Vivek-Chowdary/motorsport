@@ -61,6 +61,7 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         OgreObjects ogreObjects;
         OdeObjects odeObjects;
         WorldObjects objects;
+        Locations locations;
         WorldObject (const std::string & name);
     public:
         virtual ~WorldObject ();
@@ -92,6 +93,8 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         void applyRotation (Quaternion rotation);
+
+        pLocation getLocation (std::string name);
 
         pArea getArea(std::string name);
         pVehicle getVehicle(std::string name);
