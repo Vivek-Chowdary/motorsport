@@ -118,7 +118,14 @@ void World::processXmlRootNode (XmlTag * tag)
     dRandSetSeed(0);
     worldID = dWorldCreate ();
     ghostWorldID = dWorldCreate ();
-    spaceID = dHashSpaceCreate (0);
+    //spaceID = dHashSpaceCreate (0);
+    //spaceID = dSimpleSpaceCreate (0);
+    dVector3 center;
+    center[0]=center[1]=center[2]=0;
+    dVector3 ext;
+    ext[0]=ext[1]=1000;
+    ext[2]=100;
+    spaceID = dQuadTreeSpaceCreate (0, center, ext, 10);
     jointGroupID = dJointGroupCreate (0);
 
     if (System::get()->getCfmValue() != -1)
