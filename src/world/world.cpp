@@ -144,10 +144,15 @@ void World::processXmlRootNode (XmlTag * tag)
 }
 void World::setActiveCamera (pCamera camera)
 {
-    activeCamera = camera;
-    System::get()->ogreWindow->removeAllViewports ();
-    System::get()->ogreWindow->addViewport (activeCamera->ogreCamera);
-    log->__format (LOG_ENDUSER, "Changed camera...");
+    if (camera)
+    {
+        activeCamera = camera;
+        System::get()->ogreWindow->removeAllViewports ();
+        System::get()->ogreWindow->addViewport (activeCamera->ogreCamera);
+        log->__format (LOG_ENDUSER, "Changed camera...");
+    } else {
+        log->__format (LOG_WARNING, "Unable to change camera! No such camera found.");
+    }
 }
 
 void World::stepGraphics()
