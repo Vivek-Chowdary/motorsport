@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<area
+<area xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData
     name = "Testing Ground"
+    position="0.000000 0.000000 0.000000"
+    rotation="1.000000 0.000000 0.000000 0.000000"
     description = "A simple area, featuring an infinite cement ground, and a clear sky. Located in the middle of a dry area surrounded by some small mountains."
     author = "STenyaK"
     contact = "stenyak AT gmx DOT net"
@@ -89,6 +92,7 @@
         rotation = "0 0 90"
         >
     </vehicleLocation>
+    </customData>
     <camera
         name = "driver"
         position = "6 0 1.7"
