@@ -44,6 +44,9 @@
         <subobject name="6"><gearboxgear>
             <customData description="5th" ratio="0.94"/>
         </gearboxgear></subobject>
+        <subobject name="7"><gearboxgear>
+            <customData description="6th" ratio="0.84"/>
+        </gearboxgear></subobject>
     </gearbox></subobject>
     <subobject name="main"><finaldrive>
         <customData diffInertia="0.1" diffFriction="0.001" ratio="3.6"/>
@@ -54,6 +57,12 @@
     </suspension.unidimensional></subobject>
     <subobject name="fl"><suspension.unidimensional>
         <customData springConstant =  "80500" dampingConstant = "2000" position = "+1.44 -0.857 -0.45" rotation = "+92.5 0 0" steeringAngle = "-80"/>
+    </suspension.unidimensional></subobject>
+    <subobject name="rr"><suspension.unidimensional>
+        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 +0.88 -0.45" rotation = "-91 0 0" steeringAngle = "0"/>
+    </suspension.unidimensional></subobject>
+    <subobject name="rl"><suspension.unidimensional>
+        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 -0.88 -0.45" rotation = "+91 0 0" steeringAngle = "0"/>
     </suspension.unidimensional></subobject>
 -->
     <subobject name="fl"><suspension.doublewishbone>
@@ -69,12 +78,6 @@
         <customData springStiffness="80900" springLengthAtEase="0.5" damperFastBump="2000" damperFastRebound="2100" firstPosition="-1.35 +0.58 -0.45" firstRotation="0 0 0" position="-1.35 +0.88 -0.45" rotation="-90 0 0" steeringAngle="-0" upperBoneMesh="susp/Cube.mesh" lowerBoneMesh="susp/Cube.mesh" uprightBoneMesh="susp/Cube.001.mesh"/>
     </suspension.doublewishbone></subobject>
 <!--
-    <subobject name="rr"><suspension.unidimensional>
-        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 +0.88 -0.45" rotation = "-91 0 0" steeringAngle = "0"/>
-    </suspension.unidimensional></subobject>
-    <subobject name="rl"><suspension.unidimensional>
-        <customData springConstant =  "80900" dampingConstant = "2000" position = "-1.35 -0.88 -0.45" rotation = "+91 0 0" steeringAngle = "0"/>
-    </suspension.unidimensional></subobject>
     <subobject name="rr"><suspension.fixed>
         <customData position = "-1.35 +0.88 -0.45" rotation = "-90 0 0"/>
     </suspension.fixed></subobject>

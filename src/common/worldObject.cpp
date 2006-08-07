@@ -607,6 +607,38 @@ void WorldObject::constructFromTag(XmlTag * tag)
             ogreChild->setOgreReference(ogreObjects[ogreObject->getId()], rotDiff, posDiff, scale);
             System::get()->ogreWindow->update ();
         }
+        if (t->getName() == "rigidBody")
+        {
+            pPartOdeData data(new PartOdeData);
+            XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
+            {
+                if (u->getName() == "totalMass")
+                {
+                    data->mass = stod(u->getAttribute("value"));
+                }
+                if (u->getName() == "box")
+                {
+                    data->shape = u->getName();
+                    data->size = Vector3d(u->getAttribute("size"));
+                }
+                if (u->getName() == "sphere")
+                {
+                    data->shape = u->getName();
+                    data->radius = stod(u->getAttribute("radius"));
+                }
+                if (u->getName() == "cappedCylinder")
+                {
+                    data->shape = u->getName();
+                    data->radius = stod(u->getAttribute("radius"));
+                    data->length = stod(u->getAttribute("length"));
+                    if (u->getAttribute("directionAxis") == "x") data->directionAxis = 1;
+                    if (u->getAttribute("directionAxis") == "y") data->directionAxis = 2;
+                    if (u->getAttribute("directionAxis") == "z") data->directionAxis = 3;
+                }
+            }
+            if (data->shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
+            odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
+        }
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
     {

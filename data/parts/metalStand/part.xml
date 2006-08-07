@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <part xmlns:xi="http://www.w3.org/2001/XInclude">
-    <customData name = "Metal Viewing Stands" description = "An empty metal stand, for use in race tracks" author = "David Goodman" contact = " david DOT n DOT goodman AT max-realms DOT com" license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly. Read Max-Realms_License.htm for more info." mass = "5000">
-    <box
-        size = "20 8 8"
-        >
-    </box>
-<!--
-    <sphere
-        radius = "2"
-        >
-    </sphere>
-    <cappedCylinder
-        length = "2"
-        radius = "1"
-        directionAxis = "z"
-        >
-    </cappedCylinder>
--->
+    <customData name = "Metal Viewing Stands" description = "An empty metal stand, for use in race tracks" author = "David Goodman" contact = " david DOT n DOT goodman AT max-realms DOT com" license = "The artist who created the model in this zip file retains all rights. If you want to use this model for any purpose other than personal, non-commercial use, you must contact the artist directly. Read Max-Realms_License.htm for more info.">
     </customData>
+    <rigidBody name="cube">
+        <totalMass value="5000"/>
+        <box size = "20 8 8"/>
+        <!--
+        <sphere radius = "2"/>
+        <cappedCylinder length = "2" radius = "1" directionAxis = "z"/>
+        -->
+    </rigidBody>
     <graphicsMesh name="stand" file = "metalstand.mesh" scale = "1 1 1" position = "0 0 0" rotation = "0 0 0"/>
 </part>
