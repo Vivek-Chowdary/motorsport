@@ -4,7 +4,7 @@
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
 |* (*) Complete information is provided at the following URL:                *|
-|*           [ http://motorsport-sim.org/svn/trunk/doc/LICENSE ]             *|
+|*    [ https://svn.sourceforge.net/svnroot/motorsport/trunk/doc/LICENSE ]   *|
 \*****************************************************************************/
 
 #ifndef VECTOR3D_HPP

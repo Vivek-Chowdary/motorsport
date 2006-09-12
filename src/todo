@@ -1,4 +1,4 @@
-update copyright headers url!!!!!!!!
+add support for rotation and traslation of areas
 autosleep using averaged positions/velocities
 new suspension spring+damper can't rotate properly yet, lacks a joint or 2 at the ends.
 add support for suspension arm meshes in the car exporter
