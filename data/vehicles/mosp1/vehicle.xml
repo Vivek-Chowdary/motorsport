@@ -3,7 +3,11 @@
     <customData name="Mosp1" description="The first official Motorsport vehicle. Made by Habalux, it started its life as a quick draft made in just a couple of hours. It was then remade and improved in a period of several days, to end up as what it is now: a RWD, possibly V8, possibly race-tuned car." author="Habalux, STenyaK" contact="habalux AT gmail DOT com, stenyak AT gmx DOT net" license="Creative Commons Attribution-NonCommercial-ShareAlike License">
     </customData>
     <subobject name="main"><body>
-        <customData length="4.66" width="2.08" height="1.2" mass="1224.0" dragCoefficient="0.3" frontalArea="1.5"/>
+        <customData dragCoefficient="0.3" frontalArea="1.5"/>
+        <rigidBody name="main body">
+            <totalMass value="1224.0"/>
+            <body size = "4.66 2.08 1.2"/>
+        </rigidBody>
         <graphicsMesh name="main body" file="body.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
     </body></subobject>
     <subobject name="clutch"><pedal>

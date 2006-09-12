@@ -79,6 +79,7 @@ void Engine::stepPhysics ()
           angularAcc = (inputAngularVel-prevAngularVel)/ dt;
           outputAngularVel = inputAngularVel; */
     //log->__format(LOG_DEVELOPER, "engineTorque=%f(Nm) angAcc=%f engspeed=%f(rad/s)", engineTorque, angularAcc, inputAngularVel);
+    log->__format(LOG_WARNING, "EngineTorque: %f Gas: %f", engineTorque, gas);
     telemetryTorque = engineTorque;
     inputTorqueTransfer = 0;
     outputTorqueTransfer = 0;

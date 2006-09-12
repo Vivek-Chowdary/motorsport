@@ -25,15 +25,8 @@ pBody Body::create (XmlTag * tag)
 }
 void Body::readCustomDataTag(XmlTag * tag)
 {
-    pBodyOdeData data(new BodyOdeData);
-    data->length = stod (tag->getAttribute("length"));
-    data->width = stod (tag->getAttribute("width"));
-    data->height = stod (tag->getAttribute("height"));
-    data->mass = stod (tag->getAttribute("mass"));
     frontalArea = stod (tag->getAttribute("frontalArea"));
-    if (frontalArea == 0) frontalArea = data->width * data->height * 0.6;
     dragCoefficient = stod (tag->getAttribute("dragCoefficient"));
-    odeObjects[getName()] = pOdeObject(new OdeObject(this, data, getName()));
 }
 Body::Body (XmlTag * tag)
     :WorldObject("body")

@@ -1,3 +1,5 @@
+update copyright headers url!!!!!!!!
+autosleep using averaged positions/velocities
 add support for suspension arm meshes in the car exporter
 add support for multiple meshes per world object
 set proper coords system in the world

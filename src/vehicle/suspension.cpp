@@ -21,6 +21,8 @@
 #include "SDL/SDL_keysym.h"
 #include <cmath>
 
+#define USE_PRISMATIC false
+
 Suspension::Suspension (std::string name)
     : WorldObject(name)
 {
@@ -409,11 +411,14 @@ void DoubleWishbone::attach(pWorldObject base, pWorldObject object)
     dJointSetHinge2Axis2 (axisJoint, rAxis2.x, rAxis2.y, rAxis2.z);
     log->__format (LOG_DEVELOPER, "Axis2 = %f, %f, %f.", rAxis2.x, rAxis2.y, rAxis2.z);
 
-    //create spring-damper joint
-    // sdamper = dJointCreateSlider(World::get()->worldID, 0);
-    //dJointAttach( sdamper, base->getMainOdeObject()->getBodyID(), odeObjects["uprightBone"]->getBodyID() );
-    //dJointSetSliderAxis (sdamper, 0,dirMult*0.66,0.66);
-    //dJointSetSliderAxis (sdamper, forceDirection[0], forceDirection[1], forceDirection[2]);
+    //create spring-damper joint ------------------------------------------
+    if (USE_PRISMATIC)
+    {
+        sdamper = dJointCreateSlider(World::get()->worldID, 0);
+        dJointAttach( sdamper, base->getMainOdeObject()->getBodyID(), odeObjects["uprightBone"]->getBodyID() );
+        dJointSetSliderAxis (sdamper, 0,dirMult*0.66,0.66);
+        //dJointSetSliderAxis (sdamper, forceDirection[0], forceDirection[1], forceDirection[2]);
+    }
 }
 void DoubleWishbone::stepPhysics()
 {
@@ -440,17 +445,18 @@ void DoubleWishbone::stepPhysics()
         f -= v*damperFastRebound;
 
     dVector3 forceDirection;
-    int i;
-    for (i=0;i<3;++i)
-        forceDirection[i] = f*(chassisHingePos[i]-boneHingePos[i])/x;
-
-    //double h = System::get()->getDesiredPhysicsTimestep();
-    //dJointSetSliderParam (sdamper, dParamSuspensionERP, h * springStiffness / (h * springStiffness + damperFastBump));
-    //dJointSetSliderParam (sdamper, dParamSuspensionCFM, 1 / (h * springStiffness + damperFastBump));
-    dBodyAddForceAtPos(odeObjects["upperBone"]->getBodyID(), forceDirection[0], forceDirection[1], forceDirection[2],
-            chassisHingePos[0], chassisHingePos[1], chassisHingePos[2]);
-    dBodyAddForceAtPos(odeObjects["lowerBone"]->getBodyID(), -forceDirection[0], -forceDirection[1], -forceDirection[2],
-            boneHingePos[0], boneHingePos[1], boneHingePos[2]);
+    for (int i=0;i<3;++i) forceDirection[i] = f*(chassisHingePos[i]-boneHingePos[i])/x;
+    if (USE_PRISMATIC)
+    {
+    dJointSetSliderAxis (sdamper, forceDirection[0], forceDirection[1], forceDirection[2]);
+        dJointAddSliderForce (sdamper, f/100.0);
+        double h = System::get()->getDesiredPhysicsTimestep();
+        dJointSetSliderParam (sdamper, dParamSuspensionERP, h * springStiffness / (h * springStiffness + damperFastBump));
+        dJointSetSliderParam (sdamper, dParamSuspensionCFM, 1 / (h * springStiffness + damperFastBump));
+    } else {
+        dBodyAddForceAtPos(odeObjects["upperBone"]->getBodyID(), forceDirection[0], forceDirection[1], forceDirection[2], chassisHingePos[0], chassisHingePos[1], chassisHingePos[2]);
+        dBodyAddForceAtPos(odeObjects["lowerBone"]->getBodyID(), -forceDirection[0], -forceDirection[1], -forceDirection[2], boneHingePos[0], boneHingePos[1], boneHingePos[2]);
+    }
 
     springOldx = x;
 }

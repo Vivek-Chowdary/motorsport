@@ -92,7 +92,7 @@ class DoubleWishbone : public Suspension
         double getSteeringAngle();
         bool right;
 
-        //dJointID sdamper;
+        dJointID sdamper;
         dJointID upperJoint;
         dJointID lowerJoint;
         dJointID axisJoint;

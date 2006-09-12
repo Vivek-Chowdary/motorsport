@@ -610,11 +610,12 @@ void WorldObject::constructFromTag(XmlTag * tag)
         if (t->getName() == "rigidBody")
         {
             pPartOdeData data(new PartOdeData);
+            pBodyOdeData bdata(new BodyOdeData);
             XmlTag * u = t->getTag(0); for (int j = 0; j < t->nTags(); u = t->getTag(++j))
             {
                 if (u->getName() == "totalMass")
                 {
-                    data->mass = stod(u->getAttribute("value"));
+                    bdata->mass = data->mass = stod(u->getAttribute("value"));
                 }
                 if (u->getName() == "box")
                 {
@@ -635,9 +636,24 @@ void WorldObject::constructFromTag(XmlTag * tag)
                     if (u->getAttribute("directionAxis") == "y") data->directionAxis = 2;
                     if (u->getAttribute("directionAxis") == "z") data->directionAxis = 3;
                 }
+                if (u->getName() == "body")
+                {
+                    data->shape = u->getName();
+                    Vector3d size (u->getAttribute("size"));
+                    bdata->length = size.x;
+                    bdata->width = size.y;
+                    bdata->height = size.z;
+                }
             }
             if (data->shape == "none") log->__format(LOG_ERROR, "No physics shape specified for this part.");
-            odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
+            if (data->shape == "body")
+            {
+                odeObjects[getId()] = pOdeObject(new OdeObject(this, bdata, getId()));
+            }
+            else
+            {
+                odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
+            }
         }
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))

@@ -7,8 +7,8 @@
         >
     </customData>
     <sharedobject name="main"><area
-        model="mosptracing"
-        __model="testingGround"
+        __model="mosptracing"
+        model="testingGround"
         _model="mospland2006.r7"
         >
     </area></sharedobject>

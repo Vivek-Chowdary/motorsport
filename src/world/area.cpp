@@ -96,6 +96,7 @@ void Area::readCustomDataTag(XmlTag * tag)
                     unsigned int *indices;
                     getMeshInformation (ogreChild->getEntity()->getMesh (), vertex_count, vertices, index_count, indices, ogreChild->getNode()->getPosition(), ogreChild->getNode()->getOrientation(), ogreChild->getNode()->getScale());
                     log->__format (LOG_CCREATOR, "Building the ode mesh for the ground");
+                    //FIXME: keep the vertex data somewhere; ODE doesn't keep a copy of the trimesh data!!
 #if defined(dSINGLE)
                     dGeomTriMeshDataBuildSingle (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
 #else
