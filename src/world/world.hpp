@@ -28,7 +28,6 @@ class World : public WorldObject
     Ogre::SceneNode * planeNode;
     Ogre::Entity * planeEntity;
     std::string description;
-    pCamera activeCamera;
     bool cameraDirector;
     void setActiveCamera(pCamera camera);
     void processXmlRootNode (XmlTag * tag);

@@ -82,8 +82,7 @@ World::~World ()
 
     //shouldn't be necessary, but vehicle and area geoms can't be deleted after ode world so we must make sure!
     objects.clear();
-    objects.clear();
-    
+
     log->__format (LOG_DEVELOPER, "Destroying ODE world");
     dSpaceDestroy (spaceID);
     log->__format (LOG_DEVELOPER, "Destroying ODE main collision space");

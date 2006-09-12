@@ -19,11 +19,13 @@ class Quaternion;
 class WorldObject;
 
 SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt, wOdeObject);
+SHARED_PTR(MeshOdeData, pMeshOdeData, wMeshOdeData);
 SHARED_PTR(PartOdeData, pPartOdeData, wPartOdeData);
 SHARED_PTR(BodyOdeData, pBodyOdeData, wBodyOdeData);
 SHARED_PTR(WheelOdeData, pWheelOdeData, wWheelOdeData);
 SHARED_PTR(BoneOdeData, pBoneOdeData, wBoneOdeData);
 
+SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt, wOgreObject);
 SHARED_MAP(dGeomID, GeomIDs, GeomIDsIt);
 
 class OdeObject
@@ -38,6 +40,7 @@ class OdeObject
         std::string id;
 
     public:
+        OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string name);
@@ -49,6 +52,18 @@ class OdeObject
         void setRotation (Quaternion rotation);
         dBodyID getBodyID();
         dGeomID getGeomID(std::string name);
+        std::string getId();
+};
+class MeshOdeData
+{
+    public:
+        std::string shape;
+        pOgreObject ogreChild;
+        MeshOdeData()
+        {
+            shape = "none";
+        }
+        ~MeshOdeData() {};
 };
 class PartOdeData
 {

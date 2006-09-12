@@ -8,12 +8,21 @@
 \*****************************************************************************/
 
 #include "odeObject.hpp"
+#include "Ogre.h"
+#include "OgreNoMemoryMacros.h"
 #include "system.hpp"
 #include "vector3d.hpp"
 #include "quaternion.hpp"
 #include "world.hpp"
 
 unsigned int OdeObject::instancesCount = 0;
+
+void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position = Ogre::Vector3::ZERO, const Ogre::Quaternion & orient = Ogre::Quaternion::IDENTITY, const Ogre::Vector3 & scale = Ogre::Vector3::UNIT_SCALE);
+
+std::string OdeObject::getId()
+{
+    return this->id;
+}
 
 void OdeObject::updateId()
 {
@@ -22,6 +31,30 @@ void OdeObject::updateId()
     snprintf (numberString, numberStringSize, "%i", instancesCount);
     this->id = std::string(numberString);
     instancesCount++;
+}
+OdeObject::OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name)
+{
+    updateId();
+    this->worldObject = worldObject;
+    this->name = name;
+    bodyID = 0; //dBodyCreate (worldID);
+
+    dTriMeshDataID ground = dGeomTriMeshDataCreate ();
+    dGeomID geom = dCreateTriMesh (World::get()->spaceID, ground, 0, 0, 0);
+    dGeomSetBody (geom, 0);
+    //geomIDs[name+id] = geom;
+    size_t vertex_count, index_count;
+    dVector3 * vertices;
+    unsigned int *indices;
+    getMeshInformation (data->ogreChild->getEntity()->getMesh (), vertex_count, vertices, index_count, indices, data->ogreChild->getNode()->getPosition(), data->ogreChild->getNode()->getOrientation(), data->ogreChild->getNode()->getScale());
+    Vector3d posi; Ogre::Vector3 oposi = data->ogreChild->getNode()->getPosition(); posi.x = oposi.x; posi.y = oposi.y; posi.z = oposi.z;
+    worldObject->getLog()->__format (LOG_DEVELOPER, "Building mesh; Adding at pos(%f,%f,%f)",posi.x,posi.y,posi.z);
+    //FIXME: keep the vertex data (ground pointer) somewhere; ODE doesn't keep a copy of the trimesh data!!
+#if defined(dSINGLE)
+    dGeomTriMeshDataBuildSingle (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
+#else
+    dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
+#endif
 }
 OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name)
 {
@@ -162,30 +195,78 @@ OdeObject::~OdeObject ()
         dGeomDestroy (i->second);
         i->second = NULL;
     }
-	geomIDs.clear();
-    dBodyDestroy (bodyID);
+    geomIDs.clear();
+    if (bodyID) dBodyDestroy (bodyID);
     bodyID = NULL;
     this->worldObject = NULL;
 }
 void OdeObject::setPosition (Vector3d position)
 {
-    dBodySetPosition (bodyID, position.x, position.y, position.z);
+    if (bodyID == 0)
+    {
+        GeomIDsIt i = geomIDs.begin();
+        for(;i != geomIDs.end(); i++)
+        {
+            dGeomSetPosition (i->second, position.x, position.y, position.z);
+        }
+    } else {
+        dBodySetPosition (bodyID, position.x, position.y, position.z);
+    }
 }
 
 void OdeObject::setRotation (Quaternion rotation)
 {
     dMatrix3 rot;
     rotation.getOdeMatrix (rot);
-    dBodySetRotation (bodyID, rot);
+    if (bodyID == 0)
+    {
+        GeomIDsIt i = geomIDs.begin();
+        for(;i != geomIDs.end(); i++)
+        {
+            dGeomSetRotation (i->second, rot);
+        }
+    } else {
+        dBodySetRotation (bodyID, rot);
+    }
 }
 Vector3d OdeObject::getPosition()
 {
-    const dReal * tmp = dBodyGetPosition (bodyID);
-    return Vector3d(tmp[0], tmp[1], tmp[2]);
+    const dReal * tmp;
+    Vector3d result(0,0,0);
+    if (bodyID == 0)
+    {
+        if (geomIDs.begin() == geomIDs.end()) 
+        {
+            //empty
+        } else {
+            tmp = dGeomGetPosition (geomIDs.begin()->second);
+            result = Vector3d(tmp[0], tmp[1], tmp[2]);
+        }
+    } else {
+        tmp = dBodyGetPosition (bodyID);
+        result = Vector3d(tmp[0], tmp[1], tmp[2]);
+    }
+    //const dReal * tmp = dBodyGetPosition (bodyID);
+    return result;
 }
 Quaternion OdeObject::getRotation()
 {
-    const dReal * tmp = dBodyGetQuaternion (bodyID);
+    dReal * tmp = NULL;
+    if (bodyID == 0)
+    {
+        if (geomIDs.begin() == geomIDs.end()) 
+        {
+            //empty
+        } else {
+            dQuaternion q;
+            dGeomGetQuaternion (geomIDs.begin()->second, q);
+            tmp = &(q[0]);
+        }
+    } else {
+        tmp = (dReal*)dBodyGetQuaternion (bodyID);
+    }
+    if (tmp == NULL) return Quaternion(0,0,0);
+    //const dReal * tmp = dBodyGetQuaternion (bodyID);
     return Quaternion(tmp);
 }
 dBodyID OdeObject::getBodyID()
@@ -196,3 +277,112 @@ dGeomID OdeObject::getGeomID(std::string name)
 {
     return geomIDs[name];
 }
+void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &vertices, size_t & index_count, unsigned *&indices, const Ogre::Vector3 & position, const Ogre::Quaternion & orient, const Ogre::Vector3 & scale)
+{
+    vertex_count = index_count = 0;
+    bool added_shared = false;
+    size_t current_offset = vertex_count;
+    size_t shared_offset = vertex_count;
+    size_t next_offset = vertex_count;
+    size_t index_offset = index_count;
+
+    // Calculate how many vertices and indices we're going to need
+    for (int i = 0; i < mesh->getNumSubMeshes (); i++)
+    {
+        Ogre::SubMesh * submesh = mesh->getSubMesh (i);
+
+        // We only need to add the shared vertices once
+        if (submesh->useSharedVertices)
+        {
+            if (!added_shared)
+            {
+                Ogre::VertexData * vertex_data = mesh->sharedVertexData;
+                vertex_count += vertex_data->vertexCount;
+                added_shared = true;
+            }
+        } else
+        {
+            Ogre::VertexData * vertex_data = submesh->vertexData;
+            vertex_count += vertex_data->vertexCount;
+        }
+
+        // Add the indices
+        Ogre::IndexData * index_data = submesh->indexData;
+        index_count += index_data->indexCount;
+    }
+
+    // Allocate space for the vertices and indices
+    vertices = new dVector3[vertex_count];
+    indices = new unsigned[index_count];
+
+    added_shared = false;
+
+    // Run through the submeshes again, adding the data into the arrays
+    for (int i = 0; i < mesh->getNumSubMeshes (); i++)
+    {
+        Ogre::SubMesh * submesh = mesh->getSubMesh (i);
+
+        Ogre::VertexData * vertex_data = submesh->useSharedVertices ? mesh->sharedVertexData : submesh->vertexData;
+        if ((!submesh->useSharedVertices) || (submesh->useSharedVertices && !added_shared))
+        {
+            if (submesh->useSharedVertices)
+            {
+                added_shared = true;
+                shared_offset = current_offset;
+            }
+
+            const Ogre::VertexElement * posElem = vertex_data->vertexDeclaration->findElementBySemantic (Ogre::VES_POSITION);
+            Ogre::HardwareVertexBufferSharedPtr vbuf = vertex_data->vertexBufferBinding->getBuffer (posElem->getSource ());
+            unsigned char *vertex = static_cast < unsigned char *>(vbuf->lock (Ogre::HardwareBuffer::HBL_READ_ONLY));
+            Ogre::Real * pReal;
+
+            for (size_t j = 0; j < vertex_data->vertexCount; ++j, vertex += vbuf->getVertexSize ())
+            {
+                posElem->baseVertexPointerToElement (vertex, &pReal);
+
+                Ogre::Vector3 pt;
+
+                pt.x = (*pReal++);
+                pt.y = (*pReal++);
+                pt.z = (*pReal++);
+
+                pt = (orient * (pt * scale)) + position;
+
+                vertices[current_offset + j][0] = pt.x;
+                vertices[current_offset + j][1] = pt.y;
+                vertices[current_offset + j][2] = pt.z;
+            }
+            vbuf->unlock ();
+            next_offset += vertex_data->vertexCount;
+        }
+
+        Ogre::IndexData * index_data = submesh->indexData;
+
+        size_t numTris = index_data->indexCount / 3;
+        unsigned short *pShort;
+        unsigned int *pInt;
+        Ogre::HardwareIndexBufferSharedPtr ibuf = index_data->indexBuffer;
+        bool use32bitindexes = (ibuf->getType () == Ogre::HardwareIndexBuffer::IT_32BIT);
+        if (use32bitindexes)
+            pInt = static_cast < unsigned int *>(ibuf->lock (Ogre::HardwareBuffer::HBL_READ_ONLY));
+        else
+        pShort = static_cast < unsigned short *>(ibuf->lock (Ogre::HardwareBuffer::HBL_READ_ONLY));
+
+        for (size_t k = 0; k < numTris; ++k)
+        {
+            size_t offset = (submesh->useSharedVertices) ? shared_offset : current_offset;
+
+            unsigned int vindex = use32bitindexes ? *pInt++ : *pShort++;
+            indices[index_offset + 0] = vindex + offset;
+            vindex = use32bitindexes ? *pInt++ : *pShort++;
+            indices[index_offset + 1] = vindex + offset;
+            vindex = use32bitindexes ? *pInt++ : *pShort++;
+            indices[index_offset + 2] = vindex + offset;
+
+            index_offset += 3;
+        }
+        ibuf->unlock ();
+        current_offset = next_offset;
+    }
+}
+

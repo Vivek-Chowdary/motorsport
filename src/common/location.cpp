@@ -23,12 +23,9 @@ pLocation Location::create(std::string name, Vector3d position, Quaternion rotat
 Location::Location (XmlTag * tag)
 {
     pLogEngine log (LogEngine::create (LOG_DEVELOPER, "Location"));
-    // if (tag->getName() == "location")
-    {
-        name = tag->getAttribute("name");
-        position = Vector3d(tag->getAttribute("position"));
-        rotation = Quaternion(tag->getAttribute("rotation"));
-    }
+    name = tag->getAttribute("name");
+    position = Vector3d(tag->getAttribute("position"));
+    rotation = Quaternion(tag->getAttribute("rotation"));
 }
 Location::Location (std::string name, Vector3d position, Quaternion rotation)
 {

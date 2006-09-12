@@ -68,23 +68,44 @@ Camera::~Camera ()
 
 void Camera::updateOgreRotation ()
 {
-    const dReal *temp = dBodyGetQuaternion (positionID);
-    Ogre::Quaternion tempRot (temp[0], temp[1], temp[2], temp[3]);
+    Ogre::Quaternion tempRot;
+    if (positionID == 0)
+    {
+        //tempRot.w = 1;
+        //tempRot.x = tempRot.y = tempRot.z = 0;
+        tempRot.w = tempRot.z = 1;
+        tempRot.x = tempRot.y = 0;
+    } else {
+        const dReal *temp = dBodyGetQuaternion (positionID);
+        tempRot = Ogre::Quaternion(temp[0], temp[1], temp[2], temp[3]);
+    }
     ogreCamera->setFixedYawAxis (true, tempRot.zAxis());
 }
 
 Vector3d Camera::updateOgrePosition ()
 {
-    const dReal *temp = dBodyGetQuaternion (positionID);
-    Ogre::Quaternion tempRot(temp[0], temp[1], temp[2], temp[3]);
+    Ogre::Quaternion tempRot;
+    if (positionID == 0)
+    {
+        tempRot.w = tempRot.z = 1;
+        tempRot.x = tempRot.y = 0;
+    } else {
+        const dReal *temp = dBodyGetQuaternion (positionID);
+        tempRot = Ogre::Quaternion(temp[0], temp[1], temp[2], temp[3]);
+    }
     Ogre::Matrix3 rot;
     tempRot.ToRotationMatrix (rot);
 
     Ogre::Vector3 tempPos(positionOffset->x, positionOffset->y, positionOffset->z);
     Ogre::Vector3 pos = rot * tempPos;
 
-    temp = dBodyGetPosition (positionID);
-    pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
+    if (positionID == 0)
+    {
+        //empty
+    } else {
+        const dReal * temp = dBodyGetPosition (positionID);
+        pos += Ogre::Vector3 (temp[0], temp[1], temp[2]);
+    }
 
     ogreCamera->setPosition (pos);
     return Vector3d (pos.x, pos.y, pos.z);

@@ -238,13 +238,13 @@
             scale="2.000000 2.000000 2.000000"
         />
     </parts>
-    <vehicleLocation
+    </customData>
+    <location
         name="paceCar"
         position="-155.224152 -156.375732 1.418862"
         rotation="0.004433 0.000000 0.000000 0.999990"
         scale="1.000000 1.000000 1.000000"
     />
-    </customData>
     <subobject name="camera.002"><camera>
         <customData position="-231.028122 -46.287857 12.560727" rotation="0.500000 0.500000 0.500000 0.500000" scale="1.000000 1.000000 1.000000"
         target="0 0 0" projectionType="perspective" fov="37.849289" normal="0.0 0.0 -1.0" clipping="0.100000 100.000000"/>

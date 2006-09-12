@@ -39,7 +39,6 @@ class Area : public WorldObject
         static pArea create(std::string areaName);
         ~Area ();
 
-        dBodyID areaBodyID;
         pCamera getClosestCamera(Vector3d location);
 
         void setCastShadows(bool castShadows);

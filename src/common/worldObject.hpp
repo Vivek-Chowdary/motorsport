@@ -99,6 +99,7 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
 
         pLocation getLocationObject(std::string fullname);
         pVehicle getVehicleObject(std::string fullname);
+        pArea getAreaObject(std::string fullname);
         pWorldObject getFirstObject(std::string fullname);
 
         pLocation getLocation (std::string name);

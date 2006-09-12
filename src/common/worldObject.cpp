@@ -63,7 +63,12 @@ void WorldObject::setContainer(pWorldObject container)
     OdeObjectsIt j = odeObjects.begin();
     for(;j != odeObjects.end(); j++)
     {
-        dBodySetData (j->second->getBodyID(), (void*) container.get());
+        if (j->second->getBodyID() == 0)
+        {
+            //empty
+        } else {
+            dBodySetData (j->second->getBodyID(), (void*) container.get());
+        }
     }
     pWorldObject t = shared_from_this();
     for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
@@ -166,6 +171,7 @@ pWorldObject WorldObject::getContainer()
 pOdeObject WorldObject::getMainOdeObject()
 {
     pOdeObject tmp;
+    log->__format(LOG_CCREATOR, "Getting main ode object. Id #%s.", id.c_str());
     if (odeObjects.empty()) return tmp;
     return odeObjects.begin()->second;
 }
@@ -206,6 +212,7 @@ void WorldObject::setPosition (Vector3d position)
 }
 Vector3d WorldObject::getPosition ()
 {
+    if (odeObjects.begin() == odeObjects.end()) log->__format(LOG_ERROR, "No ode objects here!");
     return odeObjects.begin()->second->getPosition();
 }
 Quaternion WorldObject::getRotation ()
@@ -565,6 +572,14 @@ void WorldObject::constructFromTag(XmlTag * tag)
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
     {
+        if (t->getName() == "location")
+        {
+            pLocation tmp = Location::create (t);
+            locations[tmp->getName()] = tmp;
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
         if (t->getName() == "location-vehicle")
         {
             log->__format (LOG_CCREATOR, "Setting vehicle location");
@@ -576,6 +591,22 @@ void WorldObject::constructFromTag(XmlTag * tag)
             second->setPosition(Vector3d(0, 0, 0));
             second->applyRotation(first->getRotation());
             second->setPosition(first->getPosition());
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "location-area")
+        {
+            log->__format (LOG_CCREATOR, "Setting area location");
+            std::string f= t->getAttribute("first");
+            std::string s= t->getAttribute("second");
+            pLocation first = getLocationObject(f);
+            pArea second = getAreaObject(s);
+
+            //FIXME: might have to also relocate locations!
+            //second->setPosition(Vector3d(0, 0, 0));
+            //second->applyRotation(first->getRotation());
+            //second->setPosition(first->getPosition());
         }
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
@@ -674,6 +705,11 @@ pLocation WorldObject::getLocationObject(std::string fullname)
         log->__format(LOG_DEVELOPER, "Area name=%s", a->getName().c_str());
         tmp = a->getLocation(MospPath::getName(MospPath::getSubFullname(fullname)));
     }
+    if (MospPath::getType(fullname) == "location")
+    {
+        if ( (tmp = getLocation(MospPath::getName(fullname))) == NULL)
+            log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
+    }
     log->__format(LOG_DEVELOPER, "Location name=%s", tmp->getName().c_str());
     return tmp;
 }
@@ -683,6 +719,14 @@ pVehicle WorldObject::getVehicleObject(std::string fullname)
     if ((tmp = boost::dynamic_pointer_cast<Vehicle>(getFirstObject(fullname))) == NULL)
         log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
     log->__format(LOG_DEVELOPER, "Vehicle name=%s", tmp->getName().c_str());
+    return tmp;
+}
+pArea WorldObject::getAreaObject(std::string fullname)
+{
+    pArea tmp;
+    if ((tmp = boost::dynamic_pointer_cast<Area>(getFirstObject(fullname))) == NULL)
+        log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", fullname.c_str(), "Vehicle");
+    log->__format(LOG_DEVELOPER, "Area name=%s", tmp->getName().c_str());
     return tmp;
 }
 pWorldObject WorldObject::getFirstObject(std::string fullname)
