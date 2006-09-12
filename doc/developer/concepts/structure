@@ -1,0 +1,26 @@
+<object>
+    <sharedobject>
+        <object/>
+    </sharedobject>
+
+    <subobject>
+        <object/>
+    </subobject>
+
+    <baseobject>
+        <mesh scale/> <box/> <capsule/> <sphere/>
+        <mass/> <density/>
+        <scale/>
+        <collision/>
+        <visible/>
+        <rendermode????/>
+        <location/>
+    </baseobject>
+
+    <location/>
+
+    <link>
+        <hinge1/> <fixed/> <proportional/>
+    </link>
+
+</object>

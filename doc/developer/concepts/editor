@@ -1,0 +1,33 @@
+requisitos:
+ poder modificar graficos on the fly y recargar sin perder datos
+ frame de nodos jerarquico:
+ -objetos hijo (shared, sub, include, normal). cada uno con un icono diferenciador. cada tipo de objeto con un icono tb (wheel, body, etc).
+ -links
+ -propiedades de cosa seleccionada: baseobjects? (o meterlo en nodos?), path origen (xml, include, etc.), etc...
+ -preview 3d en tiempo real.
+ -importador de dotscene o blender o algo asi.
+ mostrar nodos deprecaos, nuevos, cambiados, permitir elegir (añadir, quitar, reemplazar, omitir)
+ -guardar/abrir mosp xml
+ -mostrar/ocultar elementos shared/include, links, etc.
+ -metadata generico: descripcion, autor(es)
+ 
+ -preview
+ -tree view
+ -properties
+ toolbar
+ -links
+ 
+ 
+  _________________________________
+ / toolbar                         \
+ |--------------------|------------|
+ | preview            | links/tree |
+ |                    |            |
+ |                    |            |
+ |                    |            |
+ |                    |            |
+ |                    |------------|
+ |                    | properties |
+ |                    |            |
+ |                    |            |
+ \____________________|____________/

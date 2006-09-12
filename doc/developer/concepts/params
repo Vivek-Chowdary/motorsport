@@ -1,0 +1,22 @@
+param steering rod distance in
+
+param steering rod distance in
+
+param gas cable distance
+drivemass out
+
+drivemass in
+drivemass out left
+drivemass out right
+(hub)>
+drivemass in
+drivemass out
+
+param brake pressure
+drivemass in
+drivemass out
+
+param gear up
+param gear down
+
+param clutch distance

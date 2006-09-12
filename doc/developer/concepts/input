@@ -1,0 +1,37 @@
+-------------------------------------------------------------------------
+driver 0: none         | driver 1: computer 01  | driver 2: stenyak     |
+item            value  | item            value  | item            value |
+gas pedal       0      | gas pedal       0      | gas pedal       0     |
+brake pedal     0      | brake pedal     0      | brake pedal     0     |
+clutch pedal    0      | clutch pedal    0      | clutch pedal    0     |
+steering wheel  0.5    | steering wheel  0.5    | steering wheel  0.5   |
+gearUp          0      | gearUp          1      | gearUp          1     |
+gearDown        0      | gearDown        0      | gearDown        0     |
+handbrake       1      | handbrake       0      | handbrake       0     |
+----------------------------------------------------------------------------------------------------------------------------------------------
+binding 0: keyboard                                               |  binding 1: saitek r440 ffb            | binding 2: stenyak              |
+item            bindings                                          |  item            bindings              | item            bindings        |
+gas pedal       key(num1)*0.33,key(num4)*0.66,key(num7),key(up)   |  gas pedal       (joyaxis(1)-0.5)*2    | gas pedal       saitek r440 ffb |
+brake pedal     key(num2)*0.33,key(num5)*0.66,key(num8),key(down) |  brake pedal     (0.5-joyaxis(1))*2    | brake pedal     saitek r440 ffb |
+clutch pedal    key(num3)*0.33,key(num6)*0.66,key(num9),key(q)    |  clutch pedal    joybutton(0)          | clutch pedal    ai(generic)     |
+steering wheel  0.5+(key(right)*0.5)-(key(left)*0.5)              |  steering wheel  joyaxis(2)            | steering wheel  saitek r440 ffb |
+gearUp          key(a),key(t)                                     |  gearUp          joybutton(1)          | gearUp          saitek r440 ffb |
+gearDown        key(z),key(b)                                     |  gearDown        joybutton(3)          | gearDown        saitek r440 ffb |
+handbrake       key(space)                                        |  handbrake       joybutton(2)          | handbrake       joybutton(1)    |
+----------------------------------------------------------------------------------------------------------------------------------------------
+vehicle 01 driver:binding(user)
+vehicle 02 driver:ai(default)    (random generic?, drag, rally, oval, ...)
+maybe choose the correct one according to area where the vehicle is put?
+
+tokens:
+key(identifier)
+joyaxis(number)
+joybutton(number)
+* + / - ,
+()
+
+[------------------]                              [        ][        ]
+  left x    right y                                 brake      gas     brake      gas
+[########][--------] 0.0  0.5+(y*0.5)-(x*0.5)     [###---------------] (0.5-x)*2  0
+[--------][--------] 0.5  0.5+(y*0.5)-(x*0.5)     [#########---------] (0.5-x)*2  (x-0.5)*2
+[--------][########] 0.0  0.5+(y*0.5)-(x*0.5)     [#############-----] 0          (x-0.5)*2
