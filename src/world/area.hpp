@@ -42,8 +42,6 @@ class Area : public WorldObject
         dBodyID areaBodyID;
         pCamera getClosestCamera(Vector3d location);
 
-        Ogre::SceneNode * planeNode;
-        Ogre::Entity * planeEntity;
         void setCastShadows(bool castShadows);
         void setRenderDetail(int renderMode);
 };

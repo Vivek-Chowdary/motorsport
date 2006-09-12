@@ -11,17 +11,8 @@
     checkpointPosition = "0 0 10"
     checkpointRadius = "5"
     >
-    <ground
-        name="ground"
-        height = "0.0"
-        >
+    <ground>
     </ground>
-    <sky
-        materialName = "skyboxMaterial"
-        distance = "5000"
-        drawFirst = "true"
-        >
-    </sky>
     <parts>
         <cone
             position = "15 5 2"

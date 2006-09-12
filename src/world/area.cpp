@@ -33,7 +33,7 @@ Area::Area (std::string areaName)
     setPath(Paths::area(areaName));
     setXmlPath(Paths::areaXml(areaName));
     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath(), "FileSystem", "areas." + areaName);
-    Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath() + "skybox.zip", "Zip", "areas."+areaName);
+    //Ogre::ResourceGroupManager::getSingleton().addResourceLocation(getPath() + "skybox.zip", "Zip", "areas."+areaName);
     Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("areas." + areaName);
     XmlTag * tag = new XmlTag (getXmlPath());
     construct (tag);
@@ -48,12 +48,7 @@ void Area::readCustomDataTag(XmlTag * tag)
 {
     Vector3d checkpointPosition (0, 0, 0);
     double checkpointRadius = 5;
-    double groundHeight = 0.0;
     std::string mesh = "none";
-    std::string groundMaterialName = "groundMaterial";
-    std::string skyMaterialName = "skyboxMaterial";
-    double skyDistance = 5000.0;
-    bool skyDrawFirst = true;
 
     setName (     tag->getAttribute("name"));
     description = tag->getAttribute("description");
@@ -66,7 +61,6 @@ void Area::readCustomDataTag(XmlTag * tag)
     {
         if (t->getName() == "ground")
         {
-            groundHeight = stod (t->getAttribute("height"));
             pOgreObjectData ogreData(new OgreObjectData);
             ogreData->meshPath = "";
             //create main mesh
@@ -106,12 +100,6 @@ void Area::readCustomDataTag(XmlTag * tag)
                 }
             }
         }
-        if (t->getName() == "sky")
-        {
-            skyMaterialName = t->getAttribute("materialName");
-            skyDistance = stod(t->getAttribute("distance"));
-            skyDrawFirst = stob (t->getAttribute("drawFirst"));
-        }
         if (t->getName() == "parts")
         {
             Vector3d position(0,0,0);
@@ -140,30 +128,11 @@ void Area::readCustomDataTag(XmlTag * tag)
         }
     }
     log->loadscreen (LOG_CCREATOR, "Creating the area ground");
-    log->__format (LOG_DEVELOPER, "Creating the ode plane");
-    dCreatePlane (World::get()->spaceID, 0, 0, 1, groundHeight);
 
-    log->__format (LOG_DEVELOPER, "Creating the ogre plane");
-    Ogre::Plane plane;
-    plane.normal = Ogre::Vector3(0,0,1);
-    plane.d = -groundHeight;
-    Ogre::SceneManager* pOgreSceneManager = System::get()->ogreSceneManager;
-    Ogre::MeshManager::getSingleton().createPlane("Ground plane", "general", plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
-    planeEntity = pOgreSceneManager->createEntity("plane", "Ground plane");
-    planeEntity->setMaterialName(groundMaterialName.c_str());
-    planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
-    planeNode->attachObject(planeEntity);
     areaBodyID = dBodyCreate (World::get()->ghostWorldID);
     positionCameras(areaBodyID);
     System::get()->ogreWindow->update ();
 
-    // FIXME should be part of the world, not the area
-    log->loadscreen (LOG_CCREATOR, "Creating the area sky");
-    Ogre::Quaternion rotationToZAxis;
-    rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
-    System::get()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
-    System::get()->ogreWindow->update ();
-    
     // create the checkpoint sphere
     dGeomID checkpointID = dCreateSphere (World::get()->spaceID, checkpointRadius);
     dGeomSetBody (checkpointID, 0);
@@ -176,7 +145,6 @@ void Area::construct (XmlTag * tag)
 
 void Area::setCastShadows(bool castShadows)
 {
-    planeEntity->setCastShadows(castShadows);
     //UNCOMMENT ME
     //if (areaEntity != 0) areaEntity->setCastShadows(castShadows);
 }

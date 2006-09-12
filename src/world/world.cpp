@@ -96,6 +96,7 @@ void World::readCustomDataTag(XmlTag * tag)
 {
     description = tag->getAttribute("description");
 
+    //create ode world
     log->__format ( LOG_DEVELOPER, "Setting ODE world gravity");
     double gravityX = stod(tag->getAttribute("gravityX"));
     double gravityY = stod(tag->getAttribute("gravityY"));
@@ -103,12 +104,54 @@ void World::readCustomDataTag(XmlTag * tag)
     dWorldSetGravity (worldID, gravityX, gravityY, gravityZ);
     dWorldSetGravity (ghostWorldID, 0, 0, 0);
 
+    //create sky box
+    std::string skyMaterialName = tag->getAttribute("skyMaterialName");
+    double skyDistance = stod(tag->getAttribute("skyDistance"));
+    bool skyDrawFirst = stob (tag->getAttribute("skyDrawFirst"));
+    log->loadscreen (LOG_CCREATOR, "Creating the area sky");
+    Ogre::Quaternion rotationToZAxis;
+    rotationToZAxis.FromRotationMatrix (Ogre::Matrix3 (1, 0, 0, 0, 0, -1, 0, 1, 0));
+    System::get()->ogreSceneManager->setSkyBox (true, skyMaterialName.c_str(), skyDistance, skyDrawFirst, rotationToZAxis);
+    System::get()->ogreWindow->update ();
+    
+    //create ground plane
+    double groundHeight = 0.0;
+    std::string groundMaterialName = "groundMaterial";
+    groundHeight = stod (tag->getAttribute("height"));
+
+    log->__format (LOG_DEVELOPER, "Creating the ode plane");
+    dCreatePlane (World::get()->spaceID, 0, 0, 1, groundHeight);
+
+    log->__format (LOG_DEVELOPER, "Creating the ogre plane");
+    Ogre::Plane plane;
+    plane.normal = Ogre::Vector3(0,0,1);
+    plane.d = -groundHeight;
+    Ogre::SceneManager* pOgreSceneManager = System::get()->ogreSceneManager;
+    Ogre::MeshManager::getSingleton().createPlane("Ground plane", "general", plane, 1000,1000,1,1,true,1,20,20,Ogre::Vector3::UNIT_Y);
+    planeEntity = pOgreSceneManager->createEntity("plane", "Ground plane");
+    planeEntity->setMaterialName(groundMaterialName.c_str());
+    planeNode = pOgreSceneManager->getRootSceneNode()->createChildSceneNode();
+    planeNode->attachObject(planeEntity);
+    System::get()->ogreWindow->update ();
+
+    //set cameras
     bool useAreaCamera = true;    //if false, use vehicle camera
     useAreaCamera = stob(tag->getAttribute("useAreaCamera"));
     // set active camera
     log->loadscreen (LOG_DEVELOPER, "Setting camera viewport");
-    if (useAreaCamera) setActiveCamera (getArea("main")->getCamera("main"));
-    else               setActiveCamera (getVehicle("main")->getCamera("main"));
+    if (useAreaCamera)
+    {
+        WorldObjectsIt i = objects.begin();
+        for(;i != objects.end(); i++)
+        {
+            if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+            {
+                setActiveCamera (tmp->getCamera("main"));
+            }
+        }
+    } else {
+        setActiveCamera (getVehicle("main")->getCamera("main"));
+    }
 }
 
 void World::processXmlRootNode (XmlTag * tag)
@@ -140,7 +183,14 @@ void World::processXmlRootNode (XmlTag * tag)
     }
     constructFromTag(tag);
     // initialize cameras (pointing to car 0 by default)
-    getArea("main")->pointCameras(getVehicle("main"));
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
+    {
+        if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+        {
+            tmp->pointCameras(getVehicle("main"));
+        }
+    }
 }
 void World::setActiveCamera (pCamera camera)
 {
@@ -158,14 +208,38 @@ void World::setActiveCamera (pCamera camera)
 void World::stepGraphics()
 {
     WorldObject::stepGraphics();
+
+    // Update infinite plane position according to vehicle position
+    Ogre::Vector3 areaPos (planeNode->getPosition());
+    Vector3d vehiclePos (World::get()->getVehicle("main")->getPosition());
+    Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
+    const double tile = 1000.0 / 20.0;
+    if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);
+    if (diff.y > tile || diff.y < -tile) areaPos.y -= int ((diff.y) / (tile)) * (tile);
+    planeNode->setPosition(areaPos);
+    
     if (cameraDirector == true)
     {
-        setActiveCamera( getArea("main")->getClosestCamera(getVehicle("main")->getPosition()));
+        WorldObjectsIt i = objects.begin();
+        for(;i != objects.end(); i++)
+        {
+            if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+            {
+                setActiveCamera( tmp->getClosestCamera(getVehicle("main")->getPosition()));
+            }
+        }
     }
 }
 void World::switchNextAreaCamera()
 {
-    setActiveCamera (getArea("main")->switchNextCamera());
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
+    {
+        if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+        {
+            setActiveCamera (tmp->switchNextCamera());
+        }
+    }
     cameraDirector = false;
 }
 void World::switchNextVehicleCamera()

@@ -25,6 +25,8 @@ class World : public WorldObject
   private:
     static pWorld world;
     static std::string newWorld;
+    Ogre::SceneNode * planeNode;
+    Ogre::Entity * planeEntity;
     std::string description;
     pCamera activeCamera;
     bool cameraDirector;

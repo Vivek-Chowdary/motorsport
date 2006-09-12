@@ -164,15 +164,6 @@ int Graphics::computeStep (void)
 
     World::get()->stepGraphics();
 
-    // Update infinite plane position according to vehicle position
-    Ogre::Vector3 areaPos (World::get()->getArea("main")->planeNode->getPosition());
-    Vector3d vehiclePos (World::get()->getVehicle("main")->getPosition());
-    Vector3d diff (areaPos.x - vehiclePos.x, areaPos.y - vehiclePos.y, areaPos.z - vehiclePos.z);
-    const double tile = 1000.0 / 20.0;
-    if (diff.x > tile || diff.x < -tile) areaPos.x -= int ((diff.x) / (tile)) * (tile);
-    if (diff.y > tile || diff.y < -tile) areaPos.y -= int ((diff.y) / (tile)) * (tile);
-    World::get()->getArea("main")->planeNode->setPosition(areaPos);
-    
     // Update area shadows state
     World::get()->getArea("main")->setCastShadows(castAreaShadows);
     
