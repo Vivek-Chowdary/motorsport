@@ -164,12 +164,10 @@ int Graphics::computeStep (void)
 
     World::get()->stepGraphics();
 
-    // Update area shadows state
-    World::get()->getArea("main")->setCastShadows(castAreaShadows);
-    
-    // Update area render mode
-    World::get()->getArea("main")->setRenderDetail(areaRenderMode);
-    
+    // Update area shadows state and area render mode
+    World::get()->setCastShadows(castAreaShadows);
+    World::get()->setRenderDetail(areaRenderMode);
+
     // Let the listener frames be started and ended: they are needed for particle System::get()s.
     ogreRoot->_fireFrameStarted ();
     System::get()->ogreWindow->update ();

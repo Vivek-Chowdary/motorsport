@@ -255,3 +255,28 @@ bool World::isActiveCamera(pCamera camera)
 {
     return activeCamera == camera;
 }
+
+void World::setCastShadows(bool castAreaShadows)
+{
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
+    {
+        if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+        {
+            tmp->setCastShadows(castAreaShadows);
+        }
+    }
+}
+    
+void World::setRenderDetail(bool areaRenderDetail)
+{
+    WorldObjectsIt i = objects.begin();
+    for(;i != objects.end(); i++)
+    {
+        if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
+        {
+            tmp->setRenderDetail(areaRenderDetail);
+        }
+    }
+}
+    

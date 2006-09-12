@@ -51,6 +51,8 @@ class World : public WorldObject
     bool isActiveCamera(pCamera camera);
 
     void stepGraphics();
+    void setRenderDetail(bool areaRenderDetail);
+    void setCastShadows(bool castAreaShadows);
 };
 
 #endif
