@@ -61,6 +61,8 @@ void Pedal::stepPhysics ()
                         if (currentAngle == 0) {
                             currentAngle = System::get()->axisMap[getIDKeyboardKey(SDLK_UP)]->getValue() * 3 / 3;
             }   }   }   }
+            //REMOVE ME!
+            currentAngle = 1;
         } else if (getName() == "(pedal)brake")
         {
             currentAngle = 1 - System::get()->axisMap[getIDJoyAxis(0,1)]->getValue();

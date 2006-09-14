@@ -40,6 +40,7 @@ class OdeObject
         std::string id;
 
     public:
+        OdeObject (WorldObject * worldObject, std::string name);
         OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name);

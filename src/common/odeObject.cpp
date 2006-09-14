@@ -92,6 +92,14 @@ OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string 
     dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
+OdeObject::OdeObject (WorldObject * worldObject, std::string name)
+{
+    updateId();
+    this->worldObject = worldObject;
+    this->name = name;
+    bodyID = NULL;
+    bodyID = dBodyCreate (World::get()->ghostWorldID);
+}
 OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name)
 {
     updateId();

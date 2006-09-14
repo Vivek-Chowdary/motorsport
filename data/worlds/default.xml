@@ -10,19 +10,6 @@
         height="-1.5"
         >
     </customData>
-    <sharedobject name="main"><vehicle
-        model="mosp1"
-        _model="quattros1"
-        >
-    </vehicle></sharedobject>
-    <sharedobject name="bg"><area
-        model="testingGround"
-        >
-    </area></sharedobject>
-    <sharedobject name="main"><area
-        model="mospland"
-        >
-    </area></sharedobject>
     <!--<sharedobject name="main"><area
         model="mosptracing"
         >
@@ -36,15 +23,22 @@
         _model="quattros1"
         >
     </vehicle></sharedobject>
-    <location-vehicle first="(area)main/grid01" second="(vehicle)secondcar" />-->
-
-<!--
-    <location name="la" position="0 0 5" rotation="0 0 0"/>
-    <location name="lb" position="0 0 0" rotation="0 35 0"/>
-    <location name="lc" position="0 0 0" rotation="15 15 0"/>
-    <location-area first="(location)la" second="(area)main"/>
-    <location-area first="(location)la" second="(area)main"/>
--->
+    <location-vehicle first="(area)main/grid01" second="(vehicle)secondcar"/>-->
+    <sharedobject name="main"><vehicle
+        model="mosp1"
+        _model="quattros1"
+        >
+    </vehicle></sharedobject>
+    <sharedobject name="bg"><area
+        model="testingGround"
+        >
+    </area></sharedobject>
+    <sharedobject name="main"><area
+        model="mospland"
+        >
+    </area></sharedobject>
+    <!--<location name="la" position="0 0 -2.5" rotation="60 60 0"/>
+    <location-area first="(location)la" second="(area)main"/>-->
     <location-vehicle first="(area)main/paceCar" second="(vehicle)main" />
     <vehicle-driver first="(vehicle)main" second="user" />
 </world>

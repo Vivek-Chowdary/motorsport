@@ -588,7 +588,6 @@ void WorldObject::constructFromTag(XmlTag * tag)
             pLocation first = getLocationObject(f);
             pVehicle second = getVehicleObject(s);
 
-            second->setPosition(Vector3d(0, 0, 0));
             second->applyRotation(first->getRotation());
             second->setPosition(first->getPosition());
         }

@@ -30,6 +30,9 @@
     <subobject name = "driver"><camera>
         <customData position = "6 0 1.7" target = "0.1 0.5 0.4"/>
     </camera></subobject>
+    <subobject name = "main"><camera>
+        <customData position = "20 -15 0.2" target = "1.44 -0.86 -0.4"/>
+    </camera></subobject>
     <subobject name = "wheel"><camera>
         <customData position = "20 -15 0.2" target = "1.44 -0.86 -0.4"/>
     </camera></subobject>
