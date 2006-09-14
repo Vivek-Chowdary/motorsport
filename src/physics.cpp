@@ -56,6 +56,7 @@ Physics::Physics ()
                 if (t->getAttribute("erpValue") != "default") System::get()->setErpValue(stod(t->getAttribute("erpValue")));
                 if (t->getAttribute("stepType") == "dWorldStep") stepType = 1;
                 if (t->getAttribute("stepType") == "dWorldStepFast1") stepType = 2;
+                if (t->getAttribute("stepType") == "dWorldQuickStep") stepType = 3;
                 dWorldStepFast1MaxIterations = stoi (t->getAttribute("dWorldStepFast1MaxIterations"));
             }
         }
@@ -126,12 +127,16 @@ int Physics::computeStep (void)
     {
     default:
     case 1:
-        // traditional (x^y), theorycally slowest, and most accurate physics calculations:
+        // traditional (usage: m^3 memory, m^2x^y cpu), slowest, most accurate
         dWorldStep (World::get()->worldID, system->getDesiredPhysicsTimestep());
         break;
     case 2:
-        // alternative (x*y), fastest and less accurate physics calculations:
+        // alternative, allowing to limit the number of iterations to perform
         dWorldStepFast1 (World::get()->worldID, system->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
+        break;
+    case 3:
+        // alternative (usage: m memory, m*N cpu), faster, less acurate
+        dWorldQuickStep (World::get()->worldID, system->getDesiredPhysicsTimestep());
         break;
     }
     dJointGroupEmpty (World::get()->jointGroupID);
