@@ -52,3 +52,27 @@ std::string Location::getName ()
 {
     return name;
 }
+void Location::addRotation (Vector3d origin, Quaternion diff)
+{
+    Vector3d rotMovement = diff.rotateObject(this->getPosition() - origin);
+    this->setPosition (origin + rotMovement);
+
+    Quaternion current = this->getRotation();
+    Quaternion newrot = diff * current;
+    setRotation (newrot);
+}
+void Location::addPosition (Vector3d diff)
+{
+    Vector3d current = this->getPosition();
+    Vector3d newpos = current + diff;
+    this->setPosition (newpos);
+}
+void Location::setPosition (Vector3d position)
+{
+    this->position = position;
+}
+
+void Location::setRotation (Quaternion rotation)
+{
+    this->rotation = rotation;
+}

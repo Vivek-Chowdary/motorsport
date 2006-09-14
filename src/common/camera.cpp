@@ -44,7 +44,6 @@ void Camera::readCustomDataTag(XmlTag * tag)
     ogreCamera->setFixedYawAxis (true, Ogre::Vector3 (0, 0, 1));
     ogreCamera->setNearClipDistance (0.100);
 //    ogreCamera->setAutoAspectRatio(true);
-    ogreCamera->setPolygonMode(Ogre::PM_SOLID);
     log->__format (LOG_DEVELOPER, "Creating a camera");
     positionOffset = new Vector3d (0, 0, 0);
     targetOffset = new Vector3d (0, 0, 0);

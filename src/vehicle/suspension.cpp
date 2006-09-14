@@ -54,16 +54,7 @@ Vector3d Suspension::getPosition ()
 }
 void Suspension::setPosition (Vector3d position)
 {
-    // so final this.position must be position
-    // so final components posicion must be:
-    // store difference of position between component and this.position
-    // move component to position + difference
-    Vector3d posDiff = position - getPosition();
-    for (OdeObjectsIt i = odeObjects.begin(); i != odeObjects.end(); i++)
-    {
-        Vector3d posDiff = i->second->getPosition() - getPosition();
-        i->second->setPosition (position + posDiff);
-    }   
+    WorldObject::setPosition(position);
     this->position = position;
 }
 double Unidimensional::getSteeringAngle()

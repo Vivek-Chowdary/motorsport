@@ -40,8 +40,6 @@ class Area : public WorldObject
         ~Area ();
 
         pCamera getClosestCamera(Vector3d location);
-        void setPosition (Vector3d position);
-        void applyRotation (Quaternion rotation);
 
         void setCastShadows(bool castShadows);
         void setRenderDetail(int renderMode);

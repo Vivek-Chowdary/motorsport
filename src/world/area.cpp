@@ -89,6 +89,7 @@ void Area::readCustomDataTag(XmlTag * tag)
                     odeObjects[name+tmp->getId()] = tmp;
                 }
             }
+            ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
         }
         if (t->getName() == "parts")
         {
@@ -193,33 +194,4 @@ pCamera Area::getClosestCamera(Vector3d location)
     }
     activeCamera = closestCam;
     return activeCamera;
-}
-void Area::setPosition (Vector3d position)
-{
-    //WorldObject::setPosition(position);
-    Vector3d posDiff =  position - getPosition();
-    log->__format (LOG_DEVELOPER,"Difference in area position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
-    {
-        i->second->setPosition ( i->second->getPosition() + posDiff );
-    }
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        j->second->setPosition( j->second->getPosition() + posDiff);
-    }
-}
-void Area::applyRotation (Quaternion rotation)
-{
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
-    {
-        i->second->applyRotation (rotation);
-    }
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        j->second->setPosition ( rotation.rotateObject(j->second->getPosition()) );
-        Quaternion finalRotation = rotation * j->second->getRotation();
-        j->second->setRotation (finalRotation);
-    }
 }

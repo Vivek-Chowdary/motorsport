@@ -202,52 +202,6 @@ void WorldObject::stepGraphics ()
         i->second->stepGraphics();
     }
 }
-void WorldObject::setPosition (Vector3d position)
-{
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        j->second->setPosition(position);
-    }
-}
-Vector3d WorldObject::getPosition ()
-{
-    if (odeObjects.begin() == odeObjects.end()) log->__format(LOG_ERROR, "No ode objects here!");
-    return odeObjects.begin()->second->getPosition();
-}
-Quaternion WorldObject::getRotation ()
-{
-    return odeObjects.begin()->second->getRotation();
-}
-void WorldObject::setRotation (Quaternion rotation)
-{
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        j->second->setRotation(rotation);
-    }
-}
-void WorldObject::applyRotation (Quaternion rotation)
-{
-    OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
-    {
-        j->second->setPosition ( rotation.rotateObject(j->second->getPosition()) );
-        Quaternion finalRotation = rotation * j->second->getRotation();
-        j->second->setRotation (finalRotation);
-    }
-}
-pArea WorldObject::getArea(std::string name)
-{
-    pArea tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
-    {
-        if (i->first == ("(area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
-    }
-    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Area");
-    return tmp;
-}
-
 pVehicle WorldObject::getVehicle(std::string name)
 {
     pVehicle tmp;
@@ -580,20 +534,6 @@ void WorldObject::constructFromTag(XmlTag * tag)
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
     {
-        if (t->getName() == "location-vehicle")
-        {
-            log->__format (LOG_CCREATOR, "Setting vehicle location");
-            std::string f= t->getAttribute("first");
-            std::string s= t->getAttribute("second");
-            pLocation first = getLocationObject(f);
-            pVehicle second = getVehicleObject(s);
-
-            second->applyRotation(first->getRotation());
-            second->setPosition(first->getPosition());
-        }
-    }
-    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
-    {
         if (t->getName() == "location-area")
         {
             log->__format (LOG_CCREATOR, "Setting area location");
@@ -602,10 +542,22 @@ void WorldObject::constructFromTag(XmlTag * tag)
             pLocation first = getLocationObject(f);
             pArea second = getAreaObject(s);
 
-            //FIXME: might have to also relocate locations!
-            //second->setPosition(Vector3d(0, 0, 0));
-            //second->applyRotation(first->getRotation());
-            //second->setPosition(first->getPosition());
+            second->addRotation(Vector3d(0,0,0),first->getRotation());
+            second->setPosition(first->getPosition());
+        }
+    }
+    t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
+    {
+        if (t->getName() == "location-vehicle")
+        {
+            log->__format (LOG_CCREATOR, "Setting vehicle location");
+            std::string f= t->getAttribute("first");
+            std::string s= t->getAttribute("second");
+            pLocation first = getLocationObject(f);
+            pVehicle second = getVehicleObject(s);
+
+            second->addRotation(Vector3d(0,0,0),first->getRotation());
+            second->addPosition(first->getPosition());
         }
     }
     t = tag->getTag(0); for (int i = 0; i < tag->nTags(); t = tag->getTag(++i))
@@ -734,5 +686,73 @@ pWorldObject WorldObject::getFirstObject(std::string fullname)
     std::string name = MospPath::getName(fullname);
     pWorldObject tmp = getObject("(" + type + ")" + name);
     log->__format(LOG_DEVELOPER, "Object name=%s", tmp->getName().c_str());
+    return tmp;
+}
+
+void WorldObject::setRotation (Quaternion newRotation)
+{
+    //FIXME: should set rotation regardless of current one... dunno if quats substraction is right or not
+    Vector3d initialPos = this->getPosition();
+    this->setPosition(Vector3d(0,0,0));
+
+    Quaternion diff = newRotation - getRotation();
+    this->addRotation(Vector3d(0,0,0), diff);
+
+    this->setPosition(initialPos);
+}
+void WorldObject::setPosition (Vector3d newPosition)
+{
+    Vector3d diff = newPosition - getPosition();
+    this->addPosition (diff);
+}
+void WorldObject::addPosition (Vector3d diff)
+{
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        j->second->addPosition(diff);
+    }
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        i->second->addPosition(diff);
+    }
+    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    {
+        i->second->addPosition(diff);
+    }
+}
+void WorldObject::addRotation (Vector3d origin, Quaternion diff)
+{
+    OdeObjectsIt j = odeObjects.begin();
+    for(;j != odeObjects.end(); j++)
+    {
+        j->second->addRotation(origin, diff);
+    }
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        i->second->addRotation(origin, diff);
+    }
+    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    {
+        i->second->addRotation(origin, diff);
+    }
+}
+Vector3d WorldObject::getPosition ()
+{
+    if (odeObjects.begin() == odeObjects.end()) log->__format(LOG_ERROR, "No ode objects here!");
+    return odeObjects.begin()->second->getPosition();
+}
+Quaternion WorldObject::getRotation ()
+{
+    return odeObjects.begin()->second->getRotation();
+}
+pArea WorldObject::getArea(std::string name)
+{
+    pArea tmp;
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    {
+        if (i->first == ("(area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
+    }
+    if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Area");
     return tmp;
 }

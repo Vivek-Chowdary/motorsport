@@ -114,6 +114,9 @@
     <subobject name="main"><camera>
         <customData position="-10 0 2" target="2 0 0"/>
     </camera></subobject>
+    <subobject name="down"><camera>
+        <customData position="0 0 -10" target="0.002 0 0"/>
+    </camera></subobject>
     <subobject name="frontRightWheel"><camera>
         <customData position="0.2 -1.2 -0.25" target="0.4 -1.2 -0.25"/>
     </camera></subobject>

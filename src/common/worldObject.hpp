@@ -91,11 +91,12 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         void positionCameras(pVehicle base);
         pOdeObject getMainOdeObject();
         
+        void setRotation (Quaternion newRotation);
+        virtual void setPosition (Vector3d newPosition);
+        void addPosition (Vector3d diff);
+        void addRotation (Vector3d origin, Quaternion diff);
         virtual Vector3d getPosition ();
         virtual Quaternion getRotation ();
-        virtual void setPosition (Vector3d position);
-        virtual void setRotation (Quaternion rotation);
-        virtual void applyRotation (Quaternion rotation);
 
         pLocation getLocationObject(std::string fullname);
         pVehicle getVehicleObject(std::string fullname);

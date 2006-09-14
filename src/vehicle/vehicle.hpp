@@ -42,11 +42,10 @@ class Vehicle : public WorldObject
 
     void setUserDriver ();
     void stepPhysics ();
-    void setPosition (Vector3d position);
-    void applyRotation (Quaternion rotation);
-    Vector3d getPosition ();
-    Quaternion getRotation ();
     double getOutputTorque ();
     pOdeObject getMainOdeObject();
+
+    Vector3d getPosition ();
+    Quaternion getRotation ();
 };
 #endif

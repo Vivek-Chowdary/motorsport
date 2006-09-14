@@ -32,6 +32,11 @@ class Location
     Vector3d getPosition();
     Quaternion getRotation();
     std::string getName();
+
+    void addPosition (Vector3d diff);
+    void addRotation (Vector3d origin, Quaternion diff);
+    void setRotation (Quaternion newRotation);
+    void setPosition (Vector3d newPosition);
 };
 
 #endif

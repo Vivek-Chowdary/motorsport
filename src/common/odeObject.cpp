@@ -42,7 +42,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string 
     dTriMeshDataID ground = dGeomTriMeshDataCreate ();
     dGeomID geom = dCreateTriMesh (World::get()->spaceID, ground, 0, 0, 0);
     dGeomSetBody (geom, 0);
-    //geomIDs[name+id] = geom;
+    geomIDs[name+id] = geom;
     size_t vertex_count, index_count;
     dVector3 * vertices;
     unsigned int *indices;
@@ -208,10 +208,29 @@ OdeObject::~OdeObject ()
     bodyID = NULL;
     this->worldObject = NULL;
 }
+void OdeObject::addRotation (Vector3d origin, Quaternion diff)
+{
+    Vector3d rotMovement = diff.rotateObject(this->getPosition() - origin);
+    this->setPosition (origin + rotMovement);
+
+    Quaternion current = this->getRotation();
+    Quaternion newrot = diff * current;
+    setRotation (newrot);
+}
+void OdeObject::addPosition (Vector3d diff)
+{
+    Vector3d current = this->getPosition();
+    Vector3d newpos = current + diff;
+    this->setPosition (newpos);
+}
 void OdeObject::setPosition (Vector3d position)
 {
     if (bodyID == 0)
     {
+        if (geomIDs.begin() == geomIDs.end())
+        {
+            worldObject->getLog()->__format (LOG_ERROR, "No geoms!! OdeObj name=%s", this->getId().c_str());
+        }
         GeomIDsIt i = geomIDs.begin();
         for(;i != geomIDs.end(); i++)
         {
@@ -239,7 +258,6 @@ void OdeObject::setRotation (Quaternion rotation)
 }
 Vector3d OdeObject::getPosition()
 {
-    const dReal * tmp;
     Vector3d result(0,0,0);
     if (bodyID == 0)
     {
@@ -247,11 +265,11 @@ Vector3d OdeObject::getPosition()
         {
             //empty
         } else {
-            tmp = dGeomGetPosition (geomIDs.begin()->second);
+            const dReal * tmp = dGeomGetPosition (geomIDs.begin()->second);
             result = Vector3d(tmp[0], tmp[1], tmp[2]);
         }
     } else {
-        tmp = dBodyGetPosition (bodyID);
+        const dReal * tmp = dBodyGetPosition (bodyID);
         result = Vector3d(tmp[0], tmp[1], tmp[2]);
     }
     //const dReal * tmp = dBodyGetPosition (bodyID);

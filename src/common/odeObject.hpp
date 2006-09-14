@@ -49,6 +49,8 @@ class OdeObject
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
+        void addPosition (Vector3d diff);
+        void addRotation (Vector3d origin, Quaternion diff);
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         dBodyID getBodyID();

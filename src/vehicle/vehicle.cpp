@@ -139,41 +139,10 @@ pOdeObject Vehicle::getMainOdeObject()
     return getBody("main")->getMainOdeObject();
 }
 
-void Vehicle::setPosition (Vector3d position)
-{
-    Vector3d posDiff = position - getPosition();
-    log->__format (LOG_DEVELOPER,"Difference in vehicle position: (%f, %f, %f).", posDiff.x, posDiff.y, posDiff.z);
-    getBody("main")->setPosition ( getBody("main")->getPosition() + posDiff );
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
-    {
-        pWheel tmpWheel;
-        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second)))
-            tmpWheel->getMainOdeObject()->setPosition ( tmpWheel->getMainOdeObject()->getPosition() + posDiff );
-        pSuspension tmpSusp;
-        if ( (tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second)))
-            tmpSusp->setPosition ( tmpSusp->getPosition() + posDiff );
-    }
-}
-
 Vector3d Vehicle::getPosition ()
 {
     return getBody("main")->getPosition();
 }
-
-void Vehicle::applyRotation (Quaternion rotation)
-{
-    // apply rotation to wheels
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
-    {
-        pWheel tmpWheel;
-        if ( (tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second))) tmpWheel->applyRotation (rotation);
-        pSuspension tmpSusp;
-        if ( (tmpSusp = boost::dynamic_pointer_cast<Suspension>(i->second))) tmpSusp->applyRotation (rotation);
-    }
-    // apply rotation to body
-    getBody("main")->applyRotation (rotation);
-}
-
 Quaternion Vehicle::getRotation ()
 {
     return getBody("main")->getRotation();
@@ -181,13 +150,13 @@ Quaternion Vehicle::getRotation ()
 
 void Vehicle::placeWheelsOnSuspensions()
 {
-    getWheel("fr")->applyRotation(getSuspension("fr")->getSecondLinkRotation());
+    getWheel("fr")->addRotation  (Vector3d(0,0,0), getSuspension("fr")->getSecondLinkRotation());
     getWheel("fr")->setPosition  (getSuspension("fr")->getSecondLinkPosition());
-    getWheel("fl")->applyRotation(getSuspension("fl")->getSecondLinkRotation());
+    getWheel("fl")->addRotation  (Vector3d(0,0,0), getSuspension("fl")->getSecondLinkRotation());
     getWheel("fl")->setPosition  (getSuspension("fl")->getSecondLinkPosition());
-    getWheel("rr")->applyRotation(getSuspension("rr")->getSecondLinkRotation());
+    getWheel("rr")->addRotation  (Vector3d(0,0,0), getSuspension("rr")->getSecondLinkRotation());
     getWheel("rr")->setPosition  (getSuspension("rr")->getSecondLinkPosition());
-    getWheel("rl")->applyRotation(getSuspension("rl")->getSecondLinkRotation());
+    getWheel("rl")->addRotation  (Vector3d(0,0,0), getSuspension("rl")->getSecondLinkRotation());
     getWheel("rl")->setPosition  (getSuspension("rl")->getSecondLinkPosition());
 }
 
