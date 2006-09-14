@@ -609,7 +609,7 @@ void WorldObject::constructFromTag(XmlTag * tag)
                     data->shape = u->getName();
                     data->radius = stod(u->getAttribute("radius"));
                 }
-                if (u->getName() == "cappedCylinder")
+                if (u->getName() == "capsule")
                 {
                     data->shape = u->getName();
                     data->radius = stod(u->getAttribute("radius"));

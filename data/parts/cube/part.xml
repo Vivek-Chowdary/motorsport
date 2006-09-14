@@ -7,7 +7,7 @@
         <box size = "2 2 2"/>
         <!--
         <sphere radius = "2"/>
-        <cappedCylinder length = "2" radius = "1" directionAxis = "z"/>
+        <capsule length = "2" radius = "1" directionAxis = "z"/>
         -->
     </rigidBody>
     <graphicsMesh name="cube" file = "cube.mesh" scale = "1 1 1" position = "0 0 0" rotation = "0 0 0"/>

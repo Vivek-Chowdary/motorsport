@@ -48,10 +48,10 @@ endif
 ifeq ("$(PLATFORM)", "LINUX")
 TYPE :=
 EXE_EXT := 
-BASE_INCLUDE_DIR := /usr/include
-BASE_LIBRARY_DIR := /usr/lib
-#BASE_INCLUDE_DIR := $(PWD)/../3pl/linux/include
-#BASE_LIBRARY_DIR := $(PWD)/../3pl/linux/lib
+#BASE_INCLUDE_DIR := /usr/include
+#BASE_LIBRARY_DIR := /usr/lib
+BASE_INCLUDE_DIR := $(PWD)/../3pl/linux/include
+BASE_LIBRARY_DIR := $(PWD)/../3pl/linux/lib
 PLATFORM_CFLAGS :=
 LD_FLAGS:=
 endif

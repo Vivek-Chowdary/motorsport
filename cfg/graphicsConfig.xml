@@ -10,8 +10,8 @@
     areaRenderMode = "solid"
     >
     <ogre
-        _linuxPluginsDir = "../3pl/linux/lib/OGRE"
-        linuxPluginsDir = "/usr/lib/OGRE"
+        linuxPluginsDir = "../3pl/linux/lib/OGRE"
+        _linuxPluginsDir = "/usr/lib/OGRE"
         windowsPluginsDir = "plugins"
         sceneManager = "ST_GENERIC"
         anisotropy = "1"

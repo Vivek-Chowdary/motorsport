@@ -90,19 +90,35 @@
     </suspension.fixed></subobject>
 -->
     <subobject name="fr"><wheel>
-        <customData mass="15.1" radius="0.34" width="0.125" powered="-1" renderMode="solid"/>
+        <customData powered="-1" renderMode="solid"/>
+        <rigidBody name="wheel">
+            <totalMass value="15.1"/>
+            <capsule radius="0.34" length="0.125" directionAxis="y"/>
+        </rigidBody>
         <graphicsMesh name="wheel" file="wheel_front.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
     </wheel></subobject>
     <subobject name="fl"><wheel>
-        <customData mass="15.1" radius="0.34" width="0.125" powered="+1" renderMode="solid"/>
+        <customData powered="+1" renderMode="solid"/>
+        <rigidBody name="wheel">
+            <totalMass value="15.1"/>
+            <capsule radius="0.34" length="0.125" directionAxis="y"/>
+        </rigidBody>
         <graphicsMesh name="wheel" file="wheel_front.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
     </wheel></subobject>
     <subobject name="rr"><wheel>
-        <customData mass="15.0" radius="0.34" width="0.125" powered="-1" renderMode="solid"/>
+        <customData powered="-1" renderMode="solid"/>
+        <rigidBody name="wheel">
+            <totalMass value="15.0"/>
+            <capsule radius="0.34" length="0.125" directionAxis="y"/>
+        </rigidBody>
         <graphicsMesh name="wheel" file="wheel_rear.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
     </wheel></subobject>
     <subobject name="rl"><wheel>
-        <customData mass="15.0" radius="0.34" width="0.125" powered="+1" renderMode="solid"/>
+        <customData powered="+1" renderMode="solid"/>
+        <rigidBody name="wheel">
+            <totalMass value="15.0"/>
+            <capsule radius="0.34" length="0.125" directionAxis="y"/>
+        </rigidBody>
         <graphicsMesh name="wheel" file="wheel_rear.mesh" scale="1 1 1" position="0 0 0" rotation="0 0 0"/>
     </wheel></subobject>
     <subobject name="hood"><camera>

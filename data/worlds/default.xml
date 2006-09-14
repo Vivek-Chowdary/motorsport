@@ -7,14 +7,14 @@
         skyMaterialName="skyboxMaterial"
         skyDistance="5000.0"
         skyDrawFirst="1"
-        height="-15"
+        height="-0"
         >
     </customData>
-    <!--<sharedobject name="main"><area
+    <sharedobject name="main"><area
         model="mosptracing"
         >
     </area></sharedobject>
-    <sharedobject name="tile1"><area
+    <!--<sharedobject name="tile1"><area
         model="mospland2006.r7"
         >
     </area></sharedobject>
@@ -29,16 +29,16 @@
         _model="quattros1"
         >
     </vehicle></sharedobject>
-    <sharedobject name="main"><area
+    <!--<sharedobject name="main"><area
         model="testingGround"
         >
-    </area></sharedobject>
-    <sharedobject name="bg"><area
-        model="mospland"
+    </area></sharedobject>-->
+    <sharedobject name="land"><area
+        model="mosptracing"
         >
     </area></sharedobject>
-    <location name="bg" position="0 0 0" rotation="0 0 0"/>
-    <location-area first="(location)bg" second="(area)bg"/>
-    <location-vehicle first="(area)bg/paceCar" second="(vehicle)main" />
+    <location name="land" position="0 0 -10" rotation="10 0 0"/>
+    <location-area first="(location)land" second="(area)land"/>
+    <location-vehicle first="(area)main/paceCar" second="(vehicle)main" />
     <vehicle-driver first="(vehicle)main" second="user" />
 </world>

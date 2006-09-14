@@ -22,7 +22,6 @@ SHARED_PTR_MAP(OdeObject, pOdeObject, OdeObjects, OdeObjectsIt, wOdeObject);
 SHARED_PTR(MeshOdeData, pMeshOdeData, wMeshOdeData);
 SHARED_PTR(PartOdeData, pPartOdeData, wPartOdeData);
 SHARED_PTR(BodyOdeData, pBodyOdeData, wBodyOdeData);
-SHARED_PTR(WheelOdeData, pWheelOdeData, wWheelOdeData);
 SHARED_PTR(BoneOdeData, pBoneOdeData, wBoneOdeData);
 
 SHARED_PTR_MAP(OgreObject, pOgreObject, OgreObjects, OgreObjectsIt, wOgreObject);
@@ -44,7 +43,6 @@ class OdeObject
         OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string name);
         OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name);
         ~OdeObject ();
         Vector3d getPosition();
@@ -103,19 +101,6 @@ class BodyOdeData
             width = height = length = 1;
         }
         ~BodyOdeData() {};
-};
-class WheelOdeData
-{
-    public:
-        dReal radius;
-        dReal width;
-        dReal mass;
-
-        WheelOdeData()
-        {
-            mass = width = radius = 0;
-        }
-        ~WheelOdeData() {};
 };
 class BoneOdeData
 {

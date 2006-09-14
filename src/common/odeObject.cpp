@@ -84,7 +84,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string 
         geomIDs[name] = dCreateSphere (World::get()->spaceID, data->radius);
         dMassSetSphereTotal (&dmass, data->mass, data->radius);
     }
-    if (data->shape == "cappedCylinder")
+    if (data->shape == "capsule")
     {
         geomIDs[name] = dCreateCCylinder (World::get()->spaceID, data->radius, data->length);
         dMassSetCappedCylinderTotal (&dmass, data->mass, data->directionAxis, data->radius, data->length);
@@ -147,25 +147,6 @@ OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string 
     dBodySetPosition (bodyID, 0, 0 ,0);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
-}
-OdeObject::OdeObject (WorldObject * worldObject, pWheelOdeData data, std::string name)
-{
-    updateId();
-    this->worldObject = worldObject;
-    this->name = name;
-    bodyID = NULL;
-    bodyID = dBodyCreate (World::get()->worldID);
-    dBodySetData (bodyID, static_cast<void*>(worldObject->getContainer().get()));
-    dMass dmass;
-    dMassSetParameters (&dmass, data->mass,
-                         0., 0., 0.,
-                         0.237f, 0.237f, 0.409f,
-                         0., 0., 0.);
-    geomIDs[name] = dCreateCCylinder (World::get()->spaceID, data->radius, data->width);
-    dBodySetLinearVel  (bodyID, 0, 0, 0);
-    dBodySetAngularVel (bodyID, 0, 0, 0);
-    dGeomSetBody (geomIDs[name], bodyID);
-    dBodySetMass (bodyID, &dmass);
 }
 OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name)
 {

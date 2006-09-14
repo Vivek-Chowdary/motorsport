@@ -33,8 +33,6 @@ Wheel::Wheel (XmlTag * tag)
 void Wheel::readCustomDataTag(XmlTag * tag)
 {
     log->__format (LOG_DEVELOPER, "Starting to parse a wheel node");
-    pWheelOdeData data(new WheelOdeData);
-    pOgreObjectData ogreData(new OgreObjectData);
     userDriver = false;
     powered = 0;
     inputAngularVel = 0.0;
@@ -45,11 +43,7 @@ void Wheel::readCustomDataTag(XmlTag * tag)
     outputTorqueTransfer = 0.0;
     inertia = 1.0;
     friction = 0.1;
-    data->radius = stod(tag->getAttribute("radius"));
-    data->width = stod(tag->getAttribute("width"));
-    data->mass = stod(tag->getAttribute("mass"));
     powered = stod(tag->getAttribute("powered"));
-    odeObjects[getId()] = pOdeObject(new OdeObject(this, data, getId()));
 }
 
 Wheel::~Wheel ()

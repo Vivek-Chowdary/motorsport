@@ -1,12 +1,6 @@
 <object>
-    <sharedobject>
-        <object/>
-    </sharedobject>
-
-    <subobject>
-        <object/>
-    </subobject>
-
+    <sharedobject> <object/> </sharedobject>
+    <subobject> <object/> </subobject>
     <baseobject>
         <mesh scale/> <box/> <capsule/> <sphere/>
         <mass/> <density/>
@@ -16,11 +10,8 @@
         <rendermode????/>
         <location/>
     </baseobject>
-
     <location/>
-
     <link>
         <hinge1/> <fixed/> <proportional/>
     </link>
-
 </object>
