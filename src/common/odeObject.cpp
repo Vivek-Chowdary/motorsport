@@ -65,7 +65,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string 
     bodyID = dBodyCreate (World::get()->worldID);
  
     //TODO make this optional via xml or something similar   
-    /*/set autodisable
+    //set autodisable
     dBodySetAutoDisableFlag (bodyID, 1);
     dBodySetAutoDisableLinearThreshold (bodyID, 0.15);
     dBodySetAutoDisableAngularThreshold (bodyID, 0.20);
@@ -168,10 +168,10 @@ OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string 
     }
     dBodySetMass (bodyID, &dmass);
 
-    geomIDs[name] = dCreateBox (World::get()->spaceID, data->radius, data->radius, data->length);
+    //geomIDs[name] = dCreateBox (World::get()->spaceID, data->radius, data->radius, data->length);
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
-    dGeomSetBody (geomIDs[name], bodyID);
+    //dGeomSetBody (geomIDs[name], bodyID);
 }
 OdeObject::~OdeObject ()
 {

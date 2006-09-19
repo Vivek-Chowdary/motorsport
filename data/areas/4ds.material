@@ -1,0 +1,280 @@
+material windmill1
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.240000 0.240000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material bridge
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material finish
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material dirt
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.400000 0.080000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material wall
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.560000 0.160000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material house
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.800000 0.400000 0.160000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ship4
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.320000 0.320000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ship3
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.240000 0.240000 0.240000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ship2
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material tree
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.560000 0.320000 0.320000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material tenniscourt
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material window
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material windmill2
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material curb
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.800000 0.000000 0.000000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ice
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material barn_roof
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.640000 0.640000 0.640000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ship
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.000000 0.288373 0.670268
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material barn
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.800000 0.000000 0.000000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material road
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.240000 0.240000 0.240000
+			specular 0.500000 0.500000 0.500000 50.000000
+			Emissive 0.000000 0.000000 0.000000
+		}
+	}
+}
+material ground
+{
+	receive_shadows on
+	technique
+	{
+		pass
+		{
+			ambient 0.500000 0.500000 0.500000
+			diffuse 0.000000 0.800000 0.000000
+			specular 0.500000 0.500000 0.500000 50.000000
+			emissive 0.000000 0.000000 0.000000
+		}
+	}
+}

@@ -165,7 +165,7 @@ void World::processXmlRootNode (XmlTag * tag)
     dVector3 center;
     center[0]=center[1]=center[2]=0;
     dVector3 ext;
-    ext[0]=ext[1]=1000;
+    ext[0]=ext[1]=1800;
     ext[2]=100;
     spaceID = dQuadTreeSpaceCreate (0, center, ext, 10);
     jointGroupID = dJointGroupCreate (0);

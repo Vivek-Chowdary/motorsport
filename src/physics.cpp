@@ -39,8 +39,8 @@ Physics::Physics ()
     int pauseStep = 0;
     System::get()->setCfmValue (-1);
     System::get()->setErpValue (-1);
-    int stepType = 1;
-    int dWorldStepFast1MaxIterations = 100;
+    stepType = 1;
+    dWorldStepFast1MaxIterations = 100;
 
     log = LogEngine::create (LOG_DEVELOPER, "Physics");
     if (tag->getName() == "physicsConfig")
@@ -58,6 +58,7 @@ Physics::Physics ()
                 if (t->getAttribute("stepType") == "dWorldStepFast1") stepType = 2;
                 if (t->getAttribute("stepType") == "dWorldQuickStep") stepType = 3;
                 dWorldStepFast1MaxIterations = stoi (t->getAttribute("dWorldStepFast1MaxIterations"));
+                log->__format (LOG_DEVELOPER, "ODE solver type: %i", stepType);
             }
         }
     }
@@ -85,6 +86,16 @@ void Physics::nearCallback (void *data, dGeomID o1, dGeomID o2)
     if (b1 && b2 && dAreConnected (b1, b2)) return;
     if (b1 && b2 && dBodyGetData (b1) == dBodyGetData (b2)) return;
 
+    if ( (dGeomGetClass (o1) == dTriMeshClass && dGeomGetClass (o2) == dPlaneClass) ||
+            (dGeomGetClass (o2) == dTriMeshClass && dGeomGetClass (o1) == dPlaneClass))
+    {
+        return;
+    }
+    if ( (dGeomGetClass (o1) == dTriMeshClass && dGeomGetClass (o2) == dTriMeshClass))
+    {
+        return;
+    }
+
     const int N = 10;
     dContact contact[N];
     n = dCollide (o1, o2, N, &contact[0].geom, sizeof (dContact));
@@ -92,7 +103,6 @@ void Physics::nearCallback (void *data, dGeomID o1, dGeomID o2)
     {
         for (i = 0; i < n; i++)
         {
-            contact[i].surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
             if ( (dGeomGetClass (o1) == dSphereClass && dGeomGetClass (o2) == dCCylinderClass) ||
                  (dGeomGetClass (o2) == dSphereClass && dGeomGetClass (o1) == dCCylinderClass))
             {
@@ -104,6 +114,7 @@ void Physics::nearCallback (void *data, dGeomID o1, dGeomID o2)
             {
                 return;
             }
+            contact[i].surface.mode = dContactSlip1 | dContactSlip2 | dContactSoftERP | dContactSoftCFM | dContactApprox1;
             contact[i].surface.mu = 0.6;
             contact[i].surface.slip1 = 0.0;
             contact[i].surface.slip2 = 0.0;
@@ -135,6 +146,7 @@ int Physics::computeStep (void)
         dWorldStepFast1 (World::get()->worldID, system->getDesiredPhysicsTimestep(), dWorldStepFast1MaxIterations);
         break;
     case 3:
+        log->__format (LOG_DEVELOPER, "Stepping quickstep");
         // alternative (usage: m memory, m*N cpu), faster, less acurate
         dWorldQuickStep (World::get()->worldID, system->getDesiredPhysicsTimestep());
         break;

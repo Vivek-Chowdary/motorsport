@@ -100,8 +100,8 @@ class Blend2MospAreaApplication:
 if (__name__ == "__main__"):
     application = Blend2MospAreaApplication()
     application.setOgreXmlConverterApp ('OgreXMLConverter')
-    application.setXSLT ("/home/stenyak/dev/motorsport/tools/blend2mosparea/blend2mosparea.xsl")
-    application.setIndenter ("/home/stenyak/dev/motorsport/tools/xmlIndenter/xmlIndenter.sh")
+    application.setXSLT ("/home/stenyak/dev/mosp/tools/blend2mosparea/blend2mosparea.xsl")
+    application.setIndenter ("/home/stenyak/dev/mosp/tools/xmlIndenter/xmlIndenter.sh")
     application.setExportPath(ogreexport.os.path.dirname(ogreexport.Blender.Get('filename'))+"/export")
     application.exportAll()
     #application.cleanAll()

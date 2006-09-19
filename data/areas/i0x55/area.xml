@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<area xmlns:xi="http://www.w3.org/2001/XInclude">
+    <customData
+        name = "4ds-i0x55"
+        description = "A 4D-Stunts tile, id=i0x55"
+        author="habalux"
+        contact="habalux AT gmail DOT com"
+        license="Creative Commons Attribution-NonCommercial-ShareAlike License"
+        checkpointPosition="0 0 0"
+        checkpointRadius="2.0"
+        >
+        <ground>
+            <mesh
+                name="i0x55"
+                position="0.000000 0.000000 0.000000"
+                rotation="1.000000 0.000000 0.000000 0.000000"
+                scale="30.000000 30.000000 30.000000"
+                file="i0x55.mesh"
+            />
+        </ground>
+        <parts>
+        </parts>
+    </customData>
+    <location name = "paceCar" position = "0 0 5" rotation = "0 0 0"/>
+    <location name = "grid01" position = "0 3 5" rotation = "0 0 0"/>
+    <location name = "grid02" position = "3 0 5" rotation = "0 0 0"/>
+    <location name = "grid03" position = "3 3 5" rotation = "0 0 0"/>
+    <subobject name = "camera01"><camera>
+        <customData position = "5 5 3" target = "0 0 0"/>
+    </camera></subobject>
+</area>

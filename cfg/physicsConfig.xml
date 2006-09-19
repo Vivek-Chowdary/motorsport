@@ -11,8 +11,8 @@
         _erpValue = "default"
         erpValue = "0.8"
         __erpValue = "0.5"
-        __stepType = "dWorldStep"
-        stepType = "dWorldQuickStep"
+        stepType = "dWorldStep"
+        __stepType = "dWorldQuickStep"
         _stepType = "dWorldStepFast1"
         dWorldStepFast1MaxIterations = "100"
         >
