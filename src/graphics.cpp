@@ -16,6 +16,8 @@
 #include "system.hpp"
 #include "Ogre.h"
 #include "OgreConfigFile.h"
+#include "SDL/SDL.h"
+#include "SDL/SDL_syswm.h"
 #include "SDL/SDL_keysym.h"
 #include "world.hpp"
 #include "area.hpp"
@@ -180,6 +182,9 @@ Graphics::~Graphics (void)
 {
     log->__format (LOG_DEVELOPER, "Unloading ogre window data from memory...");
     delete (System::get()->ogreWindow);
+#ifdef LINUX
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+#endif
 }
 
 Graphics::Graphics ()
@@ -312,10 +317,49 @@ Graphics::Graphics ()
     ogreRoot->getRenderSystem ()->setConfigOption ("Full Screen", fullScreen ? "Yes" : "No");
     log->__format (LOG_DEVELOPER, "Saving config file to removeme.cfg");
     ogreRoot->saveConfig();
-
+#ifdef LINUX
+    // Make SDL input work with GLX platform
+    // Code borrowed from the Ogre wiki at http://www.ogre3d.org/wiki/index.php/Using_SDL_Input#Linux
+    if(SDL_WasInit(SDL_INIT_VIDEO)==0) {
+        ///SDL hasn't been initilized, we thus know that we're using the GLX platform, and need to initialize SDL ourselves
+        
+        /// initialise root, without creating a window
+        ogreRoot->initialise(false);
+        
+        SDL_Init(SDL_INIT_VIDEO);
+        ///set the window size
+        SDL_SetVideoMode(width, height,0,0); // create an SDL window
+        
+        SDL_WM_SetCaption("Motorsport","motorsport");
+        
+        SDL_SysWMinfo info;
+        SDL_VERSION(&info.version);
+        
+        SDL_GetWMInfo(&info);
+        
+        std::string dsp(&(DisplayString(info.info.x11.display)[1]));
+        std::vector<Ogre::String> tokens = Ogre::StringUtil::split(dsp, ".");
+        
+        Ogre::NameValuePairList misc;
+        std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
+        s += ":" + tokens[1] +":";
+        s += Ogre::StringConverter::toString((long)info.info.x11.window);
+        misc["parentWindowHandle"] = s;
+        System::get()->ogreWindow = ogreRoot->createRenderWindow("ogre", width, height, fullScreen, &misc);
+        
+        ///we need to set the window to be active by ourselves, since GLX by default sets it to false, but then activates it upon recieving some X event (which it will never recieve since we'll use SDL).
+        ///see OgreGLXWindow.cpp
+        System::get()->ogreWindow->setActive(true);
+        System::get()->ogreWindow->setAutoUpdated(true);
+    } else {
+#endif
     // Here we choose to let the System::get() create a default rendering window
     log->__format (LOG_DEVELOPER, "Initializing ogre root element");
-    System::get()->ogreWindow = ogreRoot->initialise (true);  
+    System::get()->ogreWindow = ogreRoot->initialise (true);
+#ifdef LINUX
+}
+#endif
+
     setupResources ();
 #ifdef WIN32
 
@@ -358,4 +402,3 @@ Graphics::Graphics ()
     log->__format (LOG_DEVELOPER, "Removing temporary ogre file");
     remove("removeme.cfg");
 }
-
