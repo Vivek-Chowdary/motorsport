@@ -54,7 +54,7 @@ Vehicle::~Vehicle ()
     log->__format(LOG_DEVELOPER, "Deleting objects");
     for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
     {
-        delete (i->second);
+        i->second.reset();
     }
     objects.clear();
 }
