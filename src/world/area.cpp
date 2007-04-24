@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,24 +8,24 @@
 \*****************************************************************************/
 
 #include "area.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "log/logEngine.hpp"
 #include "system.hpp"
 #include "camera.hpp"
 #include "part.hpp"
 #include "vehicle.hpp"
-#include "ode/ode.h"
+#include <ode/ode.h>
 #include "location.hpp"
 #include "world.hpp"
-#include "SDL.h"
+#include <SDL.h>
 
-pArea Area::create (std::string areaName)
+pArea Area::create (const std::string & areaName)
 {
     pArea area(new Area(areaName));
     return area;
 }
-Area::Area (std::string areaName)
+Area::Area (const std::string & areaName)
     :WorldObject("area")
 {
     setPath(Paths::area(areaName));
@@ -142,6 +142,7 @@ void Area::setCastShadows(bool castShadows)
 
 void Area::setRenderDetail(int renderMode)
 {
+#if OGRE_VERSION_MAJOR > 1 || (OGRE_VERSION_MAJOR == 1 && OGRE_VERSION_MINOR > 0)
     Ogre::PolygonMode mode;
     switch (renderMode)
     {
@@ -156,13 +157,14 @@ void Area::setRenderDetail(int renderMode)
         break;
     }
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
             tmp->ogreCamera->setPolygonMode(mode);
         }
     }
+#endif
 }
 
 pCamera Area::getClosestCamera(Vector3d location)
@@ -172,7 +174,7 @@ pCamera Area::getClosestCamera(Vector3d location)
     WorldObjectsIt i = objects.begin();
     pCamera closestCam;
     bool first = false;
-    for (;i != objects.end(); i++)
+    for (;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {

@@ -6,8 +6,9 @@
     >
     <ode
         _cfmValue = "default"
-        cfmValue = "0.00000001"
-        __cfmValue = "0.001"
+        __cfmValue = "0.00000001"
+        ___cfmValue = "0.001"
+        cfmValue = "0.000001"
         _erpValue = "default"
         erpValue = "0.8"
         __erpValue = "0.5"

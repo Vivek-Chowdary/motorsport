@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,9 +9,10 @@
 
 #ifndef OGREOBJECT_HPP
 #define OGREOBJECT_HPP
+
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
-#include <shared.hpp>
+#include "shared.hpp"
 
 namespace Ogre {
     class Entity;
@@ -39,7 +40,7 @@ class OgreObject
         WorldObject * worldObject;
         std::string id;
     public:
-        OgreObject (WorldObject * worldObject, pOgreObjectData data, std::string name, bool useMesh = true);
+        OgreObject (WorldObject * worldObject, pOgreObjectData data, const std::string & name, bool useMesh = true);
         ~OgreObject ();
         std::string getId();
         void setOdeReference(pOdeObject odeObject);       

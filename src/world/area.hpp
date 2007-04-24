@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,7 +9,7 @@
 
 #ifndef AREA_HPP
 #define AREA_HPP
-#include "ode/objects.h"
+#include <ode/objects.h>
 #include "worldObject.hpp"
 #include "paths.hpp"
 
@@ -33,10 +33,10 @@ class Area : public WorldObject
         std::string contact;
         std::string license;
         void construct (XmlTag * tag);
-        Area (std::string areaName);
+        Area (const std::string & areaName);
         void readCustomDataTag(XmlTag * tag);
     public:
-        static pArea create(std::string areaName);
+        static pArea create(const std::string & areaName);
         ~Area ();
 
         pCamera getClosestCamera(Vector3d location);

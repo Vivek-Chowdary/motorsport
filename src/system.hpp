@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,10 +8,11 @@
 \*****************************************************************************/
 
 #ifndef SYSTEM_HPP
-#   define SYSTEM_HPP
-#   include "SDL/SDL_types.h"
-#   include "axis.hpp"
-#include <common/shared.hpp>
+#define SYSTEM_HPP
+
+#include <SDL/SDL_types.h>
+#include "axis.hpp"
+#include "common/shared.hpp"
 
 // Forward declarations
 namespace Ogre { class RenderWindow; class SceneManager; }
@@ -214,7 +215,7 @@ class System
      */
     void disableMainLoop (void);    // allows the program to stop running
     std::string getCurrentPath();
-    void setCurrentPath(std::string path);
+    void setCurrentPath(const std::string & path);
 
     Ogre::RenderWindow * ogreWindow;
     Ogre::SceneManager * ogreSceneManager;

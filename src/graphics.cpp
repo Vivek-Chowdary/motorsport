@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -11,14 +11,14 @@
 #   define WIN32_LEAN_AND_MEAN
 #   include <windows.h>
 #endif
-#include "OgreNoMemoryMacros.h"
+#include <OgreNoMemoryMacros.h>
 #include "graphics.hpp"
 #include "system.hpp"
-#include "Ogre.h"
-#include "OgreConfigFile.h"
-#include "SDL/SDL.h"
-#include "SDL/SDL_syswm.h"
-#include "SDL/SDL_keysym.h"
+#include <Ogre.h>
+#include <OgreConfigFile.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_syswm.h>
+#include <SDL/SDL_keysym.h>
 #include "world.hpp"
 #include "area.hpp"
 #include "camera.hpp"
@@ -38,7 +38,7 @@ void Graphics::manualInitialize (const std::string & renderer)
     {
         log->__format (LOG_ERROR, "No Ogre renderers available!");
     }
-    for (Ogre::RenderSystemList::iterator it = renderers->begin (); it != renderers->end (); it++)
+    for (Ogre::RenderSystemList::iterator it = renderers->begin (); it != renderers->end (); ++it)
     {
         renderSystem = (*it);
         log->__format (LOG_DEVELOPER, "Locating desired renderer (%s).", renderer.c_str());
@@ -57,7 +57,7 @@ void Graphics::manualInitialize (const std::string & renderer)
     Ogre::Root::getSingleton ().setRenderSystem (renderSystem);
 
     char resolution[32];
-    sprintf (resolution, "%i x %i", width, height);
+    snprintf (resolution, 32, "%i x %i", width, height);
     log->__format (LOG_ENDUSER, "Setting screen resolution and bpp: %s", resolution);
     renderSystem->setConfigOption ("Video Mode", resolution);
 }
@@ -139,12 +139,12 @@ int Graphics::computeStep (void)
         }
     }
 
-    // take a screenshot if neededa
+    // take a screenshot if needed
     if (System::get()->axisMap[getIDKeyboardKey(SDLK_PRINT)]->getValue() == 1)
     {
         static unsigned int count = initialFrame;
         static char tmpName[64];
-        sprintf (tmpName, screenshotFilename.c_str(), count++);
+        snprintf (tmpName, 64, screenshotFilename.c_str(), count++);
         log->__format (LOG_ENDUSER, "Taking a screenshot in %s.", tmpName);
         System::get()->ogreWindow->writeContentsToFile (tmpName);
     }
@@ -342,7 +342,9 @@ Graphics::Graphics ()
         
         Ogre::NameValuePairList misc;
         std::string s = Ogre::StringConverter::toString((long)info.info.x11.display);
-        s += ":" + tokens[1] +":";
+	//Ivan: the following doesn't work with OGRE 1.4.0:
+        //s += ":" + tokens[1] +":";
+        s += ":"; 
         s += Ogre::StringConverter::toString((long)info.info.x11.window);
         misc["parentWindowHandle"] = s;
         System::get()->ogreWindow = ogreRoot->createRenderWindow("ogre", width, height, fullScreen, &misc);
@@ -368,13 +370,15 @@ Graphics::Graphics ()
 	//  This method always works.
 	HWND hWnd;
 	System::get()->ogreWindow->getCustomAttribute("HWND", &hWnd);
-	sprintf(tmp, "SDL_WINDOWID=%d", hWnd);
+	snprintf(tmp, 64, "SDL_WINDOWID=%d", hWnd);
 	_putenv(tmp);
 
 #endif
     log->__format (LOG_DEVELOPER, "Getting ogre scene manager");
     // Set shadowing System::get()
     System::get()->ogreSceneManager = ogreRoot->createSceneManager (sceneManager);
+    //Ivan: createSceneManager doesn't exist in 1.0.6, but this one exists:
+    //System::get()->ogreSceneManager = ogreRoot->getSceneManager (sceneManager);
     System::get()->ogreSceneManager->setShadowTechnique(shadowTechnique);
     System::get()->ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.67, 0.94, 1.00));
     System::get()->ogreSceneManager->setShadowColour(Ogre::ColourValue(0.5, 0.5, 0.5));

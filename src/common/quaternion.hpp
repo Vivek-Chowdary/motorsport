@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,9 +8,10 @@
 \*****************************************************************************/
 
 #ifndef QUATERNION_HPP
-#   define QUATERNION_HPP
-#   include "ode/ode.h"
-#   include <string>
+#define QUATERNION_HPP
+
+#include <ode/ode.h>
+#include <string>
 
 class Vector3d;
 

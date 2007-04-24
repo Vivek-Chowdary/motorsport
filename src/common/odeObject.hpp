@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,10 +9,11 @@
 
 #ifndef ODEOBJECT_HPP
 #define ODEOBJECT_HPP
+
 #include "log/logEngine.hpp"
 #include "worldObject.hpp"
-#include "ode/objects.h"
-#include <shared.hpp>
+#include <ode/objects.h>
+#include "shared.hpp"
 #include "vector3d.hpp"
 
 class Quaternion;
@@ -39,11 +40,11 @@ class OdeObject
         std::string id;
 
     public:
-        OdeObject (WorldObject * worldObject, std::string name);
-        OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name);
-        OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name);
+        OdeObject (WorldObject * worldObject, const std::string & name);
+        OdeObject (WorldObject * worldObject, pMeshOdeData data, const std::string & name);
+        OdeObject (WorldObject * worldObject, pPartOdeData data, const std::string & name);
+        OdeObject (WorldObject * worldObject, pBodyOdeData data, const std::string & name);
+        OdeObject (WorldObject * worldObject, pBoneOdeData data, const std::string & name);
         ~OdeObject ();
         Vector3d getPosition();
         Quaternion getRotation();
@@ -52,7 +53,7 @@ class OdeObject
         void setPosition (Vector3d position);
         void setRotation (Quaternion rotation);
         dBodyID getBodyID();
-        dGeomID getGeomID(std::string name);
+        dGeomID getGeomID(const std::string & name);
         std::string getId();
 };
 class MeshOdeData

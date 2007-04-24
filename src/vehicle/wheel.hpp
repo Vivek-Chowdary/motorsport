@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,7 +9,8 @@
 
 #ifndef WHEEL_HPP
 #define WHEEL_HPP
-#include "ode/objects.h"
+
+#include <ode/objects.h>
 #include "driveMass.hpp"
 #include "worldObject.hpp"
 #include "paths.hpp"
@@ -23,6 +24,7 @@ namespace Ogre {
 }
 SHARED_PTR(Suspension, pSuspension, wSuspension);
 SHARED_PTR(Wheel, pWheel, wWheel);
+
 class Wheel : public DriveMass
 {
   private:

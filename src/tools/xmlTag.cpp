@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,9 +8,9 @@
 \*****************************************************************************/
 
 #include "xmlTag.hpp"
-#include "SDL.h"
+#include <SDL.h>
 
-XmlTag::XmlTag(std::string xmlFilePath)
+XmlTag::XmlTag(const std::string & xmlFilePath)
 {
     initTime = SDL_GetTicks()/1000.0;
     this->filePath = xmlFilePath;
@@ -18,7 +18,7 @@ XmlTag::XmlTag(std::string xmlFilePath)
     construct(NULL, xmlFile->getRootNode(), true);
     delete xmlFile;
 }
-XmlTag::XmlTag(std::string xmlFilePath, bool logging)
+XmlTag::XmlTag(const std::string & xmlFilePath, bool logging)
 {
     initTime = SDL_GetTicks()/1000.0;
     this->filePath = xmlFilePath;
@@ -105,7 +105,7 @@ void XmlTag::construct(XmlTag * parent, DOMNode * n, bool logging)
 }
 XmlTag::~XmlTag()
 {
-    for (AttributesBoolIt i = attributesRead.begin(); i != attributesRead.end(); i++)
+    for (AttributesBoolIt i = attributesRead.begin(); i != attributesRead.end(); ++i)
     {
         if (!(i->second))
         {
@@ -117,7 +117,7 @@ XmlTag::~XmlTag()
         }
     }
 
-    for (TagsIt i = tags.begin(); i != tags.end(); i++)
+    for (TagsIt i = tags.begin(); i != tags.end(); ++i)
     {
         delete (*i);
     }
@@ -131,7 +131,7 @@ XmlTag::~XmlTag()
     }
     parent = NULL;
 }
-std::string XmlTag::getAttribute(std::string attributeName)
+std::string XmlTag::getAttribute(const std::string & attributeName)
 {
     if (attributes.find(attributeName) == attributes.end())
     {

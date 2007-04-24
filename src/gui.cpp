@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,11 +8,11 @@
 \*****************************************************************************/
 
 #include "gui.hpp"
-#include "SDL/SDL.h"
+#include <SDL/SDL.h>
 #include "system.hpp"
 #include "logEngine.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "xmlTag.hpp"
 using namespace Ogre;
 

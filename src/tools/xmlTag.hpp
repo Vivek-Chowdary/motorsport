@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,6 +9,7 @@
 
 #ifndef XMLTAG_HPP
 #define XMLTAG_HPP
+
 #include <string>
 #include <map>
 #include <vector>
@@ -36,15 +37,15 @@ class XmlTag
         pLogEngine log;
         double initTime;
     public:
-        XmlTag (std::string xmlFilePath);
+        XmlTag (const std::string & xmlFilePath);
         XmlTag (XmlTag * parent, DOMNode * n);
-        XmlTag (std::string xmlFilePath, bool logging);
+        XmlTag (const std::string & xmlFilePath, bool logging);
         XmlTag (XmlTag * parent, DOMNode * n, bool logging);
         ~XmlTag (); 
         std::string getName();
         std::string getFullName();
         std::string getFilePath();
-        std::string getAttribute(std::string attributeName);
+        std::string getAttribute(const std::string & attributeName);
         int nTags();
         XmlTag * getTag(int tagNumber);
 };

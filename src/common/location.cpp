@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -15,7 +15,7 @@ pLocation Location::create(XmlTag * tag)
     pLocation loc(new Location(tag));
     return loc;
 }
-pLocation Location::create(std::string name, Vector3d position, Quaternion rotation)
+pLocation Location::create(const std::string & name, Vector3d position, Quaternion rotation)
 {
     pLocation loc(new Location(name, position, rotation));
     return loc;
@@ -27,7 +27,7 @@ Location::Location (XmlTag * tag)
     position = Vector3d(tag->getAttribute("position"));
     rotation = Quaternion(tag->getAttribute("rotation"));
 }
-Location::Location (std::string name, Vector3d position, Quaternion rotation)
+Location::Location (const std::string & name, Vector3d position, Quaternion rotation)
 {
     this->name = name;
     this->position = position;

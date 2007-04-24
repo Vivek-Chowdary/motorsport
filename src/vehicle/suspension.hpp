@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,14 +9,15 @@
 
 #ifndef SUSPENSION_HPP
 #define SUSPENSION_HPP
-#include "ode/objects.h"
+
+#include <ode/objects.h>
 #include "worldObject.hpp"
 #include "quaternion.hpp"
 #include "vector3d.hpp"
 #include "location.hpp"
 #include "vehicle.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 
 //forward declarations
 namespace Ogre {
@@ -27,7 +28,7 @@ namespace Ogre {
 class Suspension : public WorldObject
 {
     protected:
-        Suspension (std::string name);
+        Suspension (const std::string & name);
         ~Suspension ();
         Quaternion rotation;
         Vector3d position;

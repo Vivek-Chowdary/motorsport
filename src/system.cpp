@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,7 +8,7 @@
 \*****************************************************************************/
 
 #include "system.hpp"
-#include "SDL/begin_code.h"
+#include <SDL/begin_code.h>
 #include <iostream>
 
 pSystem System::system;
@@ -123,7 +123,7 @@ std::string System::getCurrentPath()
     return currentPath;
 }
 
-void System::setCurrentPath(std::string path)
+void System::setCurrentPath(const std::string & path)
 {
     currentPath = path;
 }

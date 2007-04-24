@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <xmlTag.hpp>
+#include "xmlTag.hpp"
 
 //TODO use iostreams for file management/writing
 
@@ -87,7 +87,7 @@ LogEngine::~LogEngine ()
 {
     LogEnginesIt i = logEngines.begin();
     LogEnginesIt d;
-    for(;i != logEngines.end(); i++)
+    for(;i != logEngines.end(); ++i)
     {
         if (this == i->second.get())
         {
@@ -113,7 +113,7 @@ LogEngine::~LogEngine ()
 void LogEngine::logAll()
 {
     LogEnginesIt i = logEngines.begin();
-    for(;i != logEngines.end(); i++)
+    for(;i != logEngines.end(); ++i)
     {
         i->second->__format(LOG_DEVELOPER, "LogEngine Id: %s\t References #: %i", i->first.c_str(), i->second.use_count());
     }
@@ -258,7 +258,7 @@ void LogEngine::log (const LOG_LEVEL level, const int mask, const char *textToLo
     }
 }
 
-void LogEngine::setName(std::string name)
+void LogEngine::setName(const std::string & name)
 {
     this->logName = name;
 }

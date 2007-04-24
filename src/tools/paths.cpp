@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -76,7 +76,7 @@ std::string Paths::home()
 }
 
 
-std::string Paths::getDataDir (std::string relativeDirPath )
+std::string Paths::getDataDir (const std::string & relativeDirPath )
 {
     std::string result;
     if (existsDir(result = customDataDir  + relativeDirPath)) return result;
@@ -84,46 +84,46 @@ std::string Paths::getDataDir (std::string relativeDirPath )
     if (existsDir(result = defaultDataDir + relativeDirPath)) return result;
     return "not found:" + relativeDirPath;
 }
-bool Paths::existsDir (std::string dirPath )
+bool Paths::existsDir (const std::string & dirPath )
 {
     //TODO
     return true;
 }
-void Paths::setCustomDataDir(std::string customDataDir)
+void Paths::setCustomDataDir(const std::string & customDataDir)
 {
-    customDataDir = customDataDir;
+    Paths::customDataDir = customDataDir;
 }
 
-std::string Paths::vehicle(std::string vehicle)
+std::string Paths::vehicle(const std::string & vehicle)
 {
     return getDataDir("vehicles/" + vehicle + "/");
 }
-std::string Paths::area(std::string area)
+std::string Paths::area(const std::string & area)
 {
     return getDataDir("areas/" + area + "/");
 }
-std::string Paths::world(std::string world)
+std::string Paths::world(const std::string & world)
 {
     return getDataDir("worlds/");
 }
-std::string Paths::part(std::string part)
+std::string Paths::part(const std::string & part)
 {
     return getDataDir("parts/" + part + "/");
 }
 
-std::string Paths::vehicleXml(std::string vehicle)
+std::string Paths::vehicleXml(const std::string & vehicle)
 {
     return Paths::vehicle(vehicle) + "vehicle.xml";
 }
-std::string Paths::areaXml(std::string area)
+std::string Paths::areaXml(const std::string & area)
 {
     return Paths::area(area) + "area.xml";
 }
-std::string Paths::worldXml(std::string world)
+std::string Paths::worldXml(const std::string & world)
 {
     return Paths::world(world) + world + ".xml";
 }
-std::string Paths::partXml(std::string part)
+std::string Paths::partXml(const std::string & part)
 {
     return Paths::part(part) + "part.xml";
 }

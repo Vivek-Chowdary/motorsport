@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,10 +8,11 @@
 \*****************************************************************************/
 
 #ifndef CAMERA_HPP
-#   define CAMERA_HPP
-#   include "ode/objects.h"
-#   include "worldObject.hpp"
-#   include <string>
+#define CAMERA_HPP
+
+#include <ode/objects.h>
+#include "worldObject.hpp"
+#include <string>
 
 namespace Ogre { 
   class Camera; 

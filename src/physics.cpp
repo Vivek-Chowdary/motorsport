@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,8 +9,8 @@
 
 #include "physics.hpp"
 #include "logEngine.hpp"
-#include "SDL.h"
-#include "math.h"
+#include <SDL.h>
+#include <math.h>
 #include "system.hpp"
 #include "world.hpp"
 #include "gui.hpp"
@@ -20,9 +20,9 @@
 #include "xmlTag.hpp"
 #include "area.hpp"
 #include "system.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
-#include "ode/ode.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
+#include <ode/ode.h>
 
 bool Physics::checkpointPassed = false;
 

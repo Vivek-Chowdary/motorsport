@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,22 +8,22 @@
 \*****************************************************************************/
 
 #include "suspension.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "world.hpp"
 #include "system.hpp"
-#include "ode/ode.h"
+#include <ode/ode.h>
 #include "vector3d.hpp"
 #include "vehicle.hpp"
 #include "body.hpp"
 #include "wheel.hpp"
 #include "axis.hpp"
-#include "SDL/SDL_keysym.h"
+#include <SDL/SDL_keysym.h>
 #include <cmath>
 
 #define USE_PRISMATIC false
 
-Suspension::Suspension (std::string name)
+Suspension::Suspension (const std::string & name)
     : WorldObject(name)
 {
     position = Vector3d (0, 0, 0);

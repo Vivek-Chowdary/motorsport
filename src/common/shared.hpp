@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,6 +9,7 @@
 
 #ifndef SHARED_HPP
 #define SHARED_HPP
+
 #include <map>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>

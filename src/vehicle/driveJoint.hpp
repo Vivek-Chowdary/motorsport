@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,6 +9,7 @@
 
 #ifndef DRIVEJOINT_HPP
 #define DRIVEJOINT_HPP
+
 #include "driveMass.hpp"
 #include "worldObject.hpp"
 
@@ -33,7 +34,7 @@ class DriveJoint : public WorldObject
     pDriveMass outputDrive;
     bool enabled;
   public:
-    DriveJoint (std::string name);
+    DriveJoint (const std::string & name);
     ~DriveJoint ();
     void enable () { enabled = 1; } ;
     void disable () { enabled = 0; } ;

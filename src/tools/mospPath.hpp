@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -13,9 +13,9 @@
 
 namespace MospPath
 {
-    std::string getType(std::string fullname);
-    std::string getName(std::string fullname);
-    std::string getSubFullname(std::string fullname);
+    std::string getType(const std::string & fullname);
+    std::string getName(const std::string & fullname);
+    std::string getSubFullname(const std::string & fullname);
 }
 
 #endif

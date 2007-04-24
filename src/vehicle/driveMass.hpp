@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,7 +9,8 @@
 
 #ifndef DRIVE_HPP
 #define DRIVE_HPP
-#include "ode/objects.h"
+
+#include <ode/objects.h>
 #include "driveJoint.hpp"
 #include "worldObject.hpp"
 
@@ -27,7 +28,7 @@ class DriveMass : public WorldObject
     double outputTorqueTransfer;
     double inputTorqueTransfer;
   public:
-    DriveMass (std::string name);
+    DriveMass (const std::string & name);
     ~DriveMass ();
     double getInputTorque ()             { return inputTorqueTransfer; } ;
     double getOutputTorque ()            { return outputTorqueTransfer; } ;

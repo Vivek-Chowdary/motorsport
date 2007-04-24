@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -61,7 +61,7 @@ void WorldObject::setContainer(pWorldObject container)
         this->xmlPath = container->getPath();
     }
     OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
+    for(;j != odeObjects.end(); ++j)
     {
         if (j->second->getBodyID() == 0)
         {
@@ -71,7 +71,7 @@ void WorldObject::setContainer(pWorldObject container)
         }
     }
     pWorldObject t = shared_from_this();
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->second) i->second->setContainer(t);
     }
@@ -91,7 +91,7 @@ void WorldObject::logAll()
 {
     pLogEngine log (LogEngine::create(LOG_DEVELOPER, "WorldObjects"));
     WorldObjectsCIt i = worldObjects.begin();
-    for(;i != worldObjects.end(); i++)
+    for(;i != worldObjects.end(); ++i)
     {
         if (i->second != NULL)
         log->__format(LOG_DEVELOPER, "WorldObject id#%s.\t Full name: %s", i->second->getId().c_str(), i->second->getFullName().c_str());
@@ -106,6 +106,7 @@ std::string WorldObject::getName()
 {
     //TODO use a Class::mospInternalPath()
     std::string type;
+
     if (0) type.clear();
     else if (dynamic_cast<DoubleWishbone  *>(this)) type = "doublewishbone";
     else if (dynamic_cast<Fixed           *>(this)) type = "fixed";
@@ -129,9 +130,10 @@ std::string WorldObject::getName()
     else if (dynamic_cast<World          *> (this)) type = "world";
     else if (dynamic_cast<Camera         *> (this)) type = "camera";
     else if (dynamic_cast<WorldObject   *>  (this)) type = "worldobject";
+
     return "(" + type + ")" + name;
 }
-void WorldObject::setName(std::string name)
+void WorldObject::setName(const std::string & name)
 {
     this->name = name;
     log->setName(getFullName());
@@ -147,7 +149,7 @@ std::string WorldObject::getPath()
     if (path == "/unknownPath/") return System::get()->getCurrentPath();
     return path;
 }
-void WorldObject::setPath(std::string path)
+void WorldObject::setPath(const std::string & path)
 {
     this->path = path;
 }
@@ -155,7 +157,7 @@ std::string WorldObject::getXmlPath()
 {
     return xmlPath;
 }
-void WorldObject::setXmlPath(std::string xmlPath)
+void WorldObject::setXmlPath(const std::string & xmlPath)
 {
     this->xmlPath = xmlPath;
 }
@@ -179,12 +181,12 @@ void WorldObject::stepPhysics ()
 {
     WorldObjectsIt i = objects.begin();
     //step torque transfer objects first
-    for (i = objects.begin(); i != objects.end(); i++)
+    for (i = objects.begin(); i != objects.end(); ++i)
     {
         if (boost::dynamic_pointer_cast<DriveJoint>(i->second)) i->second->stepPhysics();
     }
     //step the rest of objects
-    for (i = objects.begin(); i != objects.end(); i++)
+    for (i = objects.begin(); i != objects.end(); ++i)
     {
         if (!(boost::dynamic_pointer_cast<DriveJoint>(i->second))) i->second->stepPhysics();
     }
@@ -192,40 +194,40 @@ void WorldObject::stepPhysics ()
 void WorldObject::stepGraphics ()
 {
     OgreObjectsIt o = ogreObjects.begin();
-    for(;o != ogreObjects.end(); o++)
+    for(;o != ogreObjects.end(); ++o)
     {
         o->second->stepGraphics();
     }
     WorldObjectsIt i = objects.begin();
-    for (; i != objects.end(); i++)
+    for (; i != objects.end(); ++i)
     {
         i->second->stepGraphics();
     }
 }
-pVehicle WorldObject::getVehicle(std::string name)
+pVehicle WorldObject::getVehicle(const std::string & name)
 {
     pVehicle tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(vehicle)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Vehicle>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Vehicle");
     return tmp;
 }
-pBody WorldObject::getBody (std::string name)
+pBody WorldObject::getBody (const std::string & name)
 {
     pBody tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(body)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Body>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Body");
     return tmp;
 }
-pDriveMass WorldObject::getDriveMass (std::string name)
+pDriveMass WorldObject::getDriveMass (const std::string & name)
 {
     pDriveMass tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(drivemass)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
         if (i->first == ("(engine)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveMass>(i->second)) break;
@@ -236,10 +238,10 @@ pDriveMass WorldObject::getDriveMass (std::string name)
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "DriveMass");
     return tmp;
 }
-pDriveJoint WorldObject::getDriveJoint (std::string name)
+pDriveJoint WorldObject::getDriveJoint (const std::string & name)
 {
     pDriveJoint tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(drivejoint)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DriveJoint>(i->second)) break;
         if (i->first == ("(clutch)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Clutch>(i->second)) break;
@@ -249,90 +251,90 @@ pDriveJoint WorldObject::getDriveJoint (std::string name)
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "DriveJoint");
     return tmp;
 }
-pClutch WorldObject::getClutch (std::string name)
+pClutch WorldObject::getClutch (const std::string & name)
 {
     pClutch tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(clutch)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Clutch>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Clutch");
     return tmp;
 }
-pGear WorldObject::getGear (std::string name)
+pGear WorldObject::getGear (const std::string & name)
 {
     pGear tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(gear)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Gear>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Gear");
     return tmp;
 }
-pLSD WorldObject::getLSD (std::string name)
+pLSD WorldObject::getLSD (const std::string & name)
 {
     pLSD tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(lsd)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<LSD>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "LSD");
     return tmp;
 }
-pEngine WorldObject::getEngine (std::string name)
+pEngine WorldObject::getEngine (const std::string & name)
 {
     pEngine tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(engine)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Engine>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Engine");
     return tmp;
 }
-pFinalDrive WorldObject::getFinalDrive (std::string name)
+pFinalDrive WorldObject::getFinalDrive (const std::string & name)
 {
     pFinalDrive tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(finaldrive)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<FinalDrive>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "FinalDrive");
     return tmp;
 }
-pGearbox WorldObject::getGearbox (std::string name)
+pGearbox WorldObject::getGearbox (const std::string & name)
 {
     pGearbox tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(gearbox)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Gearbox>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Gearbox");
     return tmp;
 }
-pGearboxGear WorldObject::getGearboxGear (std::string name)
+pGearboxGear WorldObject::getGearboxGear (const std::string & name)
 {
     pGearboxGear tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(gearboxgear)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<GearboxGear>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "GearboxGear");
     return tmp;
 }
-pPedal WorldObject::getPedal (std::string name)
+pPedal WorldObject::getPedal (const std::string & name)
 {
     pPedal tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(pedal)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Pedal>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Pedal");
     return tmp;
 }
-pSuspension WorldObject::getSuspension (std::string name)
+pSuspension WorldObject::getSuspension (const std::string & name)
 {
     pSuspension tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(suspension)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Suspension>(i->second)) break;
         if (i->first == ("(doublewishbone)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<DoubleWishbone>(i->second)) break;
@@ -342,36 +344,36 @@ pSuspension WorldObject::getSuspension (std::string name)
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Suspension");
     return tmp;
 }
-pWheel WorldObject::getWheel (std::string name)
+pWheel WorldObject::getWheel (const std::string & name)
 {
     pWheel tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(wheel)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Wheel>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "Wheel");
     return tmp;
 }
-pWorldObject WorldObject::getObject (std::string name)
+pWorldObject WorldObject::getObject (const std::string & name)
 {
    if (objects.find(name) == objects.end())
    log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" from generic type \"%s\"", name.c_str(), "WorldObject");
    return objects[name];
 }
-pWorldObject WorldObject::getWorldObject (std::string name)
+pWorldObject WorldObject::getWorldObject (const std::string & name)
 {
     pWorldObject tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(worldobject)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<WorldObject>(i->second)) break;
     }
     if (tmp == NULL) log->__format(LOG_ERROR, "Tried to access non-existent world object \"%s\" using type \"%s\"", name.c_str(), "WorldObject");
     return tmp;
 }
-pCamera WorldObject::getCamera (std::string name)
+pCamera WorldObject::getCamera (const std::string & name)
 {
     pCamera tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == (name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
         if (i->first == ("(camera)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Camera>(i->second)) break;
@@ -386,7 +388,7 @@ pCamera WorldObject::switchNextCamera()
     pCamera nextCam;
     bool first = false;
     bool found = false;
-    for (;i != objects.end(); i++)
+    for (;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
@@ -399,6 +401,7 @@ pCamera WorldObject::switchNextCamera()
             {
                 nextCam = tmp;
                 found = false;
+		//TODO: Ivan: couldn't we just "break;" here?
             }
             if (activeCamera == tmp)
             {
@@ -412,7 +415,7 @@ pCamera WorldObject::switchNextCamera()
 void WorldObject::pointCameras(pVehicle target)
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
@@ -423,7 +426,7 @@ void WorldObject::pointCameras(pVehicle target)
 void WorldObject::positionCameras(dBodyID baseID)
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
@@ -434,7 +437,7 @@ void WorldObject::positionCameras(dBodyID baseID)
 void WorldObject::positionCameras(pVehicle base)
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pCamera tmp = boost::dynamic_pointer_cast<Camera>(i->second))
         {
@@ -443,10 +446,10 @@ void WorldObject::positionCameras(pVehicle base)
     }
 }
 
-pLocation WorldObject::getLocation (std::string name)
+pLocation WorldObject::getLocation (const std::string & name)
 {
     pLocation tmp;
-    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    for (LocationsIt i = locations.begin(); i != locations.end(); ++i)
     {
         if (i->first == name && i->second) if (tmp = boost::dynamic_pointer_cast<Location>(i->second)) break;
     }
@@ -647,7 +650,7 @@ void WorldObject::constructFromTag(XmlTag * tag)
     }
     ogreObjects[ogreObject->getId()]->setOdeReference(getMainOdeObject());
 }
-pLocation WorldObject::getLocationObject(std::string fullname)
+pLocation WorldObject::getLocationObject(const std::string & fullname)
 {
     pLocation tmp;
     if (MospPath::getType(fullname) == "area")
@@ -664,7 +667,7 @@ pLocation WorldObject::getLocationObject(std::string fullname)
     log->__format(LOG_DEVELOPER, "Location name=%s", tmp->getName().c_str());
     return tmp;
 }
-pVehicle WorldObject::getVehicleObject(std::string fullname)
+pVehicle WorldObject::getVehicleObject(const std::string & fullname)
 {
     pVehicle tmp;
     if ((tmp = boost::dynamic_pointer_cast<Vehicle>(getFirstObject(fullname))) == NULL)
@@ -672,7 +675,7 @@ pVehicle WorldObject::getVehicleObject(std::string fullname)
     log->__format(LOG_DEVELOPER, "Vehicle name=%s", tmp->getName().c_str());
     return tmp;
 }
-pArea WorldObject::getAreaObject(std::string fullname)
+pArea WorldObject::getAreaObject(const std::string & fullname)
 {
     pArea tmp;
     if ((tmp = boost::dynamic_pointer_cast<Area>(getFirstObject(fullname))) == NULL)
@@ -680,7 +683,7 @@ pArea WorldObject::getAreaObject(std::string fullname)
     log->__format(LOG_DEVELOPER, "Area name=%s", tmp->getName().c_str());
     return tmp;
 }
-pWorldObject WorldObject::getFirstObject(std::string fullname)
+pWorldObject WorldObject::getFirstObject(const std::string & fullname)
 {
     std::string type = MospPath::getType(fullname);
     std::string name = MospPath::getName(fullname);
@@ -708,15 +711,15 @@ void WorldObject::setPosition (Vector3d newPosition)
 void WorldObject::addPosition (Vector3d diff)
 {
     OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
+    for(;j != odeObjects.end(); ++j)
     {
         j->second->addPosition(diff);
     }
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         i->second->addPosition(diff);
     }
-    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    for (LocationsIt i = locations.begin(); i != locations.end(); ++i)
     {
         i->second->addPosition(diff);
     }
@@ -724,15 +727,15 @@ void WorldObject::addPosition (Vector3d diff)
 void WorldObject::addRotation (Vector3d origin, Quaternion diff)
 {
     OdeObjectsIt j = odeObjects.begin();
-    for(;j != odeObjects.end(); j++)
+    for(;j != odeObjects.end(); ++j)
     {
         j->second->addRotation(origin, diff);
     }
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         i->second->addRotation(origin, diff);
     }
-    for (LocationsIt i = locations.begin(); i != locations.end(); i++)
+    for (LocationsIt i = locations.begin(); i != locations.end(); ++i)
     {
         i->second->addRotation(origin, diff);
     }
@@ -746,10 +749,10 @@ Quaternion WorldObject::getRotation ()
 {
     return odeObjects.begin()->second->getRotation();
 }
-pArea WorldObject::getArea(std::string name)
+pArea WorldObject::getArea(const std::string & name)
 {
     pArea tmp;
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         if (i->first == ("(area)" + name) && i->second) if (tmp = boost::dynamic_pointer_cast<Area>(i->second)) break;
     }

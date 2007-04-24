@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,7 +8,7 @@
 \*****************************************************************************/
 
 #include "main.hpp"
-#include "SDL/SDL.h"
+#include <SDL/SDL.h>
 #include "world.hpp"            // contains the IDF for the simulated/virtual world data
 #include "system.hpp"           // contains the IDF for the system data
 #include "logEngine.hpp"    // allows to easily log actions
@@ -23,14 +23,14 @@
 #include <string>
 #include "xmlTag.hpp"
 #include <iostream>
-#include "SDL/SDL_keysym.h"
+#include <SDL/SDL_keysym.h>
 #include "tools/paths.hpp"
 
 int main (int argc, char **argv)
 {
     // Display copyright note.
     std::cout << "===============================================================================" << std::endl;
-    std::cout << "Motorsport, Copyright (C) 2003 - 2006 \"Motorsport\" developers (*)." << std::endl;
+    std::cout << "Motorsport, Copyright (C) 2003 - 2007 \"Motorsport\" developers (*)." << std::endl;
     std::cout << "Motorsport comes with ABSOLUTELY NO WARRANTY; for details, read (*)." << std::endl;
     std::cout << "This is free software, and you are welcome to redistribute it under certain conditions; ";
     std::cout << "read (*) for details." << std::endl << std::endl;

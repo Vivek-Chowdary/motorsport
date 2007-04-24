@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,8 +9,9 @@
 
 #ifndef VEHICLE_HPP
 #define VEHICLE_HPP
+
 #include "worldObject.hpp"
-#include "ode/objects.h"
+#include <ode/objects.h>
 #include "xmlTag.hpp"
 
 // Forward declarations
@@ -33,10 +34,10 @@ class Vehicle : public WorldObject
     void placeWheelsOnSuspensions();
     void boltWheelsToSuspensions();
     void stopGraphics ();
-    Vehicle (std::string vehicleName);
+    Vehicle (const std::string & vehicleName);
     void readCustomDataTag(XmlTag * tag);
   public:
-    static pVehicle create(std::string vehicleName);
+    static pVehicle create(const std::string & vehicleName);
     void setContainer (pWorldObject container);
     ~Vehicle ();
 

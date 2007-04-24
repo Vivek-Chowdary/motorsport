@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,8 +8,8 @@
 \*****************************************************************************/
 
 #include "odeObject.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "system.hpp"
 #include "vector3d.hpp"
 #include "quaternion.hpp"
@@ -32,7 +32,7 @@ void OdeObject::updateId()
     this->id = std::string(numberString);
     instancesCount++;
 }
-OdeObject::OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pMeshOdeData data, const std::string & name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -56,7 +56,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pMeshOdeData data, std::string 
     dGeomTriMeshDataBuildDouble (ground, vertices, sizeof (dVector3), vertex_count, indices, index_count, 3 * sizeof (unsigned int));
 #endif
 }
-OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, const std::string & name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -92,7 +92,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pPartOdeData data, std::string 
     dGeomSetBody (geomIDs[name], bodyID);
     dBodySetMass (bodyID, &dmass);
 }
-OdeObject::OdeObject (WorldObject * worldObject, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, const std::string & name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -100,7 +100,7 @@ OdeObject::OdeObject (WorldObject * worldObject, std::string name)
     bodyID = NULL;
     bodyID = dBodyCreate (World::get()->ghostWorldID);
 }
-OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, const std::string & name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -148,7 +148,7 @@ OdeObject::OdeObject (WorldObject * worldObject, pBodyOdeData data, std::string 
     dBodySetLinearVel  (bodyID, 0, 0, 0);
     dBodySetAngularVel (bodyID, 0, 0, 0);
 }
-OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, std::string name)
+OdeObject::OdeObject (WorldObject * worldObject, pBoneOdeData data, const std::string & name)
 {
     updateId();
     this->worldObject = worldObject;
@@ -178,7 +178,7 @@ OdeObject::~OdeObject ()
     //TODO: check if there's anything left to do here with ODE...
     worldObject->getLog()->__format (LOG_DEVELOPER, "Removing geoms");
     GeomIDsIt i = geomIDs.begin();
-    for(;i != geomIDs.end(); i++)
+    for(;i != geomIDs.end(); ++i)
     {
         worldObject->getLog()->__format (LOG_DEVELOPER, "Removing geom id=%s", i->first.c_str());
         dGeomDestroy (i->second);
@@ -213,7 +213,7 @@ void OdeObject::setPosition (Vector3d position)
             worldObject->getLog()->__format (LOG_ERROR, "No geoms!! OdeObj name=%s", this->getId().c_str());
         }
         GeomIDsIt i = geomIDs.begin();
-        for(;i != geomIDs.end(); i++)
+        for(;i != geomIDs.end(); ++i)
         {
             dGeomSetPosition (i->second, position.x, position.y, position.z);
         }
@@ -229,7 +229,7 @@ void OdeObject::setRotation (Quaternion rotation)
     if (bodyID == 0)
     {
         GeomIDsIt i = geomIDs.begin();
-        for(;i != geomIDs.end(); i++)
+        for(;i != geomIDs.end(); ++i)
         {
             dGeomSetRotation (i->second, rot);
         }
@@ -280,7 +280,7 @@ dBodyID OdeObject::getBodyID()
 {
     return bodyID;
 }
-dGeomID OdeObject::getGeomID(std::string name)
+dGeomID OdeObject::getGeomID(const std::string & name)
 {
     return geomIDs[name];
 }
@@ -294,7 +294,7 @@ void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &
     size_t index_offset = index_count;
 
     // Calculate how many vertices and indices we're going to need
-    for (int i = 0; i < mesh->getNumSubMeshes (); i++)
+    for (int i = 0; i < mesh->getNumSubMeshes (); ++i)
     {
         Ogre::SubMesh * submesh = mesh->getSubMesh (i);
 
@@ -325,7 +325,7 @@ void getMeshInformation (Ogre::MeshPtr mesh, size_t & vertex_count, dVector3 * &
     added_shared = false;
 
     // Run through the submeshes again, adding the data into the arrays
-    for (int i = 0; i < mesh->getNumSubMeshes (); i++)
+    for (int i = 0; i < mesh->getNumSubMeshes (); ++i)
     {
         Ogre::SubMesh * submesh = mesh->getSubMesh (i);
 

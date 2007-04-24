@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,10 +8,11 @@
 \*****************************************************************************/
 
 #ifndef VECTOR3D_HPP
-#   define VECTOR3D_HPP
-#   include <vector>
-#   include <cmath>
-#   include "ode/ode.h"
+#define VECTOR3D_HPP
+
+#include <vector>
+#include <cmath>
+#include <ode/ode.h>
 
 class Vector3d
 {
@@ -42,7 +43,7 @@ class Vector3d
     Vector3d & scalarAdd(const dReal value);
     Vector3d & scalarMultiply(const dReal value);
     Vector3d & scalarDivide(const dReal value);
-    const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec);
+    static const Vector3d GetCrossProduct (const std::vector < Vector3d > &vec);
 };
 
 #endif

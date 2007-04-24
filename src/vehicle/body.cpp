@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,14 +8,14 @@
 \*****************************************************************************/
 
 #include "body.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "system.hpp"
 #include "world.hpp"
 #include "axis.hpp"
-#include "ode/ode.h"
-#include "math.h"
-#include "SDL/SDL_keysym.h"
+#include <ode/ode.h>
+#include <cmath>
+#include <SDL/SDL_keysym.h>
 #include "vehicle.hpp"
 
 pBody Body::create (XmlTag * tag)

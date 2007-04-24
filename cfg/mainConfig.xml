@@ -6,5 +6,5 @@
 
     _videoRecordTimestep = "40" _="1000 / 40 = 25 frames per second"
     videoRecordTimestep = "0"
-    dataDir="../data"
+    dataDir="../data/"
 />

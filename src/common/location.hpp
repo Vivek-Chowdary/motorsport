@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,11 +9,12 @@
 
 #ifndef LOCATION_HPP
 #define LOCATION_HPP
+
 #include "vector3d.hpp"
 #include <string>
 #include "quaternion.hpp"
 #include "xmlTag.hpp"
-#include <common/shared.hpp>
+#include "common/shared.hpp"
 
 SHARED_PTR_MAP(Location, pLocation, Locations, LocationsIt, wLocation);
 
@@ -24,10 +25,10 @@ class Location
     Quaternion rotation;
     std::string name;
     Location (XmlTag * tag);
-    Location (std::string name, Vector3d position, Quaternion rotation);
+    Location (const std::string & name, Vector3d position, Quaternion rotation);
   public:
     static pLocation create(XmlTag * tag);
-    static pLocation create(std::string name, Vector3d position, Quaternion rotation);
+    static pLocation create(const std::string & name, Vector3d position, Quaternion rotation);
     ~Location ();
     Vector3d getPosition();
     Quaternion getRotation();

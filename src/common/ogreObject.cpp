@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,8 +9,8 @@
 
 #include "ogreObject.hpp"
 #include "system.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "vector3d.hpp"
 #include "quaternion.hpp"
 #include "odeObject.hpp"
@@ -28,7 +28,7 @@ std::string OgreObject::getId()
 {
     return id;
 }
-OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, std::string name, bool useMesh)
+OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, const std::string & name, bool useMesh)
 {
     updateId();
     this->worldObject = worldObject;
@@ -42,7 +42,7 @@ OgreObject::OgreObject (WorldObject * worldObject, pOgreObjectData data, std::st
     {
         entity = System::get()->ogreSceneManager->createEntity (id + name, meshPath);
         entity->setCastShadows(true);
-        for(unsigned int i = 0; i < entity->getNumSubEntities(); i++)
+        for(unsigned int i = 0; i < entity->getNumSubEntities(); ++i)
         {
             worldObject->getLog()->__format(LOG_CCREATOR, "Entity submesh #%i material: %s.", i, entity->getSubEntity(i)->getMaterialName().c_str() );
         }
@@ -62,6 +62,8 @@ OgreObject::~OgreObject ()
         node->detachObject(entity);
         if (entity->isAttached()) worldObject->getLog()->__format(LOG_WARNING, "Entity \"%s\" (%s) still attached somewhere!.", name.c_str(), entity->getName().c_str());
         System::get()->ogreSceneManager->destroyEntity (entity);
+	//Ivan: I don't know if this is equivalent, but exists in Ogre 1.0.6:
+        //System::get()->ogreSceneManager->removeEntity (entity);
         entity = NULL;
     }
 

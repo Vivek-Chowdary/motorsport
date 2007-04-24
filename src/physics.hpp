@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -7,8 +7,8 @@
 |*    [ https://svn.sourceforge.net/svnroot/motorsport/trunk/doc/LICENSE ]   *|
 \*****************************************************************************/
 
-#include <common/shared.hpp>
-#include "ode/objects.h"
+#include "common/shared.hpp"
+#include <ode/objects.h>
 
 /// Manages everything related to the simulated world data.
 /** Manages everything related to the simulated world data. This is not limited to real life physics simulation, but is also related to scripted movement, virtual world events, and many other concepts.

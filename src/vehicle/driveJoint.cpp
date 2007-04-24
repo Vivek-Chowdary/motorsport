@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -10,10 +10,10 @@
 #include "driveJoint.hpp"
 #include "world.hpp"
 #include "system.hpp"
-#include "SDL/SDL_keysym.h"
+#include <SDL/SDL_keysym.h>
 #include "pedal.hpp"
 
-DriveJoint::DriveJoint (std::string name)
+DriveJoint::DriveJoint (const std::string & name)
     :WorldObject(name)
 {
 }

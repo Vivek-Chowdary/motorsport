@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,8 +9,9 @@
 
 #ifndef WORLD_HPP
 #define WORLD_HPP
-#include "SDL/SDL_types.h"
-#include "ode/objects.h"
+
+#include <SDL/SDL_types.h>
+#include <ode/objects.h>
 #include "worldObject.hpp"
 
 //forward declaration
@@ -31,11 +32,11 @@ class World : public WorldObject
     bool cameraDirector;
     void setActiveCamera(pCamera camera);
     void processXmlRootNode (XmlTag * tag);
-    World (std::string name);
+    World (const std::string & name);
     void readCustomDataTag(XmlTag * tag);
   public:
     static pWorld get();
-    static void setNewWorld(std::string name);
+    static void setNewWorld(const std::string & name);
     static void destroy();
     ~World ();
 

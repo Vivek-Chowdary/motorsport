@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,8 +9,8 @@
 
 #include "world.hpp"
 #include "vehicle.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "body.hpp"
 #include "engine.hpp"
 #include "driveJoint.hpp"
@@ -21,11 +21,11 @@
 #include "pedal.hpp"
 #include "camera.hpp"
 #include "system.hpp"
-#include "SDL.h"
-#include "SDL/SDL_keysym.h"
+#include <SDL.h>
+#include <SDL/SDL_keysym.h>
 #include "quaternion.hpp"
 
-pVehicle Vehicle::create(std::string vehicleName)
+pVehicle Vehicle::create(const std::string & vehicleName)
 {
     pVehicle vehicle(new Vehicle(vehicleName));
     vehicle->pointCameras(vehicle);
@@ -34,7 +34,7 @@ pVehicle Vehicle::create(std::string vehicleName)
     vehicle->stepGraphics();
     return vehicle;
 }
-Vehicle::Vehicle (std::string vehicleName)
+Vehicle::Vehicle (const std::string & vehicleName)
     :WorldObject("vehicle")
 {
     setPath(Paths::vehicle(vehicleName));
@@ -52,7 +52,7 @@ Vehicle::Vehicle (std::string vehicleName)
 Vehicle::~Vehicle ()
 {
     log->__format(LOG_DEVELOPER, "Deleting objects");
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         i->second.reset();
     }
@@ -69,7 +69,7 @@ void Vehicle::setUserDriver ()
     getGearbox("main")->setGear(2);
 
     // spread the news to the necessary (input-able) vehicle parts
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         pBody tmpBody;
         if ( (tmpBody = boost::dynamic_pointer_cast<Body>(i->second))) tmpBody->setUserDriver();
@@ -116,7 +116,7 @@ void Vehicle::construct (XmlTag * tag)
 
     getEngine("main")->setGasPedal(getPedal("gas"));
     getClutch("main")->setClutchPedal(getPedal("clutch"));
-    for (WorldObjectsIt i = objects.begin(); i != objects.end(); i++)
+    for (WorldObjectsIt i = objects.begin(); i != objects.end(); ++i)
     {
         pWheel tmpWheel;
         if ((tmpWheel = boost::dynamic_pointer_cast<Wheel>(i->second)))

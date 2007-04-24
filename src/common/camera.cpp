@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -8,18 +8,17 @@
 \*****************************************************************************/
 
 #include "camera.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "vector3d.hpp"
 #include <cstdio>
 #include "system.hpp"
 #include "world.hpp"
 #include "axis.hpp"
-#include "SDL/SDL_keysym.h"
-#include "ode/ode.h"
+#include <SDL/SDL_keysym.h>
+#include <ode/ode.h>
 #include "log/logEngine.hpp"
 #include "area.hpp"
-#include "vector3d.hpp"
 
 pCamera Camera::create(XmlTag * tag)
 {
@@ -45,12 +44,10 @@ void Camera::readCustomDataTag(XmlTag * tag)
     ogreCamera->setNearClipDistance (0.100);
 //    ogreCamera->setAutoAspectRatio(true);
     log->__format (LOG_DEVELOPER, "Creating a camera");
-    positionOffset = new Vector3d (0, 0, 0);
     targetOffset = new Vector3d (0, 0, 0);
     positionID = 0;
     targetID = 0;
     isFree = false;
-    delete positionOffset;
     positionOffset =  new Vector3d (tag->getAttribute("position"));
     std::string t = "";
     if ( (t = tag->getAttribute("target")) != "")

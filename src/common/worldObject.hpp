@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,12 +9,13 @@
 
 #ifndef WORLDOBJECT_HPP
 #define WORLDOBJECT_HPP
+
 #include "system.hpp"
 #include "logEngine.hpp"
 #include "ogreObject.hpp"
 #include "odeObject.hpp"
 #include "xmlTag.hpp"
-#include <shared.hpp>
+#include "shared.hpp"
 
 //forward declatations
 class Quaternion;
@@ -75,9 +76,9 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         std::string getFullName();
         std::string getPath();
         std::string getXmlPath();
-        void setName(std::string name);
-        void setPath(std::string path);
-        void setXmlPath(std::string xmlPath);
+        void setName(const std::string & name);
+        void setPath(const std::string & path);
+        void setXmlPath(const std::string & xmlPath);
 
         static void logAll();
         pLogEngine getLog();
@@ -98,30 +99,30 @@ class WorldObject: public boost::enable_shared_from_this <WorldObject>
         virtual Vector3d getPosition ();
         virtual Quaternion getRotation ();
 
-        pLocation getLocationObject(std::string fullname);
-        pVehicle getVehicleObject(std::string fullname);
-        pArea getAreaObject(std::string fullname);
-        pWorldObject getFirstObject(std::string fullname);
+        pLocation getLocationObject(const std::string & fullname);
+        pVehicle getVehicleObject(const std::string & fullname);
+        pArea getAreaObject(const std::string & fullname);
+        pWorldObject getFirstObject(const std::string & fullname);
 
-        pLocation getLocation (std::string name);
+        pLocation getLocation (const std::string & name);
 
-        pArea getArea(std::string name);
-        pVehicle getVehicle(std::string name);
-        pCamera getCamera (std::string name);
-        pBody getBody (std::string name);
-        pDriveJoint getDriveJoint (std::string name);
-        pDriveMass getDriveMass (std::string name);
-        pClutch getClutch (std::string name);
-        pGear getGear (std::string name);
-        pLSD getLSD (std::string name);
-        pEngine getEngine (std::string name);
-        pFinalDrive getFinalDrive (std::string name);
-        pGearbox getGearbox (std::string name);
-        pGearboxGear getGearboxGear (std::string name);
-        pPedal getPedal (std::string name);
-        pSuspension getSuspension (std::string name);
-        pWheel getWheel (std::string name);
-        pWorldObject getObject (std::string name);
-        pWorldObject getWorldObject (std::string name);
+        pArea getArea(const std::string & name);
+        pVehicle getVehicle(const std::string & name);
+        pCamera getCamera (const std::string & name);
+        pBody getBody (const std::string & name);
+        pDriveJoint getDriveJoint (const std::string & name);
+        pDriveMass getDriveMass (const std::string & name);
+        pClutch getClutch (const std::string & name);
+        pGear getGear (const std::string & name);
+        pLSD getLSD (const std::string & name);
+        pEngine getEngine (const std::string & name);
+        pFinalDrive getFinalDrive (const std::string & name);
+        pGearbox getGearbox (const std::string & name);
+        pGearboxGear getGearboxGear (const std::string & name);
+        pPedal getPedal (const std::string & name);
+        pSuspension getSuspension (const std::string & name);
+        pWheel getWheel (const std::string & name);
+        pWorldObject getObject (const std::string & name);
+        pWorldObject getWorldObject (const std::string & name);
 };
 #endif

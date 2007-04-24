@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -10,8 +10,8 @@
 #include "finalDrive.hpp"
 #include "world.hpp"
 #include "system.hpp"
-#include "ode/ode.h"
-#include "SDL/SDL_keysym.h"
+#include <ode/ode.h>
+#include <SDL/SDL_keysym.h>
 
 pFinalDrive FinalDrive::create(XmlTag * tag)
 {

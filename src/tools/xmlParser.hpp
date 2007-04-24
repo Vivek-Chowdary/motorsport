@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,7 +9,8 @@
 
 #ifndef XML_PARSER_HPP
 #define XML_PARSER_HPP
-#include "OgreNoMemoryMacros.h"
+
+#include <OgreNoMemoryMacros.h>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/parsers/AbstractDOMParser.hpp>
 #include <xercesc/dom/DOMImplementation.hpp>
@@ -79,7 +80,7 @@ class XmlFile
         DOMBuilder * parser;
         XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument * doc;
     public:
-        XmlFile (std::string xmlFileName);
+        XmlFile (const std::string & xmlFileName);
         ~XmlFile ();
         DOMNode * getRootNode();
 };
@@ -90,4 +91,5 @@ bool stob (const std::string &srcString);
 double stod (const std::string &srcString);
 Vector3d stov3d (const std::string &srcString);
 Quaternion stoq (const std::string &srcString);
+
 #endif

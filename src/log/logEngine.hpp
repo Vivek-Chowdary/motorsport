@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,7 +9,7 @@
 
 #ifndef LOG_ENGINE_HPP
 #define LOG_ENGINE_HPP
-#include <shared.hpp>
+#include "shared.hpp"
 #include <fstream>
 
 #ifdef _MSC_VER
@@ -118,7 +118,7 @@ class LogEngine
     */
     void log(const LOG_LEVEL level, const int mask, const char *textToLogFormat, ...);
 
-    void setName(std::string name);
+    void setName(const std::string & name);
 
     // / Friends, this test function is a friend and can use private methods.
     friend void TestGetLogLevelCode ();

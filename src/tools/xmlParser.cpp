@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -22,7 +22,7 @@ bool DOMCountErrorHandler::handleError (const DOMError & domError)
     std::cout << StrX (domError.getLocation ()->getURI ()) << ", line " << domError.getLocation ()->getLineNumber () << ", char " << domError.getLocation ()->getColumnNumber () << std::endl << "Message: " << StrX (domError.getMessage ()) << std::endl;
     return true;
 }
-XmlFile::XmlFile (std::string xmlFileName)
+XmlFile::XmlFile (const std::string & xmlFileName)
 {
     //std::cout << "Loading " << xmlFileName << std::endl;
     error = false;

@@ -1,5 +1,5 @@
 /*****************************************************************************\
-|* Copyright (C) 2003, 2006 "Motorsport" developers (*)                      *|
+|* Copyright (C) 2003, 2007 "Motorsport" developers (*)                      *|
 |* Part of the "Motorsport" project (http://motorsport.sourceforge.net)      *|
 |* Licensed under the GNU General Public License (*)                         *|
 |*                                                                           *|
@@ -9,22 +9,22 @@
 
 #include "world.hpp"
 #include "vehicle.hpp"
-#include "Ogre.h"
-#include "OgreNoMemoryMacros.h"
+#include <Ogre.h>
+#include <OgreNoMemoryMacros.h>
 #include "xmlTag.hpp"
 #include "area.hpp"
 #include "log/logEngine.hpp"
-#include "ode/ode.h"
+#include <ode/ode.h>
 #include "system.hpp"
 #include "camera.hpp"
 #include "vector3d.hpp"
 #include "location.hpp"
-#include "SDL.h"
+#include <SDL.h>
 
 pWorld World::world;
 std::string World::newWorld = "";
 
-void World::setNewWorld(std::string name)
+void World::setNewWorld(const std::string & name)
 {
     world.reset();
     World::newWorld = name;
@@ -57,7 +57,7 @@ void World::destroy()
     }
 }
 
-World::World (std::string name)
+World::World (const std::string & name)
     :WorldObject("world")
 {
     if (world)
@@ -141,7 +141,7 @@ void World::readCustomDataTag(XmlTag * tag)
     if (useAreaCamera)
     {
         WorldObjectsIt i = objects.begin();
-        for(;i != objects.end(); i++)
+        for(;i != objects.end(); ++i)
         {
             if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
             {
@@ -183,7 +183,7 @@ void World::processXmlRootNode (XmlTag * tag)
     constructFromTag(tag);
     // initialize cameras (pointing to car 0 by default)
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
         {
@@ -220,7 +220,7 @@ void World::stepGraphics()
     if (cameraDirector == true)
     {
         WorldObjectsIt i = objects.begin();
-        for(;i != objects.end(); i++)
+        for(;i != objects.end(); ++i)
         {
             if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
             {
@@ -232,7 +232,7 @@ void World::stepGraphics()
 void World::switchNextAreaCamera()
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
         {
@@ -258,7 +258,7 @@ bool World::isActiveCamera(pCamera camera)
 void World::setCastShadows(bool castAreaShadows)
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
         {
@@ -270,7 +270,7 @@ void World::setCastShadows(bool castAreaShadows)
 void World::setRenderDetail(bool areaRenderDetail)
 {
     WorldObjectsIt i = objects.begin();
-    for(;i != objects.end(); i++)
+    for(;i != objects.end(); ++i)
     {
         if (pArea tmp = boost::dynamic_pointer_cast<Area>(i->second))
         {
